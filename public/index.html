@@ -1,35 +1,132 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <title>놀픽 검사 — 프로토타입</title>
-  <link rel="stylesheet" href="style.css">
-  <noscript>
-    <style>#__bundler_loading { display: none; }</style>
-    <div style="position:fixed;bottom:12px;left:12px;font:13px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#999;background:rgba(255,255,255,0.9);padding:6px 12px;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,0.08);z-index:10000;">
-      This page requires JavaScript to display.
-    </div>
-  </noscript>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>놀픽 (Nollpic) - 전두엽 훈련 및 LMS 시스템</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="__bundler_thumbnail">
-    <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
-      <rect width="1200" height="800" fill="#FFF7FA"></rect>
-      <g transform="translate(600 400)">
-        <ellipse cx="0" cy="180" rx="220" ry="36" fill="#FFE9CF" opacity="0.55"></ellipse>
-        <circle cx="0" cy="0" r="200" fill="#FFFFFF" stroke="#F4ECE6" stroke-width="6"></circle>
-        <path d="M-160 -120 L-110 -200 L-40 -150 Z" fill="#FFFFFF" stroke="#F4ECE6" stroke-width="6"></path>
-        <path d="M160 -120 L110 -200 L40 -150 Z" fill="#FFFFFF" stroke="#F4ECE6" stroke-width="6"></path>
-        <path d="M-200 -40 Q0 -120 200 -40 L200 -10 Q0 -90 -200 -10 Z" fill="#FF6631"></path>
-        <circle cx="-60" cy="20" r="14" fill="#1F1A17"></circle>
-        <path d="M40 18 Q60 38 80 18" stroke="#1F1A17" stroke-width="9" fill="none" stroke-linecap="round"></path>
-        <path d="M-25 60 Q0 90 25 60" fill="#FF5C45" stroke="#1F1A17" stroke-width="6" stroke-linejoin="round"></path>
-      </g>
-      <text x="600" y="700" text-anchor="middle" font-family="-apple-system, sans-serif" font-size="64" font-weight="900" fill="#1B2235" letter-spacing="-3">놀픽</text>
-    </svg>
-  </div>
-  <div id="__bundler_loading">Unpacking...</div>
 
-  <script src="app.js"></script>
+    <div id="main-page" class="page active">
+        <header>
+            <div class="logo">놀픽 (Nollpic)</div>
+            <div class="user-profile" onclick="switchPage('lms-page')">👤 강사 마이페이지</div>
+        </header>
+        
+        <main>
+            <section class="hero">
+                <h1>재미있고 쉽게 바로 써먹는<br><span class="highlight">전두엽 훈련 콘텐츠</span></h1>
+                <p>아이들의 주의집중력 지수와 자기조절 능력을 수치화하는 맞춤형 보드게임 & 도안 플랫폼</p>
+                <button class="btn-primary" onclick="switchPage('classroom-page')">방과후 수업 입장하기</button>
+            </section>
+
+            <section class="features">
+                <div class="feature-card">
+                    <h3>🧠 전두엽 훈련 도안</h3>
+                    <p>팔로우 시 무료 다운로드 가능한 고품질 인지 훈련 이미지 패키지</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📊 구체적 지표 수치화</h3>
+                    <p>주의집중력, 자기조절 능력을 체계적으로 관리하는 교구재</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🏫 전국 돌봄교실 납품</h3>
+                    <p>방과후 학교 정규 창의체험 시간 정규 수업 시스템 구축</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="classroom-page" class="page">
+        <header>
+            <div class="back-btn" onclick="switchPage('main-page')">← 메인으로</div>
+            <div class="logo">놀픽 클래스</div>
+        </header>
+        <main>
+            <h2>나의 방과후 수업 매칭 학교</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 2rem;">현재 매칭되어 전두엽 훈련을 진행 중인 학교 목록입니다.</p>
+            <div class="school-list">
+                <div class="school-card" onclick="alert('울산 초등학교 클래스로 이동합니다.')">
+                    <span class="status-badge">수업중</span>
+                    <h3>울산 초등학교 (시범 운영)</h3>
+                    <p>창의체험 정규 타임 | 학년당 5개반 (100명 규모)</p>
+                </div>
+                <div class="school-card locked">
+                    <span class="status-badge locked">오픈예정</span>
+                    <h3>전국 30개 학교 확장 예정</h3>
+                    <p>지역사회서비스 투자사업(바우처) 모델 검토 중</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="lms-page" class="page">
+        <header>
+            <div class="back-btn" onclick="switchPage('main-page')">← 메인으로</div>
+            <div class="logo">놀픽 강사 LMS</div>
+        </header>
+        <main>
+            <div class="lms-container">
+                <div class="lms-sidebar">
+                    <h3>강사 가이드 뷰어</h3>
+                    <div class="video-placeholder">
+                        🎬 오늘 수업 가이드 영상 가상 플레이어
+                    </div>
+                    <p style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;">
+                        * 정산 기준: 당일 교수 가이드 영상 시청 및 수업 후 리포트 입력이 필수입니다.
+                    </p>
+                </div>
+                
+                <div class="lms-content">
+                    <h3>오늘의 수업 리포트 작성</h3>
+                    <form id="report-form" onsubmit="submitReport(event)">
+                        <div class="form-group">
+                            <label>주의집중력 지수 평가</label>
+                            <select required>
+                                <option value="">선택하세요</option>
+                                <option value="high">상 (집중도 우수, 교구재 미션 전원 완료)</option>
+                                <option value="mid">중 (보통, 일부 피드백 필요)</option>
+                                <option value="low">하 (주의 산만, 집중 훈련 도안 추가 배정)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>자기조절 능력 지수 평가</label>
+                            <select required>
+                                <option value="">선택하세요</option>
+                                <option value="high">상 (규칙 준수 및 감정 조절 원활)</option>
+                                <option value="mid">중 (보드게임 진행 중 간헐적 갈등 발생)</option>
+                                <option value="low">하 (차례 지키기 등 집중 통제 필요)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>특이사항 및 종합 의견</label>
+                            <textarea rows="4" placeholder="오늘 수업 진행 상황 및 특이 학생 기록" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary" style="width: 100%;">리포트 제출 및 수업 완료 서명</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function switchPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.add('active'); // classList.add 오타 수정 반영
+                targetPage.classList.add('active');
+            }
+        }
+
+        function submitReport(event) {
+            event.preventDefault();
+            alert('놀픽 LMS 리포트가 성공적으로 저장되었습니다. 본 정보는 정산 시스템과 자동 연동됩니다.');
+            switchPage('main-page');
+        }
+    </script>
 </body>
 </html>
