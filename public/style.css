@@ -1,50 +1,558 @@
-* { 
-  margin: 0; 
-  padding: 0; 
-  box-sizing: border-box; 
+/* ==========================================================================
+   Pretendard 웹폰트 로드 (지정 코드 반영)
+   ========================================================================== */
+@font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Thin.woff2') format('woff2');
+    font-weight: 100;
+    font-display: swap;
 }
 
-body { 
-  background: #FFF7FA; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  min-height: 100vh; 
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
+@font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-ExtraLight.woff2') format('woff2');
+    font-weight: 200;
+    font-display: swap;
 }
 
-#__bundler_loading { 
-  position: fixed; 
-  bottom: 20px; 
-  right: 20px; 
-  font: 13px/1.4 -apple-system, BlinkMacSystemFont, sans-serif; 
-  color: #666; 
-  background: #fff; 
-  padding: 8px 14px; 
-  border-radius: 8px; 
-  box-shadow: 0 1px 4px rgba(0,0,0,0.12); 
-  z-index: 10000; 
+@font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Light.woff2') format('woff2');
+    font-weight: 300;
+    font-display: swap;
 }
 
-#__bundler_thumbnail { 
-  position: fixed; 
-  inset: 0; 
-  width: 100%; 
-  height: 100%; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  background: #FFF7FA; 
-  z-index: 9999; 
+@font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
 }
 
-#__bundler_thumbnail svg { 
-  width: 100%; 
-  height: 100%; 
-  object-fit: contain; 
+@font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-display: swap;
 }
 
-#__bundler_placeholder { 
-  color: #999; 
-  font-size: 14px; 
+@font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-SemiBold.woff2') format('woff2');
+    font-weight: 600;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-ExtraBold.woff2') format('woff2');
+    font-weight: 800;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Black.woff2') format('woff2');
+    font-weight: 900;
+    font-display: swap;
+}
+
+/* ==========================================================================
+   놀픽 (Nollpic) 모바일 프리미엄 소프트 UI 디자인 마스터 시트 - 모바일 최적화 수정본
+   ========================================================================== */
+
+:root {
+    --app-bg: #fff8f8;           /* 💡 전체 서브페이지용 부드러운 피치화이트 백그라운드 */
+    --card-white: #FFFFFF;       
+    --navy-main: #0E1D3E;
+    --navy-hover: #192D5A;
+    --orange-point: #FF6B00;
+    --text-dark: #1F2937;
+    --text-muted: #8892A0;
+    --bg-light-gray: #F1F3F7;    
+    --radius-lg: 1.5rem;         
+    --radius-md: 1.25rem;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* 💡 가변 폰트 제거하고 요청하신 'Pretendard' 단일 서체군으로 동기화 */
+    font-family: 'Pretendard', -apple-system, system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    letter-spacing: -0.02em;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    height: -webkit-fill-available; /* iOS 및 모바일 크롬 주소창 대응 */
+    background-color: #E2E8F0; 
+    overflow: hidden;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 앱 디바이스 컨테이너 기본 배경 서브페이지 톤으로 선언 */
+.app-device {
+    background: var(--app-bg);
+    width: 100%;
+    max-width: 410px;
+    height: 100vh;
+    height: 100dvh; /* 최신 모바일 크롬/사파리 동적 뷰포트 완벽 대응 */
+    position: relative;
+    overflow: hidden; /* 내부 스크롤 제어를 위해 전체 block 축소 */
+    display: flex;
+    flex-direction: column;
+}
+
+/* PC/태블릿 뷰포트에서만 스마트폰 목업 형태로 띄우기 */
+@media (min-width: 420px) {
+    body {
+        background-color: #E2E8F0;
+    }
+    .app-device {
+        height: 840px;
+        border-radius: 2.5rem;
+        box-shadow: 0 25px 60px rgba(14, 29, 62, 0.12);
+        border: 8px solid #FFFFFF;
+    }
+}
+
+/* 모바일 전용 (주소창 포함 100% 밀착) */
+@media (max-width: 419px) {
+    body {
+        background-color: var(--app-bg);
+    }
+    .app-device {
+        max-width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        border-radius: 0;
+        border: none;
+    }
+}
+
+/* 페이지 추상화 전환 구조 */
+.page {
+    display: none;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    background: #fdf7f7; /* 서브페이지 기본 배경 주입 */
+    overflow: hidden;
+}
+
+.page.active {
+    display: flex;
+}
+
+/* 💡 [절대 고정] 메인 화면은 기존 코드 흰색 백그라운드 유지 */
+#page-1 {
+    background: #fff !important;
+}
+
+/* 스크롤이 필요한 콘텐츠 본문 영역 */
+.page-body {display: flex;flex-direction: column;flex: 1;padding: 1.5rem 1.5rem;overflow-y: auto;box-sizing: border-box;margin-top: -10px;}
+
+.page-body.space-between {
+    justify-content: space-between;
+}
+
+/* 수직 중앙 정렬용 (새로 추가) */
+.page-body.justify-center {
+    justify-content: center;
+}
+
+/* 💡 메인 화면 전용 레이아웃 (상단 불필요한 여백 제거 및 밀착) */
+.main-page-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    padding: 2.5rem 1.5rem 2.5rem 1.5rem !important; /* 상단 padding을 4rem -> 2.5rem으로 최적화 */
+    text-align: center;
+    box-sizing: border-box;
+    background: #fff !important; /* 내부 바디 레이어도 흰색 고정 */
+}
+
+/* 상단 슬림 네비게이션 헤더 */
+.page-header {
+    height: 56px; /* 모바일 표준 터치 영역 확보를 위해 48px -> 56px 확장 */
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    background: transparent;
+}
+
+.nav-back {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    color: var(--text-dark);
+    cursor: pointer;
+    font-weight: 700;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 메인 및 서브 공통 타이틀블록 구조 */
+.title-block {
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+#page-1 .title-block {
+    text-align: center;
+}
+
+#page-2 .title-block, #page-3 .title-block, #page-4 .title-block {
+    text-align: center;
+}
+
+.title-block .img-title {
+    max-width: 180px;
+    height: auto;
+    margin-bottom: 0.5rem;
+}
+
+.section-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    line-height: 1.4;
+    color: #000000;
+}
+
+.brand-sub, .section-sub {
+    font-size: 0.95rem;
+    color: #576281;
+    margin-top: 0.4rem;
+    line-height: 1.5;
+    font-weight: 700;
+}
+
+.graphic-block {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    min-height: 0;
+    padding: 1rem 0;
+}
+
+.graphic-block .img-fluid-content {
+    max-width: 80%;
+    max-height: 35vh;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+/* 인포 배너 */
+.info-alert-banner {
+    background-color: #ffffff;
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    flex-shrink: 0;
+}
+
+.alert-icon {
+    background: #fa9f9c;
+    color: #FFFFFF;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.alert-text {
+    font-size: 0.85rem;
+    color: #332b27;
+    font-weight: 700;
+}
+
+/* 기능 리스트 영역 */
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.info-card-clean {
+    display: flex;
+    align-items: center;
+    background: transparent;  
+    box-shadow: none;         
+    border: none;             
+    padding: 0.4rem 0.2rem;   
+    text-align: left;
+    width: 100%;
+}
+
+.info-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    margin-right: 1.15rem;
+    flex-shrink: 0;
+}
+.bg-red {background: #f9e5e4;}
+.bg-blue {background: #e0eef9;}
+.bg-orange {background: #f7ecd9;}
+.bg-pink {background: #f1dee0;}
+.bg-teal {background: #d9e8e8;}
+
+.info-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.info-text h3 {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--navy-main);
+}
+
+.info-text p {
+    font-size: 0.85rem;
+    color: #748193;
+    font-weight: 500;
+}
+
+/* 인풋 및 폼 컴포넌트 */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 100%;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.input-group label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #fd6217;
+    padding-left: 0.25rem;
+}
+
+.input-group input[type="text"],
+.input-group select {
+    width: 100%;
+    padding: 1rem 1.15rem;
+    border: none;
+    background-color: #ffffff;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    outline: none;
+    transition: all 0.2s ease;
+    -webkit-appearance: none; /* 모바일 브라우저 기본 스타일 초기화 */
+}
+
+.input-group input[type="text"]:focus,
+.input-group select:focus {
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 2px #fd6217; 
+}
+
+/* 성별 토글 버튼그룹 */
+.gender-radio-group {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.gender-radio-btn {
+    flex: 1;
+    cursor: pointer;
+}
+
+.gender-radio-btn input {
+    display: none;
+}
+
+.gender-radio-btn .gender-btn-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0;
+    background: #ffffff;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gender-radio-btn input:checked + .gender-btn-text {
+    background-color: #ffffff;
+    color: #E2795B;
+    box-shadow: 0 0 0 2px #fd6217;
+}
+
+/* 행동 체크리스트 카드 */
+.checklist-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    width: 100%;
+}
+
+.check-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border: none;
+    background: var(--card-white);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 12px rgba(14, 29, 62, 0.02);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.custom-circle {
+    width: 22px;
+    height: 22px;
+    border: 2px solid #D1D5DB; 
+    border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    background-color: #FFFFFF;
+}
+
+.check-card.active .custom-circle {
+    border-color: #fd6217;
+    background-color: #fd6217;
+}
+
+.check-icon {
+    font-size: 1.2rem;
+}
+
+.check-card p {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    transition: color 0.2s;
+}
+
+.check-card.active p {
+    color: #fd6217; 
+}
+
+/* 하단 버튼 액션 제어 블록 */
+.action-block {
+    margin-top: auto;
+    padding-top: 1rem;
+    padding-bottom: 1rem; /* 하단 인디케이터 바 및 브라우저 하단 툴바 여백 확보 */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.btn-navy {
+    background-color: var(--navy-main);
+    color: #FFFFFF;
+    border: none;
+    width: 100%;
+    max-width: 360px;
+    padding: 1.1rem 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(14, 29, 62, 0.18);
+    transition: all 0.2s ease;
+}
+
+.btn-navy:hover {
+    background-color: var(--navy-hover);
+}
+
+.img-footer {
+    max-width: 110px;
+    height: auto;
+    display: block;
+    margin: 0.75rem auto 0 auto;
+}
+
+.meta-bottom-guide {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-weight: 500;
+}
+
+.indicator-dots {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.indicator-dots span {
+    width: 7px;
+    height: 7px;
+    background: #737373;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.indicator-dots span.active {
+    background: #ff6b00;
+    width: 18px;
+    border-radius: 4px;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
 }

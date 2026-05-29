@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>놀픽 - 슐테 표 집중력 테스트</title>
+    <link rel="stylesheet" href="schulte.css">
+</head>
+<body>
+    <div class="test-body">
+        <div class="title-block">
+            <h2 class="section-title">슐테 표 집중력 테스트</h2>
+            <div class="badge-center">
+                <span class="badge-orange">⚡ 두뇌 반응속도</span>
+            </div>
+            <p class="section-sub text-center" id="schulte-description">
+                숫자를 1부터 순서대로 최대한 빠르게 찾아보세요!
+            </p>
+        </div>
+
+        <div class="schulte-dashboard">
+            <div class="dash-item">
+                <span class="dash-label">⏱️ 경과시간</span>
+                <span class="dash-value text-teal" id="schulte-timer">0.00초</span>
+            </div>
+            <div class="dash-divider"></div>
+            <div class="dash-item">
+                <span class="dash-label">🎯 다음 숫자</span>
+                <span class="dash-value text-orange" id="schulte-next">1</span>
+            </div>
+            <div class="dash-divider"></div>
+            <div class="dash-item">
+                <span class="dash-label">📊 레벨</span>
+                <span class="dash-value text-purple" id="schulte-level">3×3</span>
+            </div>
+        </div>
+
+        <div class="schulte-grid-container">
+            <div id="schulte-board" class="schulte-grid"></div>
+        </div>
+
+        <div class="schulte-guide-banner">
+            <span class="guide-lightbulb">💡</span>
+            <p class="guide-text">
+                <strong>슐테 표(Schulte Table)</strong>는 시각적 주의력과 집중력, 정보 처리 속도를 향상시키는 과학적 훈련법입니다.
+            </p>
+        </div>
+
+        <div class="schulte-leaderboard">
+            <h3>📊 실시간 실적 리더보드</h3>
+            <div class="leaderboard-header">
+                <span>학년</span>
+                <span>이름/닉네임</span>
+                <span>기록</span>
+                <span>날짜</span>
+            </div>
+            <div id="leaderboard-list" class="leaderboard-body">
+                </div>
+        </div>
+
+        <div class="action-block">
+            <button class="btn-navy" id="schulte-next-btn" disabled onclick="goToNextTest()">다음 테스트 단계로</button>
+        </div>
+    </div>
+
+    <div id="schulte-countdown-overlay" class="schulte-popup-overlay active">
+        <div class="schulte-popup-content">
+            <h3>집중력 테스트 준비</h3>
+            <p>화면에 무작위로 배치된 숫자를<br><strong>1부터 순서대로</strong> 누르세요.</p>
+            
+            <div id="popup-start-block">
+                <button class="btn-popup-start" onclick="runCountdown()">시작하기</button>
+            </div>
+            
+            <div id="popup-countdown-number" class="countdown-display" style="display: none;">
+                3
+            </div>
+        </div>
+    </div>
+
+    <script src="schulte.js"></script>
+</body>
+</html>
