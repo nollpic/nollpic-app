@@ -26,11 +26,30 @@ const testState = {
         showCount: 3,
         totalCount: 8,
         successLevel: 0
-    }
+    },
+    reaction: {
+    isGaming: false,
+    score: 0,
+    level: 1,
+    lives: 3,
+    round: 0,
+    timeoutId: null, // 추가된 부분
+    currentCircle: null,
+    spawnTimer: null,
+    moveTimer: null,
+    circleStartTime: 0,
+    responseTimes: [],
+    correctClicks: 0,
+    wrongClicks: 0,
+    missedClicks: 0,
+    accuracy: 0,
+    averageMs: 0
+}
 };
 
 let schulteRecords = [];
 let memoryRecords = [];
+let reactionRecords = [];
 
 // ==========================================================================
 // 초기 실행
@@ -41,6 +60,8 @@ window.addEventListener("DOMContentLoaded", () => {
     renderSchulteLeaderboard();
     renderMemoryLeaderboard();
     setupSchulteLevel();
+    renderReactionLeaderboard();
+
 });
 
 function parseUrlParameters() {
@@ -99,6 +120,19 @@ function setupSchulteLevel() {
 function loadRecords() {
     const savedSchulte = localStorage.getItem("nollpic_schulte_records");
     const savedMemory = localStorage.getItem("nollpic_memory_records");
+    const savedReaction = localStorage.getItem("nollpic_reaction_records");
+
+if (savedReaction) {
+    try {
+        reactionRecords = JSON.parse(savedReaction);
+    } catch (e) {
+        reactionRecords = [];
+    }
+}
+
+if (!Array.isArray(reactionRecords)) {
+    reactionRecords = [];
+}
 
     if (savedSchulte) {
         try {
@@ -479,13 +513,17 @@ function renderMemoryLeaderboard() {
 function finishAllTests() {
     const schulteTime = testState.schulte.elapsedTime || "0.00";
     const memoryLevel = testState.memory.successLevel || 0;
+    const reactionAvg = testState.reaction.averageMs || 0;
+    const reactionAccuracy = testState.reaction.accuracy || 0;
+    const reactionLevel = testState.reaction.level;
 
-    const summary = document.getElementById("result-summary");
+     const summary = document.getElementById("result-summary");
     if (summary) {
         summary.innerHTML = `
             <strong>${testState.child.name}</strong>의 오늘 기록입니다.<br>
-            슐테 표 기록: <strong>${schulteTime}초</strong><br>
-            작업 기억력: <strong>${memoryLevel}단계 달성</strong>
+            1. 집중 유지력: <strong>${schulteTime}초</strong><br>
+            2. 작업 기억력: <strong>${memoryLevel}단계 달성</strong><br>
+            3.반응 속도: <strong>${reactionAvg}ms / 정답률 ${reactionAccuracy}% / Lv.${reactionLevel} </strong>
         `;
     }
 
@@ -494,4 +532,287 @@ function finishAllTests() {
 
 function restartTests() {
     location.reload();
+}
+
+
+// 기억력 끝난 뒤 반응속도 테스트로 이동
+function goToReactionTest() {
+    showScreen("reaction-screen");
+
+    const popup = document.getElementById("reaction-popup");
+    if (popup) popup.classList.add("active");
+}
+
+// 원클릭 반응속도 테스트
+function startReactionGame() {
+    const stage = document.getElementById("reaction-stage");
+if (stage) {
+    stage.onclick = function () {
+        if (!testState.reaction.isGaming) return;
+        if (!testState.reaction.currentCircle) return;
+
+        testState.reaction.wrongClicks++;
+        testState.reaction.lives--;
+
+        updateReactionDashboard();
+
+        if (testState.reaction.lives <= 0) {
+            endReactionGame();
+        }
+    };
+}
+
+
+    const popup = document.getElementById("reaction-popup");
+    if (popup) popup.classList.remove("active");
+
+    const state = testState.reaction;
+
+    clearTimeout(state.spawnTimer);
+    clearInterval(state.moveTimer);
+
+    if (state.currentCircle) {
+        state.currentCircle.remove();
+        state.currentCircle = null;
+    }
+
+    state.isGaming = false;
+    state.score = 0;
+    state.level = 1;
+    state.lives = 3;
+    state.round = 0;
+    state.responseTimes = [];
+    state.correctClicks = 0;
+    state.wrongClicks = 0;
+    state.missedClicks = 0;
+    state.accuracy = 0;
+    state.averageMs = 0;
+
+    const ready = document.getElementById("reaction-ready");
+    if (ready) {
+        ready.style.display = "flex";
+        ready.innerHTML = "준비하세요!<br> 곧 시작합니다.";
+    }
+
+    const nextBtn = document.getElementById("reaction-next-btn");
+    if (nextBtn) nextBtn.disabled = true;
+
+    updateReactionDashboard();
+
+    setTimeout(() => {
+        if (ready) ready.style.display = "none";
+
+        state.isGaming = true;
+        spawnReactionCircle();
+    }, 2000);
+}
+
+
+function getReactionSpeed() {
+    const level = testState.reaction.level;
+
+    return Math.max(
+        700,
+        2200 - ((level - 1) * 120)
+    );
+}
+
+function spawnReactionCircle() {
+    const state = testState.reaction;
+    const stage = document.getElementById("reaction-stage");
+    if (!stage || !state.isGaming) return;
+
+    clearTimeout(state.spawnTimer);
+    clearInterval(state.moveTimer);
+
+    if (state.currentCircle) {
+        state.currentCircle.remove();
+        state.currentCircle = null;
+    }
+
+    if (state.lives <= 0) {
+        endReactionGame();
+        return;
+    }
+
+    state.round++;
+    state.level = Math.floor((state.round - 1) / 5) + 1;
+
+    const circle = document.createElement("button");
+    circle.type = "button";
+
+    const isGreen = Math.random() < 0.8;
+    circle.className = `reaction-circle ${isGreen ? "green" : "red"}`;
+    circle.dataset.color = isGreen ? "green" : "red";
+    circle.dataset.clicked = "false";
+
+    const stageRect = stage.getBoundingClientRect();
+    const size = 58;
+    const pos = getRandomCirclePosition(stageRect.width, stageRect.height, size);
+
+    circle.style.left = `${pos.x}px`;
+    circle.style.top = `${pos.y}px`;
+
+   circle.addEventListener("click", (event) => handleReactionClick(circle, event));
+    stage.appendChild(circle);
+
+    state.currentCircle = circle;
+    state.circleStartTime = performance.now();
+
+    state.spawnTimer = setTimeout(() => {
+        if (!state.isGaming || state.currentCircle !== circle) return;
+
+        if (circle.dataset.clicked === "true") return;
+
+        circle.dataset.clicked = "true";
+
+        if (circle.dataset.color === "green") {
+            state.missedClicks++;
+            state.lives--;
+        }
+
+        circle.remove();
+        state.currentCircle = null;
+
+        updateReactionDashboard();
+
+        if (state.lives > 0) {
+            setTimeout(spawnReactionCircle, 180);
+        } else {
+            endReactionGame();
+        }
+    }, getReactionSpeed());
+}
+
+
+function getRandomCirclePosition(width, height, size) {
+    const padding = 12;
+
+    const maxX = Math.max(padding, width - size - padding);
+    const maxY = Math.max(padding, height - size - padding);
+
+    return {
+        x: Math.floor(Math.random() * (maxX - padding + 1)) + padding,
+        y: Math.floor(Math.random() * (maxY - padding + 1)) + padding
+    };
+}
+
+function handleReactionClick(circle, event) {
+    if (event) event.stopPropagation();
+
+    const state = testState.reaction;
+
+    if (!state.isGaming || state.currentCircle !== circle) return;
+
+    if (circle.dataset.clicked === "true") return;
+    circle.dataset.clicked = "true";
+
+    clearTimeout(state.spawnTimer);
+
+    const color = circle.dataset.color;
+    const reactionMs = Math.round(performance.now() - state.circleStartTime);
+
+    if (color === "green") {
+        state.score += 10;
+        state.correctClicks++;
+        state.responseTimes.push(reactionMs);
+    } else {
+        state.score = Math.max(0, state.score - 10);
+        state.wrongClicks++;
+        state.lives--;
+    }
+
+    circle.remove();
+    state.currentCircle = null;
+
+    updateReactionDashboard();
+
+    if (state.lives > 0) {
+        setTimeout(spawnReactionCircle, 180);
+    } else {
+        endReactionGame();
+    }
+}
+
+function updateReactionDashboard() {
+    const state = testState.reaction;
+    const totalActions = state.correctClicks + state.wrongClicks + state.missedClicks;
+
+    state.averageMs = state.responseTimes.length
+        ? Math.round(state.responseTimes.reduce((sum, item) => sum + item, 0) / state.responseTimes.length)
+        : 0;
+
+    state.accuracy = totalActions
+        ? Math.round((state.correctClicks / totalActions) * 100)
+        : 0;
+
+    const scoreEl = document.getElementById("reaction-score");
+    const levelEl = document.getElementById("reaction-level");
+    const livesEl = document.getElementById("reaction-lives");
+    const avgEl = document.getElementById("reaction-avg");
+    const accEl = document.getElementById("reaction-accuracy");
+
+    if (scoreEl) scoreEl.innerText = state.score;
+    if (levelEl) levelEl.innerText = state.level;
+    if (livesEl) livesEl.innerText = "❤️ ".repeat(state.lives) + "🖤 ".repeat(Math.max(0, 3 - state.lives));
+    if (avgEl) avgEl.innerText = state.averageMs ? `${state.averageMs}ms` : "-";
+    if (accEl) accEl.innerText = totalActions ? `${state.accuracy}%` : "-";
+}
+
+function endReactionGame() {
+    const state = testState.reaction;
+    state.isGaming = false;
+
+    clearTimeout(state.spawnTimer);
+    clearInterval(state.moveTimer);
+
+    if (state.currentCircle) {
+        state.currentCircle.remove();
+        state.currentCircle = null;
+    }
+
+    updateReactionDashboard();
+
+    reactionRecords.forEach(item => item.isCurrentPlayer = false);
+
+    reactionRecords.unshift({
+        grade: testState.child.gradeText,
+        name: testState.child.name,
+        time: state.averageMs ? `${state.averageMs}ms / ${state.accuracy}%` : `0ms / ${state.accuracy}%`,
+        date: getTodayString(),
+        isCurrentPlayer: true
+    });
+
+    localStorage.setItem("nollpic_reaction_records", JSON.stringify(reactionRecords));
+    renderReactionLeaderboard();
+
+    const ready = document.getElementById("reaction-ready");
+    if (ready) {
+        ready.style.display = "flex";
+        ready.innerHTML = `완료!<br>평균 ${state.averageMs || 0}ms · 정답률 ${state.accuracy}%`;
+    }
+
+    const nextBtn = document.getElementById("reaction-next-btn");
+    if (nextBtn) nextBtn.disabled = false;
+}
+
+function renderReactionLeaderboard() {
+    const container = document.getElementById("reaction-leaderboard-list");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    reactionRecords.slice(0, 8).forEach(item => {
+        const row = document.createElement("div");
+        row.className = `leaderboard-row ${item.isCurrentPlayer ? "highlight" : ""}`;
+
+        row.innerHTML = `
+            <span>${item.grade}</span>
+            <span>${item.name}</span>
+            <span>${item.time}</span>
+            <span>${item.date}</span>
+        `;
+
+        container.appendChild(row);
+    });
 }

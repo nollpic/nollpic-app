@@ -16,7 +16,7 @@
             <div class="title-block">
                 <h2 class="section-title">슐테 표 집중력 테스트</h2>
                 <div class="badge-center">
-                    <span class="badge-orange">⚡ 두뇌 반응속도</span>
+                    <span class="badge-orange">⚡ 집중 유지력</span>
                 </div>
                 <p class="section-sub text-center" id="schulte-description">
                     숫자를 1부터 순서대로 최대한 빠르게 찾아보세요!
@@ -47,7 +47,8 @@
             <div class="guide-banner">
                 <span class="guide-lightbulb">💡</span>
                 <p class="guide-text">
-                    <strong>슐테 표(Schulte Table)</strong>는 시각적 주의력과 집중력, 정보 처리 속도를 확인하는 활동입니다.
+                    <strong>슐테 표(Schulte Table)</strong>는 1930년대 독일 심리학자 발터 슐테가 개발한 집중력·시야 확장 훈련법으로,
+                    시각적 주의력과 집중력, 정보 처리 속도를 확인하는 활동입니다.
                 </p>
             </div>
 
@@ -105,7 +106,74 @@
             </div>
 
             <div class="action-block">
-                <button class="btn-navy" id="memory-next-btn" disabled onclick="finishAllTests()">검사 완료</button>
+                <button class="btn-navy" id="memory-next-btn" disabled onclick="goToReactionTest()">다음 테스트 단계로</button>
+            </div>
+        </section>
+
+
+        <!-- =========================
+             03. 원클릭 반응속도 테스트
+        ========================== -->
+        <section id="reaction-screen" class="test-screen">
+            <div class="title-block">
+                <h2 class="section-title">원클릭 반응속도 테스트</h2>
+                <div class="badge-center">
+                    <span class="badge-green">🟢 반응속도 · 충동억제</span>
+                </div>
+                <p class="section-sub text-center" id="reaction-desc">
+                    초록 원은 빠르게 클릭하고, 빨간 원은 참아보세요!
+                </p>
+            </div>
+
+            <div class="reaction-dashboard">
+                <div class="dash-item">
+                    <span class="dash-label">점수</span>
+                    <span class="dash-value text-orange" id="reaction-score">0</span>
+                </div>
+                <div class="dash-divider"></div>
+                <div class="dash-item">
+                    <span class="dash-label">Lv.</span>
+                    <span class="dash-value text-purple" id="reaction-level">1</span>
+                </div>
+                <div class="dash-divider"></div>
+                <div class="dash-item">
+                    <span class="dash-label">생명</span>
+                    <span class="dash-value text-pink" id="reaction-lives">❤️ ❤️ ❤️</span>
+                </div>
+            </div>
+
+            <div class="reaction-stage" id="reaction-stage">
+                <div class="reaction-ready" id="reaction-ready">
+                    준비되면 시작 버튼을 눌러주세요.
+                </div>
+            </div>
+
+            <div class="reaction-stats">
+                <div>평균 반응속도 <strong id="reaction-avg">-</strong></div>
+                <div>정답률 <strong id="reaction-accuracy">-</strong></div>
+            </div>
+
+            <div class="guide-banner">
+                <span class="guide-lightbulb">💡</span>
+                <p class="guide-text">
+                    초록 원 반응속도는 시각적 자극에 대한 아이의 정보 처리 속도를 의미하며, 이 값이 낮을수록 뇌의 인지 속도가 빠르고 민첩하다는 것을 나타냅니다. 빨간 원 참기는 충동억제와 주의조절을 확인하는 활동입니다.
+                    
+                </p>
+            </div>
+
+            <div class="leaderboard">
+                <h3>📊 실시간 실적 리더보드</h3>
+                <div class="leaderboard-header">
+                    <span>학년</span>
+                    <span>이름/닉네임</span>
+                    <span>기록</span>
+                    <span>날짜</span>
+                </div>
+                <div id="reaction-leaderboard-list" class="leaderboard-body"></div>
+            </div>
+
+            <div class="action-block">
+                <button class="btn-navy" id="reaction-next-btn" disabled onclick="finishAllTests()">검사 완료</button>
             </div>
         </section>
 
@@ -156,6 +224,17 @@
             <button class="btn-popup-start orange" onclick="startMemoryGame()">시작하기</button>
         </div>
     </div>
+
+
+    <!-- 반응속도 시작 팝업 -->
+    <div id="reaction-popup" class="popup-overlay">
+        <div class="popup-content">
+            <h3>반응속도 테스트 준비</h3>
+            <p>초록 원은 빠르게 누르고,<br><strong>빨간 원은 누르지 마세요.</strong></p>
+            <button class="btn-popup-start green" onclick="startReactionGame()">시작하기</button>
+        </div>
+    </div>
+
 
     <script src="tests.js"></script>
 </body>
