@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>놀픽 (Nollpic) - 전두엽 인지 능력 검사</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-device">
+        <div id="page-1" class="page active">
+            <div class="page-body main-page-body">
+                <div class="title-block">
+                    <img src="images/nollpic_title.png" alt="놀픽 타이틀" class="img-title">
+                    <p class="brand-sub">놀이로 자라는 우리 아이의<br>집중력과 실행기능</p>
+                </div>
+                <div class="graphic-block">
+                    <img src="images/character_welcome.png" alt="놀픽 웰컴 캐릭터" class="img-fluid-content animate-fade-in">
+                </div>
+                <div class="action-block">
+                    <button class="btn-navy" onclick="nextPage(2)">시작하기</button>
+                    <img src="images/logo_footer.png" alt="놀픽" class="img-footer">
+                </div>
+            </div>
+        </div>
+
+        <div id="page-2" class="page">
+            <header class="page-header">
+                <button class="nav-back" onclick="prevPage(1)">❮</button>
+            </header>
+            <div class="page-body justify-center">
+                <div class="title-block">
+                    <h2 class="section-title">놀이로 배우고,<br>성장으로 이어지는 검사</h2>
+                    <p class="section-sub">5가지 활동을 통해 아이의 능력을 분석해요.</p>
+                </div>
+                <div class="info-list">
+                    <div class="info-card-clean">
+                        <div class="info-icon bg-red">🎯</div>
+                        <div class="info-text">
+                            <h3>1. 집중 유지력</h3>
+                            <p>주의를 지속하고 목표에 집중하는 능력</p>
+                        </div>
+                    </div>
+                    <div class="info-card-clean">
+                        <div class="info-icon bg-blue">🧩</div>
+                        <div class="info-text">
+                            <h3>2. 작업 기억력</h3>
+                            <p>정보를 기억하고 활용하는 능력</p>
+                        </div>
+                    </div>
+                    <div class="info-card-clean">
+                        <div class="info-icon bg-orange">⚡</div>
+                        <div class="info-text">
+                            <h3>3. 반응 속도</h3>
+                            <p>자극에 빠르게 반응하는 능력</p>
+                        </div>
+                    </div>
+                    <div class="info-card-clean">
+                        <div class="info-icon bg-teal">🔍</div>
+                        <div class="info-text">
+                            <h3>4. 시각 탐색 능력</h3>
+                            <p>시각 정보를 빠르고 정확하게 찾아내기</p>
+                        </div>
+                    </div>
+                    <div class="info-card-clean">
+                        <div class="info-icon bg-pink">✋</div>
+                        <div class="info-text">
+                            <h3>5. 충동 억제</h3>
+                            <p>감정을 조절하고 충동을 억제하는 능력</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="action-block">
+                    <button class="btn-navy" onclick="nextPage(3)">5가지 검사 시작하기</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-3" class="page">
+            <header class="page-header">
+                <button class="nav-back" onclick="prevPage(2)">❮</button>
+            </header>
+            <div class="page-body space-between">
+                <div class="title-block">
+                    <h2 class="section-title">아이에 대해 알려주세요</h2>
+                    <p class="section-sub">정확한 분석을 위해 기본 정보를 입력해주세요.</p>
+                </div>
+                <div class="form-container">
+                    <div class="input-group">
+                        <label>아이 이름</label>
+                        <input type="text" id="child-name" placeholder="이름을 입력해주세요">
+                    </div>
+                    <div class="input-group">
+                        <label>학년</label>
+                        <select id="child-grade">
+                            <option value="">학년을 선택해주세요</option>
+                            <option value="0">미취학</option>
+                            <option value="1">초등 1학년</option>
+                            <option value="2">초등 2학년</option>
+                            <option value="3">초등 3학년</option>
+                            <option value="4">초등 4학년</option>
+                            <option value="5">초등 5학년</option>
+                            <option value="6">초등 6학년</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>성별</label>
+                        <div class="gender-radio-group">
+                            <label class="gender-radio-btn">
+                                <input type="radio" name="child-gender" value="male">
+                                <span class="gender-btn-text">👦 남자아이</span>
+                            </label>
+                            <label class="gender-radio-btn">
+                                <input type="radio" name="child-gender" value="female">
+                                <span class="gender-btn-text">👧 여자아이</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="action-block">
+                    <button class="btn-navy" onclick="validateInfoPage()">다음</button>
+                    <div class="indicator-dots">
+                        <span class="active"></span><span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-4" class="page">
+            <header class="page-header">
+                <button class="nav-back" onclick="prevPage(3)">❮</button>
+            </header>
+            <div class="page-body space-between">
+                <div class="title-block">
+                    <h2 class="section-title">평소 아이는 어떤가요?</h2>
+                    <p class="section-sub">해당되는 항목을 선택해주세요. (중복 가능)</p>
+                </div>
+                <div class="checklist-container">
+                    <div class="check-card" onclick="toggleCheck(this)">
+                        <span class="check-icon">⏳</span>
+                        <p>집중하는 시간이 짧아요</p>
+                        <div class="custom-circle"></div>
+                    </div>
+                    <div class="check-card" onclick="toggleCheck(this)">
+                        <span class="check-icon">⚡</span>
+                        <p>충동적인 행동이 있어요</p>
+                        <div class="custom-circle"></div>
+                    </div>
+                    <div class="check-card" onclick="toggleCheck(this)">
+                        <span class="check-icon">🧩</span>
+                        <p>기억력이 약한 것 같아요</p>
+                        <div class="custom-circle"></div>
+                    </div>
+                    <div class="check-card" onclick="toggleCheck(this)">
+                        <span class="check-icon">🔀</span>
+                        <p>쉽게 산만해져요</p>
+                        <div class="custom-circle"></div>
+                    </div>
+                    <div class="check-card" id="none-above" onclick="toggleNoneAbove(this)">
+                        <span class="check-icon">😊</span>
+                        <p>해당 사항이 없어요</p>
+                        <div class="custom-circle"></div>
+                    </div>
+                </div>
+                <div class="action-block">
+                    <button class="btn-navy" onclick="startFirstTest()">검사 시작하기</button>
+                    <div class="indicator-dots">
+                        <span></span><span class="active"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-5" class="page">
+            <header class="page-header">
+               <button class="nav-back" onclick="exitTestPage()">❮</button>
+            </header>
+            <div class="page-body" style="padding:0;">
+                <iframe
+                    id="test-frame"
+                    src="tests/tests.html"
+                    style="
+                        width:100%;
+                        height:100vh;
+                        border:none;
+                        display:block;
+                    ">
+                </iframe>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+    
+</body>
+</html>
