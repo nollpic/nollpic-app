@@ -17,10 +17,22 @@
                 <div class="graphic-block">
                     <img src="images/character_welcome.png" alt="놀픽 웰컴 캐릭터" class="img-fluid-content animate-fade-in">
                 </div>
+
                 <div class="action-block">
-                    <button class="btn-navy" onclick="nextPage(2)">시작하기</button>
+                    <div class="social-login-wrap">
+                        <button class="btn-kakao" onclick="kakaoLogin()">
+                            카카오로 시작하기
+                        </button>
+                        <button class="btn-naver" onclick="naverLogin()">
+                           네이버로 시작하기
+                        </button>
+                        <button class="btn-google" onclick="googleLogin()">
+                            Google로 시작하기
+                        </button>
+                    </div>
                     <img src="images/logo_footer.png" alt="놀픽" class="img-footer">
                 </div>
+
             </div>
         </div>
 
@@ -56,17 +68,17 @@
                         </div>
                     </div>
                     <div class="info-card-clean">
-                        <div class="info-icon bg-pink">✋</div>
+                        <div class="info-icon bg-teal">🔍</div>
                         <div class="info-text">
-                            <h3>4. 충동 억제</h3>
-                            <p>감정을 조절하고 충동을 억제하는 능력</p>
+                            <h3>4. 시각 탐색 능력</h3>
+                            <p>시각 정보를 빠르고 정확하게 찾아내기</p>
                         </div>
                     </div>
                     <div class="info-card-clean">
-                        <div class="info-icon bg-teal">🔍</div>
+                        <div class="info-icon bg-pink">✋</div>
                         <div class="info-text">
-                            <h3>5. 시각 탐색 능력</h3>
-                            <p>시각 정보를 빠르고 정확하게 찾아내기</p>
+                            <h3>5. 충동 억제</h3>
+                            <p>감정을 조절하고 충동을 억제하는 능력</p>
                         </div>
                     </div>
                 </div>
@@ -192,6 +204,8 @@
     </div>
 
     <script src="app.js"></script>
+    <script type="module" src="firebase-auth.js"></script>
+
     
 </body>
 </html>

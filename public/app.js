@@ -74,9 +74,22 @@ function toggleNoneAbove(card) {
 function startFirstTest() {
     const gradeSelect = document.getElementById('child-grade');
     const nameInput = document.getElementById('child-name');
+    const genderRadio = document.querySelector('input[name="child-gender"]:checked');
     
     let gradeVal = gradeSelect ? gradeSelect.value : "0";
-    let nameVal = nameInput ? encodeURIComponent(nameInput.value.trim()) : encodeURIComponent("우리 아이");
+    let rawName = nameInput && nameInput.value.trim() ? nameInput.value.trim() : "우리 아이";
+    let nameVal = encodeURIComponent(rawName);
+    let genderVal = genderRadio ? genderRadio.value : "";
+
+    const childProfile = {
+        name: rawName,
+        gradeValue: gradeVal,
+        gradeText: getGradeTextForProfile(gradeVal),
+        gender: genderVal,
+        startedAt: getTodayStringForProfile()
+    };
+
+    localStorage.setItem('nollpic_child_profile', JSON.stringify(childProfile));
 
     const frame = document.getElementById('test-frame');
     if (frame) {
@@ -86,7 +99,30 @@ function startFirstTest() {
     nextPage(5);
 }
 
+function getGradeTextForProfile(gradeValue) {
+    const gradeNum = parseInt(gradeValue, 10);
+    if (gradeNum === 0) return '미취학';
+    if (gradeNum >= 1 && gradeNum <= 6) return `초등 ${gradeNum}학년`;
+    return '학년 미선택';
+}
+
+function getTodayStringForProfile() {
+    const now = new Date();
+    return `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
+}
+
 // 시험 도중 이탈 시 데이터 초기화
 function exitTestPage() {
     prevPage(4);
+}
+
+
+// 카카오 로그인
+function kakaoLogin() {
+    alert("카카오 로그인 준비중입니다.");
+}
+
+// 네이버 로그인
+function naverLogin() {
+    alert("네이버 로그인 준비중입니다.");
 }

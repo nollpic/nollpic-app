@@ -515,7 +515,7 @@ body {
     max-width: 110px;
     height: auto;
     display: block;
-    margin: 0.75rem auto 0 auto;
+    margin: 1.5rem auto 0 auto;
 }
 
 .meta-bottom-guide {
@@ -555,4 +555,89 @@ body {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* =========================
+   소셜 로그인
+========================= */
+
+.social-login-wrap{
+    width:100%;
+    margin-top:20px;
+
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.btn-kakao{
+    width:100%;
+    max-width:360px;
+
+    border:none;
+    border-radius:18px;
+    padding:16px;
+
+    background:#FEE500;
+    color:#191919;
+
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+
+    transition:all .25s ease;
+}
+
+.btn-kakao:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(0,0,0,.15);
+}
+
+.btn-naver{
+    width:100%;
+    max-width:360px;
+
+    border:none;
+    border-radius:18px;
+    padding:16px;
+
+    background:#03C75A;
+    color:#fff;
+
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+
+    transition:all .25s ease;
+}
+
+.btn-naver:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(0,0,0,.15);
+}
+
+.btn-google{
+    width:100%;
+    max-width:360px;
+
+    border:none;
+    border-radius:18px;
+    padding:16px;
+
+    background:#ffffff;
+    color:#333;
+
+    font-size:16px;
+    font-weight:700;
+
+    border:1px solid #ddd;
+
+    cursor:pointer;
+    transition:all .25s ease;
+}
+
+.btn-google:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(0,0,0,.12);
 }

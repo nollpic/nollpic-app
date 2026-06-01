@@ -16,7 +16,7 @@
             <div class="title-block">
                 <h2 class="section-title">슐테 표 집중력 테스트</h2>
                 <div class="badge-center">
-                    <span class="badge-orange">⚡ 두뇌 반응속도</span>
+                    <span class="badge-orange">⚡ 집중 유지력</span>
                 </div>
                 <p class="section-sub text-center" id="schulte-description">
                     숫자를 1부터 순서대로 최대한 빠르게 찾아보세요!
@@ -47,7 +47,7 @@
             <div class="guide-banner">
                 <span class="guide-lightbulb">💡</span>
                 <p class="guide-text">
-                    <strong>슐테 표(Schulte Table)</strong>는 시각적 주의력과 집중력, 정보 처리 속도를 확인하는 활동입니다.
+                    <strong>슐테 표(Schulte Table)</strong>는 시각적 주의력과 정보 탐색 능력을 활용하는 활동으로 전 세계적으로 널리 알려진 집중력 훈련 방법 중 하나입니다.
                 </p>
             </div>
 
@@ -62,7 +62,8 @@
                 <div id="schulte-leaderboard-list" class="leaderboard-body"></div>
             </div>
 
-            <div class="action-block">
+            <div class="action-block dual-actions">
+                <button class="btn-outline" id="schulte-retry-btn" style="display:none;" onclick="restartSchulteGame()">다시하기</button>
                 <button class="btn-navy" id="schulte-next-btn" disabled onclick="goToMemoryTest()">다음 테스트 단계로</button>
             </div>
         </section>
@@ -89,8 +90,7 @@
             <div class="guide-banner">
                 <span class="guide-lightbulb">💡</span>
                 <p class="guide-text">
-                    방금 본 위치를 기억하고 다시 찾아보는 활동입니다. 아이의 작업 기억과 시각 기억 활용을 확인합니다.
-                </p>
+                    시공간 작업기억을 평가하는 Corsi Block Test의 개념을 바탕으로 구성된 활동입니다. 잠시 본 위치를 기억한 뒤 다시 찾아보며 시각 기억력과 위치 기억 능력을 활용합니다.
             </div>
 
             <div class="leaderboard">
@@ -104,28 +104,215 @@
                 <div id="memory-leaderboard-list" class="leaderboard-body"></div>
             </div>
 
-            <div class="action-block">
-                <button class="btn-navy" id="memory-next-btn" disabled onclick="finishAllTests()">검사 완료</button>
+            <div class="action-block dual-actions">
+                <button class="btn-outline" id="memory-retry-btn" style="display:none;" onclick="restartMemoryGame()">다시하기</button>
+                <button class="btn-navy" id="memory-next-btn" disabled onclick="goToReactionTest()">다음 테스트 단계로</button>
             </div>
         </section>
 
 
         <!-- =========================
-             결과 화면
+             03. 원클릭 반응속도 테스트
         ========================== -->
-        <section id="result-screen" class="test-screen result-screen">
+        <section id="reaction-screen" class="test-screen">
             <div class="title-block">
-                <h2 class="section-title">검사가 완료되었어요</h2>
-                <p class="section-sub text-center">오늘의 검사 기록이 저장되었습니다.</p>
+                <h2 class="section-title">원클릭 반응속도 테스트</h2>
+                <div class="badge-center">
+                    <span class="badge-green">🟢 반응속도 · 충동억제</span>
+                </div>
+                <p class="section-sub text-center" id="reaction-desc">
+                    초록 원은 빠르게 클릭하고, 빨간 원은 참아보세요!
+                </p>
             </div>
 
-            <div class="result-card">
-                <h3>오늘의 기록</h3>
-                <p id="result-summary">결과를 정리하는 중입니다.</p>
+            <div class="reaction-dashboard">
+                <div class="dash-item">
+                    <span class="dash-label">점수</span>
+                    <span class="dash-value text-orange" id="reaction-score">0</span>
+                </div>
+                <div class="dash-divider"></div>
+                <div class="dash-item">
+                    <span class="dash-label">Lv.</span>
+                    <span class="dash-value text-purple" id="reaction-level">1</span>
+                </div>
+                <div class="dash-divider"></div>
+                <div class="dash-item">
+                    <span class="dash-label">생명</span>
+                    <span class="dash-value text-pink" id="reaction-lives">❤️ ❤️ ❤️</span>
+                </div>
             </div>
 
-            <div class="action-block">
-                <button class="btn-navy" onclick="restartTests()">다시 검사하기</button>
+            <div class="reaction-stage" id="reaction-stage">
+                <div class="reaction-ready" id="reaction-ready">
+                    준비되면 시작 버튼을 눌러주세요.
+                </div>
+            </div>
+
+            <div class="reaction-stats">
+                <div>평균 반응속도 <strong id="reaction-avg">-</strong></div>
+                <div>정답률 <strong id="reaction-accuracy">-</strong></div>
+            </div>
+
+            <div class="guide-banner">
+                <span class="guide-lightbulb">💡</span>
+                <p class="guide-text">
+                    시각 자극에 대한 반응시간과 충동억제 능력을 활용하는 활동입니다. 인지과학 및 심리학 분야에서 널리 알려진 Go/No-Go 과제의 개념을 바탕으로 구성되었습니다.
+                    
+                </p>
+            </div>
+
+            <div class="leaderboard">
+                <h3>📊 실시간 실적 리더보드</h3>
+                <div class="leaderboard-header">
+                    <span>학년</span>
+                    <span>이름/닉네임</span>
+                    <span>기록</span>
+                    <span>날짜</span>
+                </div>
+                <div id="reaction-leaderboard-list" class="leaderboard-body"></div>
+            </div>
+
+            <div class="action-block dual-actions">
+                <button class="btn-outline" id="reaction-retry-btn" style="display:none;" onclick="restartReactionGame()">다시하기</button>
+                <button class="btn-navy" id="reaction-next-btn" disabled onclick="goToVisualSearchTest()">다음 테스트 단계로</button>
+            </div>
+        </section>
+
+
+
+
+        <!-- =========================
+             04. 시각 탐색 챌린지
+        ========================== -->
+        <section id="visual-search-screen" class="test-screen">
+            <div class="title-block">
+                <h2 class="section-title">시각 탐색 챌린지</h2>
+                <div class="badge-center">
+                    <span class="badge-pink">👀 시각 탐색 · 선택적 주의</span>
+                </div>
+                <p class="section-sub text-center" id="visual-search-desc">
+                    목표 동물을 제한시간 안에 모두 찾아보세요!
+                </p>
+            </div>
+
+            <div class="visual-dashboard">
+                <div class="dash-item">
+                    <span class="dash-label">🏆 레벨</span>
+                    <span class="dash-value text-purple" id="visual-level">1</span>
+                </div>
+                <div class="dash-divider"></div>
+                <div class="dash-item">
+                    <span class="dash-label">⏱️ 남은 시간</span>
+                    <span class="dash-value text-orange" id="visual-time">0초</span>
+                </div>
+                <div class="dash-divider"></div>
+                <div class="dash-item">
+                    <span class="dash-label">❌ 오답</span>
+                    <span class="dash-value text-pink" id="visual-wrong">0</span>
+                </div>
+            </div>
+
+            <div class="visual-target-card">
+                <div class="visual-target-label">찾을 동물</div>
+                <div id="visual-target" class="visual-target">🐶</div>
+                <div id="visual-target-count" class="visual-target-count">3마리를 찾아보세요</div>
+            </div>
+
+            <div id="visual-board" class="visual-grid"></div>
+
+            <div id="visual-message" class="visual-message">
+                시작 버튼을 눌러주세요.
+            </div>
+
+            <div class="guide-banner">
+                <span class="guide-lightbulb">💡</span>
+                <p class="guide-text">
+                    여러 그림 속에서 목표 대상을 빠르게 찾아내는 활동입니다. 인지과학 분야에서 널리 알려진 Visual Search Task의 개념을 바탕으로 구성되었습니다.
+                </p>
+            </div>
+
+            <div class="leaderboard">
+                <h3>📊 실시간 실적 리더보드</h3>
+                <div class="leaderboard-header">
+                    <span>학년</span>
+                    <span>이름/닉네임</span>
+                    <span>기록</span>
+                    <span>날짜</span>
+                </div>
+                <div id="visual-leaderboard-list" class="leaderboard-body"></div>
+            </div>
+
+            <div class="action-block dual-actions">
+                <button class="btn-outline" id="visual-retry-btn" style="display:none;" onclick="restartVisualSearchGame()">다시하기</button>
+                <button class="btn-navy" id="visual-next-btn" disabled onclick="goToFlankerTest()">다음 테스트 단계로</button>
+            </div>
+        </section>
+
+
+        <!-- =========================
+             05. Flanker 충동억제 챌린지
+        ========================== -->
+        <section id="flanker-screen" class="test-screen">
+            <div class="title-block">
+                <h2 class="section-title">Flanker 충동억제 챌린지</h2>
+                <div class="badge-center">
+                    <span class="badge-flanker">🎯 선택적 주의 · 충동억제</span>
+                </div>
+                <p class="section-sub text-center" id="flanker-desc">
+                    가운데에 있던 목표를 빠르고 정확하게 선택해보세요!
+                </p>
+            </div>
+
+            <div class="flanker-dashboard">
+                <div class="dash-item">
+                    <span class="dash-label">🏆 레벨</span>
+                    <span class="dash-value text-purple" id="flanker-level">1</span>
+                </div>
+                <div class="dash-divider"></div>
+                <div class="dash-item">
+                    <span class="dash-label">⏱️ 선택 시간</span>
+                    <span class="dash-value text-orange" id="flanker-time">3.0</span>
+                </div>
+                <div class="dash-divider"></div>
+                <div class="dash-item">
+                    <span class="dash-label">❌ 오답</span>
+                    <span class="dash-value text-pink" id="flanker-wrong">0</span>
+                </div>
+            </div>
+
+            <div class="flanker-stage">
+                <p id="flanker-mission" class="flanker-mission">가운데 목표를 기억하세요</p>
+                <div id="flanker-stimulus" class="flanker-stimulus"></div>
+                <div id="flanker-choices" class="flanker-choices"></div>
+                <p id="flanker-message" class="flanker-message">시작 버튼을 눌러주세요.</p>
+            </div>
+
+            <div class="flanker-stats">
+                <div>정답 <strong id="flanker-correct">0</strong></div>
+                <div>평균 반응 <strong id="flanker-avg">-</strong></div>
+            </div>
+
+            <div class="guide-banner">
+                <span class="guide-lightbulb">💡</span>
+                <p class="guide-text">
+                    여러 자극 속에서 목표 정보를 선택하는 활동입니다. 인지과학 분야에서 널리 활용되는 Flanker Task의 개념을 참고하여 구성되었으며, 선택적 주의력과 충동억제 능력을 활용합니다.
+                </p>
+            </div>
+
+            <div class="leaderboard">
+                <h3>📊 실시간 실적 리더보드</h3>
+                <div class="leaderboard-header">
+                    <span>학년</span>
+                    <span>이름/닉네임</span>
+                    <span>기록</span>
+                    <span>날짜</span>
+                </div>
+                <div id="flanker-leaderboard-list" class="leaderboard-body"></div>
+            </div>
+
+            <div class="action-block dual-actions">
+                <button class="btn-outline" id="flanker-retry-btn" style="display:none;" onclick="restartFlankerGame()">다시하기</button>
+                <button class="btn-navy" id="flanker-next-btn" disabled onclick="finishAllTests()">검사 완료</button>
             </div>
         </section>
 
@@ -156,6 +343,37 @@
             <button class="btn-popup-start orange" onclick="startMemoryGame()">시작하기</button>
         </div>
     </div>
+
+
+    <!-- 반응속도 시작 팝업 -->
+    <div id="reaction-popup" class="popup-overlay">
+        <div class="popup-content">
+            <h3>반응속도 테스트 준비</h3>
+            <p>초록 원은 빠르게 누르고,<br><strong>빨간 원은 누르지 마세요.</strong></p>
+            <button class="btn-popup-start green" onclick="startReactionGame()">시작하기</button>
+        </div>
+    </div>
+
+
+    <!-- 시각 탐색 시작 팝업 -->
+    <div id="visual-search-popup" class="popup-overlay">
+        <div class="popup-content">
+            <h3>시각 탐색 챌린지 준비</h3>
+            <p>목표 동물을 확인하고,<br><strong>제한시간 안에 모두 찾아보세요.</strong></p>
+            <button class="btn-popup-start pink" onclick="startVisualSearchGame()">시작하기</button>
+        </div>
+    </div>
+
+
+    <!-- Flanker 시작 팝업 -->
+    <div id="flanker-popup" class="popup-overlay">
+        <div class="popup-content">
+            <h3>Flanker 챌린지 준비</h3>
+            <p>가운데 목표를 기억한 뒤,<br><strong>방해 자극에 속지 말고 선택하세요.</strong></p>
+            <button class="btn-popup-start flanker" onclick="startFlankerGame()">시작하기</button>
+        </div>
+    </div>
+
 
     <script src="tests.js"></script>
 </body>
