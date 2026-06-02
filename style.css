@@ -240,7 +240,7 @@ body {
 }
 
 .brand-sub, .section-sub {
-    font-size: 0.95rem;
+    font-size: 1.1rem;
     color: #576281;
     margin-top: 0.4rem;
     line-height: 1.5;
@@ -515,7 +515,7 @@ body {
     max-width: 110px;
     height: auto;
     display: block;
-    margin: 0.75rem auto 0 auto;
+    margin: 1.5rem auto 0 auto;
 }
 
 .meta-bottom-guide {
@@ -555,4 +555,359 @@ body {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* =========================
+   소셜 로그인
+========================= */
+
+.social-login-wrap{
+    width:100%;
+    margin-top: 20px;
+    display:flex;
+    flex-direction:column;
+    gap: 10px;
+}
+
+
+.btn-google-main{
+    width:100%;
+    max-width:360px;
+
+    border:none;
+    border-radius:18px;
+    padding:18px;
+
+    background:#0E1D3E;
+    color:#fff;
+
+    font-size:17px;
+    font-weight:700;
+
+    cursor:pointer;
+    transition:.25s;
+}
+
+.btn-google-main:hover{
+    transform:translateY(-2px);
+}
+
+.login-guide{
+    /* margin-top:10px; */
+    font-size:13px;
+    color: #6b7280;
+    text-align:center;
+}
+
+.btn-guest{
+    width:100%;
+    max-width:360px;
+    margin-top: 10px;
+    border:1px solid #ddd;
+    border-radius:18px;
+    padding:16px;
+    background: #e5e5e5;
+    color:#333;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.guest-guide{
+    /* margin-top:8px; */
+    font-size: 13px;
+    color: #6b7280;
+    text-align:center;
+}
+
+/* =========================
+   아이 선택 / 아이 추가
+========================= */
+.child-title-block{
+    margin-bottom: 1.25rem;
+}
+
+.saved-child-section{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.saved-child-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    background:#ffffff;
+    border-radius:22px;
+    padding:16px;
+    box-shadow:0 8px 20px rgba(238,116,83,.08);
+}
+
+.saved-child-head strong{
+    display:block;
+    font-size:16px;
+    font-weight:900;
+    color:#0E1D3E;
+    margin-bottom:4px;
+}
+
+.saved-child-head p{
+    font-size:12px;
+    font-weight:700;
+    color:#7c7280;
+    line-height:1.4;
+}
+
+.btn-add-child{
+    flex-shrink:0;
+    border:none;
+    background:#ff6b00;
+    color:#fff;
+    border-radius:14px;
+    padding:10px 12px;
+    font-size:13px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.saved-child-list{
+    display:grid;
+    gap:10px;
+}
+
+.saved-child-card{
+    width:100%;
+    border:none;
+    background:#ffffff;
+    border-radius:22px;
+    padding:16px;
+    display:grid;
+    grid-template-columns:44px 1fr auto;
+    align-items:center;
+    gap:12px;
+    text-align:left;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(238,116,83,.08);
+    transition:.2s;
+}
+
+.saved-child-card:hover{
+    transform:translateY(-2px);
+}
+
+.saved-child-avatar{
+    width:44px;
+    height:44px;
+    border-radius:16px;
+    background:#fff0e8;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+}
+
+.saved-child-info strong{
+    display:block;
+    font-size:16px;
+    font-weight:900;
+    color:#0E1D3E;
+    margin-bottom:3px;
+}
+
+.saved-child-info span{
+    display:block;
+    font-size:12px;
+    font-weight:700;
+    color:#7c7280;
+}
+
+.saved-child-go{
+    color:#ff6b00;
+    font-size:20px;
+    font-weight:900;
+}
+
+.child-form-help{
+    background:#fff0e8;
+    color:#89513f;
+    border-radius:18px;
+    padding:12px 14px;
+    font-size:12px;
+    font-weight:700;
+    line-height:1.45;
+}
+
+
+/* =========================
+   2026-06-02 메인 로그인 화면 버튼 가림 수정
+   - 캐릭터 이미지는 버튼 영역을 침범하지 않도록 고정 크기로 조정
+   - 카카오/인앱 브라우저처럼 세로가 짧은 화면에서도 버튼이 아래로 밀리지 않게 처리
+========================= */
+#page-1 .main-page-body{
+    justify-content:flex-start;
+    gap:0;
+    padding: 3rem 1.5rem max(1.5rem, env(safe-area-inset-bottom)) 1.5rem !important;
+    overflow-y:auto;
+}
+
+#page-1 .title-block{
+    margin-bottom:0.75rem;
+    flex-shrink:0;
+}
+
+#page-1 .title-block .img-title{
+    max-width: 170px;
+    margin-bottom:0.35rem;
+}
+
+#page-1 .brand-sub{
+    margin-top:0.2rem;
+}
+
+#page-1 .graphic-block{
+    /* flex:0 0 auto; */
+    min-height:0;
+    margin:0;
+}
+
+#page-1 .graphic-block .img-fluid-content{
+    width: min(62vw, 300px);
+    max-width: 350px;
+    max-height: 40dvh;
+    display:block;
+    object-fit:contain;
+}
+
+#page-1 .action-block{
+    margin-bottom: 0;
+    padding-top:0;
+    padding-bottom:0;
+    position:relative;
+    z-index:2;
+    background:#fff;
+}
+
+#page-1 .social-login-wrap{
+    margin-top:0;
+}
+
+#page-1 .btn-google-main,
+#page-1 .btn-guest{
+    position:relative;
+    z-index:3;
+}
+
+@media (max-height:760px){
+    #page-1 .main-page-body{
+        padding-top: 3rem !important;
+    }
+    #page-1 .title-block .img-title{
+        max-width: 150px;
+    }
+    #page-1 .brand-sub{
+        font-size: 1rem;
+        line-height:1.35;
+    }
+    #page-1 .graphic-block{
+        /* padding-bottom:0.55rem; */
+    }
+    #page-1 .graphic-block .img-fluid-content{
+        width:min(72vw, 250px);
+        max-height:32dvh;
+    }
+    #page-1 .btn-google-main{
+        padding:15px 14px;
+        font-size:16px;
+        border-radius:17px;
+    }
+    #page-1 .btn-guest{
+        padding:14px;
+        margin-top:6px;
+        border-radius:17px;
+    }
+    #page-1 .img-footer{
+        max-width:92px;
+        margin-top:1rem;
+    }
+}
+
+@media (max-height:680px){
+    #page-1 .graphic-block .img-fluid-content{
+        width: min(66vw, 330px);
+        max-height:30dvh;
+    }
+    #page-1 .title-block{
+        margin-bottom:0.45rem;
+    }
+    #page-1 .login-guide{
+        font-size:12px;
+    }
+}
+
+
+/* =========================
+   하단 고정 메뉴
+========================= */
+.app-device.nav-visible{
+    padding-bottom: 74px;
+}
+
+.bottom-tab-nav{
+    display:none;
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:74px;
+    grid-template-columns:repeat(3, 1fr);
+    align-items:center;
+    background:#ffffff;
+    border-top:1px solid rgba(14, 29, 62, 0.08);
+    box-shadow:0 -8px 22px rgba(14, 29, 62, 0.06);
+    z-index:50;
+    padding:7px 8px max(7px, env(safe-area-inset-bottom));
+}
+
+.bottom-tab{
+    border:none;
+    background:transparent;
+    color:#8A94A6;
+    font-size:11px;
+    font-weight:900;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    border-radius:16px;
+    padding:7px 4px;
+    cursor:pointer;
+}
+
+.bottom-tab-icon{
+    font-size:20px;
+    line-height:1;
+}
+
+.bottom-tab.active{
+    background:#FFF0E8;
+    color:#FF6B00;
+}
+
+#page-5 .page-body{
+    padding-bottom:0 !important;
+}
+
+#page-5 iframe{
+    height:calc(100vh - 130px) !important;
+    height:calc(100dvh - 130px) !important;
+}
+
+@media (min-width:420px){
+    #page-5 iframe{
+        height:calc(840px - 130px) !important;
+    }
 }

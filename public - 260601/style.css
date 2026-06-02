@@ -481,7 +481,7 @@ body {
 
 /* 하단 버튼 액션 제어 블록 */
 .action-block {
-    margin-top: auto;
+    margin-top: 1re;
     padding-top: 1rem;
     padding-bottom: 1rem; /* 하단 인디케이터 바 및 브라우저 하단 툴바 여백 확보 */
     width: 100%;
@@ -515,7 +515,7 @@ body {
     max-width: 110px;
     height: auto;
     display: block;
-    margin: 0.75rem auto 0 auto;
+    margin: 1.5rem auto 0 auto;
 }
 
 .meta-bottom-guide {
@@ -555,4 +555,68 @@ body {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* =========================
+   소셜 로그인
+========================= */
+
+.social-login-wrap{
+    width:100%;
+    margin-top: 20px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+
+.btn-google-main{
+    width:100%;
+    max-width:360px;
+
+    border:none;
+    border-radius:18px;
+    padding:18px;
+
+    background:#0E1D3E;
+    color:#fff;
+
+    font-size:17px;
+    font-weight:700;
+
+    cursor:pointer;
+    transition:.25s;
+}
+
+.btn-google-main:hover{
+    transform:translateY(-2px);
+}
+
+.login-guide{
+    /* margin-top:10px; */
+    font-size:13px;
+    color: #6b7280;
+    text-align:center;
+}
+
+.btn-guest{
+    width:100%;
+    max-width:360px;
+    margin-top: 10px;
+    border:1px solid #ddd;
+    border-radius:18px;
+    padding:16px;
+    background:#fff;
+    color:#333;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.guest-guide{
+    /* margin-top:8px; */
+    font-size: 13px;
+    color: #6b7280;
+    text-align:center;
 }

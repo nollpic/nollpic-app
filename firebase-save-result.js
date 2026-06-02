@@ -13,7 +13,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyClcGJEbev-0VfBu0sssIorQF-9uFsEvn8",
+  apiKey: "AIzaSyClcGJEbev-OvfBu0sssIorQF-9uFsEvn8",
   authDomain: "nollpic.firebaseapp.com",
   projectId: "nollpic",
   storageBucket: "nollpic.firebasestorage.app",

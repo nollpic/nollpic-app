@@ -115,3 +115,14 @@ function getTodayStringForProfile() {
 function exitTestPage() {
     prevPage(4);
 }
+
+
+// 카카오 로그인
+function kakaoLogin() {
+    alert("카카오 로그인 준비중입니다.");
+}
+
+// 네이버 로그인
+function naverLogin() {
+    alert("네이버 로그인 준비중입니다.");
+}

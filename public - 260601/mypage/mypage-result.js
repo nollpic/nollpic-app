@@ -125,18 +125,21 @@ function makeShareText() {
 }
 
 async function shareResult() {
-  const shareData = {
-    title: "놀픽 검사 결과",
-    text: makeShareText(),
-    url: "https://nollpic.com"
-  };
 
-  if (navigator.share) {
-    await navigator.share(shareData);
-  } else {
-    await navigator.clipboard.writeText(makeShareText());
-    alert("공유 기능을 지원하지 않아 결과 내용을 복사했어요.");
-  }
+    const shareUrl = window.location.href;
+
+    const shareData = {
+        title: "놀픽 검사 결과",
+        text: "우리 아이의 검사 결과를 확인해보세요!",
+        url: shareUrl
+    };
+
+    if (navigator.share) {
+        await navigator.share(shareData);
+    } else {
+        await navigator.clipboard.writeText(shareUrl);
+        alert("링크가 복사되었습니다.");
+    }
 }
 
 

@@ -125,18 +125,21 @@ function makeShareText() {
 }
 
 async function shareResult() {
-  const shareData = {
-    title: "놀픽 검사 결과",
-    text: makeShareText(),
-    url: "https://nollpic.com"
-  };
 
-  if (navigator.share) {
-    await navigator.share(shareData);
-  } else {
-    await navigator.clipboard.writeText(makeShareText());
-    alert("공유 기능을 지원하지 않아 결과 내용을 복사했어요.");
-  }
+    const shareUrl = window.location.href;
+
+    const shareData = {
+        title: "놀픽 검사 결과",
+        text: "우리 아이의 검사 결과를 확인해보세요!",
+        url: shareUrl
+    };
+
+    if (navigator.share) {
+        await navigator.share(shareData);
+    } else {
+        await navigator.clipboard.writeText(shareUrl);
+        alert("링크가 복사되었습니다.");
+    }
 }
 
 
@@ -164,7 +167,53 @@ function getSavedNollpicData() {
     profile = null;
   }
 
-  if (!latest) return null;
+  const params = new URLSearchParams(window.location.search);
+  const childId = params.get('childId') || profile?.id || '';
+
+  if (profile || childId) {
+    const filtered = history.filter(item => {
+      const itemChild = item.child || {};
+      if (childId && itemChild.id && itemChild.id === childId) return true;
+      if (!profile) return false;
+      return itemChild.name === profile.name && itemChild.gradeText === profile.gradeText;
+    });
+
+    if (filtered.length > 0) {
+      history = filtered;
+      latest = filtered[0];
+      localStorage.setItem('nollpic_latest_result', JSON.stringify(latest));
+    } else if (latest) {
+      const latestChild = latest.child || {};
+      const isSameChild = (childId && latestChild.id && latestChild.id === childId) ||
+        (profile && latestChild.name === profile.name && latestChild.gradeText === profile.gradeText);
+      if (!isSameChild) latest = null;
+    }
+  }
+
+  if (!latest) {
+    const childName = profile?.name || '우리 아이';
+    const gradeText = profile?.gradeText || '';
+    const childLabel = gradeText ? `${childName} · ${gradeText.replace('초등 ', '초')}` : childName;
+    return {
+      child: childLabel,
+      date: '-',
+      overall: 0,
+      comment: '아직 저장된 검사 기록이 없어요. 홈에서 검사를 완료하면 이곳에 기록이 쌓입니다.',
+      abilities: [
+        ['🎯', '집중 유지력', '검사 전', 0],
+        ['🧩', '작업 기억력', '검사 전', 0],
+        ['⚡', '반응 속도', '검사 전', 0],
+        ['✋', '충동 억제', '검사 전', 0],
+        ['🔍', '시각 탐색력', '검사 전', 0]
+      ],
+      history: [{
+        date: '-',
+        summary: '검사 기록 없음',
+        scores: { attention: 0, memory: 0, reaction: 0, inhibition: 0, visual: 0 }
+      }],
+      analysis: '아직 이 아이의 검사 기록이 없어요. 검사를 완료하면 아이별 성장 기록이 자동으로 표시됩니다.'
+    };
+  }
 
   const childName = latest.child?.name || profile?.name || '우리 아이';
   const gradeText = latest.child?.gradeText || profile?.gradeText || '';

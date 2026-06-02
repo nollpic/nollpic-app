@@ -80,6 +80,136 @@ let reactionRecords = [];
 let visualSearchRecords = [];
 let flankerRecords = [];
 
+function getActiveChildProfileForResult() {
+    try {
+        return JSON.parse(localStorage.getItem('nollpic_child_profile')) || null;
+    } catch (e) {
+        return null;
+    }
+}
+
+
+// ==========================================================================
+// 놀픽 효과음 / 결과 팝업
+// - 별도 mp3 파일 없이 브라우저 Web Audio로 짧은 효과음을 재생합니다.
+// - 모바일에서는 사용자가 시작 버튼/화면을 한 번 누른 뒤 정상 재생됩니다.
+// ==========================================================================
+let nollpicAudioCtx = null;
+let gameResultConfirmAction = null;
+
+function getNollpicAudioContext() {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return null;
+
+    if (!nollpicAudioCtx) {
+        nollpicAudioCtx = new AudioContextClass();
+    }
+
+    if (nollpicAudioCtx.state === "suspended") {
+        nollpicAudioCtx.resume().catch(() => {});
+    }
+
+    return nollpicAudioCtx;
+}
+
+function playTone(frequency, startOffset, duration, type = "sine", volume = 0.08) {
+    const ctx = getNollpicAudioContext();
+    if (!ctx) return;
+
+    const oscillator = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const start = ctx.currentTime + startOffset;
+    const end = start + duration;
+
+    oscillator.type = type;
+    oscillator.frequency.setValueAtTime(frequency, start);
+
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(volume, start + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, end);
+
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+    oscillator.start(start);
+    oscillator.stop(end + 0.02);
+}
+
+function playNollpicSound(type) {
+    getNollpicAudioContext();
+
+    switch (type) {
+        case "schulte-correct":
+            playTone(880, 0, 0.07, "sine", 0.07);
+            playTone(1320, 0.055, 0.08, "sine", 0.055);
+            break;
+        case "memory-correct":
+            playTone(660, 0, 0.08, "triangle", 0.06);
+            playTone(990, 0.085, 0.10, "triangle", 0.055);
+            break;
+        case "reaction-correct":
+            playTone(150, 0, 0.035, "square", 0.06);
+            playTone(520, 0.025, 0.08, "sine", 0.075);
+            break;
+        case "visual-correct":
+            playTone(1046, 0, 0.07, "sine", 0.055);
+            playTone(1568, 0.07, 0.08, "sine", 0.05);
+            break;
+        case "flanker-correct":
+            playTone(740, 0, 0.055, "triangle", 0.055);
+            break;
+        case "wrong":
+            playTone(260, 0, 0.10, "sine", 0.055);
+            playTone(180, 0.075, 0.12, "sine", 0.045);
+            break;
+        case "finish":
+            playTone(523, 0, 0.09, "triangle", 0.06);
+            playTone(659, 0.09, 0.09, "triangle", 0.06);
+            playTone(784, 0.18, 0.12, "triangle", 0.065);
+            playTone(1046, 0.32, 0.16, "sine", 0.055);
+            break;
+        default:
+            playTone(700, 0, 0.08, "sine", 0.05);
+    }
+}
+
+function unlockNollpicSound() {
+    getNollpicAudioContext();
+}
+
+document.addEventListener("pointerdown", unlockNollpicSound, { once: true });
+document.addEventListener("touchstart", unlockNollpicSound, { once: true });
+
+function showGameResultPopup(title, message, emoji = "🎉", buttonText = "확인", onConfirm = null) {
+    const titleEl = document.getElementById("game-result-title");
+    const textEl = document.getElementById("game-result-text");
+    const emojiEl = document.getElementById("game-result-emoji");
+    const buttonEl = document.getElementById("game-result-button");
+    const popup = document.getElementById("game-result-popup");
+
+    gameResultConfirmAction = typeof onConfirm === "function" ? onConfirm : null;
+
+    if (titleEl) titleEl.innerHTML = title;
+    if (textEl) textEl.innerHTML = message;
+    if (emojiEl) emojiEl.innerHTML = emoji;
+    if (buttonEl) buttonEl.innerText = buttonText;
+
+    playNollpicSound("finish");
+
+    if (popup) popup.classList.add("active");
+}
+
+function closeGameResultPopup() {
+    const popup = document.getElementById("game-result-popup");
+    if (popup) popup.classList.remove("active");
+
+    const action = gameResultConfirmAction;
+    gameResultConfirmAction = null;
+
+    if (typeof action === "function") {
+        action();
+    }
+}
+
 // ==========================================================================
 // 초기 실행
 // ==========================================================================
@@ -280,9 +410,11 @@ function makeNollpicAnalysis(scores) {
 function saveNollpicResult(scores) {
     const result = {
         child: {
+            id: getActiveChildProfileForResult()?.id || '',
             name: testState.child.name,
             gradeText: testState.child.gradeText,
-            gradeValue: testState.child.gradeValue
+            gradeValue: testState.child.gradeValue,
+            gender: getActiveChildProfileForResult()?.gender || ''
         },
         date: getTodayString(),
         overall: scores.overall,
@@ -405,6 +537,7 @@ function initSchulteBoard() {
             if (!state.isGaming) return;
 
             if (num === state.currentNext) {
+                playNollpicSound("schulte-correct");
                 cell.classList.add("completed");
                 state.currentNext++;
 
@@ -415,6 +548,7 @@ function initSchulteBoard() {
                     if (nextEl) nextEl.innerText = state.currentNext;
                 }
             } else {
+                playNollpicSound("wrong");
                 cell.style.border = "2px solid #EF4444";
                 setTimeout(() => {
                     cell.style.border = "";
@@ -478,6 +612,12 @@ function endSchulteGame() {
 
     localStorage.setItem("nollpic_schulte_records", JSON.stringify(schulteRecords));
     renderSchulteLeaderboard();
+
+    showGameResultPopup(
+        "🎉 집중력 테스트 완료!",
+        `<strong>${testState.child.name}</strong>의 집중력 기록이 저장되었어요.<br><br>기록: <strong>${state.elapsedTime}초</strong><br>다음 테스트로 넘어갈 수 있어요.`,
+        "⚡"
+    );
 }
 
 function restartSchulteGame() {
@@ -631,6 +771,7 @@ function handleMemoryCardClick(card, isCorrect) {
     card.classList.add("clicked");
 
     if (isCorrect) {
+        playNollpicSound("memory-correct");
         card.classList.add("reveal");
         state.correctCount++;
 
@@ -643,6 +784,7 @@ function handleMemoryCardClick(card, isCorrect) {
             setTimeout(startMemoryGame, 1000);
         }
     } else {
+        playNollpicSound("wrong");
         card.classList.add("wrong");
         endMemoryGame();
     }
@@ -673,7 +815,11 @@ function endMemoryGame() {
     const retryBtn = document.getElementById("memory-retry-btn");
     if (retryBtn) retryBtn.style.display = "block";
 
-    alert(`게임 종료! 총 ${state.successLevel}단계 성공하였습니다.`);
+    showGameResultPopup(
+        "🧠 기억력 테스트 완료!",
+        `<strong>${testState.child.name}</strong>의 기억력 기록이 저장되었어요.<br><br>최고 기록: <strong>${state.successLevel}단계</strong><br>다음 테스트로 넘어갈 수 있어요.`,
+        "🧩"
+    );
 }
 
 function restartMemoryGame() {
@@ -756,7 +902,13 @@ function finishAllTests() {
         `;
     }
 
-    goToMypageResult();
+    showGameResultPopup(
+        "🎉 오늘의 전두엽 챌린지 완료!",
+        `<strong>${testState.child.name}</strong>의 5가지 테스트 결과가 모두 저장되었어요.<br><br>종합 결과: <strong>${scores.overall}점</strong><br>결과 페이지에서 자세한 기록을 확인해보세요.`,
+        "🏆",
+        "결과 보러가기",
+        goToMypageResult
+    );
 }
 
 function goToMypageResult() {
@@ -792,6 +944,8 @@ if (stage) {
     stage.onclick = function () {
         if (!testState.reaction.isGaming) return;
         if (!testState.reaction.currentCircle) return;
+
+        playNollpicSound("wrong");
 
         testState.reaction.wrongClicks++;
         testState.reaction.lives--;
@@ -912,6 +1066,7 @@ function spawnReactionCircle() {
         circle.dataset.clicked = "true";
 
         if (circle.dataset.color === "green") {
+            playNollpicSound("wrong");
             state.missedClicks++;
             state.lives--;
         }
@@ -958,10 +1113,12 @@ function handleReactionClick(circle, event) {
     const reactionMs = Math.round(performance.now() - state.circleStartTime);
 
     if (color === "green") {
+        playNollpicSound("reaction-correct");
         state.score += 10;
         state.correctClicks++;
         state.responseTimes.push(reactionMs);
     } else {
+        playNollpicSound("wrong");
         state.score = Math.max(0, state.score - 10);
         state.wrongClicks++;
         state.lives--;
@@ -1042,6 +1199,12 @@ function endReactionGame() {
 
     const retryBtn = document.getElementById("reaction-retry-btn");
     if (retryBtn) retryBtn.style.display = "block";
+
+    showGameResultPopup(
+        "⚡ 반응속도 테스트 완료!",
+        `<strong>${testState.child.name}</strong>의 반응속도 기록이 저장되었어요.<br><br>평균 반응속도: <strong>${state.averageMs || 0}ms</strong><br>정답률: <strong>${state.accuracy}%</strong>`,
+        "🟢"
+    );
 }
 
 function restartReactionGame() {
@@ -1283,6 +1446,7 @@ function handleVisualCellClick(cell, item, cfg) {
     if (cell.classList.contains("found")) return;
 
     if (item === state.target) {
+        playNollpicSound("visual-correct");
         cell.classList.add("found");
         state.found++;
 
@@ -1305,6 +1469,7 @@ function handleVisualCellClick(cell, item, cfg) {
             }
         }
     } else {
+        playNollpicSound("wrong");
         state.wrong++;
         cell.classList.add("wrong");
 
@@ -1375,6 +1540,12 @@ function endVisualSearchGame(message) {
 
     const retryBtn = document.getElementById("visual-retry-btn");
     if (retryBtn) retryBtn.style.display = "block";
+
+    showGameResultPopup(
+        "👀 시각탐색 완료!",
+        `<strong>${testState.child.name}</strong>의 시각탐색 기록이 저장되었어요.<br><br>도달 레벨: <strong>Lv.${state.highestLevel || state.level}</strong><br>정확도: <strong>${state.accuracy}%</strong>`,
+        "🔎"
+    );
 }
 
 function restartVisualSearchGame() {
@@ -1617,6 +1788,7 @@ function handleFlankerChoice(choice) {
     const msgEl = document.getElementById("flanker-message");
 
     if (choice === state.currentAnswer) {
+        playNollpicSound("flanker-correct");
         state.correct++;
         state.reactionTimes.push(reaction);
 
@@ -1627,6 +1799,7 @@ function handleFlankerChoice(choice) {
 
         setTimeout(startFlankerRound, 650);
     } else {
+        playNollpicSound("wrong");
         state.wrong++;
         updateFlankerDashboard();
 
@@ -1700,6 +1873,12 @@ function endFlankerGame(message) {
 
     const retryBtn = document.getElementById("flanker-retry-btn");
     if (retryBtn) retryBtn.style.display = "block";
+
+    showGameResultPopup(
+        "🎯 충동억제 테스트 완료!",
+        `<strong>${testState.child.name}</strong>의 충동억제 기록이 저장되었어요.<br><br>도달 레벨: <strong>Lv.${Math.min(state.level, flankerLevels.length)}</strong><br>정확도: <strong>${state.accuracy}%</strong>`,
+        "🎯"
+    );
 }
 
 function restartFlankerGame() {

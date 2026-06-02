@@ -17,10 +17,22 @@
                 <div class="graphic-block">
                     <img src="images/character_welcome.png" alt="놀픽 웰컴 캐릭터" class="img-fluid-content animate-fade-in">
                 </div>
+
                 <div class="action-block">
-                    <button class="btn-navy" onclick="nextPage(2)">시작하기</button>
+                    <div class="social-login-wrap">
+                        <button class="btn-google-main" onclick="googleLogin()">
+                            Google 로그인하고 기록 저장하기
+                        </button>
+                        <p class="login-guide">
+                            로그인하면 검사 결과와 성장 기록이 저장돼요.
+                        </p>
+                        <button class="btn-guest" onclick="nextPage(2)">
+                            로그인 없이 체험하기
+                        </button>
+                    </div>
                     <img src="images/logo_footer.png" alt="놀픽" class="img-footer">
                 </div>
+
             </div>
         </div>
 
@@ -81,11 +93,23 @@
                 <button class="nav-back" onclick="prevPage(2)">❮</button>
             </header>
             <div class="page-body space-between">
-                <div class="title-block">
-                    <h2 class="section-title">아이에 대해 알려주세요</h2>
-                    <p class="section-sub">정확한 분석을 위해 기본 정보를 입력해주세요.</p>
+                <div class="title-block child-title-block">
+                    <h2 class="section-title" id="child-page-title">우리 아이를 선택해주세요</h2>
+                    <p class="section-sub" id="child-page-sub">로그인하면 아이별 검사 기록을 따로 저장할 수 있어요.</p>
                 </div>
-                <div class="form-container">
+
+                <div id="saved-child-section" class="saved-child-section" style="display:none;">
+                    <div class="saved-child-head">
+                        <div>
+                            <strong>등록된 아이</strong>
+                            <p>검사를 진행할 아이를 선택해주세요.</p>
+                        </div>
+                        <button type="button" class="btn-add-child" onclick="showChildForm()">+ 아이 추가</button>
+                    </div>
+                    <div id="saved-child-list" class="saved-child-list"></div>
+                </div>
+
+                <div id="child-form-section" class="form-container">
                     <div class="input-group">
                         <label>아이 이름</label>
                         <input type="text" id="child-name" placeholder="이름을 입력해주세요">
@@ -118,7 +142,7 @@
                     </div>
                 </div>
                 <div class="action-block">
-                    <button class="btn-navy" onclick="validateInfoPage()">다음</button>
+                    <button class="btn-navy" id="child-next-btn" onclick="validateInfoPage()">다음</button>
                     <div class="indicator-dots">
                         <span class="active"></span><span></span>
                     </div>
@@ -191,7 +215,30 @@
 
     </div>
 
+    <!-- 하단 고정 메뉴 -->
+    <nav class="bottom-tab-nav" aria-label="하단 메뉴">
+        <button type="button" class="bottom-tab active" data-tab="home" onclick="goBottomHome()">
+            <span class="bottom-tab-icon">🏠</span>
+            <span>홈</span>
+        </button>
+        <button type="button" class="bottom-tab" data-tab="result" onclick="goBottomResult()">
+            <span class="bottom-tab-icon">📊</span>
+            <span>검사결과</span>
+        </button>
+        <button type="button" class="bottom-tab" data-tab="mypage" onclick="goBottomMypage()">
+            <span class="bottom-tab-icon">👤</span>
+            <span>마이</span>
+        </button>
+    </nav>
+
     <script src="app.js"></script>
+    <script>
+        window.googleLogin = window.googleLogin || function () {
+            alert("구글 로그인 모듈을 불러오지 못했어요. index.html을 더블클릭한 file:// 화면이라면 GitHub Pages/Firebase Hosting 또는 로컬 서버에서 확인해주세요.");
+        };
+    </script>
+    <script type="module" src="firebase-auth.js"></script>
+
     
 </body>
 </html>

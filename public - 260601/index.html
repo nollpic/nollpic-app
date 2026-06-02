@@ -17,10 +17,22 @@
                 <div class="graphic-block">
                     <img src="images/character_welcome.png" alt="놀픽 웰컴 캐릭터" class="img-fluid-content animate-fade-in">
                 </div>
+
                 <div class="action-block">
-                    <button class="btn-navy" onclick="nextPage(2)">시작하기</button>
+                    <div class="social-login-wrap">
+                        <button class="btn-google-main" onclick="googleLogin()">
+                            Google 로그인하고 기록 저장하기
+                        </button>
+                        <p class="login-guide">
+                            로그인하면 검사 결과와 성장 기록이 저장돼요.
+                        </p>
+                        <button class="btn-guest" onclick="nextPage(2)">
+                            로그인 없이 체험하기
+                        </button>
+                    </div>
                     <img src="images/logo_footer.png" alt="놀픽" class="img-footer">
                 </div>
+
             </div>
         </div>
 
@@ -192,6 +204,8 @@
     </div>
 
     <script src="app.js"></script>
+    <script type="module" src="firebase-auth.js"></script>
+
     
 </body>
 </html>

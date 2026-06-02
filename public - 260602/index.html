@@ -20,14 +20,14 @@
 
                 <div class="action-block">
                     <div class="social-login-wrap">
-                        <button class="btn-kakao" onclick="kakaoLogin()">
-                            카카오로 시작하기
+                        <button class="btn-google-main" onclick="googleLogin()">
+                            Google 로그인하고 기록 저장하기
                         </button>
-                        <button class="btn-naver" onclick="naverLogin()">
-                           네이버로 시작하기
-                        </button>
-                        <button class="btn-google" onclick="googleLogin()">
-                            Google로 시작하기
+                        <p class="login-guide">
+                            로그인하면 검사 결과와 성장 기록이 저장돼요.
+                        </p>
+                        <button class="btn-guest" onclick="nextPage(2)">
+                            로그인 없이 체험하기
                         </button>
                     </div>
                     <img src="images/logo_footer.png" alt="놀픽" class="img-footer">
@@ -93,11 +93,23 @@
                 <button class="nav-back" onclick="prevPage(2)">❮</button>
             </header>
             <div class="page-body space-between">
-                <div class="title-block">
-                    <h2 class="section-title">아이에 대해 알려주세요</h2>
-                    <p class="section-sub">정확한 분석을 위해 기본 정보를 입력해주세요.</p>
+                <div class="title-block child-title-block">
+                    <h2 class="section-title" id="child-page-title">우리 아이를 선택해주세요</h2>
+                    <p class="section-sub" id="child-page-sub">로그인하면 아이별 검사 기록을 따로 저장할 수 있어요.</p>
                 </div>
-                <div class="form-container">
+
+                <div id="saved-child-section" class="saved-child-section" style="display:none;">
+                    <div class="saved-child-head">
+                        <div>
+                            <strong>등록된 아이</strong>
+                            <p>검사를 진행할 아이를 선택해주세요.</p>
+                        </div>
+                        <button type="button" class="btn-add-child" onclick="showChildForm()">+ 아이 추가</button>
+                    </div>
+                    <div id="saved-child-list" class="saved-child-list"></div>
+                </div>
+
+                <div id="child-form-section" class="form-container">
                     <div class="input-group">
                         <label>아이 이름</label>
                         <input type="text" id="child-name" placeholder="이름을 입력해주세요">
@@ -130,7 +142,7 @@
                     </div>
                 </div>
                 <div class="action-block">
-                    <button class="btn-navy" onclick="validateInfoPage()">다음</button>
+                    <button class="btn-navy" id="child-next-btn" onclick="validateInfoPage()">다음</button>
                     <div class="indicator-dots">
                         <span class="active"></span><span></span>
                     </div>
