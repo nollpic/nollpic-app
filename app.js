@@ -32,6 +32,27 @@ function nextPage(pageNumber) {
     }
 }
 
+function getActivePageNumber() {
+    const activePage = document.querySelector('.page.active');
+    const match = activePage?.id?.match(/^page-(\d+)$/);
+    return match ? Number(match[1]) : 1;
+}
+
+function getStoredTestReturnPage(fallback = 4) {
+    const stored = Number(sessionStorage.getItem('nollpic_test_return_page'));
+    return stored || fallback;
+}
+
+function openTestPageFrom(returnPage) {
+    sessionStorage.setItem('nollpic_test_return_page', String(returnPage));
+    try {
+        window.history.pushState({ nollpicPage: 5, returnPage }, '', window.location.href);
+    } catch (e) {
+        // History state is only used to keep browser back inside the app.
+    }
+    nextPage(5);
+}
+
 function prevPage(pageNumber) {
     const activePage = document.querySelector('.page.active');
     if (activePage) activePage.classList.remove('active');
@@ -165,7 +186,7 @@ function startFirstTest() {
         }, 3000);
         frame.src = targetSrc;
     }
-    nextPage(5);
+    openTestPageFrom(4);
 }
 
 function getGradeTextForProfile(gradeValue) {
@@ -191,11 +212,15 @@ function exitTestPage() {
         return;
     }
 
-    prevPage(4);
+    const returnPage = getStoredTestReturnPage(4);
+    sessionStorage.removeItem('nollpic_test_return_page');
+    prevPage(returnPage);
 }
 
 function goBackFromTestToSurvey() {
-    prevPage(4);
+    const returnPage = getStoredTestReturnPage(4);
+    sessionStorage.removeItem('nollpic_test_return_page');
+    prevPage(returnPage);
 }
 
 
@@ -403,7 +428,7 @@ function startTestForChild(childId) {
         }, 3000);
         frame.src = targetSrc;
     }
-    nextPage(5);
+    openTestPageFrom(3);
 }
 
 function logoutNollpic() {
@@ -1131,6 +1156,17 @@ window.addEventListener('DOMContentLoaded', () => {
     } else {
         updateBottomNav(1);
     }
+});
+
+window.addEventListener('popstate', (event) => {
+    if (getActivePageNumber() !== 5) return;
+
+    const returnPage =
+        Number(event.state?.returnPage) ||
+        getStoredTestReturnPage(3);
+
+    sessionStorage.removeItem('nollpic_test_return_page');
+    nextPage(returnPage);
 });
 
 // Firebase module에서 안정적으로 호출할 수 있도록 전역에 연결합니다.
