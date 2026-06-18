@@ -491,6 +491,7 @@ function parseUrlParameters() {
 }
 
 function getGradeText(gradeValue) {
+    if (String(gradeValue) === "adult") return "어른";
     const gradeNum = parseInt(gradeValue, 10);
 
     if (gradeNum === 0) return "미취학";
@@ -500,6 +501,7 @@ function getGradeText(gradeValue) {
 }
 
 function setupSchulteLevel() {
+    const isAdult = String(testState.child.gradeValue) === "adult";
     const gradeNum = parseInt(testState.child.gradeValue, 10);
 
     let size = 3;
@@ -507,7 +509,11 @@ function setupSchulteLevel() {
     let gradeGroup = "저학년";
     let descText = "";
 
-    if (gradeNum >= 0 && gradeNum <= 2) {
+    if (isAdult) {
+        size = 5;
+        levelText = "5×5";
+        gradeGroup = "고학년";
+    } else if (gradeNum >= 0 && gradeNum <= 2) {
         size = 3;
         levelText = "3×3";
         gradeGroup = "저학년";
@@ -629,6 +635,7 @@ function clampScore(value) {
     return Math.max(0, Math.min(100, Math.round(num)));
 }
 function getGradeGroupForScore() {
+    if (String(testState.child.gradeValue) === "adult") return "high";
     const gradeNum = parseInt(testState.child.gradeValue, 10);
 
     if (gradeNum >= 0 && gradeNum <= 2) return "low";

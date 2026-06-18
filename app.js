@@ -208,6 +208,7 @@ function startFirstTest() {
 }
 
 function getGradeTextForProfile(gradeValue) {
+    if (String(gradeValue) === 'adult') return '어른';
     const gradeNum = parseInt(gradeValue, 10);
     if (gradeNum === 0) return '미취학';
     if (gradeNum >= 1 && gradeNum <= 6) return `초등 ${gradeNum}학년`;
@@ -703,6 +704,7 @@ function editChild(childId) {
                         <option value="4">초등 4학년</option>
                         <option value="5">초등 5학년</option>
                         <option value="6">초등 6학년</option>
+                        <option value="adult">어른</option>
                     </select>
                 </div>
 

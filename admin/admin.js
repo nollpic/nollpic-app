@@ -683,6 +683,7 @@ function getTodayText() {
 function normalizeGradeText(value) {
   const text = String(value || "").trim();
   if (!text || text === "-") return "-";
+  if (text === "adult" || text.includes("어른")) return "어른";
   if (text === "0") return "미취학";
   if (/^[1-6]$/.test(text)) return `초${text}`;
   if (text.includes("미취학")) return "미취학";
