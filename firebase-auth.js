@@ -33,7 +33,7 @@ function getStoredUser() {
 }
 
 function saveUser(user) {
-  if (!user) return;
+  if (!user) return;  // user가 null이면 즉시 종료
 
   const previousUser = getStoredUser();
 
@@ -42,10 +42,12 @@ function saveUser(user) {
   if (previousUser && previousUser.uid && previousUser.uid !== user.uid) {
     localStorage.removeItem("nollpic_selected_child");
     localStorage.removeItem("nollpic_child_profile");
-    localStorage.removeItem("nollpic_latest_result");
     localStorage.removeItem("nollpic_child_name");
     localStorage.removeItem("nollpic_child_grade");
+    localStorage.removeItem("nollpic_current_uid");
   }
+
+  localStorage.setItem("nollpic_current_uid", user.uid);
 
   localStorage.setItem("nollpic_user", JSON.stringify({
     uid: user.uid,
@@ -94,9 +96,17 @@ function goAfterLogin() {
   setTimeout(move, 800);
 }
 
-function moveAfterLogin(user, showWelcome = false) {
+async function moveAfterLogin(user, showWelcome = false) {
   saveUser(user);
   clearLoginPending();
+
+  if (typeof window.nollpicSyncFromFirebase === "function") {
+    try {
+      await window.nollpicSyncFromFirebase();
+    } catch (error) {
+      console.error("로그인 후 Firestore 복구 실패", error);
+    }
+  }
 
   if (showWelcome) {
     alert(`${user.displayName || "사용자"}님 환영합니다.`);
@@ -138,7 +148,7 @@ window.googleLogin = async function () {
   }
 
   if (isInBlockedAppBrowser()) {
-    alert("카카오톡/인스타그램/일부 인앱브라우저에서는 Google 로그인이 차단됩니다. 오른쪽 위 메뉴에서 Chrome 또는 외부 브라우저로 열어주세요.");
+    alert("카카오톡, 인스타그램 등 일부 앱에서는 Google 로그인이 제한될 수 있습니다. ↓ 오른쪽 아래 메뉴(⋮)를 눌러 '다른 브라우저로 열기'로 들어와 주세요!");
     return;
   }
 
@@ -180,10 +190,18 @@ getRedirectResult(auth)
     showFirebaseLoginError(error);
   });
 
-onAuthStateChanged(auth, (user) => {
-  if (!user) return;
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return;  // 로그아웃 상태면 아무것도 하지 않음
 
   saveUser(user);
+
+  if (typeof window.nollpicSyncFromFirebase === "function") {
+    try {
+      await window.nollpicSyncFromFirebase();
+    } catch (error) {
+      console.error("인증 상태 확인 후 Firestore 복구 실패", error);
+    }
+  }
 
   // 이미 로그인된 사용자가 로그인 화면에 남아 있으면 무조건 다음 화면으로 보냅니다.
   if (isLoginPending() || isOnLoginPage()) {

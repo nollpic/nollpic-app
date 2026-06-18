@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>놀픽 관리자</title>
+  <link rel="stylesheet" href="/admin/admin.css"/>
+</head>
+<body>
+
+<!-- 로그인 -->
+<div id="login-screen" class="login-wrap">
+  <div class="login-box">
+    <div class="login-logo">🎲</div>
+    <h1>놀픽 관리자</h1>
+    <p>관리자 계정으로 로그인해주세요.</p>
+    <input type="email"    id="admin-email"    placeholder="이메일"/>
+    <input type="password" id="admin-password" placeholder="비밀번호"/>
+    <button id="login-btn">로그인</button>
+    <p id="login-error" class="error"></p>
+  </div>
+</div>
+
+<!-- 어드민 -->
+<div id="admin-screen" class="admin-shell hidden">
+
+  <aside class="admin-gnb">
+    <div class="admin-gnb-brand">
+      <span class="logo-mark">🎲</span>
+      <div>
+        <strong>놀픽 관리자</strong>
+        <span>Admin</span>
+      </div>
+    </div>
+    <nav class="admin-gnb-list" aria-label="관리자 메뉴">
+      <button type="button" class="admin-gnb-item active" data-target="dashboard-section">대시보드</button>
+      <button type="button" class="admin-gnb-item" data-target="result-section">검사결과목록</button>
+      <button type="button" class="admin-gnb-item" data-target="play-section">추천놀이 관리</button>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+  <header class="admin-header" id="dashboard-section">
+    <div class="header-left">
+      <span class="logo-mark">🎲</span>
+      <div>
+        <h1>놀픽 관리자 대시보드</h1>
+        <p id="admin-email-label"></p>
+      </div>
+    </div>
+    <button id="logout-btn">로그아웃</button>
+  </header>
+
+  <!-- 요약 카드 -->
+  <section class="cards">
+    <div class="card">
+      <span>👤 총 회원</span>
+      <strong id="user-count">-</strong>
+    </div>
+    <div class="card">
+      <span>👧 총 아이</span>
+      <strong id="child-count">-</strong>
+    </div>
+    <div class="card">
+      <span>📋 총 검사</span>
+      <strong id="result-count">-</strong>
+    </div>
+    <div class="card accent">
+      <span>🌟 오늘 검사</span>
+      <strong id="today-result-count">-</strong>
+    </div>
+  </section>
+
+  <!-- 필터 & 검색 -->
+  <section class="filter-bar">
+    <input type="text" id="search-input" placeholder="🔍  이름 · 이메일 검색"/>
+    <select id="filter-grade">
+      <option value="">전체 학년</option>
+      <option value="미취학">미취학</option>
+      <option value="초1">초1</option>
+      <option value="초2">초2</option>
+      <option value="초3">초3</option>
+      <option value="초4">초4</option>
+      <option value="초5">초5</option>
+      <option value="초6">초6</option>
+    </select>
+    <select id="filter-complete">
+      <option value="">전체</option>
+      <option value="done">완료만</option>
+      <option value="undone">미완료만</option>
+    </select>
+    <button id="export-btn">📥 CSV 다운로드</button>
+    <button id="refresh-btn">🔄 새로고침</button>
+    <button id="delete-btn" style="background: #e53935; color: #fff;">🗑️ 선택 삭제</button>
+  </section>
+
+  <!-- 테이블 -->
+  <section class="table-section" id="result-section">
+    <div class="table-header-row">
+      <h2>검사 결과 목록</h2>
+      <span id="row-count" class="row-count"></span>
+    </div>
+    <div class="table-scroll">
+      <table id="main-table">
+        <thead>
+          <tr>
+            <th style="width: 40px; text-align: center;"><input type="checkbox" id="th-check"/></th>
+            <th>검사일</th>
+            <th>이메일</th>
+            <th>아이 ID</th>
+            <th>아이 이름</th>
+            <th>검사 횟수</th>
+            <th>학년</th>
+            <th>성별</th>
+            <th>종합</th>
+            <th>집중 유지력</th>
+            <th>작업 기억력</th>
+            <th>반응 속도</th>
+            <th>시각 탐색</th>
+            <th>충동 억제</th>
+            <th>완료</th>
+          </tr>
+        </thead>
+        <tbody id="result-table">
+          <tr><td colspan="15" class="loading-msg">데이터를 불러오는 중...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="table-section play-manage-section" id="play-section">
+    <div class="table-header-row">
+      <div>
+        <h2>추천놀이 관리</h2>
+        <span class="row-count">검사 결과 영역별로 보여줄 놀이 콘텐츠를 관리합니다.</span>
+      </div>
+      <span id="play-row-count" class="row-count"></span>
+    </div>
+
+    <form id="play-form" class="play-form">
+      <input type="hidden" id="play-id"/>
+      <label>
+        <span>영역</span>
+        <select id="play-area" required>
+          <option value="attention">집중력 (끈기력)</option>
+          <option value="visual">시각탐색 (관찰력)</option>
+          <option value="memory">작업기억력 (기억력)</option>
+          <option value="reaction">반응속도 (순발력)</option>
+          <option value="inhibition">충동조절</option>
+        </select>
+      </label>
+      <label>
+        <span>제목</span>
+        <input type="text" id="play-title" placeholder="예: 컬러 스톱" required/>
+      </label>
+      <label class="play-form-long">
+        <span>링크</span>
+        <input type="url" id="play-link" placeholder="/play/arrow.html 또는 https://..."/>
+      </label>
+      <label class="play-form-long">
+        <span>썸네일주소</span>
+        <input type="url" id="play-thumbnail" placeholder="https://..."/>
+      </label>
+      <label class="play-form-wide">
+        <span>설명</span>
+        <textarea id="play-description" rows="3" placeholder="아이에게 추천하는 이유나 짧은 설명을 입력해주세요."></textarea>
+      </label>
+      <label>
+        <span>노출순서</span>
+        <input type="number" id="play-order" min="1" step="1" value="1"/>
+      </label>
+      <label class="play-check-label">
+        <input type="checkbox" id="play-enabled" checked/>
+        <span>사용여부</span>
+      </label>
+      <div class="play-form-actions">
+        <button type="submit" id="play-save-btn">저장</button>
+        <button type="button" id="play-reset-btn">초기화</button>
+      </div>
+    </form>
+
+    <div class="table-scroll">
+      <table class="play-table">
+        <thead>
+          <tr>
+            <th>영역</th>
+            <th>노출순서</th>
+            <th>제목</th>
+            <th>썸네일</th>
+            <th>설명</th>
+            <th>링크</th>
+            <th>사용여부</th>
+            <th>관리</th>
+          </tr>
+        </thead>
+        <tbody id="play-table">
+          <tr><td colspan="8" class="loading-msg">추천놀이를 불러오는 중...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  </main>
+
+  <div id="child-detail-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2 id="child-detail-title">아이 성장 그래프</h2>
+          <p id="child-detail-summary"></p>
+        </div>
+        <button type="button" id="child-detail-close" class="modal-close">닫기</button>
+      </div>
+      <canvas id="child-growth-canvas" class="growth-canvas" width="920" height="420"></canvas>
+      <div id="child-growth-list" class="growth-list"></div>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="/admin/admin.js"></script>
+</body>
+</html>

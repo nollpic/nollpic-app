@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>랜덤컬러</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;
+  font-family:'Pretendard',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;}
+html,body{width:100%;height:100%;overflow:hidden;}
+body{display:flex;flex-direction:column;height:100dvh;background:#1a1a2e;color:#fff;transition:background 0.25s ease;}
+
+.header{display:flex;align-items:center;justify-content:space-between;padding:0 1rem;height:52px;flex-shrink:0;background:rgba(0,0,0,0.25);}
+.back-btn{background:none;border:none;color:#fff;font-size:1.3rem;font-weight:700;cursor:pointer;padding:0.5rem 0.75rem;}
+.header-title{font-size:1rem;font-weight:800;}
+.header-spacer{width:52px;}
+
+/* 메인 디스플레이 */
+.stage{flex:1;display:flex;flex-direction:column;align-items:stretch;justify-content:center;overflow:hidden;}
+#mainDisplay{flex:1;display:flex;align-items:center;justify-content:center;}
+
+.color-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.color-name{
+  font-size:22vw;font-weight:900;letter-spacing:-0.02em;line-height:1;
+  text-align:center;text-shadow:0 4px 32px rgba(0,0,0,0.2);
+  animation:nameIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+  user-select:none;
+}
+@keyframes nameIn{from{transform:scale(0.55) translateY(16px);opacity:0;}to{transform:scale(1) translateY(0);opacity:1;}}
+
+.color-dot{
+  width:min(30vw,115px);height:min(30vw,115px);border-radius:50%;
+  border:4px solid rgba(255,255,255,0.3);box-shadow:0 8px 32px rgba(0,0,0,0.25);
+  animation:dotIn 0.35s cubic-bezier(0.34,1.56,0.64,1) 0.05s both;
+  margin-top:2.8rem;flex-shrink:0;
+}
+@keyframes dotIn{from{transform:scale(0.45);opacity:0;}to{transform:scale(1);opacity:1;}}
+
+.idle-msg{font-size:1rem;color:rgba(255,255,255,0.35);font-weight:600;text-align:center;line-height:1.9;}
+
+/* ── 색상 선택 패널 ── */
+.color-picker-panel{
+  flex-shrink:0;
+  padding:10px 1.25rem 4px;
+  background:rgb(0 0 0 / 75%);
+  border-top:1px solid rgba(255,255,255,0.08);
+}
+.picker-label{
+  font-size:0.72rem;font-weight:700;color:#cfcfcf;
+  margin-bottom:8px;letter-spacing:0.04em;
+}
+.color-chips{
+  display:flex;flex-wrap:wrap;gap:8px;
+  padding-bottom:4px;
+}
+.chip {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:5px 9px 5px 7px;
+  border-radius:999px;
+  border:2px solid rgba(255,255,255,0.15); /* 비활성화 테두리 유지 */
+  cursor:pointer;
+  transition:all 0.15s;
+  opacity:0.7;
+  background:rgba(0,0,0,0.15);
+  user-select:none;
+  color:#fff;
+}
+.chip.on {
+  opacity:1;
+  border-color:rgba(255,255,255,0.55);
+  background:rgba(255,255,255,0.12);
+  /* color는 따로 지정하지 않아도 항상 흰색 유지 */
+}
+.chip-dot{
+  width:16px;height:16px;border-radius:50%;
+  flex-shrink:0;
+  box-shadow:0 1px 4px rgba(0,0,0,0.3);
+}
+.chip-name {
+  font-size:0.78rem;
+  font-weight:700;
+  color:#fff; /* 항상 흰색 */
+}
+
+/* ── 하단 버튼 ── */
+.bottom-bar{flex-shrink:0;padding:8px 1.25rem 16px;display:flex;flex-direction:column;gap:8px;}
+.stop-btn{
+  width:100%;padding:0.95rem;background:#e74c3c;border:none;border-radius:1rem;
+  color:#fff;font-size:1.05rem;font-weight:900;cursor:pointer;
+  box-shadow:0 4px 20px rgba(231,76,60,0.4);transition:transform 0.1s;display:none;
+}
+.stop-btn:active{transform:scale(0.97);}
+.start-btn{
+  width:100%;padding:0.95rem;background:#E8532A;border:none;border-radius:1rem;
+  color:#fff;font-size:1.05rem;font-weight:900;cursor:pointer;
+  box-shadow:0 4px 20px rgba(232,83,42,0.4);transition:transform 0.1s;
+}
+.start-btn:active{transform:scale(0.97);}
+.count-btn{
+  width:28px;height:28px;border-radius:50%;
+  background:rgba(255,255,255,0.12);border:none;color:#fff;
+  font-size:1.1rem;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background 0.12s;flex-shrink:0;
+}
+.count-btn:active{background:rgba(255,255,255,0.28);}
+.none-warn{
+  font-size:0.75rem;text-align:center;color:#e74c3c;font-weight:700;
+  display:none;animation:shake 0.3s ease;
+}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <button class="back-btn" onclick="goBack()">❮</button>
+  <span class="header-title">🎨 랜덤컬러</span>
+  <div class="header-spacer"></div>
+</header>
+
+<div class="stage" id="stage">
+  <div id="mainDisplay">
+    <div class="color-wrap">
+      <p class="idle-msg">색을 선택하고<br>시작을 누르세요</p>
+    </div>
+  </div>
+</div>
+
+<!-- 색상 선택 칩 -->
+<div class="color-picker-panel">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+    <div class="picker-label" style="margin-bottom:0;">⏱ 변경 속도</div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="count-btn" onclick="changeSpeed(-1)">−</button>
+      <span id="speedLabel" style="font-size:0.9rem;font-weight:900;color:#fff;min-width:42px;text-align:center;">1.0초</span>
+      <button class="count-btn" onclick="changeSpeed(1)">＋</button>
+    </div>
+  </div>
+  <div class="picker-label">포함할 색상 선택</div>
+  <div class="color-chips" id="colorChips"></div>
+</div>
+
+<div class="bottom-bar">
+  <div class="none-warn" id="noneWarn">⚠ 색상을 1개 이상 선택해주세요</div>
+  <button class="stop-btn"  id="stopBtn"  onclick="stopColor()">멈춰! ✋</button>
+  <button class="start-btn" id="startBtn" onclick="startColor()">시작하기</button>
+</div>
+
+<script>
+const ALL_COLORS = [
+  { name:'빨강',  bg:'#d73221', text:'#fff' },
+  { name:'주황',  bg:'#f16b35', text:'#fff' },
+  { name:'노랑',  bg:'#F1C40F', text:'#333' },
+  { name:'연두',  bg:'#35d54b', text:'#fff' },
+  { name:'초록',  bg:'#0c9747', text:'#fff' },
+  { name:'하늘',  bg:'#74bff1', text:'#fff' },
+  { name:'파랑',  bg:'#095eff', text:'#fff' },
+  { name:'남색',  bg:'#1A237E', text:'#fff' },
+  { name:'보라',  bg:'#8E44AD', text:'#fff' },
+  { name:'분홍',  bg:'#E84393', text:'#fff' },
+  { name:'민트',  bg:'#0ABFBC', text:'#fff' },
+  { name:'블랙',  bg:'#1A1A2E', text:'#fff' },
+  { name:'화이트',bg:'#F5F5F5', text:'#333' },
+];
+
+// 기본 활성화 (전체 ON)
+const enabled = new Set();
+
+// 속도: 기본 1.0초, + 누르면 0.5씩 증가 (최소 1.0초, 최대 제한 없음)
+let intervalSec = 1.0;
+function getIntervalMs(){ return intervalSec * 1000; }
+
+function changeSpeed(d){
+  if(isRunning) return;
+  // d=1: + 버튼(느리게), d=-1: - 버튼(빠르게)
+  const next = Math.round((intervalSec + d * 0.5) * 10) / 10;
+  if(next < 1.0) return;   // 1초 아래로는 못 내림
+  intervalSec = next;
+  document.getElementById('speedLabel').textContent = intervalSec.toFixed(1) + '초';
+}
+
+let colorTimer = null;
+let isRunning  = false;
+let lastIdx    = -1;
+
+// ── 칩 렌더링 ─────────────────────────────────────
+function renderChips(){
+  const wrap = document.getElementById('colorChips');
+  wrap.innerHTML = '';
+  ALL_COLORS.forEach((c,i)=>{
+    const chip = document.createElement('div');
+    chip.className = 'chip' + (enabled.has(i) ? ' on' : '');
+    chip.innerHTML = `<div class="chip-dot" style="background:${c.bg};"></div><span class="chip-name">${c.name}</span>`;
+    chip.onclick = ()=> toggleChip(i);
+    wrap.appendChild(chip);
+  });
+}
+
+function toggleChip(i){
+  if(isRunning) return; // 실행 중엔 변경 불가
+  if(enabled.has(i)){
+    // 마지막 1개는 끄지 못함
+    if(enabled.size <= 1){ showWarn(); return; }
+    enabled.delete(i);
+  } else {
+    enabled.add(i);
+  }
+  renderChips();
+  hideWarn();
+}
+
+function showWarn(){
+  const w = document.getElementById('noneWarn');
+  w.style.display='block';
+  w.style.animation='none'; void w.offsetWidth; w.style.animation='shake 0.3s ease';
+}
+function hideWarn(){ document.getElementById('noneWarn').style.display='none'; }
+
+// ── 오디오 ────────────────────────────────────────
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let actx = null;
+function getACtx(){ if(!actx) actx = new AudioCtx(); return actx; }
+
+function playPop(){
+  const ctx=getACtx();
+  const osc=ctx.createOscillator(); const g=ctx.createGain();
+  osc.type='sine'; osc.frequency.setValueAtTime(880,ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(440,ctx.currentTime+0.1);
+  g.gain.setValueAtTime(0.2,ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.12);
+  osc.connect(g); g.connect(ctx.destination);
+  osc.start(); osc.stop(ctx.currentTime+0.12);
+}
+
+function playStopSound(){
+  const ctx=getACtx();
+  [0,0.1].forEach((t,i)=>{
+    const osc=ctx.createOscillator(); const g=ctx.createGain();
+    osc.type='sine'; osc.frequency.value=i===0?600:400;
+    g.gain.setValueAtTime(0.25,ctx.currentTime+t);
+    g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+t+0.2);
+    osc.connect(g); g.connect(ctx.destination);
+    osc.start(ctx.currentTime+t); osc.stop(ctx.currentTime+t+0.2);
+  });
+}
+
+// ── 컬러 로직 ─────────────────────────────────────
+function startColor(){
+  if(enabled.size === 0){ showWarn(); return; }
+  isRunning=true;
+  document.getElementById('stopBtn').style.display='block';
+  document.getElementById('startBtn').style.display='none';
+  hideWarn();
+  showColor();
+  scheduleNext();
+}
+
+function scheduleNext(){
+  if(colorTimer) clearTimeout(colorTimer);
+  colorTimer=setTimeout(()=>{ if(!isRunning)return; showColor(); scheduleNext(); }, getIntervalMs());
+}
+
+function pickColor(){
+  const pool = [...enabled];
+  // 마지막 인덱스 제외하고 뽑기
+  let filtered = pool.filter(i=> i!==lastIdx);
+  if(filtered.length===0) filtered=pool;
+  const pick = filtered[Math.floor(Math.random()*filtered.length)];
+  lastIdx=pick;
+  return ALL_COLORS[pick];
+}
+
+function showColor(){
+  const col=pickColor();
+  document.body.style.background=col.bg;
+  const display=document.getElementById('mainDisplay');
+  display.innerHTML='';
+  requestAnimationFrame(()=>{
+    const isLight=col.text==='#333';
+    display.innerHTML=`
+      <div class="color-wrap">
+        <div class="color-name" style="color:${col.text};">${col.name}</div>
+        <div class="color-dot" style="
+          background:${isLight?'rgba(0,0,0,0.1)':'rgba(255,255,255,0.22)'};
+          border-color:${isLight?'rgba(0,0,0,0.2)':'rgba(255,255,255,0.35)'};
+        "></div>
+      </div>`;
+  });
+  playPop();
+}
+
+function stopColor(){
+  isRunning=false;
+  if(colorTimer) clearTimeout(colorTimer);
+  playStopSound();
+  document.getElementById('stopBtn').style.display='none';
+  document.getElementById('startBtn').style.display='block';
+  document.getElementById('startBtn').textContent='다시 시작';
+}
+
+function goBack(){ window.parent.postMessage({type:'exitPlay'},'*'); }
+
+// 초기화
+renderChips();
+</script>
+</body>
+</html>

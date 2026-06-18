@@ -3,21 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>놀픽 검사 기록 마이페이지</title>
+  <title>놀픽 미션 기록 마이페이지</title>
   <link rel="stylesheet" href="mypage-result.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <main class="app">
-    <header class="top">
-      <button class="back-btn">‹</button>
-      <div class="page-label">NOLLPIC REPORT</div>
-    </header>
+  <div class="app-device nav-visible">
+    <main class="app">
 
 <section class="complete-hero">
 
   <div class="complete-text">
-    <h1>검사 완료! 🎉</h1>
+    <h1>미션 완료! 🎉</h1>
     <p>
       오늘도 뇌 탐험 성공!<br>
       5가지 활동 결과가 저장되었어요.
@@ -25,16 +22,19 @@
   </div>
 </section>
 
-    <section class="child-card">
-      <div>
-        <span>아이 정보</span>
-        <strong id="child-name">김놀픽 · 초2</strong>
-      </div>
-    </section>
+<section class="child-card child-select-card result-child-picker">
+  <div class="result-child-title">
+    <span>아이 선택</span>
+  </div>
+
+  <select id="child-selector" class="child-selector result-child-selector" aria-label="아이 선택"></select>
+
+  <strong id="child-name" class="visually-hidden">김놀픽 · 초2</strong>
+</section>
 
     <section class="latest-card">
       <div class="section-head">
-        <h2>최근 검사 결과</h2>
+        <h2>최근 미션 결과</h2>
         <span id="latest-date">2026.06.01</span>
       </div>
 
@@ -59,9 +59,9 @@
       <button class="accordion-btn" onclick="toggleHistory()">
         <div>
           <h2>과거 데이터 보기</h2>
-          <span>이전 검사 기록을 영역별로 확인해요</span>
+          <span>이전 미션 기록을 영역별로 확인해요</span>
         </div>
-        <strong id="accordion-icon">⌄</strong>
+        <span class="accordion-icon" id="accordion-icon"></span>
       </button>
 
       <div id="history-panel" class="history-panel">
@@ -73,7 +73,9 @@
             </div>
             <span id="growth-badge">성장중</span>
           </div>
-          <canvas id="growthChart"></canvas>
+          <div class="growth-chart-wrap">
+            <canvas id="growthChart"></canvas>
+          </div>
         </div>
 
         <div id="history-list" class="history-list"></div>
@@ -92,18 +94,28 @@
 
   <nav class="bottom-tab-nav" aria-label="하단 메뉴">
     <button type="button" class="bottom-tab" onclick="location.href='../index.html'">
-      <span class="bottom-tab-icon">🏠</span>
+      <svg class="bottom-tab-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M3 9.5L12 3L21 9.5V20C21 20.552 20.552 21 20 21H15V15H9V21H4C3.448 21 3 20.552 3 20V9.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+      </svg>
       <span>홈</span>
     </button>
     <button type="button" class="bottom-tab active" onclick="location.href='mypage-result.html'">
-      <span class="bottom-tab-icon">📊</span>
-      <span>검사결과</span>
+      <svg class="bottom-tab-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M7 15V17M12 11V17M17 7V17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <span>미션결과</span>
     </button>
     <button type="button" class="bottom-tab" onclick="location.href='../index.html?page=mypage'">
-      <span class="bottom-tab-icon">👤</span>
+      <svg class="bottom-tab-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M4 20C4 17 7.582 15 12 15C16.418 15 20 17 20 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
       <span>마이</span>
     </button>
   </nav>
+
+  </div><!-- /.app-device -->
 
   <script src="mypage-result.js"></script>
   <script type="module" src="../firebase-save-result.js"></script>

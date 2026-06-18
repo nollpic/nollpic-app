@@ -5,7 +5,7 @@
 
 const testState = {
     child: {
-        name: "",
+        name: "우리 아이",
         gradeText: "초등 2학년",
         gradeValue: "2"
     },
@@ -25,9 +25,7 @@ const testState = {
         answerIndices: [],
         showCount: 3,
         totalCount: 8,
-        successLevel: 0,
-        showTimer: null,
-        nextLevelTimer: null
+        successLevel: 0
     },
     reaction: {
     isGaming: false,
@@ -90,6 +88,7 @@ function getActiveChildProfileForResult() {
     }
 }
 
+
 // ==========================================================================
 // 놀픽 효과음 / 결과 팝업
 // - 별도 mp3 파일 없이 브라우저 Web Audio로 짧은 효과음을 재생합니다.
@@ -97,7 +96,6 @@ function getActiveChildProfileForResult() {
 // ==========================================================================
 let nollpicAudioCtx = null;
 let gameResultConfirmAction = null;
-const NOLLPIC_SOUND_VOLUME_MULTIPLIER = 2;
 
 function getNollpicAudioContext() {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -126,10 +124,8 @@ function playTone(frequency, startOffset, duration, type = "sine", volume = 0.08
     oscillator.type = type;
     oscillator.frequency.setValueAtTime(frequency, start);
 
-    const adjustedVolume = Math.min(volume * NOLLPIC_SOUND_VOLUME_MULTIPLIER, 1);
-
     gain.gain.setValueAtTime(0.0001, start);
-    gain.gain.exponentialRampToValueAtTime(adjustedVolume, start + 0.012);
+    gain.gain.exponentialRampToValueAtTime(volume, start + 0.012);
     gain.gain.exponentialRampToValueAtTime(0.0001, end);
 
     oscillator.connect(gain);
@@ -142,13 +138,6 @@ function playNollpicSound(type) {
     getNollpicAudioContext();
 
     switch (type) {
-        case "countdown-beep":
-            playTone(880, 0, 0.16, "sine", 0.09);
-            break;
-        case "countdown-start":
-            playTone(1046, 0, 0.55, "sine", 0.1);
-            playTone(1318, 0.12, 0.42, "sine", 0.065);
-            break;
         case "schulte-correct":
             playTone(880, 0, 0.07, "sine", 0.07);
             playTone(1320, 0.055, 0.08, "sine", 0.055);
@@ -189,121 +178,8 @@ function unlockNollpicSound() {
 
 document.addEventListener("pointerdown", unlockNollpicSound, { once: true });
 document.addEventListener("touchstart", unlockNollpicSound, { once: true });
-document.addEventListener("pointerdown", () => { hasUserInteractedForIntro = true; }, { once: true });
-document.addEventListener("touchstart", () => { hasUserInteractedForIntro = true; }, { once: true });
 
-const testIntroVoiceText = {
-    schulte: "첫번째 집중력 미션입니다! 화면에 무작위로 배치된 숫자를 1부터 순서대로 눌러주세요!",
-    memory: "두번째 기억력 미션입니다! 반짝이는 카드의 위치를 3초 동안 잘 기억한 다음, 같은 카드를 찾아주세요!",
-    reaction: "세번째 반응속도 미션입니다! 초록색 동그라미는 빠르게 누르고, 빨간색 동그라미는 누르지 마세요!",
-    visual: "네번째 시각 탐색 미션입니다! 목표 그림을 잘 보고, 시간 안에 같은 그림을 모두 찾아주세요!",
-    flanker: "다섯번째 충동 억제 미션입니다! 가운데 목표 그림을 잘 기억하고, 방해 그림에 속지 말고 골라주세요!"
-};
-
-const testIntroAudioSrc = {
-    schulte: "audio/intro-schulte.mp3",
-    memory: "audio/intro-memory.mp3",
-    reaction: "audio/intro-reaction.mp3",
-    visual: "audio/intro-visual.mp3",
-    flanker: "audio/intro-flanker.mp3"
-};
-
-let nollpicIntroVoice = null;
-let nollpicIntroAudio = null;
-let nollpicCompleteAudio = null;
-let hasUserInteractedForIntro = false;
-
-function getNollpicKidVoice() {
-    if (!window.speechSynthesis) return null;
-
-    const voices = window.speechSynthesis.getVoices();
-    return voices.find(voice => /ko/i.test(voice.lang) && /female|woman|girl|yuna|sora|kyung/i.test(voice.name))
-        || voices.find(voice => /ko/i.test(voice.lang))
-        || voices.find(voice => /female|woman|girl/i.test(voice.name))
-        || voices[0]
-        || null;
-}
-
-function stopTestIntroVoice() {
-    if (nollpicIntroAudio) {
-        nollpicIntroAudio.pause();
-        nollpicIntroAudio.currentTime = 0;
-        nollpicIntroAudio = null;
-    }
-
-    if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    nollpicIntroVoice = null;
-}
-
-function stopTestCompleteVoice() {
-    if (!nollpicCompleteAudio) return;
-    nollpicCompleteAudio.pause();
-    nollpicCompleteAudio.currentTime = 0;
-    nollpicCompleteAudio = null;
-}
-
-function playTestCompleteVoice() {
-    stopTestCompleteVoice();
-
-    nollpicCompleteAudio = new Audio("audio/test-complete.mp3");
-    nollpicCompleteAudio.volume = 1;
-    nollpicCompleteAudio.play().catch(() => {});
-}
-
-function shouldAutoplayInitialIntro() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("intro") === "1";
-}
-
-function playTestIntroVoice(type) {
-    if (isPageReload() && !hasUserInteractedForIntro) return;
-
-    stopTestIntroVoice();
-
-    const audioSrc = testIntroAudioSrc[type];
-    if (audioSrc) {
-        nollpicIntroAudio = new Audio(audioSrc);
-        nollpicIntroAudio.volume = 1;
-        nollpicIntroAudio.play().catch(() => {
-            playTestIntroFallbackVoice(type);
-        });
-        return;
-    }
-
-    playTestIntroFallbackVoice(type);
-}
-
-function playTestIntroFallbackVoice(type) {
-    if (!window.speechSynthesis) return;
-
-    const text = testIntroVoiceText[type];
-    if (!text) return;
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    const voice = getNollpicKidVoice();
-    if (voice) utterance.voice = voice;
-    utterance.lang = voice?.lang || "ko-KR";
-    utterance.pitch = 1.65;
-    utterance.rate = 1.08;
-    utterance.volume = 1;
-    nollpicIntroVoice = utterance;
-
-    window.speechSynthesis.speak(utterance);
-}
-
-function showTestIntroPopup(popupId, voiceType) {
-    const popup = document.getElementById(popupId);
-    if (popup) popup.classList.add("active");
-    setTimeout(() => playTestIntroVoice(voiceType), 120);
-}
-
-function isPageReload() {
-    const nav = performance.getEntriesByType?.("navigation")?.[0];
-    return nav?.type === "reload";
-}
-
-function showGameResultPopup(title, message, emoji = "🎉", buttonText = "확인", onConfirm = null, options = {}) {
+function showGameResultPopup(title, message, emoji = "🎉", buttonText = "확인", onConfirm = null) {
     const titleEl = document.getElementById("game-result-title");
     const textEl = document.getElementById("game-result-text");
     const emojiEl = document.getElementById("game-result-emoji");
@@ -317,18 +193,12 @@ function showGameResultPopup(title, message, emoji = "🎉", buttonText = "확�
     if (emojiEl) emojiEl.innerHTML = emoji;
     if (buttonEl) buttonEl.innerText = buttonText;
 
-    if (options.completeVoice) {
-        playTestCompleteVoice();
-    } else if (!options.noSound) {
-        playNollpicSound("finish");
-    }
+    playNollpicSound("finish");
 
     if (popup) popup.classList.add("active");
 }
 
 function closeGameResultPopup() {
-    stopTestIntroVoice();
-
     const popup = document.getElementById("game-result-popup");
     if (popup) popup.classList.remove("active");
 
@@ -354,12 +224,6 @@ window.addEventListener("DOMContentLoaded", () => {
     renderFlankerLeaderboard();
 
     restoreTestProgress();
-    setTimeout(() => {
-        if (!shouldAutoplayInitialIntro() || isPageReload()) return;
-        if (document.getElementById("schulte-countdown-overlay")?.classList.contains("active")) {
-            playTestIntroVoice("schulte");
-        }
-    }, 350);
 });
 
 function parseUrlParameters() {
@@ -369,18 +233,17 @@ function parseUrlParameters() {
     const nameParam = urlParams.get("name");
     const activeProfile = getActiveChildProfileForResult();
 
-    // URL에 childId가 있고 저장된 프로필의 id와 일치하는 경우에만 localStorage를 우선합니다.
-    // childId가 없거나 다르면 URL 파라미터(실제 입력한 이름)를 사용합니다.
-    if (activeProfile && childIdParam && activeProfile.id === childIdParam) {
-        testState.child.id = activeProfile.id;
-        testState.child.name = activeProfile.name || (nameParam ? decodeURIComponent(nameParam) : testState.child.name);
-        testState.child.gradeValue = activeProfile.gradeValue || gradeParam || testState.child.gradeValue;
-        testState.child.gradeText = activeProfile.gradeText || getGradeText(testState.child.gradeValue);
+    // 앱에서 저장된 아이를 선택해 들어온 경우 URL보다 localStorage의 아이 프로필을 우선합니다.
+    // 이렇게 해야 결과 페이지에 "우리 아이"가 아니라 실제 선택한 이름이 저장됩니다.
+    if (activeProfile && (!childIdParam || activeProfile.id === childIdParam)) {
+        testState.child.id = activeProfile.id || childIdParam || '';
+        testState.child.name = activeProfile.name || testState.child.name;
+        testState.child.gradeValue = activeProfile.gradeValue || testState.child.gradeValue;
+        testState.child.gradeText = activeProfile.gradeText || testState.child.gradeText;
         testState.child.gender = activeProfile.gender || '';
         return;
     }
 
-    // URL 파라미터 우선 적용 (새로 입력한 아이 정보)
     if (childIdParam) {
         testState.child.id = childIdParam;
     }
@@ -391,11 +254,6 @@ function parseUrlParameters() {
 
     if (gradeParam !== null && gradeParam !== "") {
         testState.child.gradeValue = gradeParam;
-    }
-
-    // gradeText 동기화
-    if (testState.child.gradeValue) {
-        testState.child.gradeText = getGradeText(testState.child.gradeValue);
     }
 }
 
@@ -445,17 +303,6 @@ function setupSchulteLevel() {
     if (descEl) descEl.innerText = descText;
 }
 
-function removeSeedRecords(records) {
-    const seedNames = new Set(["김민재", "이서연", "박준우", "최예은"]);
-    const seedDates = new Set(["2026.05.25", "2026.05.27", "2026.05.28"]);
-
-    return records.filter(record => {
-        const isSeedName = seedNames.has(record?.name);
-        const isSeedDate = seedDates.has(record?.date);
-        return !(isSeedName && isSeedDate);
-    });
-}
-
 function loadRecords() {
     const savedSchulte = localStorage.getItem("nollpic_schulte_records");
     const savedMemory = localStorage.getItem("nollpic_memory_records");
@@ -475,6 +322,7 @@ if (!Array.isArray(reactionRecords)) {
     reactionRecords = [];
 }
 
+
 if (savedVisualSearch) {
     try {
         visualSearchRecords = JSON.parse(savedVisualSearch);
@@ -486,6 +334,7 @@ if (savedVisualSearch) {
 if (!Array.isArray(visualSearchRecords)) {
     visualSearchRecords = [];
 }
+
 
 if (savedFlanker) {
     try {
@@ -499,6 +348,7 @@ if (!Array.isArray(flankerRecords)) {
     flankerRecords = [];
 }
 
+
     if (savedSchulte) {
         try {
             schulteRecords = JSON.parse(savedSchulte);
@@ -507,12 +357,15 @@ if (!Array.isArray(flankerRecords)) {
         }
     }
 
-    if (!Array.isArray(schulteRecords)) {
-        schulteRecords = [];
+    if (!Array.isArray(schulteRecords) || schulteRecords.length === 0) {
+        schulteRecords = [
+            { grade: "초등 4학년", name: "김민재", time: "35.12초", date: "2026.05.28" },
+            { grade: "초등 2학년", name: "이서연", time: "22.45초", date: "2026.05.28" },
+            { grade: "초등 5학년", name: "박준우", time: "42.80초", date: "2026.05.27" },
+            { grade: "미취학", name: "최예은", time: "19.55초", date: "2026.05.25" }
+        ];
+        localStorage.setItem("nollpic_schulte_records", JSON.stringify(schulteRecords));
     }
-
-    schulteRecords = removeSeedRecords(schulteRecords);
-    localStorage.setItem("nollpic_schulte_records", JSON.stringify(schulteRecords));
 
     if (savedMemory) {
         try {
@@ -547,58 +400,16 @@ function getGradeGroupForScore() {
     return "low";
 }
 
-function getLevelScoreByGrade(level, gradeGroup, gameType) {
-    const safeLevel = Math.max(0, Number(level) || 0);
+function getLevelScoreByGrade(level, gradeGroup) {
+    const safeLevel = Number(level) || 0;
 
-    // ---------------------------------------------------------------
-    // 게임별 · 학년군별 레벨 → 점수 변환 테이블
-    // low : 미취학(0) ~ 초2(2)   mid : 초3~4   high : 초5~6
-    //
-    // 설계 원칙:
-    //  - 같은 레벨을 달성했을 때 어린 학년군이 더 높은 점수를 받음
-    //  - 각 학년군의 "보통" 기대치: low=12레벨, mid=16레벨, high=20레벨
-    // ---------------------------------------------------------------
-
-    const tables = {
-
-        // 반응속도 (24레벨까지)
-        reaction: {
-            low:  [0,6,12,18,24,30,35,40,45,50,55,59,63,66,70,73,76,79,82,85,88,91,93,96,98],
-            mid:  [0,4,8,12,16,20,25,30,35,40,45,49,54,58,62,66,69,73,76,80,83,87,90,93,96],
-            high: [0,3,6,9,12,15,20,24,29,33,38,42,47,51,55,59,63,66,70,74,78,82,86,90,94]
-        },
-
-        // 작업 기억력 (12레벨까지)
-        memory: {
-            low:  [0,20,40,50,60,68,75,81,86,90,94,97,100],
-            mid:  [0,15,30,40,50,58,66,72,78,84,90,95,100],
-            high: [0,11,22,32,42,50,58,65,72,79,86,93,100]
-        },
-
-        // 시각 탐색 (15레벨까지)
-        visual: {
-            low:  [0,8,16,25,33,41,49,56,63,69,75,81,86,91,96,100],
-            mid:  [0,7,14,22,30,38,46,53,60,66,72,78,84,90,95,100],
-            high: [0,6,12,19,26,34,42,49,56,63,70,76,82,88,94,100]
-        },
-
-        // 충동 억제 (12레벨까지)
-        flanker: {
-            low:  [0,19,38,48,58,66,74,80,86,90,94,97,100],
-            mid:  [0,14,28,38,48,56,64,71,78,84,90,95,100],
-            high: [0,10,20,30,40,48,56,63,70,78,86,93,100]
-        }
+    const table = {
+        low:  [0, 35, 55, 70, 82, 90, 96, 100],
+        mid:  [0, 25, 45, 62, 76, 86, 94, 100],
+        high: [0, 18, 35, 52, 68, 80, 90, 100]
     };
 
-    // gameType 없이 구 방식 호출 시 구버전 테이블 fallback
-    const legacyTable = {
-        low:  [0,35,55,70,82,90,96,100],
-        mid:  [0,25,45,62,76,86,94,100],
-        high: [0,18,35,52,68,80,90,100]
-    };
-
-    const gameTable = tables[gameType] || legacyTable;
-    const scores = gameTable[gradeGroup] || gameTable.low;
+    const scores = table[gradeGroup] || table.low;
     const index = Math.min(safeLevel, scores.length - 1);
 
     return scores[index];
@@ -613,26 +424,6 @@ function getAccuracyPenalty(accuracy) {
     if (safeAccuracy < 90) return 0.9;
 
     return 1;
-}
-
-function getVisualSpeedScore(levelTimes = []) {
-    if (!Array.isArray(levelTimes) || levelTimes.length === 0) return 0;
-
-    const ratios = levelTimes.map((spent, index) => {
-        const limit = visualSearchLevels[index]?.timeLimit || 1;
-        return Number(spent) / limit;
-    }).filter(ratio => Number.isFinite(ratio) && ratio > 0);
-
-    if (!ratios.length) return 0;
-
-    const avgRatio = ratios.reduce((sum, ratio) => sum + ratio, 0) / ratios.length;
-
-    if (avgRatio <= 0.35) return 100;
-    if (avgRatio <= 0.50) return 90;
-    if (avgRatio <= 0.65) return 78;
-    if (avgRatio <= 0.80) return 65;
-    if (avgRatio <= 0.95) return 50;
-    return 35;
 }
 
 function calculateNollpicScores() {
@@ -650,7 +441,6 @@ function calculateNollpicScores() {
     const visualAccuracy = testState.visualSearch.accuracy || 0;
     const visualLevel = testState.visualSearch.highestLevel || 0;
     const visualWrong = testState.visualSearch.wrong || 0;
-    const visualSpeedScore = getVisualSpeedScore(testState.visualSearch.levelTimes);
 
     const flankerAccuracy = testState.flanker.accuracy || 0;
     const flankerLevel = Math.max(0, (testState.flanker.level || 1) - 1);
@@ -670,64 +460,61 @@ function calculateNollpicScores() {
     const attention = clampScore(attentionBase);
 
     // 2. 작업 기억력: 학년별 단계 기준 보정
-    const memory = clampScore(getLevelScoreByGrade(memoryLevel, gradeGroup, 'memory'));
+    const memory = clampScore(getLevelScoreByGrade(memoryLevel, gradeGroup));
 
-    // 3. 반응 속도: 레벨(단계) 60% + 정확도 40% 가중 합산
-    //    레벨을 점수의 핵심 축으로 두어 학년군별 형평성 확보
+    // 3. 반응 속도: 정확도 낮으면 속도 점수 반영 금지
     let reaction = 0;
     const reactionTotal = reactionCorrect + reactionWrong + reactionMissed;
-    const reactionLevel = testState.reaction.level || 0;
 
-    if (reactionTotal <= 0 || reactionCorrect <= 0 || reactionAccuracy < 30) {
+    if (reactionTotal <= 0 || reactionCorrect <= 0) {
+        reaction = 0;
+    } else if (reactionAccuracy < 40) {
         reaction = 0;
     } else {
-        const levelScore = getLevelScoreByGrade(reactionLevel, gradeGroup, 'reaction');
-        const accuracyBonus = clampScore(reactionAccuracy);
+        const speedScore = reactionAvg
+            ? clampScore(100 - (reactionAvg / 8))
+            : 0;
+
         const penalty = getAccuracyPenalty(reactionAccuracy);
 
         reaction = clampScore(
-            (levelScore * 0.60 + accuracyBonus * 0.40) * penalty
+            ((reactionAccuracy * 0.75) + (speedScore * 0.25)) * penalty
         );
     }
 
-    // 5. 충동 억제: 정확도 + 도달 단계 + 오답 패널티
+    // 4. 충동 억제: 정확도 + 도달 단계 + 오답 패널티
     let inhibition = 0;
 
     if (flankerAccuracy < 40 || flankerLevel <= 0) {
         inhibition = 0;
     } else {
-        const levelScore = getLevelScoreByGrade(flankerLevel, gradeGroup, 'flanker');
+        const levelScore = getLevelScoreByGrade(flankerLevel, gradeGroup);
         const penalty = getAccuracyPenalty(flankerAccuracy);
 
         inhibition = clampScore(
-            ((flankerAccuracy * 0.55) + (levelScore * 0.45)) * penalty - (flankerWrong * 3)
+            ((flankerAccuracy * 0.65) + (levelScore * 0.35)) * penalty - (flankerWrong * 4)
         );
     }
 
-    // 4. 시각 탐색력
+    // 5. 시각 탐색력: 1단계 일부 성공으로 고득점 방지
     let visual = 0;
 
     if (visualLevel <= 0 || visualAccuracy < 40) {
         visual = 0;
     } else {
-        const levelScore = getLevelScoreByGrade(visualLevel, gradeGroup, 'visual');
+        const levelScore = getLevelScoreByGrade(visualLevel, gradeGroup);
         const penalty = getAccuracyPenalty(visualAccuracy);
-        const wrongPenalty = visualWrong * (gradeGroup === 'low' ? 6 : gradeGroup === 'mid' ? 4 : 3);
 
         visual = clampScore(
-            ((visualAccuracy * 0.40) + (levelScore * 0.35) + (visualSpeedScore * 0.25)) * penalty - wrongPenalty
+            ((visualAccuracy * 0.55) + (levelScore * 0.45)) * penalty - (visualWrong * 3)
         );
-
-        if (gradeGroup === 'low' && (visualSpeedScore < 90 || visualWrong > 0 || visualAccuracy < 98)) {
-            visual = Math.min(visual, 92);
-        }
     }
 
     const overall = clampScore(
         (attention + memory + reaction + inhibition + visual) / 5
     );
 
-    return { attention, memory, reaction, visual, inhibition, overall };
+    return { attention, memory, reaction, inhibition, visual, overall };
 }
 
 function getScoreLevel(score) {
@@ -738,8 +525,8 @@ function getScoreLevel(score) {
 
 function getScoreLevelLabel(score) {
     const level = getScoreLevel(score);
-    if (level === 'strong') return '✨ 강점 영역';
-    if (level === 'normal') return '👍 보통 영역';
+    if (level === 'strong') return '강점 영역';
+    if (level === 'normal') return '보통 영역';
     return '연습 필요';
 }
 
@@ -782,8 +569,8 @@ function makeNollpicAnalysis(scores) {
         { key: 'attention', name: '집중 유지력', emoji: '🎯' },
         { key: 'memory', name: '작업 기억력', emoji: '🧩' },
         { key: 'reaction', name: '반응 속도', emoji: '⚡' },
-        { key: 'visual', name: '시각 탐색력', emoji: '🔍' },
-        { key: 'inhibition', name: '충동 억제', emoji: '✋' }
+        { key: 'inhibition', name: '충동 억제', emoji: '✋' },
+        { key: 'visual', name: '시각 탐색력', emoji: '🔍' }
     ];
 
     const sorted = labels
@@ -802,7 +589,7 @@ function makeNollpicAnalysis(scores) {
         </div>
     `).join('');
 
-    const guide = `<div class="analysis-guide"><strong>추천 방향</strong><br>점수가 낮게 나온 영역은 하루 5~10분씩 짧게 반복해보세요.</div>`;
+    const guide = `<div class="analysis-guide"><strong>추천 방향</strong><br>점수가 낮게 나온 영역은 하루 5~10분씩 짧게 반복해보세요. 본 결과는 놀이 수행 기록이며, 의료적 진단이 아닙니다.</div>`;
 
     return `${summary}<br><br>${detail}${guide}`;
 }
@@ -818,8 +605,6 @@ function saveNollpicResult(scores) {
         },
         date: getTodayString(),
         overall: scores.overall,
-        finishedTests: 5,
-        isComplete: true,
         scores: {
             attention: scores.attention,
             memory: scores.memory,
@@ -831,15 +616,10 @@ function saveNollpicResult(scores) {
             schulteTime: testState.schulte.elapsedTime || '0.00',
             memoryLevel: testState.memory.successLevel || 0,
             reactionAverageMs: testState.reaction.averageMs || 0,
-            reactionLevel: testState.reaction.level || 0,
             reactionAccuracy: testState.reaction.accuracy || 0,
             visualLevel: testState.visualSearch.highestLevel || 0,
             visualWrong: testState.visualSearch.wrong || 0,
             visualAccuracy: testState.visualSearch.accuracy || 0,
-            visualAverageSec: testState.visualSearch.levelTimes?.length
-                ? (testState.visualSearch.levelTimes.reduce((sum, item) => sum + item, 0) / testState.visualSearch.levelTimes.length).toFixed(2)
-                : '0.00',
-            visualSpeedScore: getVisualSpeedScore(testState.visualSearch.levelTimes),
             flankerLevel: testState.flanker.level || 0,
             flankerWrong: testState.flanker.wrong || 0,
             flankerAccuracy: testState.flanker.accuracy || 0,
@@ -857,37 +637,10 @@ function saveNollpicResult(scores) {
         history = [];
     }
 
-    // 완료된 결과(isComplete:true)만 히스토리에 누적합니다.
-    history = history.filter(item => item.isComplete === true);
-
-    // 중복 저장 방지: 같은 날짜 + 같은 아이 + 동일 점수는 저장하지 않습니다.
-    const isDuplicate = history.some(item => {
-        const sameChild = item.child?.id
-            ? item.child.id === result.child.id
-            : item.child?.name === result.child.name;
-        const sameDate = item.date === result.date;
-        const sameScore = item.overall === result.overall &&
-            item.scores?.attention === result.scores.attention &&
-            item.scores?.memory === result.scores.memory &&
-            item.scores?.reaction === result.scores.reaction;
-        return sameChild && sameDate && sameScore;
-    });
-
-    if (!isDuplicate) {
-        history.unshift(result);
-        localStorage.setItem('nollpic_result_history', JSON.stringify(history.slice(0, 10)));
-    } else {
-        console.log('중복 미션 결과 — 히스토리 저장 건너뜀');
-    }
+    history.unshift(result);
+    localStorage.setItem('nollpic_result_history', JSON.stringify(history.slice(0, 20)));
 
     return result;
-}
-
-function scrollTestViewportTop(target = null) {
-    window.scrollTo({ top: 0, behavior: "auto" });
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-    if (target) target.scrollTop = 0;
 }
 
 function showScreen(screenId) {
@@ -897,40 +650,14 @@ function showScreen(screenId) {
     const target = document.getElementById(screenId);
     if (target) {
         target.classList.add("active");
-        scrollTestViewportTop(target);
+        window.scrollTo({ top: 0, behavior: "smooth" });
     }
 }
 
 // ==========================================================================
 // 01. 슐테 표
 // ==========================================================================
-function resetSchulteIntroPopup() {
-    const startBlock = document.getElementById("popup-start-block");
-    const countDisplay = document.getElementById("popup-countdown-number");
-    const nextEl = document.getElementById("schulte-next");
-    const timerEl = document.getElementById("schulte-timer");
-    const nextBtn = document.getElementById("schulte-next-btn");
-    const retryBtn = document.getElementById("schulte-retry-btn");
-
-    clearInterval(testState.schulte.timerInterval);
-    testState.schulte.currentNext = 1;
-    testState.schulte.elapsedTime = "0.00";
-    testState.schulte.isGaming = false;
-
-    if (startBlock) startBlock.style.display = "block";
-    if (countDisplay) {
-        countDisplay.style.display = "none";
-        countDisplay.innerText = "3";
-    }
-    if (nextEl) nextEl.innerText = "1";
-    if (timerEl) timerEl.innerText = "0.00초";
-    if (nextBtn) nextBtn.disabled = true;
-    if (retryBtn) retryBtn.style.display = "none";
-}
-
 function runSchulteCountdown() {
-    stopTestIntroVoice();
-
     const startBlock = document.getElementById("popup-start-block");
     const countDisplay = document.getElementById("popup-countdown-number");
 
@@ -942,17 +669,14 @@ function runSchulteCountdown() {
 
     let count = 3;
     countDisplay.innerText = count;
-    playNollpicSound("countdown-beep");
 
     const interval = setInterval(() => {
         count--;
 
         if (count > 0) {
             countDisplay.innerText = count;
-            playNollpicSound("countdown-beep");
         } else {
             clearInterval(interval);
-            playNollpicSound("countdown-start");
 
             const overlay = document.getElementById("schulte-countdown-overlay");
             if (overlay) overlay.classList.remove("active");
@@ -996,9 +720,7 @@ function initSchulteBoard() {
 
         cell.innerText = num;
 
-        let handledByPointer = false;
-        const handleCellPress = (event) => {
-            if (event) event.preventDefault();
+        cell.addEventListener("click", () => {
             if (!state.isGaming) return;
 
             if (num === state.currentNext) {
@@ -1017,20 +739,8 @@ function initSchulteBoard() {
                 cell.style.border = "2px solid #EF4444";
                 setTimeout(() => {
                     cell.style.border = "";
-                }, 250);
+                }, 200);
             }
-        };
-
-        cell.addEventListener("pointerdown", event => {
-            handledByPointer = true;
-            handleCellPress(event);
-        });
-        cell.addEventListener("click", event => {
-            if (handledByPointer) {
-                handledByPointer = false;
-                return;
-            }
-            handleCellPress(event);
         });
 
         board.appendChild(cell);
@@ -1084,12 +794,10 @@ function endSchulteGame() {
         name: testState.child.name,
         time: `${state.elapsedTime}초`,
         date: getTodayString(),
-        createdAtMs: Date.now(),
         isCurrentPlayer: true
     });
 
     localStorage.setItem("nollpic_schulte_records", JSON.stringify(schulteRecords));
-    publishTestResult("schulte", schulteRecords[0]);
     renderSchulteLeaderboard();
 
     showGameResultPopup(
@@ -1101,10 +809,24 @@ function endSchulteGame() {
 
 function restartSchulteGame() {
     const overlay = document.getElementById("schulte-countdown-overlay");
+    const startBlock = document.getElementById("popup-start-block");
+    const countDisplay = document.getElementById("popup-countdown-number");
+    const nextBtn = document.getElementById("schulte-next-btn");
+    const retryBtn = document.getElementById("schulte-retry-btn");
 
-    resetSchulteIntroPopup();
+    clearInterval(testState.schulte.timerInterval);
+    testState.schulte.currentNext = 1;
+    testState.schulte.elapsedTime = "0.00";
+    testState.schulte.isGaming = false;
+
+    if (nextBtn) nextBtn.disabled = true;
+    if (retryBtn) retryBtn.style.display = "none";
+    if (startBlock) startBlock.style.display = "block";
+    if (countDisplay) {
+        countDisplay.style.display = "none";
+        countDisplay.innerText = "3";
+    }
     if (overlay) overlay.classList.add("active");
-    setTimeout(() => playTestIntroVoice("schulte"), 120);
 }
 
 function getCurrentGradeRankingList(records) {
@@ -1136,6 +858,30 @@ function renderSchulteLeaderboard() {
     });
 }
 
+function goToMemoryTest() {
+    saveProgress(2);
+    showScreen("memory-screen");
+
+    const popup = document.getElementById("memory-popup");
+    if (popup) popup.classList.add("active");
+}
+
+function goToReactionTest() {
+    saveProgress(3);
+    showScreen("reaction-screen");
+}
+
+function goToVisualSearchTest() {
+    saveProgress(4);
+    showScreen("visual-search-screen");
+}
+
+function goToFlankerTest() {
+    saveProgress(5);
+    showScreen("flanker-screen");
+}
+
+
 // ==========================================================================
 // 02. 작업 기억력
 // ==========================================================================
@@ -1157,8 +903,6 @@ function getMemoryLevelConfig(level) {
 }
 
 function startMemoryGame() {
-    stopTestIntroVoice();
-
     const popup = document.getElementById("memory-popup");
     if (popup) popup.classList.remove("active");
 
@@ -1168,9 +912,6 @@ function startMemoryGame() {
     if (nextBtn) nextBtn.disabled = true;
 
     const state = testState.memory;
-    clearTimeout(state.showTimer);
-    clearTimeout(state.nextLevelTimer);
-
     const config = getMemoryLevelConfig(state.level);
 
     state.showCount = config.show;
@@ -1191,7 +932,7 @@ function startMemoryGame() {
         bar.classList.add("running-animation");
     }
 
-    state.showTimer = setTimeout(startMemoryGuessing, 3000);
+    setTimeout(startMemoryGuessing, 3000);
 }
 
 function renderMemoryCards(show) {
@@ -1199,33 +940,25 @@ function renderMemoryCards(show) {
     if (!board) return;
 
     const state = testState.memory;
-    board.innerHTML = "";
 
-    // 1페이지 유지를 위해 총 카드 수(totalCount)에 맞춰 동적으로 열(Column) 계산
-    let memoryColumns = 3;
-    if (state.totalCount > 16) {
-        memoryColumns = 5;
-    } else if (state.totalCount > 8) {
-        memoryColumns = 4;
-    }
-    
-    // JS에서는 오직 열 개수만 지정 (크기는 CSS가 완전히 통제)
-    board.style.gridTemplateColumns = `repeat(${memoryColumns}, 1fr)`;
+    board.innerHTML = "";
+    board.style.gridTemplateColumns = "repeat(4, 1fr)";
 
     for (let i = 0; i < state.totalCount; i++) {
-        // button 대신 원래 스타일인 div로 생성하여 원치 않는 테두리 제거
-        const card = document.createElement("div");
+        const card = document.createElement("button");
+        card.type = "button";
         card.className = "memory-card";
+
         const isAnswer = state.answerIndices.includes(i);
 
         if (show && isAnswer) {
             card.classList.add("reveal");
         }
 
-        // div 태그에 클릭 이벤트 바인딩
         card.addEventListener("click", () => {
             handleMemoryCardClick(card, isAnswer);
         });
+
         board.appendChild(card);
     }
 }
@@ -1260,8 +993,7 @@ function handleMemoryCardClick(card, isCorrect) {
             const desc = document.getElementById("memory-desc");
             if (desc) desc.innerText = "성공! 다음 단계로 넘어갑니다.";
 
-            clearTimeout(state.nextLevelTimer);
-            state.nextLevelTimer = setTimeout(startMemoryGame, 1000);
+            setTimeout(startMemoryGame, 1000);
         }
     } else {
         playNollpicSound("wrong");
@@ -1282,12 +1014,10 @@ function endMemoryGame() {
         name: testState.child.name,
         time: `${state.successLevel}단계 달성`,
         date: getTodayString(),
-        createdAtMs: Date.now(),
         isCurrentPlayer: true
     });
 
     localStorage.setItem("nollpic_memory_records", JSON.stringify(memoryRecords));
-    publishTestResult("memory", memoryRecords[0]);
 
     renderMemoryLeaderboard();
 
@@ -1304,7 +1034,7 @@ function endMemoryGame() {
     );
 }
 
-function resetMemoryIntroPopup(options = {}) {
+function restartMemoryGame() {
     const state = testState.memory;
     const popup = document.getElementById("memory-popup");
     const nextBtn = document.getElementById("memory-next-btn");
@@ -1313,33 +1043,21 @@ function resetMemoryIntroPopup(options = {}) {
     const board = document.getElementById("memory-board");
     const bar = document.getElementById("memory-progress-bar");
 
-    clearTimeout(state.showTimer);
-    clearTimeout(state.nextLevelTimer);
-
     state.level = 1;
     state.gameState = "memorize";
     state.correctCount = 0;
     state.answerIndices = [];
-    state.showCount = 3;
-    state.totalCount = 8;
     state.successLevel = 0;
-    state.showTimer = null;
-    state.nextLevelTimer = null;
 
     if (nextBtn) nextBtn.disabled = true;
-    if (retryBtn) retryBtn.style.display = options.showRetry ? "block" : "none";
-    if (desc) desc.innerText = "??? ??? 3?? ?????";
+    if (retryBtn) retryBtn.style.display = "none";
+    if (desc) desc.innerText = "카드의 위치를 3초간 기억하세요!";
     if (board) board.innerHTML = "";
     if (bar) {
         bar.classList.remove("running-animation");
         bar.style.width = "100%";
     }
     if (popup) popup.classList.add("active");
-}
-
-function restartMemoryGame() {
-    resetMemoryIntroPopup({ showRetry: false });
-    showTestIntroPopup("memory-popup", "memory");
 }
 
 function renderMemoryLeaderboard() {
@@ -1369,11 +1087,7 @@ function renderMemoryLeaderboard() {
 // 결과 / 재시작
 // ==========================================================================
 function finishAllTests() {
-    // 중복 클릭 방지
-    const finishBtn = document.getElementById('flanker-next-btn');
-    if (finishBtn) finishBtn.disabled = true;
-
-    clearProgress();
+     clearProgress();
     const schulteTime = testState.schulte.elapsedTime || "0.00";
     const memoryLevel = testState.memory.successLevel || 0;
     const reactionAvg = testState.reaction.averageMs || 0;
@@ -1389,7 +1103,6 @@ function finishAllTests() {
     const scores = calculateNollpicScores();
 
     saveNollpicResult(scores);
-    window.dispatchEvent(new Event("nollpic-result-saved"));
 
     const summary = document.getElementById("result-summary");
     if (summary) {
@@ -1405,7 +1118,7 @@ function finishAllTests() {
     }
 
     showGameResultPopup(
-        "🎉 오늘의 전두엽 미션 완료!",
+        "🎉 오늘의 전두엽 챌린지 완료!",
         `<strong>${testState.child.name}</strong>의 5가지 미션 결과가 모두 저장되었어요.<br><br>종합 결과: <strong>${scores.overall}점</strong><br>결과 페이지에서 자세한 기록을 확인해보세요.`,
         "🏆",
         "결과 보러가기",
@@ -1417,14 +1130,18 @@ function goToMypageResult() {
     localStorage.setItem("nollpic_child_name", testState.child.name);
     localStorage.setItem("nollpic_child_grade", testState.child.gradeText);
 
-    if (window.parent && window.parent !== window && typeof window.parent.goToResultPage === 'function') {
-        // index.html 안에 통합된 page-6으로 이동
-        window.parent.goToResultPage();
+    const targetUrl = new URL("../mypage/mypage-result.html", window.location.href).href;
+
+    if (window.parent && window.parent !== window) {
+        window.parent.location.href = targetUrl;
     } else {
-        // fallback: 기존 외부 페이지
-        const targetUrl = new URL("../mypage/mypage-result.html", window.location.href).href;
         window.location.href = targetUrl;
     }
+}
+
+function restartTests() {
+    clearProgress();
+    location.reload();
 }
 // =========================
 // 미션 진행상태 저장
@@ -1454,54 +1171,63 @@ function clearProgress() {
     localStorage.removeItem("nollpic_test_progress");
 }
 
-function resetReactionCountdownPopup() {
-    const startBlock = document.getElementById("reaction-start-block");
-    const countDisplay = document.getElementById("reaction-countdown-number");
+function restoreTestProgress() {
+    const progress = getProgress();
 
-    if (startBlock) startBlock.style.display = "block";
-    if (countDisplay) {
-        countDisplay.style.display = "none";
-        countDisplay.innerText = "3";
+    if (!progress) return;
+
+    const step = Number(progress.currentStep);
+
+    if (step === 2) {
+        showScreen("memory-screen");
+    }
+
+    if (step === 3) {
+        showScreen("reaction-screen");
+    }
+
+    if (step === 4) {
+        showScreen("visual-search-screen");
+    }
+
+    if (step === 5) {
+        showScreen("flanker-screen");
     }
 }
 
-function runReactionCountdown() {
-    stopTestIntroVoice();
+// 기억력 끝난 뒤 반응속도 미션 이동
+function goToReactionTest() {
 
-    const startBlock = document.getElementById("reaction-start-block");
-    const countDisplay = document.getElementById("reaction-countdown-number");
+    saveProgress(3);
 
-    if (startBlock) startBlock.style.display = "none";
-    if (!countDisplay) {
-        startReactionGame();
-        return;
-    }
+    showScreen("reaction-screen");
 
-    countDisplay.style.display = "block";
-
-    let count = 3;
-    countDisplay.innerText = count;
-    playNollpicSound("countdown-beep");
-
-    const interval = setInterval(() => {
-        count--;
-
-        if (count > 0) {
-            countDisplay.innerText = count;
-            playNollpicSound("countdown-beep");
-        } else {
-            clearInterval(interval);
-            playNollpicSound("countdown-start");
-            startReactionGame();
-        }
-    }, 1000);
+    const popup = document.getElementById("reaction-popup");
+    if (popup) popup.classList.add("active");
 }
 
 // 원클릭 반응속도 미션
 function startReactionGame() {
-    stopTestIntroVoice();
-
     const stage = document.getElementById("reaction-stage");
+if (stage) {
+    stage.onclick = function () {
+        if (!testState.reaction.isGaming) return;
+        if (!testState.reaction.currentCircle) return;
+
+        playNollpicSound("wrong");
+
+        testState.reaction.wrongClicks++;
+        testState.reaction.lives--;
+
+        updateReactionDashboard();
+
+        if (testState.reaction.lives <= 0) {
+            endReactionGame();
+        }
+    };
+}
+
+
     const popup = document.getElementById("reaction-popup");
     if (popup) popup.classList.remove("active");
 
@@ -1527,26 +1253,11 @@ function startReactionGame() {
     state.accuracy = 0;
     state.averageMs = 0;
 
-    if (stage) {
-        stage.onclick = function () {
-            if (!testState.reaction.isGaming) return;
-            if (!testState.reaction.currentCircle) return;
-
-            playNollpicSound("wrong");
-
-            testState.reaction.wrongClicks++;
-            testState.reaction.lives--;
-
-            updateReactionDashboard();
-
-            if (testState.reaction.lives <= 0) {
-                endReactionGame();
-            }
-        };
-    }
-
     const ready = document.getElementById("reaction-ready");
-    if (ready) ready.style.display = "none";
+    if (ready) {
+        ready.style.display = "flex";
+        ready.innerHTML = "초록색은 정확히 클릭<br> 빨간색은 멈추세요";
+    }
 
     const nextBtn = document.getElementById("reaction-next-btn");
     if (nextBtn) nextBtn.disabled = true;
@@ -1556,9 +1267,14 @@ function startReactionGame() {
 
     updateReactionDashboard();
 
-    state.isGaming = true;
-    spawnReactionCircle();
+    setTimeout(() => {
+        if (ready) ready.style.display = "none";
+
+        state.isGaming = true;
+        spawnReactionCircle();
+    }, 2000);
 }
+
 
 function getReactionSpeed() {
     const level = testState.reaction.level;
@@ -1571,6 +1287,11 @@ function getReactionSpeed() {
 
 function spawnReactionCircle() {
     const state = testState.reaction;
+
+    if (state.isGaming && state.round >= NOLLPIC_REACTION_MAX_ROUNDS) {
+        endReactionGame();
+        return;
+    }
     const stage = document.getElementById("reaction-stage");
     if (!stage || !state.isGaming) return;
 
@@ -1629,13 +1350,14 @@ function spawnReactionCircle() {
 
         updateReactionDashboard();
 
-        if (state.lives > 0) {
+        if (state.lives > 0 && state.round < NOLLPIC_REACTION_MAX_ROUNDS) {
             setTimeout(spawnReactionCircle, 180);
         } else {
             endReactionGame();
         }
     }, getReactionSpeed());
 }
+
 
 function getRandomCirclePosition(width, height, size) {
     const padding = 12;
@@ -1681,7 +1403,7 @@ function handleReactionClick(circle, event) {
 
     updateReactionDashboard();
 
-    if (state.lives > 0) {
+    if (state.lives > 0 && state.round < NOLLPIC_REACTION_MAX_ROUNDS) {
         setTimeout(spawnReactionCircle, 180);
     } else {
         endReactionGame();
@@ -1732,14 +1454,12 @@ function endReactionGame() {
     reactionRecords.unshift({
         grade: testState.child.gradeText,
         name: testState.child.name,
-        time: `${state.level}단계 / ${state.accuracy}%`,
+        time: state.averageMs ? `${state.averageMs}ms / ${state.accuracy}%` : `0ms / ${state.accuracy}%`,
         date: getTodayString(),
-        createdAtMs: Date.now(),
         isCurrentPlayer: true
     });
 
     localStorage.setItem("nollpic_reaction_records", JSON.stringify(reactionRecords));
-    publishTestResult("reaction", reactionRecords[0]);
     renderReactionLeaderboard();
 
     const ready = document.getElementById("reaction-ready");
@@ -1798,8 +1518,7 @@ function restartReactionGame() {
         ready.innerHTML = "준비되면 시작 버튼을 눌러주세요.";
     }
     if (stage) stage.onclick = null;
-    resetReactionCountdownPopup();
-    showTestIntroPopup("reaction-popup", "reaction");
+    if (popup) popup.classList.add("active");
 }
 
 function renderReactionLeaderboard() {
@@ -1808,12 +1527,14 @@ function renderReactionLeaderboard() {
 
     container.innerHTML = "";
 
-    reactionRecords.slice(0, 8).forEach(item => {
+    const gradeRecords = getCurrentGradeRankingList(reactionRecords);
+
+    gradeRecords.slice(0, 10).forEach((item, index) => {
         const row = document.createElement("div");
         row.className = `leaderboard-row ${item.isCurrentPlayer ? "highlight" : ""}`;
 
         row.innerHTML = `
-            <span>${item.grade}</span>
+            <span>${index + 1}위</span>
             <span>${item.name}</span>
             <span>${item.time}</span>
             <span>${item.date}</span>
@@ -1822,6 +1543,7 @@ function renderReactionLeaderboard() {
         container.appendChild(row);
     });
 }
+
 
 // ==========================================================================
 // 04. 시각 탐색 챌린지
@@ -1879,12 +1601,12 @@ const visualFillers = [
     "🦆","🐦","🦢","🐴","🦄","🫏"
 ];
 
-// ==========================================================================
-// 04. 시각 탐색 챌린지
-// ==========================================================================
-function startVisualSearchGame() {
-    stopTestIntroVoice();
+function goToVisualSearchTest() {
+    saveProgress(4);
+    showScreen("visual-search-screen");
+}
 
+function startVisualSearchGame() {
     const popup = document.getElementById("visual-search-popup");
     if (popup) popup.classList.remove("active");
 
@@ -2081,12 +1803,10 @@ function endVisualSearchGame(message) {
         name: testState.child.name,
         time: `Lv.${state.highestLevel || state.level} / ${state.accuracy}%`,
         date: getTodayString(),
-        createdAtMs: Date.now(),
         isCurrentPlayer: true
     });
 
     localStorage.setItem("nollpic_visual_search_records", JSON.stringify(visualSearchRecords));
-    publishTestResult("visual", visualSearchRecords[0]);
     renderVisualSearchLeaderboard();
 
     const nextBtn = document.getElementById("visual-next-btn");
@@ -2129,7 +1849,7 @@ function restartVisualSearchGame() {
 
     updateVisualDashboard();
 
-    showTestIntroPopup("visual-search-popup", "visual");
+    if (popup) popup.classList.add("active");
 }
 
 function renderVisualSearchLeaderboard() {
@@ -2152,6 +1872,8 @@ function renderVisualSearchLeaderboard() {
         container.appendChild(row);
     });
 }
+
+
 
 // ==========================================================================
 // 05. Flanker 충동억제 챌린지
@@ -2182,9 +1904,12 @@ const flankerLevels = [
     { length: 9, showMs: 450, answerTime: 0.7, items: ["▧", "▨"] }
 ];
 
-function startFlankerGame() {
-    stopTestIntroVoice();
+function goToFlankerTest() {
+    saveProgress(5);
+    showScreen("flanker-screen");
+}
 
+function startFlankerGame() {
     const popup = document.getElementById("flanker-popup");
     if (popup) popup.classList.remove("active");
 
@@ -2409,14 +2134,11 @@ function endFlankerGame(message) {
         name: testState.child.name,
         time: `Lv.${Math.min(state.level, flankerLevels.length)} / ${state.accuracy}%`,
         date: getTodayString(),
-        createdAtMs: Date.now(),
         isCurrentPlayer: true
     });
 
     localStorage.setItem("nollpic_flanker_records", JSON.stringify(flankerRecords));
-    publishTestResult("flanker", flankerRecords[0]);
     renderFlankerLeaderboard();
-    playTestCompleteVoice();
 
     const nextBtn = document.getElementById("flanker-next-btn");
     if (nextBtn) nextBtn.disabled = false;
@@ -2427,15 +2149,11 @@ function endFlankerGame(message) {
     showGameResultPopup(
         "🎯 충동억제 미션 완료!",
         `<strong>${testState.child.name}</strong>의 충동억제 기록이 저장되었어요.<br><br>도달 레벨: <strong>Lv.${Math.min(state.level, flankerLevels.length)}</strong><br>정확도: <strong>${state.accuracy}%</strong>`,
-        "🎯",
-        "확인",
-        null,
-        { noSound: true }
+        "🎯"
     );
 }
 
 function restartFlankerGame() {
-    stopTestCompleteVoice();
     const state = testState.flanker;
     const popup = document.getElementById("flanker-popup");
     const stimulus = document.getElementById("flanker-stimulus");
@@ -2465,7 +2183,7 @@ function restartFlankerGame() {
 
     updateFlankerDashboard();
 
-    showTestIntroPopup("flanker-popup", "flanker");
+    if (popup) popup.classList.add("active");
 }
 
 function renderFlankerLeaderboard() {
@@ -2489,9 +2207,78 @@ function renderFlankerLeaderboard() {
     });
 }
 
+function goBackToPreviousTest() {
+    const progress = getProgress();
+    const currentStep = progress ? Number(progress.currentStep) : 2;
+
+    if (currentStep <= 2) {
+        showScreen("memory-screen");
+        saveProgress(2);
+        return;
+    }
+
+    const prevStep = currentStep - 1;
+
+    saveProgress(prevStep);
+
+    if (prevStep === 2) {
+        showScreen("memory-screen");
+    }
+
+    if (prevStep === 3) {
+        showScreen("reaction-screen");
+    }
+
+    if (prevStep === 4) {
+        showScreen("visual-search-screen");
+    }
+
+    if (prevStep === 5) {
+        showScreen("flanker-screen");
+    }
+}
+
+function goBackToPreviousTest() {
+
+    const progress = getProgress();
+
+    if (!progress) {
+        window.location.href = "../index.html";
+        return;
+    }
+
+    const currentStep = Number(progress.currentStep);
+
+    switch (currentStep) {
+
+        case 5:
+            saveProgress(4);
+            showScreen("visual-search-screen");
+            break;
+
+        case 4:
+            saveProgress(3);
+            showScreen("reaction-screen");
+            break;
+
+        case 3:
+            saveProgress(2);
+            showScreen("memory-screen");
+            break;
+
+        case 2:
+            window.location.href = "../index.html";
+            break;
+
+        default:
+            window.location.href = "../index.html";
+    }
+}
+
 // ========================================================================== 
 // [FIX] 게임 단계 뒤로가기 / 3번째 반응속도 자동 종료 보강
 // ========================================================================== 
+const NOLLPIC_REACTION_MAX_ROUNDS = 15;
 
 function getCurrentVisibleTestStep() {
     const active = document.querySelector('.test-screen.active');
@@ -2509,8 +2296,6 @@ function getCurrentVisibleTestStep() {
 }
 
 function hideAllStartPopups() {
-    stopTestIntroVoice();
-
     [
         'schulte-countdown-overlay',
         'memory-popup',
@@ -2525,12 +2310,7 @@ function hideAllStartPopups() {
 }
 
 function stopCurrentGameTimers() {
-    stopTestIntroVoice();
-
     clearInterval(testState.schulte.timerInterval);
-
-    clearTimeout(testState.memory.showTimer);
-    clearTimeout(testState.memory.nextLevelTimer);
 
     clearTimeout(testState.reaction.spawnTimer);
     clearInterval(testState.reaction.moveTimer);
@@ -2566,7 +2346,8 @@ function goToMemoryTest() {
     hideAllStartPopups();
     showScreen('memory-screen');
 
-    showTestIntroPopup('memory-popup', 'memory');
+    const popup = document.getElementById('memory-popup');
+    if (popup) popup.classList.add('active');
 }
 
 function goToReactionTest() {
@@ -2574,8 +2355,8 @@ function goToReactionTest() {
     hideAllStartPopups();
     showScreen('reaction-screen');
 
-    resetReactionCountdownPopup();
-    showTestIntroPopup('reaction-popup', 'reaction');
+    const popup = document.getElementById('reaction-popup');
+    if (popup) popup.classList.add('active');
 }
 
 function goToVisualSearchTest() {
@@ -2583,7 +2364,8 @@ function goToVisualSearchTest() {
     hideAllStartPopups();
     showScreen('visual-search-screen');
 
-    showTestIntroPopup('visual-search-popup', 'visual');
+    const popup = document.getElementById('visual-search-popup');
+    if (popup) popup.classList.add('active');
 }
 
 function goToFlankerTest() {
@@ -2591,7 +2373,8 @@ function goToFlankerTest() {
     hideAllStartPopups();
     showScreen('flanker-screen');
 
-    showTestIntroPopup('flanker-popup', 'flanker');
+    const popup = document.getElementById('flanker-popup');
+    if (popup) popup.classList.add('active');
 }
 
 function goBackToPreviousTest() {
@@ -2614,229 +2397,13 @@ function goBackToPreviousTest() {
     const prevStep = currentStep - 1;
     saveProgress(prevStep);
 
-    if (prevStep === 1) {
-        showScreen('schulte-screen');
-        resetSchulteIntroPopup();
-        showTestIntroPopup('schulte-countdown-overlay', 'schulte');
-    }
-    if (prevStep === 2) {
-        showScreen('memory-screen');
-        resetMemoryIntroPopup({ showRetry: true });
-        showTestIntroPopup('memory-popup', 'memory');
-    }
-    if (prevStep === 3) {
-        showScreen('reaction-screen');
-        resetReactionCountdownPopup();
-        showTestIntroPopup('reaction-popup', 'reaction');
-    }
-    if (prevStep === 4) {
-        showScreen('visual-search-screen');
-        showTestIntroPopup('visual-search-popup', 'visual');
-    }
+    if (prevStep === 1) showScreen('schulte-screen');
+    if (prevStep === 2) showScreen('memory-screen');
+    if (prevStep === 3) showScreen('reaction-screen');
+    if (prevStep === 4) showScreen('visual-search-screen');
 }
 
 // 3번째 반응속도 게임은 아이가 계속 잘하면 끝나지 않는 구조라서 15라운드 후 자동 완료되도록 보강합니다.
-
-// ========================================================================== 
-// 실시간 결과값
-// ========================================================================== 
-const NOLLPIC_RESULT_FIREBASE_CONFIG = {
-    apiKey: "AIzaSyClcGJEbev-OvfBu0sssIorQF-9uFsEvn8",
-    authDomain: "nollpic.firebaseapp.com",
-    projectId: "nollpic",
-    storageBucket: "nollpic.firebasestorage.app",
-    messagingSenderId: "954410800164",
-    appId: "1:954410800164:web:970ebe9421d377e5ce7d53"
-};
-
-let nollpicResultToolsPromise = null;
-
-async function getNollpicResultTools() {
-    if (nollpicResultToolsPromise) return nollpicResultToolsPromise;
-
-    nollpicResultToolsPromise = Promise.all([
-        import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),
-        import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js")
-    ]).then(([appModule, firestoreModule]) => {
-        const firebaseApp = appModule.getApps().length
-            ? appModule.getApps()[0]
-            : appModule.initializeApp(NOLLPIC_RESULT_FIREBASE_CONFIG);
-
-        return {
-            db: firestoreModule.getFirestore(firebaseApp),
-            collection: firestoreModule.collection,
-            addDoc: firestoreModule.addDoc,
-            getDocs: firestoreModule.getDocs,
-            query: firestoreModule.query,
-            orderBy: firestoreModule.orderBy,
-            limit: firestoreModule.limit,
-            serverTimestamp: firestoreModule.serverTimestamp
-        };
-    });
-
-    return nollpicResultToolsPromise;
+function shouldFinishReactionByRound() {
+    return testState.reaction.round >= NOLLPIC_REACTION_MAX_ROUNDS;
 }
-
-function escapeResultText(value) {
-    return String(value || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-function getLocalResultRecords(type) {
-    const keyMap = {
-        schulte: "nollpic_schulte_records",
-        memory: "nollpic_memory_records",
-        reaction: "nollpic_reaction_records",
-        visual: "nollpic_visual_search_records",
-        flanker: "nollpic_flanker_records"
-    };
-
-    try {
-        return JSON.parse(localStorage.getItem(keyMap[type]) || "[]");
-    } catch (e) {
-        return [];
-    }
-}
-
-function parsePublicResultTime(value, fallbackDate = "") {
-    if (!value && fallbackDate) value = fallbackDate;
-    if (!value) return 0;
-    if (typeof value === "number") return value;
-    if (value.seconds) return value.seconds * 1000;
-    if (value.toDate) return value.toDate().getTime();
-
-    const text = String(value).trim();
-    const normalized = text.replace(/\./g, "-").replace(/\s+/g, "");
-    const parsed = Date.parse(normalized);
-    return Number.isFinite(parsed) ? parsed : 0;
-}
-
-function normalizePublicResult(type, record = {}) {
-    const date = record.date || getTodayString();
-    const createdAtMs = Number(record.createdAtMs)
-        || parsePublicResultTime(record.createdAt, date)
-        || Date.now();
-
-    return {
-        type,
-        grade: record.grade || testState.child.gradeText || "-",
-        name: record.name || testState.child.name || "익명",
-        time: record.time || record.record || "-",
-        date,
-        createdAtMs
-    };
-}
-
-function isSeedResultRecord(record = {}) {
-    const seedNames = new Set(["김민재", "이서연", "박준우", "최예은"]);
-    const seedDates = new Set(["2026.05.25", "2026.05.27", "2026.05.28"]);
-    return seedNames.has(record.name) && seedDates.has(record.date);
-}
-
-async function publishTestResult(type, record) {
-    if (!record) return;
-
-    const result = normalizePublicResult(type, record);
-
-    try {
-        const tools = await getNollpicResultTools();
-        await tools.addDoc(tools.collection(tools.db, "testResults"), {
-            ...result,
-            createdAt: tools.serverTimestamp()
-        });
-    } catch (e) {
-        // Firestore 권한이 막힌 경우에도 로컬 결과 표시는 유지합니다.
-    }
-}
-
-function getDateLabelFromValue(value) {
-    if (!value) return "";
-    if (value.toDate) {
-        const date = value.toDate();
-        return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
-    }
-    return String(value);
-}
-
-async function fetchPublicResults(type) {
-    const tools = await getNollpicResultTools();
-    const resultQuery = tools.query(
-        tools.collection(tools.db, "testResults"),
-        tools.orderBy("createdAt", "desc"),
-        tools.limit(60)
-    );
-
-    const snapshot = await tools.getDocs(resultQuery);
-    return snapshot.docs
-        .map(docSnap => docSnap.data())
-        .filter(data => data.type === type)
-        .filter(data => !isSeedResultRecord(data))
-        .slice(0, 8)
-        .map(data => ({
-            grade: data.grade || "-",
-            name: data.name || "익명",
-            time: data.time || "-",
-            date: getDateLabelFromValue(data.createdAt) || data.date || "",
-            createdAtMs: Number(data.createdAtMs) || parsePublicResultTime(data.createdAt, data.date)
-        }));
-}
-
-async function renderPublicResults(type) {
-    const list = document.getElementById(`${type}-review-list`);
-    if (!list) return;
-
-    list.innerHTML = `<div class="review-empty">결과값을 불러오는 중이에요.</div>`;
-
-    const localResults = getLocalResultRecords(type).slice(0, 3).map((item, index) => ({
-        ...item,
-        createdAtMs: Number(item.createdAtMs) || (parsePublicResultTime(item.createdAt, item.date) || parsePublicResultTime(item.date)) + (3 - index)
-    }));
-    let results = [];
-    try {
-        results = [...localResults, ...(await fetchPublicResults(type))];
-    } catch (e) {
-        results = localResults;
-    }
-
-    const seen = new Set();
-    results = results
-        .map((item, index) => ({
-            ...item,
-            createdAtMs: Number(item.createdAtMs) || parsePublicResultTime(item.createdAt, item.date) || parsePublicResultTime(item.date) || index
-        }))
-        .filter(item => {
-            if (isSeedResultRecord(item)) return false;
-            const key = `${item.grade}_${item.name}_${item.time}_${item.date}`;
-            if (seen.has(key)) return false;
-            seen.add(key);
-            return true;
-        })
-        .sort((a, b) => {
-            if (!!a.isCurrentPlayer !== !!b.isCurrentPlayer) return a.isCurrentPlayer ? -1 : 1;
-            return (b.createdAtMs || 0) - (a.createdAtMs || 0);
-        });
-
-    if (!results.length) {
-        list.innerHTML = `<div class="review-empty">아직 표시할 결과값이 없어요.</div>`;
-        return;
-    }
-
-    list.innerHTML = results.slice(0, 8).map(item => `
-        <div class="leaderboard-row ${item.isCurrentPlayer ? "highlight" : ""}">
-            <span>${escapeResultText(item.grade)}</span>
-            <span>${escapeResultText(item.name)}</span>
-            <span>${escapeResultText(item.time)}</span>
-            <span>${escapeResultText(item.date)}</span>
-        </div>
-    `).join("");
-}
-
-function renderSchulteLeaderboard() { renderPublicResults("schulte"); }
-function renderMemoryLeaderboard() { renderPublicResults("memory"); }
-function renderReactionLeaderboard() { renderPublicResults("reaction"); }
-function renderVisualSearchLeaderboard() { renderPublicResults("visual"); }
-function renderFlankerLeaderboard() { renderPublicResults("flanker"); }

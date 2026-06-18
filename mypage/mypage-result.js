@@ -8,24 +8,24 @@ const samples = [
       ['🎯', '집중 유지력', '슐테표 수행', 78],
       ['🧩', '작업 기억력', '위치 기억 활동', 84],
       ['⚡', '반응 속도', '빠른 반응 활동', 76],
-      ['✋', '충동 억제', '멈추고 선택하기', 83],
-      ['🔍', '시각 탐색력', '목표 빠르게 찾기', 88]
+      ['🔍', '시각 탐색력', '목표 빠르게 찾기', 88],
+      ['✋', '충동 억제', '멈추고 선택하기', 83]
     ],
     history: [
       {
         date: '2026.06.01',
         summary: '최근 검사',
-        scores: { attention: 78, memory: 84, reaction: 76, inhibition: 83, visual: 88 }
+        scores: { attention: 78, memory: 84, reaction: 76, visual: 88, inhibition: 83 }
       },
       {
         date: '2026.05.18',
         summary: '이전 검사',
-        scores: { attention: 72, memory: 78, reaction: 70, inhibition: 76, visual: 82 }
+        scores: { attention: 72, memory: 78, reaction: 70, visual: 82, inhibition: 76 }
       },
       {
         date: '2026.05.04',
         summary: '첫 검사',
-        scores: { attention: 67, memory: 70, reaction: 64, inhibition: 69, visual: 79 }
+        scores: { attention: 67, memory: 70, reaction: 64, visual: 79, inhibition: 69 }
       }
     ],
     analysis: '최근 기록과 비교했을 때 <strong>작업 기억력</strong>과 <strong>시각 탐색력</strong>이 좋아졌어요. 반응 속도는 빠르지만 정확도를 조금 더 높이는 연습을 해보면 좋아요.'
@@ -39,9 +39,86 @@ const scoreLabels = [
   ['attention', '🎯 집중 유지력'],
   ['memory', '🧩 작업 기억력'],
   ['reaction', '⚡ 반응 속도'],
-  ['inhibition', '✋ 충동 억제'],
-  ['visual', '🔍 시각 탐색력']
+  ['visual', '🔍 시각 탐색력'],
+  ['inhibition', '✋ 충동 억제']
 ];
+
+
+function getScoreLevel(score) {
+  if (score >= 80) return 'strong';
+  if (score >= 60) return 'normal';
+  return 'need';
+}
+
+function getScoreLevelLabel(score) {
+  const level = getScoreLevel(Number(score) || 0);
+  if (level === 'strong') return '✨ 강점 영역';
+  if (level === 'normal') return '👍 보통 영역';
+  return '🌱 연습 필요';
+}
+
+function getAbilityFeedback(key, score) {
+  const level = getScoreLevel(Number(score) || 0);
+  const feedbackMap = {
+    attention: {
+      strong: '집중 유지력은 좋은 편입니다. 목표를 보고 순서대로 찾아가는 힘이 안정적으로 나타났어요.',
+      normal: '집중 유지력은 보통 수준입니다. 컨디션이나 주변 환경에 따라 집중 시간이 달라질 수 있어요.',
+      need: '집중 유지력 연습이 필요합니다. 과제를 끝까지 살피기보다 중간에 놓치거나 서두르는 모습이 나타날 수 있어요.'
+    },
+    memory: {
+      strong: '작업 기억력은 좋은 편입니다. 방금 본 정보를 머릿속에 잠시 저장하고 활용하는 힘이 안정적으로 나타났어요.',
+      normal: '작업 기억력은 보통 수준입니다. 규칙이나 위치를 기억하는 놀이를 반복하면 더 안정적으로 좋아질 수 있어요.',
+      need: '작업 기억력 연습이 필요합니다. 설명을 듣고 바로 잊거나, 순서와 위치를 헷갈리는 모습이 나타날 수 있어요.'
+    },
+    reaction: {
+      strong: '반응 속도는 좋은 편입니다. 자극을 보고 빠르게 반응하는 힘이 안정적으로 나타났어요.',
+      normal: '반응 속도는 보통 수준입니다. 빠르게 누르는 것보다 정확하게 반응하는 연습을 함께 하면 좋아요.',
+      need: '반응 속도 연습이 필요합니다. 화면의 변화를 알아차리고 행동으로 옮기는 시간이 다소 걸릴 수 있어요.'
+    },
+    visual: {
+      strong: '시각 탐색력은 좋은 편입니다. 여러 정보 속에서 필요한 목표를 빠르게 찾는 힘이 안정적으로 나타났어요.',
+      normal: '시각 탐색력은 보통 수준입니다. 복잡한 화면에서 목표를 찾는 놀이를 반복하면 더 좋아질 수 있어요.',
+      need: '시각 탐색력 연습이 필요합니다. 여러 자극 속에서 필요한 정보를 찾을 때 놓치거나 시간이 걸릴 수 있어요.'
+    },
+    inhibition: {
+      strong: '충동 억제는 좋은 편입니다. 하고 싶은 반응을 잠시 멈추고 규칙에 맞게 선택하는 힘이 안정적으로 나타났어요.',
+      normal: '충동 억제는 보통 수준입니다. 빨리 하려는 마음이 커질 때 실수가 늘 수 있어요.',
+      need: '충동 억제 연습이 필요합니다. 문제를 끝까지 보기 전에 서두르거나, 멈춰야 할 때 반응하는 모습이 나타날 수 있어요.'
+    },
+  };
+  return feedbackMap[key]?.[level] || '오늘 검사 결과가 저장되었어요.';
+}
+
+function makeNollpicAnalysisFromScores(scores = {}) {
+  const labels = [
+    { key: 'attention', name: '집중 유지력', emoji: '🎯' },
+    { key: 'memory', name: '작업 기억력', emoji: '🧩' },
+    { key: 'reaction', name: '반응 속도', emoji: '⚡' },
+    { key: 'visual', name: '시각 탐색력', emoji: '🔍' },
+    { key: 'inhibition', name: '충동 억제', emoji: '✋' }
+  ];
+
+  const sorted = labels
+    .map(item => ({ ...item, score: Number(scores[item.key]) || 0 }))
+    .sort((a, b) => b.score - a.score);
+
+  const best = sorted[0];
+  const need = sorted[sorted.length - 1];
+  const summary = `오늘 결과에서는 <strong>${best.name}</strong>이 가장 안정적으로 나타났고, <strong>${need.name}</strong>은 다음 놀이에서 조금 더 연습해보면 좋아요.`;
+
+  const detail = labels.map(item => {
+    const score = Number(scores[item.key]) || 0;
+    return `
+      <div class="analysis-row">
+        <strong>${item.emoji} ${item.name} ${score}점 · ${getScoreLevelLabel(score)}</strong><br>
+        <span>${getAbilityFeedback(item.key, score)}</span>
+      </div>
+    `;
+  }).join('');
+
+  const guide = `<div class="analysis-guide"><strong>추천 방향</strong><br>점수가 낮게 나온 영역은 하루 5~10분씩 짧게 반복해보세요.</div>`;
+  return `${summary}<br><br>${detail}${guide}`;
+}
 
 function render(data) {
   document.getElementById('child-name').innerText = data.child;
@@ -88,10 +165,10 @@ function toggleHistory() {
 
   if (isHistoryOpen) {
     panel.classList.add('open');
-    icon.innerText = '⌃';
+    if (icon) icon.classList.add('open');
   } else {
     panel.classList.remove('open');
-    icon.innerText = '⌄';
+    if (icon) icon.classList.remove('open');
   }
 }
 
@@ -100,10 +177,6 @@ function changeSample() {
   render(samples[index]);
 }
 
-function makeShareText() {
-  const data = samples[index];
-  return `놀픽 검사 결과\n${data.child}\n${data.date}\n종합 결과: ${data.overall}점\n집중 유지력: ${data.abilities[0][3]}점\n작업 기억력: ${data.abilities[1][3]}점\n반응 속도: ${data.abilities[2][3]}점\n충동 억제: ${data.abilities[3][3]}점\n시각 탐색력: ${data.abilities[4][3]}점`;
-}
 
 function makeShareText() {
   const data = samples[index];
@@ -117,75 +190,220 @@ function makeShareText() {
 🎯 집중 유지력: ${data.abilities[0][3]}점
 🧩 작업 기억력: ${data.abilities[1][3]}점
 ⚡ 반응 속도: ${data.abilities[2][3]}점
-✋ 충동 억제: ${data.abilities[3][3]}점
-🔍 시각 탐색력: ${data.abilities[4][3]}점
+🔍 시각 탐색력: ${data.abilities[3][3]}점
+✋ 충동 억제: ${data.abilities[4][3]}점
 
 놀픽에서 우리 아이의 성장 기록을 확인해보세요.
 `;
 }
 
-async function shareResult() {
+function encodeResultSharePayload(payload) {
+  const json = JSON.stringify(payload);
+  return btoa(unescape(encodeURIComponent(json)))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/g, '');
+}
 
-    const shareUrl = window.location.href;
-
-    const shareData = {
-        title: "놀픽 검사 결과",
-        text: "우리 아이의 검사 결과를 확인해보세요!",
-        url: shareUrl
-    };
-
-    if (navigator.share) {
-        await navigator.share(shareData);
-    } else {
-        await navigator.clipboard.writeText(shareUrl);
-        alert("링크가 복사되었습니다.");
+function getResultShareUrl(data) {
+  const payload = {
+    child: data.child,
+    date: data.date,
+    overall: data.overall,
+    comment: data.comment,
+    scores: {
+      attention: Number(data.abilities?.[0]?.[3]) || 0,
+      memory: Number(data.abilities?.[1]?.[3]) || 0,
+      reaction: Number(data.abilities?.[2]?.[3]) || 0,
+      visual: Number(data.abilities?.[3]?.[3]) || 0,
+      inhibition: Number(data.abilities?.[4]?.[3]) || 0
     }
+  };
+  const url = new URL('../index.html', window.location.href);
+  url.searchParams.set('page', 'result');
+  url.searchParams.set('sharedResult', encodeResultSharePayload(payload));
+  return url.href;
+}
+
+async function shareResult() {
+  const data = samples[index];
+  const shareUrl = getResultShareUrl(data);
+  const shareData = {
+    title: '놀픽 검사 결과',
+    text: makeShareText().trim(),
+    url: shareUrl
+  };
+
+  if (navigator.share) {
+    await navigator.share(shareData);
+  } else {
+    await navigator.clipboard.writeText(`${shareData.text}\n\n${shareUrl}`);
+    alert('검사 결과 링크가 복사되었습니다.');
+  }
 }
 
 
+function safeParseLocalStorage(key, fallback = null) {
+  try {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : fallback;
+  } catch (e) {
+    return fallback;
+  }
+}
 
-function getSavedNollpicData() {
+function getNollpicUserForResult() {
+  return safeParseLocalStorage('nollpic_user', null);
+}
+
+function getChildrenStorageKeyForResult() {
+  const user = getNollpicUserForResult();
+  return user && user.uid ? `nollpic_children_${user.uid}` : 'nollpic_children_guest';
+}
+
+function getSavedChildrenForResult() {
+  return safeParseLocalStorage(getChildrenStorageKeyForResult(), []);
+}
+
+function normalizeResultChild(item) {
+  if (!item) return null;
+  const child = item.child || item;
+  if (!child || !child.name) return null;
+  return {
+    id: child.id || item.childId || '',
+    name: child.name || item.childName || '우리 아이',
+    gradeText: child.gradeText || item.gradeText || '',
+    gradeValue: child.gradeValue || item.gradeValue || '',
+    gender: child.gender || item.gender || ''
+  };
+}
+
+function getAllChildrenForResult() {
+  const children = getSavedChildrenForResult();
+  const history = safeParseLocalStorage('nollpic_result_history', []);
+  const latest = safeParseLocalStorage('nollpic_latest_result', null);
+  const profile = safeParseLocalStorage('nollpic_child_profile', null);
+  const map = new Map();
+
+  [...children, profile].forEach(child => {
+    if (!child || !child.name) return;
+    const key = child.id || `${child.name}_${child.gradeText || ''}_${child.gender || ''}`;
+    map.set(key, { ...child, id: child.id || key });
+  });
+
+  [latest, ...history].forEach(item => {
+    const child = normalizeResultChild(item);
+    if (!child || !child.name) return;
+    const key = child.id || `${child.name}_${child.gradeText || ''}_${child.gender || ''}`;
+    if (!map.has(key)) map.set(key, { ...child, id: child.id || key });
+  });
+
+  return Array.from(map.values());
+}
+
+function isSameResultChild(item, child) {
+  if (!item || !child) return false;
+  const itemChild = item.child || {};
+  if (child.id && (item.childId === child.id || itemChild.id === child.id)) return true;
+  return !!(child.name && (item.childName === child.name || itemChild.name === child.name) &&
+    (item.gradeText === child.gradeText || itemChild.gradeText === child.gradeText));
+}
+
+function getChildLabelForResult(child) {
+  if (!child) return '우리 아이';
+  const gradeText = child.gradeText ? child.gradeText.replace('초등 ', '초') : '';
+  return gradeText ? `${child.name || '우리 아이'} · ${gradeText}` : (child.name || '우리 아이');
+}
+
+function getResultCountForChild(child) {
+  const history = safeParseLocalStorage('nollpic_result_history', []);
+  const latest = safeParseLocalStorage('nollpic_latest_result', null);
+  const matched = [latest, ...history].filter(item => isSameResultChild(item, child));
+  const keys = new Set(matched.map(item => `${item?.date || ''}_${item?.overall || ''}_${JSON.stringify(item?.scores || {})}`));
+  return keys.size;
+}
+
+function setupChildSelector(selectedChildId = '') {
+  const selector = document.getElementById('child-selector');
+  if (!selector) return null;
+
+  const children = getAllChildrenForResult();
+  selector.innerHTML = '';
+
+  if (children.length === 0) {
+    const option = document.createElement('option');
+    option.value = '';
+    option.textContent = '아이 없음';
+    selector.appendChild(option);
+    selector.disabled = true;
+    return null;
+  }
+
+ selector.disabled = false;
+
+children.forEach((child, idx) => {
+  const option = document.createElement('option');
+  option.value = child.id || `${child.name}_${idx}`;
+
+  const count = getResultCountForChild(child);
+
+  const gradeText = child.gradeText
+    ? child.gradeText.replace('초등 ', '초')
+    : '';
+
+  option.textContent = count > 0
+    ? `${child.name || '우리 아이'} ${gradeText} (${count}회)`
+    : `${child.name || '우리 아이'} ${gradeText} (기록 없음)`;
+
+  selector.appendChild(option);
+});
+
+  const params = new URLSearchParams(window.location.search);
+  const urlChildId = params.get('childId') || '';
+  const storedSelected = safeParseLocalStorage('nollpic_selected_child', null);
+  const targetId = selectedChildId || urlChildId || storedSelected?.id || children[0].id;
+  const selectedChild = children.find(child => child.id === targetId) || children[0];
+
+  selector.value = selectedChild.id;
+  localStorage.setItem('nollpic_selected_child', JSON.stringify(selectedChild));
+  localStorage.setItem('nollpic_child_profile', JSON.stringify(selectedChild));
+
+  selector.onchange = () => {
+    const child = children.find(item => item.id === selector.value) || children[0];
+    localStorage.setItem('nollpic_selected_child', JSON.stringify(child));
+    localStorage.setItem('nollpic_child_profile', JSON.stringify(child));
+    const data = getSavedNollpicData(child.id);
+    samples[0] = data;
+    index = 0;
+    render(data);
+  };
+
+  return selectedChild;
+}
+
+function getSavedNollpicData(selectedChildId = '') {
   let latest = null;
   let history = [];
   let profile = null;
 
-  try {
-    latest = JSON.parse(localStorage.getItem('nollpic_latest_result'));
-  } catch (e) {
-    latest = null;
-  }
-
-  try {
-    history = JSON.parse(localStorage.getItem('nollpic_result_history')) || [];
-  } catch (e) {
-    history = [];
-  }
-
-  try {
-    profile = JSON.parse(localStorage.getItem('nollpic_child_profile'));
-  } catch (e) {
-    profile = null;
-  }
+  latest = safeParseLocalStorage('nollpic_latest_result', null);
+  history = safeParseLocalStorage('nollpic_result_history', []);
+  profile = safeParseLocalStorage('nollpic_child_profile', null);
 
   const params = new URLSearchParams(window.location.search);
-  const childId = params.get('childId') || profile?.id || '';
+  const childId = selectedChildId || params.get('childId') || profile?.id || '';
 
   if (profile || childId) {
-    const filtered = history.filter(item => {
-      const itemChild = item.child || {};
-      if (childId && itemChild.id && itemChild.id === childId) return true;
-      if (!profile) return false;
-      return itemChild.name === profile.name && itemChild.gradeText === profile.gradeText;
-    });
+    const selectedChild = getAllChildrenForResult().find(child => child.id === childId) || profile;
+    const filtered = history.filter(item => isSameResultChild(item, selectedChild) && item.isComplete !== false);
 
     if (filtered.length > 0) {
       history = filtered;
       latest = filtered[0];
       localStorage.setItem('nollpic_latest_result', JSON.stringify(latest));
     } else if (latest) {
-      const latestChild = latest.child || {};
-      const isSameChild = (childId && latestChild.id && latestChild.id === childId) ||
-        (profile && latestChild.name === profile.name && latestChild.gradeText === profile.gradeText);
+      const selectedChild = getAllChildrenForResult().find(child => child.id === childId) || profile;
+      const isSameChild = isSameResultChild(latest, selectedChild);
       if (!isSameChild) latest = null;
     }
   }
@@ -203,13 +421,14 @@ function getSavedNollpicData() {
         ['🎯', '집중 유지력', '검사 전', 0],
         ['🧩', '작업 기억력', '검사 전', 0],
         ['⚡', '반응 속도', '검사 전', 0],
-        ['✋', '충동 억제', '검사 전', 0],
-        ['🔍', '시각 탐색력', '검사 전', 0]
+        ['🔍', '시각 탐색력', '검사 전', 0],
+        ['✋', '충동 억제', '검사 전', 0]
+
       ],
       history: [{
         date: '-',
         summary: '검사 기록 없음',
-        scores: { attention: 0, memory: 0, reaction: 0, inhibition: 0, visual: 0 }
+        scores: { attention: 0, memory: 0, reaction: 0,  visual: 0, inhibition: 0}
       }],
       analysis: '아직 이 아이의 검사 기록이 없어요. 검사를 완료하면 아이별 성장 기록이 자동으로 표시됩니다.'
     };
@@ -222,15 +441,25 @@ function getSavedNollpicData() {
   const currentScores = latest.scores || {};
   const historyItems = history.length ? history : [latest];
 
-  const formattedHistory = historyItems.slice(0, 5).map((item, idx) => ({
+  // 표시용 중복 제거: 같은 날짜 + 동일 점수는 첫 번째만 유지
+  const seenKeys = new Set();
+  const dedupedHistory = historyItems.filter(item => {
+    const key = `${item.date}_${item.overall}_${item.scores?.attention}_${item.scores?.memory}_${item.scores?.reaction}`;
+    if (seenKeys.has(key)) return false;
+    seenKeys.add(key);
+    return true;
+  });
+
+  const formattedHistory = dedupedHistory.slice(0, 5).map((item, idx) => ({
     date: item.date || latest.date,
     summary: idx === 0 ? '최근 검사' : '이전 검사',
     scores: {
       attention: item.scores?.attention ?? 0,
       memory: item.scores?.memory ?? 0,
       reaction: item.scores?.reaction ?? 0,
-      inhibition: item.scores?.inhibition ?? 0,
-      visual: item.scores?.visual ?? 0
+      visual: item.scores?.visual ?? 0,
+      inhibition: item.scores?.inhibition ?? 0
+
     }
   }));
 
@@ -260,16 +489,17 @@ function getSavedNollpicData() {
       ['🎯', '집중 유지력', '슐테표 수행', currentScores.attention ?? 0],
       ['🧩', '작업 기억력', '위치 기억 활동', currentScores.memory ?? 0],
       ['⚡', '반응 속도', '빠른 반응 활동', currentScores.reaction ?? 0],
-      ['✋', '충동 억제', '멈추고 선택하기', currentScores.inhibition ?? 0],
-      ['🔍', '시각 탐색력', '목표 빠르게 찾기', currentScores.visual ?? 0]
+      ['🔍', '시각 탐색력', '목표 빠르게 찾기', currentScores.visual ?? 0],
+      ['✋', '충동 억제', '멈추고 선택하기', currentScores.inhibition ?? 0]
     ],
     history: formattedHistory,
-    analysis: latest.analysis || '오늘 검사 결과가 저장되었어요. 낮게 나온 영역은 다음 놀이에서 한 번 더 연습해보면 좋아요.'
+    analysis: makeNollpicAnalysisFromScores(currentScores)
   };
 }
 
 function initNollpicResult() {
-  const savedData = getSavedNollpicData();
+  const selectedChild = setupChildSelector();
+  const savedData = getSavedNollpicData(selectedChild?.id || '');
   if (savedData) {
     samples[0] = savedData;
   }
@@ -300,8 +530,8 @@ function renderGrowthChart(history) {
     { key: 'attention', label: '집중력', diff: last.attention - first.attention },
     { key: 'memory', label: '기억력', diff: last.memory - first.memory },
     { key: 'reaction', label: '반응속도', diff: last.reaction - first.reaction },
-    { key: 'inhibition', label: '충동억제', diff: last.inhibition - first.inhibition },
-    { key: 'visual', label: '시각탐색', diff: last.visual - first.visual }
+    { key: 'visual', label: '시각탐색', diff: last.visual - first.visual },
+    { key: 'inhibition', label: '충동억제', diff: last.inhibition - first.inhibition }
   ];
 
   const bestGrowth = growthList.sort((a, b) => b.diff - a.diff)[0];
@@ -328,8 +558,8 @@ function renderGrowthChart(history) {
         {
           label: '집중력',
           data: orderedHistory.map(item => item.scores.attention),
-          borderColor: '#ff7a59',
-          backgroundColor: 'rgba(255,122,89,0.12)',
+          borderColor: '#FF6B00',
+          backgroundColor: 'rgba(255,107,0,0.08)',
           tension: 0.35,
           pointRadius: 4,
           pointHoverRadius: 6
@@ -337,8 +567,8 @@ function renderGrowthChart(history) {
         {
           label: '기억력',
           data: orderedHistory.map(item => item.scores.memory),
-          borderColor: '#22c55e',
-          backgroundColor: 'rgba(34,197,94,0.12)',
+          borderColor: '#0E1D3E',
+          backgroundColor: 'rgba(14,29,62,0.08)',
           tension: 0.35,
           pointRadius: 4,
           pointHoverRadius: 6
@@ -346,17 +576,8 @@ function renderGrowthChart(history) {
         {
           label: '반응속도',
           data: orderedHistory.map(item => item.scores.reaction),
-          borderColor: '#f59e0b',
-          backgroundColor: 'rgba(245,158,11,0.12)',
-          tension: 0.35,
-          pointRadius: 4,
-          pointHoverRadius: 6
-        },
-        {
-          label: '충동억제',
-          data: orderedHistory.map(item => item.scores.inhibition),
-          borderColor: '#3b82f6',
-          backgroundColor: 'rgba(59,130,246,0.12)',
+          borderColor: '#F59E0B',
+          backgroundColor: 'rgba(245,158,11,0.08)',
           tension: 0.35,
           pointRadius: 4,
           pointHoverRadius: 6
@@ -364,8 +585,17 @@ function renderGrowthChart(history) {
         {
           label: '시각탐색',
           data: orderedHistory.map(item => item.scores.visual),
-          borderColor: '#8b5cf6',
-          backgroundColor: 'rgba(139,92,246,0.12)',
+          borderColor: '#8B5CF6',
+          backgroundColor: 'rgba(139,92,246,0.08)',
+          tension: 0.35,
+          pointRadius: 4,
+          pointHoverRadius: 6
+        },
+        {
+          label: '충동억제',
+          data: orderedHistory.map(item => item.scores.inhibition),
+          borderColor: '#22C55E',
+          backgroundColor: 'rgba(34,197,94,0.08)',
           tension: 0.35,
           pointRadius: 4,
           pointHoverRadius: 6
@@ -375,39 +605,44 @@ function renderGrowthChart(history) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      layout: {
+        padding: { top: 4, bottom: 4, left: 0, right: 4 }
+      },
       plugins: {
         legend: {
           position: 'bottom',
           onClick: null,
           labels: {
-            boxWidth: 10,
-            boxHeight: 10,
+            boxWidth: 8,
+            boxHeight: 8,
             padding: 12,
             usePointStyle: true,
             pointStyle: 'circle',
-            font: { size: 11, weight: '700' }
+            font: { size: 10, weight: '700' },
+            color: '#5b5562'
           }
         }
       },
       scales: {
         y: {
-          min: 50,
+          min: 0,
           max: 100,
           ticks: {
-            stepSize: 10,
-            font: { size: 10 }
+            stepSize: 20,
+            font: { size: 10 },
+            color: '#8892A0'
           },
           grid: {
-            color: 'rgba(14,29,62,0.08)'
-          }
+            color: 'rgba(14,29,62,0.05)'
+          },
+          border: { dash: [4, 4] }
         },
         x: {
           ticks: {
-            font: { size: 10 }
+            font: { size: 10 },
+            color: '#8892A0'
           },
-          grid: {
-            display: false
-          }
+          grid: { display: false }
         }
       }
     }

@@ -5,8 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>놀픽 - 통합 인지 능력 검사</title>
     <link rel="stylesheet" href="tests.css">
+    <script type="module" src="../firebase-save-result.js"></script>
 </head>
 <body>
+    <!-- 항상 최상단 고정 뒤로가기 헤더 -->
+    <header class="tests-sticky-header">
+        <button class="tests-back-btn" onclick="goBackFromTests()">❮</button>
+    </header>
+
     <div class="test-body">
 
         <!-- =========================
@@ -51,15 +57,16 @@
                 </p>
             </div>
 
-            <div class="leaderboard">
-                <h3>📊 실시간 실적 리더보드</h3>
-                <div class="leaderboard-header">
+            
+            <div class="review-board result-board" data-result-type="schulte">
+                <h3>📊 실시간 결과값</h3>
+                <div class="leaderboard-header result-header">
                     <span>학년</span>
                     <span>이름/닉네임</span>
                     <span>기록</span>
                     <span>날짜</span>
                 </div>
-                <div id="schulte-leaderboard-list" class="leaderboard-body"></div>
+                <div id="schulte-review-list" class="review-list result-list"></div>
             </div>
 
             <div class="action-block dual-actions">
@@ -93,15 +100,16 @@
                     시공간 작업기억을 평가하는 Corsi Block Test의 개념을 바탕으로 구성된 활동입니다. 잠시 본 위치를 기억한 뒤 다시 찾아보며 시각 기억력과 위치 기억 능력을 활용합니다.
             </div>
 
-            <div class="leaderboard">
-                <h3>📊 실시간 실적 리더보드</h3>
-                <div class="leaderboard-header">
+            
+            <div class="review-board result-board" data-result-type="memory">
+                <h3>📊 실시간 결과값</h3>
+                <div class="leaderboard-header result-header">
                     <span>학년</span>
                     <span>이름/닉네임</span>
                     <span>기록</span>
                     <span>날짜</span>
                 </div>
-                <div id="memory-leaderboard-list" class="leaderboard-body"></div>
+                <div id="memory-review-list" class="review-list result-list"></div>
             </div>
 
             <div class="action-block dual-actions">
@@ -161,15 +169,16 @@
                 </p>
             </div>
 
-            <div class="leaderboard">
-                <h3>📊 실시간 실적 리더보드</h3>
-                <div class="leaderboard-header">
+            
+            <div class="review-board result-board" data-result-type="reaction">
+                <h3>📊 실시간 결과값</h3>
+                <div class="leaderboard-header result-header">
                     <span>학년</span>
                     <span>이름/닉네임</span>
                     <span>기록</span>
                     <span>날짜</span>
                 </div>
-                <div id="reaction-leaderboard-list" class="leaderboard-body"></div>
+                <div id="reaction-review-list" class="review-list result-list"></div>
             </div>
 
             <div class="action-block dual-actions">
@@ -213,7 +222,6 @@
             </div>
 
             <div class="visual-target-card">
-                <div class="visual-target-label">찾을 동물</div>
                 <div id="visual-target" class="visual-target">🐶</div>
                 <div id="visual-target-count" class="visual-target-count">3마리를 찾아보세요</div>
             </div>
@@ -231,15 +239,16 @@
                 </p>
             </div>
 
-            <div class="leaderboard">
-                <h3>📊 실시간 실적 리더보드</h3>
-                <div class="leaderboard-header">
+            
+            <div class="review-board result-board" data-result-type="visual">
+                <h3>📊 실시간 결과값</h3>
+                <div class="leaderboard-header result-header">
                     <span>학년</span>
                     <span>이름/닉네임</span>
                     <span>기록</span>
                     <span>날짜</span>
                 </div>
-                <div id="visual-leaderboard-list" class="leaderboard-body"></div>
+                <div id="visual-review-list" class="review-list result-list"></div>
             </div>
 
             <div class="action-block dual-actions">
@@ -252,7 +261,7 @@
         <!-- =========================
              05. Flanker 충동억제 챌린지
         ========================== -->
-        <section id="flanker-screen" class="test-screen">
+        <section id="flanker-screen" class="test-screen active">
             <div class="title-block">
                 <h2 class="section-title">Flanker 충동억제 챌린지</h2>
                 <div class="badge-center">
@@ -299,15 +308,16 @@
                 </p>
             </div>
 
-            <div class="leaderboard">
-                <h3>📊 실시간 실적 리더보드</h3>
-                <div class="leaderboard-header">
+            
+            <div class="review-board result-board" data-result-type="flanker">
+                <h3>📊 실시간 결과값</h3>
+                <div class="leaderboard-header result-header">
                     <span>학년</span>
                     <span>이름/닉네임</span>
                     <span>기록</span>
                     <span>날짜</span>
                 </div>
-                <div id="flanker-leaderboard-list" class="leaderboard-body"></div>
+                <div id="flanker-review-list" class="review-list result-list"></div>
             </div>
 
             <div class="action-block dual-actions">
@@ -322,6 +332,16 @@
     <!-- 슐테 시작 팝업 -->
     <div id="schulte-countdown-overlay" class="popup-overlay active">
         <div class="popup-content">
+
+            <div class="schulte-demo">
+                <div class="demo-num n1">1</div>
+                <div class="demo-num n2">2</div>
+                <div class="demo-num n3">3</div>
+                <div class="demo-num n4">4</div>
+                <div class="demo-num n5">5</div>
+                <div class="demo-num n6">6</div>
+            </div>
+            
             <h3>집중력 테스트 준비</h3>
             <p>화면에 무작위로 배치된 숫자를<br><strong>1부터 순서대로</strong> 누르세요.</p>
 
@@ -338,8 +358,20 @@
     <!-- 기억력 시작 팝업 -->
     <div id="memory-popup" class="popup-overlay">
         <div class="popup-content">
+
+            <div class="memory-demo">
+                <div class="memory-card c1"></div>
+                <div class="memory-card c2 active"></div>
+                <div class="memory-card c3"></div>
+
+                <div class="memory-card c4 active"></div>
+                <div class="memory-card c5"></div>
+                <div class="memory-card c6 active"></div>
+            </div>
+
+
             <h3>기억력 테스트 준비</h3>
-            <p>화면에 나타나는 카드의 위치를<br><strong>3초 동안</strong> 기억하세요.</p>
+            <p><strong>3초 동안</strong> 나타난 카드의 위치를 기억하고<br>카드의 위치를 클릭해주세요!</p>
             <button class="btn-popup-start orange" onclick="startMemoryGame()">시작하기</button>
         </div>
     </div>
@@ -348,9 +380,23 @@
     <!-- 반응속도 시작 팝업 -->
     <div id="reaction-popup" class="popup-overlay">
         <div class="popup-content">
+
+            <div class="reaction-demo">
+                <div class="reaction-circle red">멈춰!</div>
+                <div class="reaction-circle green">터치!</div>
+            </div>
+
+            
+
             <h3>반응속도 테스트 준비</h3>
             <p>초록 원은 빠르게 누르고,<br><strong>빨간 원은 누르지 마세요.</strong></p>
-            <button class="btn-popup-start green" onclick="startReactionGame()">시작하기</button>
+            <div id="reaction-start-block">
+                <button class="btn-popup-start green" onclick="runReactionCountdown()">시작하기</button>
+            </div>
+
+            <div id="reaction-countdown-number" class="countdown-display" style="display:none;">
+                3
+            </div>
         </div>
     </div>
 
@@ -358,6 +404,21 @@
     <!-- 시각 탐색 시작 팝업 -->
     <div id="visual-search-popup" class="popup-overlay">
         <div class="popup-content">
+
+            <div class="visual-demo">
+                <div>🐰</div>
+                <div class="visual-target">⭐</div>
+                <div>🍎</div>
+
+                <div class="visual-target">⭐</div>
+                <div>🐻</div>
+                <div>🐰</div>
+
+                <div>🍎</div>
+                <div>🦊</div>
+                <div class="visual-target">⭐</div>
+            </div>
+
             <h3>시각 탐색 챌린지 준비</h3>
             <p>목표 동물을 확인하고,<br><strong>제한시간 안에 모두 찾아보세요.</strong></p>
             <button class="btn-popup-start pink" onclick="startVisualSearchGame()">시작하기</button>
@@ -368,7 +429,19 @@
     <!-- Flanker 시작 팝업 -->
     <div id="flanker-popup" class="popup-overlay">
         <div class="popup-content">
-            <h3>Flanker 챌린지 준비</h3>
+
+            <div class="flanker-demo">
+                <div class="flanker-memory-text">그림을 기억하세요</div>
+
+                <div class="flanker-card-row">
+                    <div class="flanker-card">🐰</div>
+                    <div class="flanker-card target">🐻</div>
+                    <div class="flanker-card">🐰</div>
+                </div>
+            </div>
+
+
+            <h3>Flanker 충동억제 챌린지</h3>
             <p>가운데 목표를 기억한 뒤,<br><strong>방해 자극에 속지 말고 선택하세요.</strong></p>
             <button class="btn-popup-start flanker" onclick="startFlankerGame()">시작하기</button>
         </div>
@@ -387,5 +460,16 @@
 
 
     <script src="tests.js"></script>
+    <script>
+        function goBackFromTests() {
+            if (typeof goBackToPreviousTest === 'function') {
+                goBackToPreviousTest();
+            } else if (window.parent && typeof window.parent.exitTestPage === 'function') {
+                window.parent.exitTestPage();
+            } else {
+                window.parent.postMessage({ type: 'exitTest' }, '*');
+            }
+        }
+    </script>
 </body>
 </html>

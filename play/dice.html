@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎲 주사위 굴림 + 오디오</title>
+<style>
+body, html{margin:0;padding:0;width:100%;height:100%;display:flex;flex-direction:column;font-family:'Pretendard',sans-serif;background:#1a1a2e;transition:background 0.3s;}
+.header{display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 1rem;background:rgba(0,0,0,0.25);}
+.back-btn{background:none;border:none;color:#fff;font-size:1.3rem;font-weight:700;cursor:pointer;}
+.header-title{color:#fff;font-weight:800;}
+.header-spacer{width:52px;}
+.dice-stage{flex:1;position:relative;display:flex;flex-direction:column;overflow:hidden;cursor:pointer;}
+.dice-row{flex:1;display:flex;align-items:center;justify-content:center;position:relative;border-top:1px solid rgba(255,255,255,0.06);}
+.dice-row:first-child{border-top:none;}
+.cube-scene{perspective:600px;width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
+.cube{position:relative;transform-style:preserve-3d;transform:rotateY(0deg);}
+.face{position:absolute;display:flex;align-items:center;justify-content:center;border-radius:12%;font-weight:900;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.25);backface-visibility:visible;box-shadow:inset 0 0 0 3px rgba(255,255,255,0.18);user-select:none;}
+@keyframes rollLeft{0%{transform:rotateY(0deg);}100%{transform:rotateY(-360deg);}}
+.cube.rolling{animation:rollLeft var(--roll-dur,0.18s) linear infinite;}
+.cube.land{animation:none;transition:transform 0.35s cubic-bezier(0.22,1,0.36,1);}
+.tap-hint{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:0.8rem;font-weight:700;color:rgba(255,255,255,0.4);text-shadow:0 1px 6px rgba(0,0,0,0.5);pointer-events:none;}
+.settings-bar{flex-shrink:0;padding:12px 1.25rem 18px;display:flex;flex-direction:column;gap:10px;background:rgba(0,0,0,0.3);border-top:1px solid rgba(255,255,255,0.08);z-index:20;}
+.setting-row{display:flex;align-items:center;justify-content:space-between;}
+.setting-label{font-size:0.8rem;font-weight:700;color:rgba(255,255,255,0.6);}
+.count-control{display:flex;align-items:center;gap:14px;}
+.count-btn{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.12);border:none;color:#fff;font-size:1.2rem;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 0.12s;}
+.count-btn:active{background:rgba(255,255,255,0.28);}
+.count-val{min-width:20px;text-align:center;font-weight:900;font-size:1.1rem;color:#fff;}
+.roll-btn{width:100%;padding:1rem;background:#E8532A;border:none;border-radius:1rem;color:#fff;font-weight:900;font-size:1.05rem;cursor:pointer;box-shadow:0 4px 18px rgba(232,83,42,0.45);margin-top:2px;transition:transform 0.1s;}
+.roll-btn:active{transform:scale(0.97);}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <button class="back-btn" onclick="goBack()">❮</button>
+  <span class="header-title">🎲 주사위</span>
+  <div class="header-spacer"></div>
+</header>
+
+<div class="dice-stage" id="diceStage" onclick="rollDice()">
+  <div class="tap-hint" id="tapHint">탭해서 굴리기</div>
+</div>
+
+<div class="settings-bar">
+  <div class="setting-row">
+    <span class="setting-label">⚄ 눈 수</span>
+    <div class="count-control">
+      <button class="count-btn" onclick="changeMax(-1)">−</button>
+      <span class="count-val" id="maxVal">6</span>
+      <button class="count-btn" onclick="changeMax(1)">＋</button>
+    </div>
+  </div>
+  <div class="setting-row">
+    <span class="setting-label">🎲 주사위 개수</span>
+    <div class="count-control">
+      <button class="count-btn" onclick="changeCount(-1)">−</button>
+      <span class="count-val" id="countVal">1</span>
+      <button class="count-btn" onclick="changeCount(1)">＋</button>
+    </div>
+  </div>
+  <button class="roll-btn" onclick="rollDice()">굴리기 🎲</button>
+</div>
+
+<!-- 볼륨 증폭된 13~15초 구간 오디오 -->
+<audio id="diceSound" src=" dice_sound.mp3"></audio>
+
+<script>
+const COLORS=['#E8532A','#2E6BE6','#1FA843','#F5A623','#C23D1A','#7B3FE4','#E84393','#0ABFBC'];
+const DARK={'#E8532A':'#B83D1A','#2E6BE6':'#1A4BAA','#1FA843':'#136B2A','#F5A623':'#B87A0A','#C23D1A':'#8C2510','#7B3FE4':'#5520A8','#E84393':'#A82065','#0ABFBC':'#068080'};
+const DOTS={1:[[50,50]],2:[[28,28],[72,72]],3:[[28,28],[50,50],[72,72]],4:[[28,28],[72,28],[28,72],[72,72]],5:[[28,28],[72,28],[50,50],[28,72],[72,72]],6:[[28,25],[72,25],[28,50],[72,50],[28,75],[72,75]]};
+
+let maxVal=6,diceCount=1,isRolling=false,cubeObjs=[];
+
+function rnd(){return Math.floor(Math.random()*maxVal)+1;}
+function changeMax(d){const n=Math.min(20,Math.max(1,maxVal+d));if(n===maxVal)return;maxVal=n;document.getElementById('maxVal').textContent=maxVal;}
+function changeCount(d){const next=Math.min(6,Math.max(1,diceCount+d));if(next===diceCount)return;diceCount=next;document.getElementById('countVal').textContent=diceCount;buildCubes();}
+
+function buildCubes(){
+  const stage=document.getElementById('diceStage');
+  const hint=document.getElementById('tapHint');
+  stage.innerHTML='';stage.appendChild(hint);
+  cubeObjs=[];
+  const stageH=stage.clientHeight||400;
+  const sz=Math.min(stageH/diceCount*0.55,220);
+
+  for(let i=0;i<diceCount;i++){
+    const row=document.createElement('div');row.className='dice-row';
+    const scene=document.createElement('div');scene.className='cube-scene';scene.style.width=sz+'px';scene.style.height=sz+'px';
+    const cube=document.createElement('div');cube.className='cube';cube.style.width=sz+'px';cube.style.height=sz+'px';cube.style.cssText+='--roll-dur:0.18s;';
+    const color=COLORS[i%COLORS.length];const dark=DARK[color]||'#333';
+    const faceNames=['front','back','top','bottom','left','right'];
+    const transforms=[`translateZ(${sz/2}px)`,`rotateY(180deg) translateZ(${sz/2}px)`,`rotateX(90deg) translateZ(${sz/2}px)`,`rotateX(-90deg) translateZ(${sz/2}px)`,`rotateY(-90deg) translateZ(${sz/2}px)`,`rotateY(90deg) translateZ(${sz/2}px)`];
+    const faceEls=[];const initVals=[1,6,2,5,3,4];
+    faceNames.forEach((f,fi)=>{const face=document.createElement('div');face.className='face';face.style.width=sz+'px';face.style.height=sz+'px';face.style.position='absolute';face.style.top='0';face.style.left='0';face.style.transform=transforms[fi];face.innerHTML=makeFaceSVG(initVals[fi],color,dark,sz);cube.appendChild(face);faceEls.push(face);});
+    scene.appendChild(cube);row.appendChild(scene);stage.appendChild(row);
+    cubeObjs.push({cube,faceEls,color,dark,sz,val:1});
+  }
+}
+
+function makeFaceSVG(val,faceColor,darkColor,sz){
+  const r=Math.max(6,sz*0.09);
+  const pts=(val>6||!DOTS[val])?null:DOTS[val];
+  let inner='';
+  if(pts) inner=pts.map(([cx,cy])=>`<circle cx="${cx}%" cy="${cy}%" r="${r}" fill="${darkColor}" opacity="0.85"/>`).join('');
+  else inner=`<text x="50%" y="58%" text-anchor="middle" dominant-baseline="middle" font-size="${sz*0.38}" font-weight="900" fill="white" opacity="0.9">${val}</text>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}"><rect width="${sz}" height="${sz}" rx="${sz*0.12}" fill="${faceColor}"/>${inner}</svg>`;
+}
+
+// 오디오
+function playDiceSound(){
+  const audio=document.getElementById('diceSound');
+  audio.currentTime=0;
+  audio.play();
+  setTimeout(()=>{audio.pause();},2000); // 2초 재생
+}
+
+// 굴리기
+function rollDice(){
+  if(isRolling) return; isRolling=true;document.getElementById('tapHint').style.display='none';
+  playDiceSound();
+  const totalMs=1200+Math.random()*150;
+  const fastDur=0.42;
+  cubeObjs.forEach(obj=>{obj.cube.style.setProperty('--roll-dur',fastDur+'s');obj.cube.classList.remove('land');void obj.cube.offsetWidth;obj.cube.classList.add('rolling');});
+  const slowSteps=[{at:totalMs*0.50,dur:0.6},{at:totalMs*0.70,dur:0.85},{at:totalMs*0.85,dur:1.2}];
+  slowSteps.forEach(step=>{setTimeout(()=>{cubeObjs.forEach(obj=>{obj.cube.style.setProperty('--roll-dur',step.dur+'s');});},step.at);});
+  setTimeout(()=>{
+    const finals=cubeObjs.map(()=>rnd());
+    cubeObjs.forEach((obj,i)=>{obj.faceEls[0].innerHTML=makeFaceSVG(finals[i],obj.color,obj.dark,obj.sz);obj.cube.classList.remove('rolling');obj.cube.classList.add('land');obj.cube.style.transform='rotateY(0deg)';});
+    isRolling=false;
+  },totalMs);
+}
+
+function goBack(){window.parent.postMessage({type:'exitPlay'},'*');}
+window.addEventListener('resize',buildCubes);
+buildCubes();
+</script>
+
+</body>
+</html>

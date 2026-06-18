@@ -42,20 +42,16 @@
                 <div class="action-block">
                     <div class="social-login-wrap">
                         <button class="btn-google-main" onclick="googleLogin()">
-                            Google 로그인하고, 성장기록 저장
-                            <!-- <p class="login-guide">
-                            로그인하면 미션 결과와 성장 기록이 저장돼요.
-                            </p>-->
+                            Google 로그인하고 기록 저장하기
                         </button>
-                       
+                        <p class="login-guide">
+                            로그인하면 미션 결과와 성장 기록이 저장돼요.
+                        </p>
                         <button class="btn-guest" onclick="nextPage(2)">
                             로그인 없이 체험하기
                         </button>
-                        <p class="privacy-link-wrap">
-                            <a href="/privacy.html" target="_blank" class="privacy-link">개인정보처리방침</a>
-                        </p>
                     </div>
-                    <!--<img src="images/logo_footer.png" alt="놀픽" class="img-footer">-->
+                    <img src="images/logo_footer.png" alt="놀픽" class="img-footer">
                 </div>
 
             </div>
@@ -67,8 +63,8 @@
             </header>-->
             <div class="page-body justify-center">
                 <div class="title-block">
-                    <h2 class="section-title">놀이로 배우고,<br>성장으로 이어지는 도전</h2>
-                    <p class="section-sub">5가지 활동을 통해 아이의 능력을 확인해요.</p>
+                    <h2 class="section-title">놀이로 배우고,<br>성장으로 이어지는 미션</h2>
+                    <p class="section-sub">5가지 활동을 통해 아이의 능력을 분석해요.</p>
                 </div>
                 <div class="info-list">
                     <div class="info-card-clean">
@@ -117,7 +113,7 @@
             <div class="page-body">
                 <div class="title-block child-title-block">
                     <h2 class="section-title" id="child-page-title">우리 아이를 선택해주세요</h2>
-                    <p class="section-sub" id="child-page-sub">로그인하면 아이의 미션 결과를 따로 저장할 수 있어요.</p>
+                    <p class="section-sub" id="child-page-sub">로그인하면 아이별 미션 기록을 따로 저장할 수 있어요.</p>
                 </div>
 
                 <div id="login-status-bar" class="login-status-bar" style="display:none;"></div>
@@ -229,7 +225,7 @@
             </div>
         </div>
 
-        <!-- page-6: 미션 결과 (mypage-result 통합) -->
+        <!-- page-6: 미션결과 (mypage-result 통합) -->
         <div id="page-6" class="page">
             <div class="page-body result-page-body">
                 <main class="result-app">
@@ -296,16 +292,6 @@
                         <p id="result-analysis-text"></p>
                     </section>
 
-                    <section id="result-recommend-card" class="result-recommend-card">
-                        <div class="recommend-head">
-                            <span id="result-recommend-area">추천 놀이</span>
-                            <h2 id="result-recommend-title">우리 아이에게 맞는 놀이</h2>
-                            <p id="result-recommend-desc">결과에 맞춰 짧게 반복할 수 있는 놀이를 추천해요.</p>
-                        </div>
-                        <div id="result-recommend-list" class="recommend-list"></div>
-                        <button type="button" class="recommend-lock-btn" onclick="openRecommendedPlayDetail()">상세 놀이방법 보기</button>
-                    </section>
-
                     <p class="disclaimer">본 결과는 놀이형 인지 활동의 수행 기록이며, 의료적 진단 또는 치료 목적의 검사가 아닙니다.</p>
                 </main>
             </div>
@@ -322,40 +308,36 @@
                     <div class="play-card-grid">
 
                         <!-- 주사위 -->
-                         <button type="button" class="play-card play-card-ready" onclick="openPlayItem('dice')">
-                            <div class="play-card-icon-wrap play-bg-peach">
+                        <div class="play-card" onclick="openPlayItem('dice')">
+                            <div class="play-card-icon-wrap" style="background:linear-gradient(135deg,#FFF0E6,#FFD9BC);">
                                 <span class="play-card-emoji">🎲</span>
                             </div>
-                            <strong class="play-card-label">주사위</strong>
-                            <span class="play-card-sub">숫자 뽑기</span>
-                        </button>
+                            <span class="play-card-label">주사위</span>
+                        </div>
 
                         <!-- 화살표 룰렛 -->
-                         <button type="button" class="play-card play-card-ready" onclick="openPlayItem('arrow')">
-                            <div class="play-card-icon-wrap play-bg-blue">
+                        <div class="play-card" onclick="openPlayItem('arrow')">
+                            <div class="play-card-icon-wrap" style="background:linear-gradient(135deg,#EEF4FF,#C7D9FF);">
                                 <span class="play-card-emoji">🏹</span>
                             </div>
-                            <strong class="play-card-label">화살표</strong>
-                            <span class="play-card-sub">방향 정하기</span>
-                        </button>
+                            <span class="play-card-label">화살표</span>
+                        </div>
 
                         <!-- 랜덤컬러 -->
-                         <button type="button" class="play-card play-card-ready" onclick="openPlayItem('randomcolor')">
-                            <div class="play-card-icon-wrap play-bg-purple">
+                        <div class="play-card" onclick="openPlayItem('randomcolor')">
+                            <div class="play-card-icon-wrap" style="background:linear-gradient(135deg,#F3F0FF,#D8CCFF);">
                                 <span class="play-card-emoji">🎡</span>
                             </div>
-                            <strong class="play-card-label">랜덤컬러</strong>
-                            <span class="play-card-sub">색깔 룰렛</span>
-                        </button>
+                            <span class="play-card-label">랜덤컬러</span>
+                        </div>
 
                         <!-- 빈 슬롯 (예정) -->
-                        <button type="button" class="play-card play-card-soon" disabled>
-                            <div class="play-card-icon-wrap play-bg-soon">
-                                <span class="play-card-emoji">＋</span>
+                        <div class="play-card play-card-soon">
+                            <div class="play-card-icon-wrap" style="background:rgba(0,0,0,0.04);border:2px dashed rgba(0,0,0,0.12);">
+                                <span class="play-card-emoji" style="font-size:1.8rem;opacity:0.25;">＋</span>
                             </div>
-                            <strong class="play-card-label">준비중</strong>
-                            <span class="play-card-sub">곧 추가됩니다</span>
-                        </button>
+                            <span class="play-card-label" style="color:rgba(0,0,0,0.2);">준비중</span>
+                        </div>
 
                     </div>
                 </div>
@@ -518,4 +500,4 @@
     </script>
     
 </body>
-</html><!-- privacy link style은 style.css에 추가 필요 -->
+</html>
