@@ -1380,7 +1380,7 @@ function handleMemoryCardClick(card, isCorrect) {
             state.level++;
 
             const desc = document.getElementById("memory-desc");
-            if (desc) desc.innerText = "성공! 다음 단계로 넘어갑니다.";
+            if (desc) desc.innerText = `성공! ${state.level}단계로 넘어갑니다.`;
 
             clearTimeout(state.nextLevelTimer);
             state.nextLevelTimer = setTimeout(startMemoryGame, 1000);
