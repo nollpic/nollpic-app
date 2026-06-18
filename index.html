@@ -502,6 +502,9 @@
         if (e.data && e.data.type === 'exitTest') {
             if (typeof exitTestPage === 'function') exitTestPage();
         }
+        if (e.data && e.data.type === 'exitTestToSurvey') {
+            if (typeof goBackFromTestToSurvey === 'function') goBackFromTestToSurvey();
+        }
         if (e.data && e.data.type === 'exitPlay') {
             if (typeof nextPage === 'function') nextPage(7);
         }

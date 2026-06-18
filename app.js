@@ -9,6 +9,9 @@ function resetAppScrollTop(targetPage = null) {
 
 function nextPage(pageNumber) {
     const activePage = document.querySelector('.page.active');
+    if (activePage?.id === 'page-5' && pageNumber !== 5) {
+        stopAndUnloadTestFrame();
+    }
     if (activePage) activePage.classList.remove('active');
     
     const targetPage = document.getElementById(`page-${pageNumber}`);
@@ -51,6 +54,21 @@ function openTestPageFrom(returnPage) {
         // History state is only used to keep browser back inside the app.
     }
     nextPage(5);
+}
+
+function stopAndUnloadTestFrame() {
+    const frame = document.getElementById('test-frame');
+    if (!frame) return;
+
+    try {
+        if (frame.contentWindow && typeof frame.contentWindow.stopNollpicTestAudio === 'function') {
+            frame.contentWindow.stopNollpicTestAudio();
+        }
+    } catch (e) {
+        // Cross-frame access can fail while the iframe is unloading.
+    }
+
+    frame.src = 'about:blank';
 }
 
 function prevPage(pageNumber) {
@@ -220,6 +238,7 @@ function exitTestPage() {
 function goBackFromTestToSurvey() {
     const returnPage = getStoredTestReturnPage(4);
     sessionStorage.removeItem('nollpic_test_return_page');
+    stopAndUnloadTestFrame();
     prevPage(returnPage);
 }
 

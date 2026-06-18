@@ -2666,6 +2666,7 @@ function hideAllStartPopups() {
 
 function stopCurrentGameTimers() {
     stopTestIntroVoice();
+    stopTestCompleteVoice();
 
     clearInterval(testState.schulte.timerInterval);
 
@@ -2687,6 +2688,28 @@ function stopCurrentGameTimers() {
     clearInterval(testState.flanker.countdownTimer);
     testState.flanker.isGaming = false;
 }
+
+function leaveTestsToParent() {
+    stopCurrentGameTimers();
+    hideAllStartPopups();
+
+    if (window.parent && window.parent !== window && typeof window.parent.goBackFromTestToSurvey === 'function') {
+        window.parent.goBackFromTestToSurvey();
+        return;
+    }
+
+    if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'exitTestToSurvey' }, '*');
+    }
+}
+
+window.stopNollpicTestAudio = stopCurrentGameTimers;
+
+window.addEventListener('pagehide', stopCurrentGameTimers);
+window.addEventListener('beforeunload', stopCurrentGameTimers);
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopCurrentGameTimers();
+});
 
 function restoreTestProgress() {
     const progress = getProgress();
@@ -2735,8 +2758,14 @@ function goToFlankerTest() {
 }
 
 function goBackToPreviousTest() {
+    const visibleStep = getCurrentVisibleTestStep();
     stopCurrentGameTimers();
     hideAllStartPopups();
+
+    if (!visibleStep || visibleStep === 1) {
+        leaveTestsToParent();
+        return;
+    }
 
     saveProgress(1);
     showScreen('schulte-screen');
