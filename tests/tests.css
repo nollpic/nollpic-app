@@ -935,7 +935,11 @@ body {
     padding-left: 0.85rem;
     padding-right: 0.85rem;
     max-height: min(88dvh, 720px);
+    overflow-x: hidden;
     overflow-y: auto;
+    scrollbar-gutter: stable;
+    scrollbar-color: rgba(107, 114, 128, 0.72) transparent;
+    clip-path: inset(0 round 1.25rem);
 }
 
 .result-popup-emoji {
@@ -1414,11 +1418,13 @@ html,
 body {
     height: 100%;
     min-height: 100%;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 body {
     padding: 0 !important;
+    height: 100dvh;
+    overscroll-behavior: none;
 }
 
 .tests-sticky-header {
@@ -1436,8 +1442,31 @@ body {
 
 .test-body {
     max-width: 430px;
+    height: calc(100dvh - 38px) !important;
     min-height: calc(100dvh - 38px) !important;
+    overflow-x: hidden;
+    overflow-y: auto;
     padding: 0 0.75rem 0.35rem !important;
+    scrollbar-gutter: stable;
+    scrollbar-color: rgba(107, 114, 128, 0.72) transparent;
+}
+
+.test-body::-webkit-scrollbar,
+.result-popup-content::-webkit-scrollbar {
+    width: 16px;
+}
+
+.test-body::-webkit-scrollbar-track,
+.result-popup-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.test-body::-webkit-scrollbar-thumb,
+.result-popup-content::-webkit-scrollbar-thumb {
+    background-color: rgba(107, 114, 128, 0.72);
+    background-clip: content-box;
+    border: 5px solid transparent;
+    border-radius: 999px;
 }
 
 .test-screen {
