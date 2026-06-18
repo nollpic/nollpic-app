@@ -337,7 +337,7 @@ async function prepareChildPage() {
         formSection.style.display = 'none';
         if (nextBtn) nextBtn.style.display = 'none';
         if (title) title.innerText = '우리 아이를 선택해주세요';
-        if (sub) sub.innerText = '아이별로 검사 결과와 성장 기록을 따로 저장해요.';
+        if (sub) sub.innerText = '아이별로 미션 결과와 성장 기록을 따로 저장해요.';
         renderSavedChildren(children);
     } else {
         savedSection.style.display = 'none';
@@ -362,7 +362,7 @@ async function prepareChildPage() {
             formSection.style.display = 'none';
             if (nextBtn) nextBtn.style.display = 'none';
             if (title) title.innerText = '우리 아이를 선택해주세요';
-            if (sub) sub.innerText = '아이별로 검사 결과와 성장 기록을 따로 저장해요.';
+            if (sub) sub.innerText = '아이별로 미션 결과와 성장 기록을 따로 저장해요.';
             renderSavedChildren(children);
         }
     }
