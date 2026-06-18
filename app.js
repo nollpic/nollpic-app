@@ -1327,6 +1327,10 @@ function _resultEscape(value) {
     }[char]));
 }
 
+function _resultGetRecommendedPlayLink(item = {}) {
+    return String(item.link || item.url || item.href || item.playUrl || item.detailUrl || '').trim();
+}
+
 function _resultGetDisplayChildName(value) {
     const childName = String(value || '')
         .split('·')[0]
@@ -1383,7 +1387,11 @@ function _resultSetRecommendationContent(areaKey, plays, childName = '') {
             : `<div class="recommend-thumb recommend-fallback-thumb">${index + 1}</div>`;
         const title = _resultEscape(item.title || `추천 놀이 ${index + 1}`);
         const description = item.description ? `<p>${_resultEscape(item.description)}</p>` : '';
-        return `<div class="recommend-item">${thumb}<div><strong>${title}</strong>${description}</div></div>`;
+        const link = _resultGetRecommendedPlayLink(item);
+        const content = `${thumb}<div><strong>${title}</strong>${description}</div>`;
+        return link
+            ? `<a class="recommend-item" href="${_resultEscape(link)}" target="_blank" rel="noopener noreferrer">${content}</a>`
+            : `<div class="recommend-item">${content}</div>`;
     }).join('');
 }
 
