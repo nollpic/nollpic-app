@@ -474,7 +474,7 @@ function renderSavedChildren(children) {
                         type="button"
                         class="child-test-btn"
                         onclick="startTestForChild('${childId}')">
-                        🎮 검사하기
+                        🎮 미션하기
                     </button>
 
                     <button
