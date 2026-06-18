@@ -1,0 +1,54 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && request.auth.token.email in [
+          "monojjin@gmail.com",
+          "nollpic.official@gmail.com"
+        ];
+    }
+
+    function owns(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    match /recommendedPlays/{playId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /users/{userId} {
+      allow read, create, update, delete: if owns(userId) || isAdmin();
+
+      match /children/{childId} {
+        allow read, create, update, delete: if owns(userId) || isAdmin();
+      }
+
+      match /results/{resultId} {
+        allow read, create, update, delete: if owns(userId) || isAdmin();
+      }
+    }
+
+    match /guestUsers/{guestId} {
+      allow read, create, update, delete: if isAdmin();
+
+      match /children/{childId} {
+        allow read, create, update, delete: if isAdmin();
+      }
+
+      match /results/{resultId} {
+        allow read, create, update, delete: if isAdmin();
+      }
+    }
+
+    match /{document=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
