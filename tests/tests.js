@@ -98,7 +98,6 @@ function getActiveChildProfileForResult() {
 let nollpicAudioCtx = null;
 let gameResultConfirmAction = null;
 let gameResultRetryAction = null;
-let gameResultCountdownTimer = null;
 const NOLLPIC_SOUND_VOLUME_MULTIPLIER = 2;
 
 function getNollpicAudioContext() {
@@ -295,9 +294,68 @@ function playTestIntroFallbackVoice(type) {
 }
 
 function showTestIntroPopup(popupId, voiceType) {
+    resetIntroCountdownControls(popupId);
     const popup = document.getElementById(popupId);
     if (popup) popup.classList.add("active");
     setTimeout(() => playTestIntroVoice(voiceType), 120);
+}
+
+const INTRO_COUNTDOWN_CONTROLS = {
+    "memory-popup": ["memory-start-block", "memory-countdown-number"],
+    "reaction-popup": ["reaction-start-block", "reaction-countdown-number"],
+    "visual-search-popup": ["visual-start-block", "visual-countdown-number"],
+    "flanker-popup": ["flanker-start-block", "flanker-start-countdown-number"]
+};
+
+function resetIntroCountdownControls(popupId) {
+    const controls = INTRO_COUNTDOWN_CONTROLS[popupId];
+    if (!controls) return;
+
+    const [startBlockId, countDisplayId] = controls;
+    const startBlock = document.getElementById(startBlockId);
+    const countDisplay = document.getElementById(countDisplayId);
+
+    if (startBlock) startBlock.style.display = "block";
+    if (countDisplay) {
+        countDisplay.style.display = "none";
+        countDisplay.innerText = "3";
+    }
+}
+
+function runStartButtonCountdown(startBlockId, countDisplayId, onComplete = null) {
+    stopTestIntroVoice();
+
+    const startBlock = document.getElementById(startBlockId);
+    const countDisplay = document.getElementById(countDisplayId);
+
+    if (startBlock) startBlock.style.display = "none";
+
+    if (!countDisplay) {
+        if (typeof onComplete === "function") onComplete();
+        return;
+    }
+
+    let count = 3;
+    countDisplay.style.display = "block";
+    countDisplay.innerText = count;
+    playNollpicSound("countdown-beep");
+
+    const interval = setInterval(() => {
+        count--;
+
+        if (count > 0) {
+            countDisplay.innerText = count;
+            playNollpicSound("countdown-beep");
+            return;
+        }
+
+        clearInterval(interval);
+        countDisplay.style.display = "none";
+        countDisplay.innerText = "3";
+        playNollpicSound("countdown-start");
+
+        if (typeof onComplete === "function") onComplete();
+    }, 1000);
 }
 
 function isPageReload() {
@@ -345,40 +403,6 @@ function showGameResultPopup(title, message, emoji = "🎉", buttonText = "확�
     if (popup) popup.classList.add("active");
 }
 
-function runCommonConfirmCountdown(onComplete = null) {
-    const popup = document.getElementById("common-confirm-countdown-popup");
-    const numberEl = document.getElementById("common-confirm-countdown-number");
-
-    clearInterval(gameResultCountdownTimer);
-
-    if (!popup || !numberEl) {
-        if (typeof onComplete === "function") onComplete();
-        return;
-    }
-
-    let count = 3;
-    numberEl.innerText = count;
-    popup.classList.add("active");
-    playNollpicSound("countdown-beep");
-
-    gameResultCountdownTimer = setInterval(() => {
-        count--;
-
-        if (count > 0) {
-            numberEl.innerText = count;
-            playNollpicSound("countdown-beep");
-            return;
-        }
-
-        clearInterval(gameResultCountdownTimer);
-        gameResultCountdownTimer = null;
-        popup.classList.remove("active");
-        playNollpicSound("countdown-start");
-
-        if (typeof onComplete === "function") onComplete();
-    }, 1000);
-}
-
 function closeGameResultPopup() {
     stopTestIntroVoice();
 
@@ -389,7 +413,7 @@ function closeGameResultPopup() {
     gameResultConfirmAction = null;
     gameResultRetryAction = null;
 
-    runCommonConfirmCountdown(action);
+    if (typeof action === "function") action();
 }
 
 function retryFromGameResultPopup() {
@@ -1253,6 +1277,10 @@ function getMemoryLevelConfig(level) {
     return configs[level - 1] || { show: 12, total: 20, time: 3 };
 }
 
+function runMemoryCountdown() {
+    runStartButtonCountdown("memory-start-block", "memory-countdown-number", startMemoryGame);
+}
+
 function startMemoryGame() {
     stopTestIntroVoice();
 
@@ -1984,6 +2012,10 @@ const visualFillers = [
 // ==========================================================================
 // 04. 시각 탐색 챌린지
 // ==========================================================================
+function runVisualSearchCountdown() {
+    runStartButtonCountdown("visual-start-block", "visual-countdown-number", startVisualSearchGame);
+}
+
 function startVisualSearchGame() {
     stopTestIntroVoice();
 
@@ -2285,6 +2317,10 @@ const flankerLevels = [
     { length: 9, showMs: 500, answerTime: 0.75, items: ["▥", "▤"] },
     { length: 9, showMs: 450, answerTime: 0.7, items: ["▧", "▨"] }
 ];
+
+function runFlankerStartCountdown() {
+    runStartButtonCountdown("flanker-start-block", "flanker-start-countdown-number", startFlankerGame);
+}
 
 function startFlankerGame() {
     stopTestIntroVoice();
@@ -2622,8 +2658,7 @@ function hideAllStartPopups() {
         'reaction-popup',
         'visual-search-popup',
         'flanker-popup',
-        'game-result-popup',
-        'common-confirm-countdown-popup'
+        'game-result-popup'
     ].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.remove('active');
@@ -2632,8 +2667,6 @@ function hideAllStartPopups() {
 
 function stopCurrentGameTimers() {
     stopTestIntroVoice();
-    clearInterval(gameResultCountdownTimer);
-    gameResultCountdownTimer = null;
 
     clearInterval(testState.schulte.timerInterval);
 

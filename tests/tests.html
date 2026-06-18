@@ -257,7 +257,13 @@
 
             <h3>기억력 테스트 준비</h3>
             <p><strong>3초 동안</strong> 나타난 카드의 위치를 기억하고<br>카드의 위치를 클릭해주세요!</p>
-            <button class="btn-popup-start orange" onclick="startMemoryGame()">시작하기</button>
+            <div id="memory-start-block">
+                <button class="btn-popup-start orange" onclick="runMemoryCountdown()">시작하기</button>
+            </div>
+
+            <div id="memory-countdown-number" class="countdown-display" style="display:none;">
+                3
+            </div>
         </div>
     </div>
 
@@ -306,7 +312,13 @@
 
             <h3>시각 탐색 챌린지 준비</h3>
             <p>목표 동물을 확인하고,<br><strong>제한시간 안에 모두 찾아보세요.</strong></p>
-            <button class="btn-popup-start pink" onclick="startVisualSearchGame()">시작하기</button>
+            <div id="visual-start-block">
+                <button class="btn-popup-start pink" onclick="runVisualSearchCountdown()">시작하기</button>
+            </div>
+
+            <div id="visual-countdown-number" class="countdown-display" style="display:none;">
+                3
+            </div>
         </div>
     </div>
 
@@ -328,7 +340,13 @@
 
             <h3>Flanker 충동억제 챌린지</h3>
             <p>가운데 목표를 기억한 뒤,<br><strong>방해 자극에 속지 말고 선택하세요.</strong></p>
-            <button class="btn-popup-start flanker" onclick="startFlankerGame()">시작하기</button>
+            <div id="flanker-start-block">
+                <button class="btn-popup-start flanker" onclick="runFlankerStartCountdown()">시작하기</button>
+            </div>
+
+            <div id="flanker-start-countdown-number" class="countdown-display" style="display:none;">
+                3
+            </div>
         </div>
     </div>
 
@@ -361,15 +379,6 @@
             </div>
         </div>
     </div>
-
-    <!-- 확인 후 공통 카운트다운 -->
-    <div id="common-confirm-countdown-popup" class="popup-overlay">
-        <div class="popup-content common-countdown-content">
-            <div class="countdown-caption">다음 단계 준비</div>
-            <div id="common-confirm-countdown-number" class="countdown-display">3</div>
-        </div>
-    </div>
-
 
     <script src="tests.js"></script>
     <script>

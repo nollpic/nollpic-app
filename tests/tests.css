@@ -519,18 +519,6 @@ body {
     color: #FF6B00;
 }
 
-.common-countdown-content {
-    max-width: 240px;
-    padding: 1.5rem 1.25rem;
-}
-
-.countdown-caption {
-    color: #0E1D3E;
-    font-size: 0.9rem;
-    font-weight: 900;
-    margin-bottom: 0.25rem;
-}
-
 /* 결과 */
 .result-screen {
     justify-content: center;
