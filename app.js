@@ -1558,20 +1558,34 @@ function _resultRenderChart(history) {
         data: {
             labels,
             datasets: [
-                { label:'집중력',  data: ordered.map(i => scoreOf(i, 'attention')),  borderColor:'#FF6B00', backgroundColor:'rgba(255,107,0,.08)',   tension:.35, pointRadius:4, pointHoverRadius:6 },
-                { label:'기억력',  data: ordered.map(i => scoreOf(i, 'memory')),     borderColor:'#0E1D3E', backgroundColor:'rgba(14,29,62,.08)',     tension:.35, pointRadius:4, pointHoverRadius:6 },
-                { label:'반응속도',data: ordered.map(i => scoreOf(i, 'reaction')),   borderColor:'#F59E0B', backgroundColor:'rgba(245,158,11,.08)',   tension:.35, pointRadius:4, pointHoverRadius:6 },
-                { label:'시각탐색',data: ordered.map(i => scoreOf(i, 'visual')),     borderColor:'#8B5CF6', backgroundColor:'rgba(139,92,246,.08)',   tension:.35, pointRadius:4, pointHoverRadius:6 },
-                { label:'충동억제',data: ordered.map(i => scoreOf(i, 'inhibition')), borderColor:'#22C55E', backgroundColor:'rgba(34,197,94,.08)',    tension:.35, pointRadius:4, pointHoverRadius:6 }
+                { label:'집중력',  data: ordered.map(i => scoreOf(i, 'attention')),  borderColor:'#FF6B00', backgroundColor:'rgba(255,107,0,.10)',   tension:.42, borderWidth:3, pointRadius:3.5, pointHoverRadius:7, pointBorderWidth:2, pointBackgroundColor:'#fff' },
+                { label:'기억력',  data: ordered.map(i => scoreOf(i, 'memory')),     borderColor:'#0E1D3E', backgroundColor:'rgba(14,29,62,.10)',     tension:.42, borderWidth:3, pointRadius:3.5, pointHoverRadius:7, pointBorderWidth:2, pointBackgroundColor:'#fff' },
+                { label:'반응속도',data: ordered.map(i => scoreOf(i, 'reaction')),   borderColor:'#F59E0B', backgroundColor:'rgba(245,158,11,.10)',   tension:.42, borderWidth:3, pointRadius:3.5, pointHoverRadius:7, pointBorderWidth:2, pointBackgroundColor:'#fff' },
+                { label:'시각탐색',data: ordered.map(i => scoreOf(i, 'visual')),     borderColor:'#8B5CF6', backgroundColor:'rgba(139,92,246,.10)',   tension:.42, borderWidth:3, pointRadius:3.5, pointHoverRadius:7, pointBorderWidth:2, pointBackgroundColor:'#fff' },
+                { label:'충동억제',data: ordered.map(i => scoreOf(i, 'inhibition')), borderColor:'#22C55E', backgroundColor:'rgba(34,197,94,.10)',    tension:.42, borderWidth:3, pointRadius:3.5, pointHoverRadius:7, pointBorderWidth:2, pointBackgroundColor:'#fff' }
             ]
         },
         options: {
             responsive: true, maintainAspectRatio: false,
-            layout: { padding: { top:4, bottom:4, left:0, right:4 } },
-            plugins: { legend: { position:'bottom', onClick:null, labels: { boxWidth:8, boxHeight:8, padding:12, usePointStyle:true, pointStyle:'circle', font:{ size:10, weight:'700' }, color:'#5b5562' } } },
+            interaction: { mode: 'index', intersect: false },
+            layout: { padding: { top:10, bottom:6, left:4, right:10 } },
+            plugins: {
+                legend: {
+                    position:'bottom',
+                    onClick:null,
+                    labels: { boxWidth:9, boxHeight:9, padding:14, usePointStyle:true, pointStyle:'circle', font:{ size:12, weight:'800' }, color:'#475467' }
+                },
+                tooltip: {
+                    backgroundColor:'rgba(14,29,62,.94)',
+                    titleFont:{ size:13, weight:'800' },
+                    bodyFont:{ size:13, weight:'700' },
+                    padding:10,
+                    displayColors:true
+                }
+            },
             scales: {
-                y: { min:0, max:100, ticks:{ stepSize:20, font:{size:10}, color:'#8892A0' }, grid:{ color:'rgba(14,29,62,.05)' }, border:{ dash:[4,4] } },
-                x: { ticks:{ font:{size:10}, color:'#8892A0' }, grid:{ display:false } }
+                y: { min:0, max:100, ticks:{ stepSize:20, font:{size:12, weight:'700'}, color:'#667085', padding:6 }, grid:{ color:'rgba(14,29,62,.08)' }, border:{ display:false } },
+                x: { ticks:{ font:{size:12, weight:'700'}, color:'#667085', padding:6 }, grid:{ display:false }, border:{ display:false } }
             }
         }
     });
