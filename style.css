@@ -844,7 +844,8 @@ body {
 }
 
 #page-1 .title-block .img-title{
-    max-width: 170px;
+    max-width: 230px;
+    height: auto;
     margin-bottom:0.35rem;
 }
 
@@ -890,7 +891,7 @@ body {
         padding-top: 3rem !important;
     }
     #page-1 .title-block .img-title{
-        max-width: 150px;
+        max-width: 200px;
     }
     #page-1 .brand-sub{
         font-size: 1rem;

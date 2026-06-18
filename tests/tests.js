@@ -97,6 +97,7 @@ function getActiveChildProfileForResult() {
 // ==========================================================================
 let nollpicAudioCtx = null;
 let gameResultConfirmAction = null;
+let gameResultCountdownTimer = null;
 const NOLLPIC_SOUND_VOLUME_MULTIPLIER = 2;
 
 function getNollpicAudioContext() {
@@ -326,6 +327,40 @@ function showGameResultPopup(title, message, emoji = "🎉", buttonText = "확�
     if (popup) popup.classList.add("active");
 }
 
+function runCommonConfirmCountdown(onComplete = null) {
+    const popup = document.getElementById("common-confirm-countdown-popup");
+    const numberEl = document.getElementById("common-confirm-countdown-number");
+
+    clearInterval(gameResultCountdownTimer);
+
+    if (!popup || !numberEl) {
+        if (typeof onComplete === "function") onComplete();
+        return;
+    }
+
+    let count = 3;
+    numberEl.innerText = count;
+    popup.classList.add("active");
+    playNollpicSound("countdown-beep");
+
+    gameResultCountdownTimer = setInterval(() => {
+        count--;
+
+        if (count > 0) {
+            numberEl.innerText = count;
+            playNollpicSound("countdown-beep");
+            return;
+        }
+
+        clearInterval(gameResultCountdownTimer);
+        gameResultCountdownTimer = null;
+        popup.classList.remove("active");
+        playNollpicSound("countdown-start");
+
+        if (typeof onComplete === "function") onComplete();
+    }, 1000);
+}
+
 function closeGameResultPopup() {
     stopTestIntroVoice();
 
@@ -335,9 +370,7 @@ function closeGameResultPopup() {
     const action = gameResultConfirmAction;
     gameResultConfirmAction = null;
 
-    if (typeof action === "function") {
-        action();
-    }
+    runCommonConfirmCountdown(action);
 }
 
 // ==========================================================================
@@ -2517,7 +2550,8 @@ function hideAllStartPopups() {
         'reaction-popup',
         'visual-search-popup',
         'flanker-popup',
-        'game-result-popup'
+        'game-result-popup',
+        'common-confirm-countdown-popup'
     ].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.remove('active');
@@ -2526,6 +2560,8 @@ function hideAllStartPopups() {
 
 function stopCurrentGameTimers() {
     stopTestIntroVoice();
+    clearInterval(gameResultCountdownTimer);
+    gameResultCountdownTimer = null;
 
     clearInterval(testState.schulte.timerInterval);
 
@@ -2595,44 +2631,13 @@ function goToFlankerTest() {
 }
 
 function goBackToPreviousTest() {
-    const visibleStep = getCurrentVisibleTestStep();
-    const progress = getProgress();
-    const currentStep = visibleStep || (progress ? Number(progress.currentStep) : 1);
-
     stopCurrentGameTimers();
     hideAllStartPopups();
 
-    if (currentStep <= 1) {
-        if (window.parent && window.parent !== window && typeof window.parent.goBackFromTestToSurvey === 'function') {
-            window.parent.goBackFromTestToSurvey();
-        } else {
-            window.location.href = '../index.html';
-        }
-        return;
-    }
-
-    const prevStep = currentStep - 1;
-    saveProgress(prevStep);
-
-    if (prevStep === 1) {
-        showScreen('schulte-screen');
-        resetSchulteIntroPopup();
-        showTestIntroPopup('schulte-countdown-overlay', 'schulte');
-    }
-    if (prevStep === 2) {
-        showScreen('memory-screen');
-        resetMemoryIntroPopup({ showRetry: true });
-        showTestIntroPopup('memory-popup', 'memory');
-    }
-    if (prevStep === 3) {
-        showScreen('reaction-screen');
-        resetReactionCountdownPopup();
-        showTestIntroPopup('reaction-popup', 'reaction');
-    }
-    if (prevStep === 4) {
-        showScreen('visual-search-screen');
-        showTestIntroPopup('visual-search-popup', 'visual');
-    }
+    saveProgress(1);
+    showScreen('schulte-screen');
+    resetSchulteIntroPopup();
+    showTestIntroPopup('schulte-countdown-overlay', 'schulte');
 }
 
 // 3번째 반응속도 게임은 아이가 계속 잘하면 끝나지 않는 구조라서 15라운드 후 자동 완료되도록 보강합니다.
@@ -2775,7 +2780,6 @@ async function fetchPublicResults(type) {
         .map(docSnap => docSnap.data())
         .filter(data => data.type === type)
         .filter(data => !isSeedResultRecord(data))
-        .slice(0, 8)
         .map(data => ({
             grade: data.grade || "-",
             name: data.name || "익명",
@@ -2785,13 +2789,18 @@ async function fetchPublicResults(type) {
         }));
 }
 
+function isCurrentGradeResult(item) {
+    const currentGrade = testState.child.gradeText || getGradeText(testState.child.gradeValue);
+    return !currentGrade || item.grade === currentGrade;
+}
+
 async function renderPublicResults(type) {
     const list = document.getElementById(`${type}-review-list`);
     if (!list) return;
 
     list.innerHTML = `<div class="review-empty">결과값을 불러오는 중이에요.</div>`;
 
-    const localResults = getLocalResultRecords(type).slice(0, 3).map((item, index) => ({
+    const localResults = getLocalResultRecords(type).filter(isCurrentGradeResult).slice(0, 3).map((item, index) => ({
         ...item,
         createdAtMs: Number(item.createdAtMs) || (parsePublicResultTime(item.createdAt, item.date) || parsePublicResultTime(item.date)) + (3 - index)
     }));
@@ -2810,6 +2819,7 @@ async function renderPublicResults(type) {
         }))
         .filter(item => {
             if (isSeedResultRecord(item)) return false;
+            if (!isCurrentGradeResult(item)) return false;
             const key = `${item.grade}_${item.name}_${item.time}_${item.date}`;
             if (seen.has(key)) return false;
             seen.add(key);
