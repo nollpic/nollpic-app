@@ -482,6 +482,28 @@ body {
     background: #FF6B00;
 }
 
+.btn-popup-start.outline {
+    background: #FFFFFF;
+    color: #0E1D3E;
+    border: 1.5px solid #D1D5DB;
+}
+
+.result-popup-actions {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr;
+    gap: 0.6rem;
+}
+
+.result-popup-actions.single-action {
+    grid-template-columns: 1fr;
+}
+
+.result-popup-actions .btn-popup-start {
+    width: 100%;
+    padding: 0.85rem 0.6rem;
+    white-space: nowrap;
+}
+
 .countdown-display {
     font-size: 3rem;
     font-weight: 900;
