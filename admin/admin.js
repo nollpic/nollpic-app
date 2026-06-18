@@ -59,6 +59,14 @@ let allRows = [];
 let currentFilteredRows = [];
 let recommendedPlays = [];
 
+function isCompleteResult(row = {}) {
+  if (!row || row.isComplete === false) return false;
+  if (row.isComplete === true || Number(row.finishedTests) === 5) return true;
+  const scores = row.scores || {};
+  return ["attention", "memory", "reaction", "visual", "inhibition"]
+    .every(key => Number.isFinite(Number(scores[key])));
+}
+
 // ── 로그인 ──────────────────────────────────────────
 document.getElementById("login-btn").addEventListener("click", async () => {
   const email    = document.getElementById("admin-email").value.trim();
@@ -170,9 +178,9 @@ async function loadAdminData() {
       if (userKey && userKey !== "-") userSet.add(userKey);
 
       const date = r.date || r.testDate || formatFirestoreDate(r.createdAt) || formatFirestoreDate(r.savedAt) || "-";
-      const isComplete = r.isComplete === true || r.finishedTests === 5;
+      const isComplete = isCompleteResult(r);
 
-      if (String(date).startsWith(today)) todayCount++;
+      if (isComplete && String(date).startsWith(today)) todayCount++;
 
       const childName = r.childName || r.child?.name || "-";
       const gradeText = normalizeGradeText(r.gradeText || r.child?.gradeText || r.child?.gradeValue || "-");
@@ -180,7 +188,7 @@ async function loadAdminData() {
 
       const childId = r.childId || r.child?.id || "";
       const childKey = childId || `${userKey}_${childName}_${gradeText}`;
-      if (childKey && childName !== "-") childSet.add(childKey);
+      if (isComplete && childKey && childName !== "-") childSet.add(childKey);
 
       const s = r.scores || {};
 
@@ -205,17 +213,18 @@ async function loadAdminData() {
       });
     });
 
+    const completedRows = allRows.filter(row => row.isComplete);
     const childCounts = new Map();
-    allRows.forEach(row => {
+    completedRows.forEach(row => {
       childCounts.set(row.childKey, (childCounts.get(row.childKey) || 0) + 1);
     });
     allRows.forEach(row => {
-      row.testCount = childCounts.get(row.childKey) || 1;
+      row.testCount = childCounts.get(row.childKey) || 0;
     });
 
     document.getElementById("user-count").textContent = userSet.size;
     document.getElementById("child-count").textContent = childSet.size;
-    document.getElementById("result-count").textContent = resultsSnap.size;
+    document.getElementById("result-count").textContent = completedRows.length;
     document.getElementById("today-result-count").textContent = todayCount;
 
     allRows.sort((a, b) => String(b.date).localeCompare(String(a.date)));
@@ -459,7 +468,7 @@ function renderTable(rows) {
 
 function openChildDetail(childKey) {
   const history = allRows
-    .filter(row => row.childKey === childKey)
+    .filter(row => row.childKey === childKey && row.isComplete)
     .sort((a, b) => String(a.date).localeCompare(String(b.date)));
 
   if (!history.length) return;

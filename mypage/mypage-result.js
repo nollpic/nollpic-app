@@ -276,6 +276,7 @@ function getAllChildrenForResult() {
   });
 
   [latest, ...history].forEach(item => {
+    if (!isCompleteResult(item)) return;
     const child = normalizeResultChild(item);
     if (!child || !child.name) return;
     const key = child.id || `${child.name}_${child.gradeText || ''}_${child.gender || ''}`;
@@ -293,6 +294,14 @@ function isSameResultChild(item, child) {
     (item.gradeText === child.gradeText || itemChild.gradeText === child.gradeText));
 }
 
+function isCompleteResult(item) {
+  if (!item || item.isComplete === false) return false;
+  if (item.isComplete === true || Number(item.finishedTests) === 5) return true;
+  const scores = item.scores || {};
+  return ['attention', 'memory', 'reaction', 'visual', 'inhibition']
+    .every(key => Number.isFinite(Number(scores[key])));
+}
+
 function getChildLabelForResult(child) {
   if (!child) return '우리 아이';
   const gradeText = child.gradeText ? child.gradeText.replace('초등 ', '초') : '';
@@ -302,7 +311,7 @@ function getChildLabelForResult(child) {
 function getResultCountForChild(child) {
   const history = safeParseLocalStorage('nollpic_result_history', []);
   const latest = safeParseLocalStorage('nollpic_latest_result', null);
-  const matched = [latest, ...history].filter(item => isSameResultChild(item, child));
+  const matched = [latest, ...history].filter(item => isCompleteResult(item) && isSameResultChild(item, child));
   const keys = new Set(matched.map(item => `${item?.date || ''}_${item?.overall || ''}_${JSON.stringify(item?.scores || {})}`));
   return keys.size;
 }
@@ -406,12 +415,17 @@ function getSavedNollpicData(selectedChildId = '') {
   history = safeParseLocalStorage('nollpic_result_history', []);
   profile = safeParseLocalStorage('nollpic_child_profile', null);
 
+  history = history.filter(isCompleteResult);
+  if (latest && !isCompleteResult(latest)) {
+    latest = history[0] || null;
+  }
+
   const params = new URLSearchParams(window.location.search);
   const childId = selectedChildId || params.get('childId') || profile?.id || '';
 
   if (profile || childId) {
     const selectedChild = getAllChildrenForResult().find(child => child.id === childId) || profile;
-    const filtered = history.filter(item => isSameResultChild(item, selectedChild) && item.isComplete !== false);
+    const filtered = history.filter(item => isSameResultChild(item, selectedChild) && isCompleteResult(item));
 
     if (filtered.length > 0) {
       history = filtered;

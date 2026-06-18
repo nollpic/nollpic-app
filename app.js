@@ -322,6 +322,7 @@ function recoverChildrenFromLocalResults() {
     try { history = JSON.parse(localStorage.getItem('nollpic_result_history') || '[]'); } catch (e) { history = []; }
 
     [latest, ...history].forEach(item => {
+        if (!_resultIsCompleteResult(item)) return;
         const child = normalizeChildFromResult(item);
         if (!child) return;
         const key = child.id || `${child.name}_${child.gradeText}`;
@@ -593,6 +594,7 @@ function getChildResultHistory(child) {
     }
 
     return history.filter(item => {
+        if (!_resultIsCompleteResult(item)) return false;
         const itemChild = item.child || {};
         if (child.id && itemChild.id && itemChild.id === child.id) return true;
         return (itemChild.name === child.name && itemChild.gradeText === child.gradeText);
@@ -1037,6 +1039,7 @@ async function syncNollpicDataFromFirestore() {
         const childrenFromResults = [];
         resultsSnapshot.forEach(docSnap => {
             const data = docSnap.data() || {};
+            if (!_resultIsCompleteResult(data)) return;
             const child = normalizeFirestoreChild(data.child || data, data.childId || "");
             if (child) childrenFromResults.push(child);
             firestoreResults.push({ ...data, child: data.child || child || null });
@@ -1063,7 +1066,7 @@ async function syncNollpicDataFromFirestore() {
         if (firestoreResults.length > 0) {
             localStorage.setItem("nollpic_result_history", JSON.stringify(firestoreResults));
             const currentLatest = JSON.parse(localStorage.getItem("nollpic_latest_result") || "null");
-            if (!currentLatest) {
+            if (!currentLatest || !_resultIsCompleteResult(currentLatest)) {
                 localStorage.setItem("nollpic_latest_result", JSON.stringify(firestoreResults[0]));
             }
         }
@@ -1432,6 +1435,14 @@ function _resultIsSameChild(item, child) {
     return !!(child.name && (item.childName === child.name || ic.name === child.name) && (item.gradeText === child.gradeText || ic.gradeText === child.gradeText));
 }
 
+function _resultIsCompleteResult(item) {
+    if (!item || item.isComplete === false) return false;
+    if (item.isComplete === true || Number(item.finishedTests) === 5) return true;
+    const scores = item.scores || {};
+    return ['attention', 'memory', 'reaction', 'visual', 'inhibition']
+        .every(key => Number.isFinite(Number(scores[key])));
+}
+
 function _resultGetAllChildren() {
     const children = _resultSafeJSON(getChildrenStorageKey(), []);
     const history  = _resultSafeJSON('nollpic_result_history', []);
@@ -1448,6 +1459,7 @@ function _resultGetAllChildren() {
     });
     if (canUseResultHistory) {
         [latest, ...history].forEach(item => {
+            if (!_resultIsCompleteResult(item)) return;
             const c = _resultNormalizeChild(item);
             if (!c || !c.name) return;
             const key = c.id || `${c.name}_${c.gradeText||''}_${c.gender||''}`;
@@ -1460,7 +1472,7 @@ function _resultGetAllChildren() {
 function _resultGetChildCount(child) {
     const history = _resultSafeJSON('nollpic_result_history', []);
     const latest  = _resultSafeJSON('nollpic_latest_result', null);
-    const matched = [latest, ...history].filter(i => _resultIsSameChild(i, child));
+    const matched = [latest, ...history].filter(i => _resultIsCompleteResult(i) && _resultIsSameChild(i, child));
     const keys = new Set(matched.map(i => `${i?.date||''}_${i?.overall||''}_${JSON.stringify(i?.scores||{})}`));
     return keys.size;
 }
@@ -1532,9 +1544,14 @@ function _resultGetData(selectedChildId) {
         history = [];
     }
 
+    history = history.filter(_resultIsCompleteResult);
+    if (latest && !_resultIsCompleteResult(latest)) {
+        latest = history[0] || null;
+    }
+
     if (childId) {
         const sel = _resultGetAllChildren().find(c => c.id === childId) || activeChild;
-        const filtered = history.filter(i => _resultIsSameChild(i, sel) && i.isComplete !== false);
+        const filtered = history.filter(i => _resultIsSameChild(i, sel) && _resultIsCompleteResult(i));
         if (filtered.length > 0) { history = filtered; latest = filtered[0]; }
         else if (latest && !_resultIsSameChild(latest, sel)) { latest = null; }
     }

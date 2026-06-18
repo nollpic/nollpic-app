@@ -58,6 +58,14 @@ function getFinishedTests(scores = {}) {
   return Object.keys(scores).length;
 }
 
+function isCompleteResultData(data = {}) {
+  if (!data || data.isComplete === false) return false;
+  if (data.isComplete === true || Number(data.finishedTests) === 5) return true;
+  const scores = data.scores || {};
+  return ["attention", "memory", "reaction", "visual", "inhibition"]
+    .every(key => Number.isFinite(Number(scores[key])));
+}
+
 function getLocalResultData() {
   const latest = safeJsonParse(localStorage.getItem("nollpic_latest_result"));
   const profile = safeJsonParse(localStorage.getItem("nollpic_child_profile"));
@@ -93,7 +101,7 @@ function getLocalResultData() {
     testVersion: latest.testVersion || TEST_VERSION,
     challengeWeek: getChallengeWeek(),
     finishedTests: latest.finishedTests || getFinishedTests(scores),
-    isComplete: latest.isComplete === true || getFinishedTests(scores) === 5,
+    isComplete: isCompleteResultData({ ...latest, scores }),
     playMinutes: latest.playMinutes || null,
 
     savedSource: "github-pages",
@@ -108,6 +116,7 @@ async function getFirebaseSessionNumber(uid, childId, childName) {
     let sameChildCount = 0;
     snapshot.forEach(doc => {
       const data = doc.data();
+      if (!isCompleteResultData(data)) return;
       const sameById = childId && data.childId === childId;
       const sameByName = !childId && childName && data.childName === childName;
       if (sameById || sameByName) sameChildCount += 1;
@@ -138,6 +147,7 @@ async function getGuestSessionNumber(guestId, childId, childName) {
 
     snapshot.forEach(doc => {
       const data = doc.data();
+      if (!isCompleteResultData(data)) return;
       const sameById = childId && data.childId === childId;
       const sameByName = !childId && childName && data.childName === childName;
       if (sameById || sameByName) sameChildCount += 1;
