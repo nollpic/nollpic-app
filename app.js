@@ -155,7 +155,15 @@ function startFirstTest() {
     const frame = document.getElementById('test-frame');
     if (frame) {
         // 주소창 뒤에 아이 id/학년/이름을 안전하게 붙여서 iframe을 로드합니다.
-        frame.src = `tests/tests.html?childId=${childIdVal}&grade=${childProfile.gradeValue || gradeVal}&name=${nameVal}&intro=1`;
+        const targetSrc = `tests/tests.html?childId=${childIdVal}&grade=${childProfile.gradeValue || gradeVal}&name=${nameVal}&intro=1&ts=${Date.now()}`;
+        frame.style.visibility = 'hidden';
+        frame.addEventListener('load', () => {
+            frame.style.visibility = 'visible';
+        }, { once: true });
+        setTimeout(() => {
+            if (frame.style.visibility === 'hidden') frame.style.visibility = 'visible';
+        }, 3000);
+        frame.src = targetSrc;
     }
     nextPage(5);
 }
@@ -385,7 +393,15 @@ function startTestForChild(childId) {
     const nameVal = encodeURIComponent(child.name || '');
     const frame = document.getElementById('test-frame');
     if (frame) {
-        frame.src = `tests/tests.html?childId=${encodeURIComponent(child.id || '')}&grade=${child.gradeValue || '0'}&name=${nameVal}&intro=1`;
+        const targetSrc = `tests/tests.html?childId=${encodeURIComponent(child.id || '')}&grade=${child.gradeValue || '0'}&name=${nameVal}&intro=1&ts=${Date.now()}`;
+        frame.style.visibility = 'hidden';
+        frame.addEventListener('load', () => {
+            frame.style.visibility = 'visible';
+        }, { once: true });
+        setTimeout(() => {
+            if (frame.style.visibility === 'hidden') frame.style.visibility = 'visible';
+        }, 3000);
+        frame.src = targetSrc;
     }
     nextPage(5);
 }
