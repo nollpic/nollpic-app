@@ -22,7 +22,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
-provider.setCustomParameters({ prompt: "select_account" });
+let googleLoginInProgress = false;
 
 function getStoredUser() {
   try {
@@ -142,6 +142,8 @@ function showFirebaseLoginError(error) {
 }
 
 window.googleLogin = async function () {
+  if (googleLoginInProgress) return;
+
   if (location.protocol === "file:") {
     alert("구글 로그인은 file:// 로컬 파일 화면에서는 작동하지 않아요. GitHub Pages/Firebase Hosting 주소에서 확인해주세요.");
     return;
@@ -152,28 +154,43 @@ window.googleLogin = async function () {
     return;
   }
 
+  if (auth.currentUser) {
+    await moveAfterLogin(auth.currentUser, false);
+    return;
+  }
+
+  googleLoginInProgress = true;
   markLoginPending();
 
   try {
     // 모바일 Chrome에서도 우선 popup 방식으로 처리합니다.
     // redirect 방식은 돌아온 뒤 화면 이동이 브라우저에 따라 불안정해서 fallback으로만 사용합니다.
     const result = await signInWithPopup(auth, provider);
-    moveAfterLogin(result.user, true);
+    await moveAfterLogin(result.user, true);
+    googleLoginInProgress = false;
   } catch (error) {
     const code = error && error.code ? error.code : "";
 
-    if (code.includes("popup-blocked") || code.includes("popup-closed-by-user") || code.includes("cancelled-popup-request")) {
+    if (code.includes("popup-blocked")) {
       try {
         await signInWithRedirect(auth, provider);
         return;
       } catch (redirectError) {
         clearLoginPending();
+        googleLoginInProgress = false;
         showFirebaseLoginError(redirectError);
         return;
       }
     }
 
+    if (code.includes("popup-closed-by-user") || code.includes("cancelled-popup-request")) {
+      clearLoginPending();
+      googleLoginInProgress = false;
+      return;
+    }
+
     clearLoginPending();
+    googleLoginInProgress = false;
     showFirebaseLoginError(error);
   }
 };
