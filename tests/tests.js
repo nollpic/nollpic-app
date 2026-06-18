@@ -97,6 +97,8 @@ function getActiveChildProfileForResult() {
 // ==========================================================================
 let nollpicAudioCtx = null;
 let gameResultConfirmAction = null;
+let gameResultRetryAction = null;
+let gameResultCountdownTimer = null;
 const NOLLPIC_SOUND_VOLUME_MULTIPLIER = 2;
 
 function getNollpicAudioContext() {
@@ -308,14 +310,22 @@ function showGameResultPopup(title, message, emoji = "🎉", buttonText = "확�
     const textEl = document.getElementById("game-result-text");
     const emojiEl = document.getElementById("game-result-emoji");
     const buttonEl = document.getElementById("game-result-button");
+    const retryButtonEl = document.getElementById("game-result-retry-button");
+    const actionsEl = document.getElementById("game-result-actions");
     const popup = document.getElementById("game-result-popup");
 
     gameResultConfirmAction = typeof onConfirm === "function" ? onConfirm : null;
+    gameResultRetryAction = typeof options.onRetry === "function" ? options.onRetry : null;
 
     if (titleEl) titleEl.innerHTML = title;
     if (textEl) textEl.innerHTML = message;
     if (emojiEl) emojiEl.innerHTML = emoji;
     if (buttonEl) buttonEl.innerText = buttonText;
+    if (retryButtonEl) {
+        retryButtonEl.innerText = options.retryButtonText || "다시하기";
+        retryButtonEl.style.display = gameResultRetryAction ? "" : "none";
+    }
+    if (actionsEl) actionsEl.classList.toggle("single-action", !gameResultRetryAction);
 
     if (options.completeVoice) {
         playTestCompleteVoice();
@@ -326,6 +336,40 @@ function showGameResultPopup(title, message, emoji = "🎉", buttonText = "확�
     if (popup) popup.classList.add("active");
 }
 
+function runCommonConfirmCountdown(onComplete = null) {
+    const popup = document.getElementById("common-confirm-countdown-popup");
+    const numberEl = document.getElementById("common-confirm-countdown-number");
+
+    clearInterval(gameResultCountdownTimer);
+
+    if (!popup || !numberEl) {
+        if (typeof onComplete === "function") onComplete();
+        return;
+    }
+
+    let count = 3;
+    numberEl.innerText = count;
+    popup.classList.add("active");
+    playNollpicSound("countdown-beep");
+
+    gameResultCountdownTimer = setInterval(() => {
+        count--;
+
+        if (count > 0) {
+            numberEl.innerText = count;
+            playNollpicSound("countdown-beep");
+            return;
+        }
+
+        clearInterval(gameResultCountdownTimer);
+        gameResultCountdownTimer = null;
+        popup.classList.remove("active");
+        playNollpicSound("countdown-start");
+
+        if (typeof onComplete === "function") onComplete();
+    }, 1000);
+}
+
 function closeGameResultPopup() {
     stopTestIntroVoice();
 
@@ -334,6 +378,20 @@ function closeGameResultPopup() {
 
     const action = gameResultConfirmAction;
     gameResultConfirmAction = null;
+    gameResultRetryAction = null;
+
+    runCommonConfirmCountdown(action);
+}
+
+function retryFromGameResultPopup() {
+    stopTestIntroVoice();
+
+    const popup = document.getElementById("game-result-popup");
+    if (popup) popup.classList.remove("active");
+
+    const action = gameResultRetryAction;
+    gameResultConfirmAction = null;
+    gameResultRetryAction = null;
 
     if (typeof action === "function") {
         action();
@@ -887,7 +945,16 @@ function scrollTestViewportTop(target = null) {
     window.scrollTo({ top: 0, behavior: "auto" });
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
+    const testBody = document.querySelector(".test-body");
+    if (testBody) testBody.scrollTop = 0;
+    const activeScreen = document.querySelector(".test-screen.active");
+    if (activeScreen) activeScreen.scrollTop = 0;
     if (target) target.scrollTop = 0;
+}
+
+function scrollCurrentTestToTop() {
+    const activeScreen = document.querySelector(".test-screen.active");
+    scrollTestViewportTop(activeScreen);
 }
 
 function showScreen(screenId) {
@@ -1075,7 +1142,7 @@ function endSchulteGame() {
     if (nextBtn) nextBtn.disabled = false;
 
     const retryBtn = document.getElementById("schulte-retry-btn");
-    if (retryBtn) retryBtn.style.display = "block";
+    if (retryBtn) retryBtn.style.display = "none";
 
     schulteRecords.forEach(item => item.isCurrentPlayer = false);
 
@@ -1095,13 +1162,17 @@ function endSchulteGame() {
     showGameResultPopup(
         "🎉 집중력 미션 완료!",
         `<strong>${testState.child.name}</strong>의 집중력 기록이 저장되었어요.<br><br>기록: <strong>${state.elapsedTime}초</strong><br>다음 미션으로 넘어갈 수 있어요.`,
-        "⚡"
+        "⚡",
+        "다음 미션 도전",
+        goToMemoryTest,
+        { onRetry: restartSchulteGame }
     );
 }
 
 function restartSchulteGame() {
     const overlay = document.getElementById("schulte-countdown-overlay");
 
+    scrollCurrentTestToTop();
     resetSchulteIntroPopup();
     if (overlay) overlay.classList.add("active");
     setTimeout(() => playTestIntroVoice("schulte"), 120);
@@ -1295,12 +1366,15 @@ function endMemoryGame() {
     if (nextBtn) nextBtn.disabled = false;
 
     const retryBtn = document.getElementById("memory-retry-btn");
-    if (retryBtn) retryBtn.style.display = "block";
+    if (retryBtn) retryBtn.style.display = "none";
 
     showGameResultPopup(
         "🧠 기억력 미션 완료!",
         `<strong>${testState.child.name}</strong>의 기억력 기록이 저장되었어요.<br><br>최고 기록: <strong>${state.successLevel}단계</strong><br>다음 미션으로 넘어갈 수 있어요.`,
-        "🧩"
+        "🧩",
+        "다음 미션 도전",
+        goToReactionTest,
+        { onRetry: restartMemoryGame }
     );
 }
 
@@ -1338,6 +1412,7 @@ function resetMemoryIntroPopup(options = {}) {
 }
 
 function restartMemoryGame() {
+    scrollCurrentTestToTop();
     resetMemoryIntroPopup({ showRetry: false });
     showTestIntroPopup("memory-popup", "memory");
 }
@@ -1752,16 +1827,20 @@ function endReactionGame() {
     if (nextBtn) nextBtn.disabled = false;
 
     const retryBtn = document.getElementById("reaction-retry-btn");
-    if (retryBtn) retryBtn.style.display = "block";
+    if (retryBtn) retryBtn.style.display = "none";
 
     showGameResultPopup(
         "⚡ 반응속도 미션 완료!",
         `<strong>${testState.child.name}</strong>의 반응속도 기록이 저장되었어요.<br><br>평균 반응속도: <strong>${state.averageMs || 0}ms</strong><br>정답률: <strong>${state.accuracy}%</strong>`,
-        "🟢"
+        "🟢",
+        "다음 미션 도전",
+        goToVisualSearchTest,
+        { onRetry: restartReactionGame }
     );
 }
 
 function restartReactionGame() {
+    scrollCurrentTestToTop();
     const popup = document.getElementById("reaction-popup");
     const stage = document.getElementById("reaction-stage");
     const ready = document.getElementById("reaction-ready");
@@ -2093,16 +2172,20 @@ function endVisualSearchGame(message) {
     if (nextBtn) nextBtn.disabled = false;
 
     const retryBtn = document.getElementById("visual-retry-btn");
-    if (retryBtn) retryBtn.style.display = "block";
+    if (retryBtn) retryBtn.style.display = "none";
 
     showGameResultPopup(
         "👀 시각탐색 완료!",
         `<strong>${testState.child.name}</strong>의 시각탐색 기록이 저장되었어요.<br><br>도달 레벨: <strong>Lv.${state.highestLevel || state.level}</strong><br>정확도: <strong>${state.accuracy}%</strong>`,
-        "🔎"
+        "🔎",
+        "다음 미션 도전",
+        goToFlankerTest,
+        { onRetry: restartVisualSearchGame }
     );
 }
 
 function restartVisualSearchGame() {
+    scrollCurrentTestToTop();
     const state = testState.visualSearch;
     const popup = document.getElementById("visual-search-popup");
     const board = document.getElementById("visual-board");
@@ -2422,20 +2505,21 @@ function endFlankerGame(message) {
     if (nextBtn) nextBtn.disabled = false;
 
     const retryBtn = document.getElementById("flanker-retry-btn");
-    if (retryBtn) retryBtn.style.display = "block";
+    if (retryBtn) retryBtn.style.display = "none";
 
     showGameResultPopup(
         "🎯 충동억제 미션 완료!",
         `<strong>${testState.child.name}</strong>의 충동억제 기록이 저장되었어요.<br><br>도달 레벨: <strong>Lv.${Math.min(state.level, flankerLevels.length)}</strong><br>정확도: <strong>${state.accuracy}%</strong>`,
         "🎯",
-        "확인",
-        null,
-        { noSound: true }
+        "검사 완료",
+        finishAllTests,
+        { noSound: true, onRetry: restartFlankerGame }
     );
 }
 
 function restartFlankerGame() {
     stopTestCompleteVoice();
+    scrollCurrentTestToTop();
     const state = testState.flanker;
     const popup = document.getElementById("flanker-popup");
     const stimulus = document.getElementById("flanker-stimulus");
@@ -2517,7 +2601,8 @@ function hideAllStartPopups() {
         'reaction-popup',
         'visual-search-popup',
         'flanker-popup',
-        'game-result-popup'
+        'game-result-popup',
+        'common-confirm-countdown-popup'
     ].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.remove('active');
@@ -2526,6 +2611,8 @@ function hideAllStartPopups() {
 
 function stopCurrentGameTimers() {
     stopTestIntroVoice();
+    clearInterval(gameResultCountdownTimer);
+    gameResultCountdownTimer = null;
 
     clearInterval(testState.schulte.timerInterval);
 
@@ -2595,44 +2682,13 @@ function goToFlankerTest() {
 }
 
 function goBackToPreviousTest() {
-    const visibleStep = getCurrentVisibleTestStep();
-    const progress = getProgress();
-    const currentStep = visibleStep || (progress ? Number(progress.currentStep) : 1);
-
     stopCurrentGameTimers();
     hideAllStartPopups();
 
-    if (currentStep <= 1) {
-        if (window.parent && window.parent !== window && typeof window.parent.goBackFromTestToSurvey === 'function') {
-            window.parent.goBackFromTestToSurvey();
-        } else {
-            window.location.href = '../index.html';
-        }
-        return;
-    }
-
-    const prevStep = currentStep - 1;
-    saveProgress(prevStep);
-
-    if (prevStep === 1) {
-        showScreen('schulte-screen');
-        resetSchulteIntroPopup();
-        showTestIntroPopup('schulte-countdown-overlay', 'schulte');
-    }
-    if (prevStep === 2) {
-        showScreen('memory-screen');
-        resetMemoryIntroPopup({ showRetry: true });
-        showTestIntroPopup('memory-popup', 'memory');
-    }
-    if (prevStep === 3) {
-        showScreen('reaction-screen');
-        resetReactionCountdownPopup();
-        showTestIntroPopup('reaction-popup', 'reaction');
-    }
-    if (prevStep === 4) {
-        showScreen('visual-search-screen');
-        showTestIntroPopup('visual-search-popup', 'visual');
-    }
+    saveProgress(1);
+    showScreen('schulte-screen');
+    resetSchulteIntroPopup();
+    showTestIntroPopup('schulte-countdown-overlay', 'schulte');
 }
 
 // 3번째 반응속도 게임은 아이가 계속 잘하면 끝나지 않는 구조라서 15라운드 후 자동 완료되도록 보강합니다.
@@ -2775,7 +2831,6 @@ async function fetchPublicResults(type) {
         .map(docSnap => docSnap.data())
         .filter(data => data.type === type)
         .filter(data => !isSeedResultRecord(data))
-        .slice(0, 8)
         .map(data => ({
             grade: data.grade || "-",
             name: data.name || "익명",
@@ -2785,13 +2840,18 @@ async function fetchPublicResults(type) {
         }));
 }
 
+function isCurrentGradeResult(item) {
+    const currentGrade = testState.child.gradeText || getGradeText(testState.child.gradeValue);
+    return !currentGrade || item.grade === currentGrade;
+}
+
 async function renderPublicResults(type) {
     const list = document.getElementById(`${type}-review-list`);
     if (!list) return;
 
     list.innerHTML = `<div class="review-empty">결과값을 불러오는 중이에요.</div>`;
 
-    const localResults = getLocalResultRecords(type).slice(0, 3).map((item, index) => ({
+    const localResults = getLocalResultRecords(type).filter(isCurrentGradeResult).slice(0, 3).map((item, index) => ({
         ...item,
         createdAtMs: Number(item.createdAtMs) || (parsePublicResultTime(item.createdAt, item.date) || parsePublicResultTime(item.date)) + (3 - index)
     }));
@@ -2810,6 +2870,7 @@ async function renderPublicResults(type) {
         }))
         .filter(item => {
             if (isSeedResultRecord(item)) return false;
+            if (!isCurrentGradeResult(item)) return false;
             const key = `${item.grade}_${item.name}_${item.time}_${item.date}`;
             if (seen.has(key)) return false;
             seen.add(key);

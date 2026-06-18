@@ -482,10 +482,44 @@ body {
     background: #FF6B00;
 }
 
+.btn-popup-start.outline {
+    background: #FFFFFF;
+    color: #0E1D3E;
+    border: 1.5px solid #D1D5DB;
+}
+
+.result-popup-actions {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr;
+    gap: 0.6rem;
+}
+
+.result-popup-actions.single-action {
+    grid-template-columns: 1fr;
+}
+
+.result-popup-actions .btn-popup-start {
+    width: 100%;
+    padding: 0.85rem 0.6rem;
+    white-space: nowrap;
+}
+
 .countdown-display {
     font-size: 3rem;
     font-weight: 900;
     color: #FF6B00;
+}
+
+.common-countdown-content {
+    max-width: 240px;
+    padding: 1.5rem 1.25rem;
+}
+
+.countdown-caption {
+    color: #0E1D3E;
+    font-size: 0.9rem;
+    font-weight: 900;
+    margin-bottom: 0.25rem;
 }
 
 /* 결과 */

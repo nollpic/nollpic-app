@@ -454,7 +454,18 @@
             <div id="game-result-emoji" class="result-popup-emoji">🎉</div>
             <h3 id="game-result-title">테스트 완료!</h3>
             <p id="game-result-text">오늘의 기록이 저장되었습니다.</p>
-            <button id="game-result-button" class="btn-popup-start navy" onclick="closeGameResultPopup()">확인</button>
+            <div id="game-result-actions" class="result-popup-actions">
+                <button id="game-result-retry-button" class="btn-popup-start outline" type="button" onclick="retryFromGameResultPopup()">다시하기</button>
+                <button id="game-result-button" class="btn-popup-start navy" type="button" onclick="closeGameResultPopup()">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 확인 후 공통 카운트다운 -->
+    <div id="common-confirm-countdown-popup" class="popup-overlay">
+        <div class="popup-content common-countdown-content">
+            <div class="countdown-caption">다음 단계 준비</div>
+            <div id="common-confirm-countdown-number" class="countdown-display">3</div>
         </div>
     </div>
 
