@@ -1402,7 +1402,7 @@ function endMemoryGame() {
     memoryRecords.unshift({
         grade: testState.child.gradeText,
         name: testState.child.name,
-        time: `${state.successLevel}단계 달성`,
+        time: `${state.successLevel}단계`,
         date: getTodayString(),
         createdAtMs: Date.now(),
         isCurrentPlayer: true
@@ -2918,6 +2918,10 @@ function formatShortResultDate(value) {
     return text.replace(/^(\d{2})\d{2}([.-]\d{2}[.-]\d{2})$/, "$1$2");
 }
 
+function formatPopupResultRecord(value) {
+    return String(value || "").replace(/단계\s*달성/g, "단계");
+}
+
 async function renderPublicResults(type, listId = `${type}-review-list`, maxItems = 8) {
     const list = document.getElementById(listId);
     if (!list) return;
@@ -2963,7 +2967,7 @@ async function renderPublicResults(type, listId = `${type}-review-list`, maxItem
         <div class="leaderboard-row ${item.isCurrentPlayer ? "highlight" : ""}">
             <span>${escapeResultText(item.grade)}</span>
             <span>${escapeResultText(item.name)}</span>
-            <span>${escapeResultText(item.time)}</span>
+            <span>${escapeResultText(formatPopupResultRecord(item.time))}</span>
             <span>${escapeResultText(formatShortResultDate(item.date))}</span>
         </div>
     `).join("");

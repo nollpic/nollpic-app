@@ -979,7 +979,7 @@ body {
 
 .popup-result-card {
     margin-top: 1rem;
-    padding: 1.05rem 1.1rem 1rem;
+    padding: 1rem 0.65rem 0.9rem;
     border: 1px solid #EEF0F4;
     border-radius: 1rem;
     background: #FFFFFF;
@@ -994,8 +994,8 @@ body {
 }
 
 .popup-result-header {
-    grid-template-columns: 1fr 1.3fr 1fr 1.1fr;
-    padding: 0 0.15rem 0.55rem;
+    grid-template-columns: 0.85fr 1.15fr 0.95fr 0.95fr;
+    padding: 0 0 0.55rem;
     border-bottom: 1px solid #EEF0F4;
     color: #9CA3AF;
     font-size: 0.78rem;
@@ -1007,8 +1007,10 @@ body {
 }
 
 .popup-result-list .leaderboard-row {
-    grid-template-columns: 1fr 1.3fr 1fr 1.1fr;
+    grid-template-columns: 0.85fr 1.15fr 0.95fr 0.95fr;
     min-height: 2.25rem;
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
     border-radius: 0.5rem;
     background: #FFF8E8;
     color: #EA6A00;
