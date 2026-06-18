@@ -1477,6 +1477,38 @@ function _resultAchievementText(value) {
     return value && value !== 'Lv.-' ? value : '';
 }
 
+function _resultFormatHistoryItem(item, latest, summary) {
+    return {
+        date: item.date || latest.date,
+        summary,
+        scores: {
+            attention: item.scores?.attention ?? 0,
+            memory: item.scores?.memory ?? 0,
+            reaction: item.scores?.reaction ?? 0,
+            inhibition: item.scores?.inhibition ?? 0,
+            visual: item.scores?.visual ?? 0
+        }
+    };
+}
+
+function _resultBuildDisplayHistory(items, latest) {
+    const source = items.length ? items : [latest];
+    const formatted = [_resultFormatHistoryItem(source[0], latest, '최근 검사')];
+
+    if (source.length === 1) {
+        formatted.push(_resultFormatHistoryItem(source[0], latest, '첫 검사'));
+        return formatted;
+    }
+
+    const previousEnd = Math.min(source.length - 1, 3);
+    for (let idx = 1; idx < previousEnd; idx++) {
+        formatted.push(_resultFormatHistoryItem(source[idx], latest, '이전 검사'));
+    }
+
+    formatted.push(_resultFormatHistoryItem(source[source.length - 1], latest, '첫 검사'));
+    return formatted;
+}
+
 /* ── 데이터 조립 ── */
 function _resultGetData(selectedChildId) {
     let latest  = _resultSafeJSON('nollpic_latest_result', null);
@@ -1523,12 +1555,7 @@ function _resultGetData(selectedChildId) {
         const k = `${i.date}_${i.overall}_${i.scores?.attention}_${i.scores?.memory}_${i.scores?.reaction}`;
         if (seen.has(k)) return false; seen.add(k); return true;
     });
-    const formatted = deduped.slice(0,5).map((i, idx) => ({
-        date: i.date || latest.date,
-        summary: idx === 0 ? '최근 검사' : '이전 검사',
-        scores: { attention: i.scores?.attention??0, memory: i.scores?.memory??0, reaction: i.scores?.reaction??0, inhibition: i.scores?.inhibition??0, visual: i.scores?.visual??0 }
-    }));
-    if (formatted.length === 1) formatted.push({ date: formatted[0].date, summary:'첫 검사', scores:{...formatted[0].scores} });
+    const formatted = _resultBuildDisplayHistory(deduped, latest);
 
     const prev = formatted[1];
     const diff = prev ? (latest.overall - Math.round((prev.scores.attention+prev.scores.memory+prev.scores.reaction+prev.scores.inhibition+prev.scores.visual)/5)) : 0;

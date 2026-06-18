@@ -365,6 +365,38 @@ children.forEach((child, idx) => {
   return selectedChild;
 }
 
+function formatHistoryItem(item, latest, summary) {
+  return {
+    date: item.date || latest.date,
+    summary,
+    scores: {
+      attention: item.scores?.attention ?? 0,
+      memory: item.scores?.memory ?? 0,
+      reaction: item.scores?.reaction ?? 0,
+      visual: item.scores?.visual ?? 0,
+      inhibition: item.scores?.inhibition ?? 0
+    }
+  };
+}
+
+function buildDisplayHistory(items, latest) {
+  const source = items.length ? items : [latest];
+  const formatted = [formatHistoryItem(source[0], latest, '최근 검사')];
+
+  if (source.length === 1) {
+    formatted.push(formatHistoryItem(source[0], latest, '첫 검사'));
+    return formatted;
+  }
+
+  const previousEnd = Math.min(source.length - 1, 3);
+  for (let idx = 1; idx < previousEnd; idx++) {
+    formatted.push(formatHistoryItem(source[idx], latest, '이전 검사'));
+  }
+
+  formatted.push(formatHistoryItem(source[source.length - 1], latest, '첫 검사'));
+  return formatted;
+}
+
 function getSavedNollpicData(selectedChildId = '') {
   let latest = null;
   let history = [];
@@ -434,27 +466,7 @@ function getSavedNollpicData(selectedChildId = '') {
     return true;
   });
 
-  const formattedHistory = dedupedHistory.slice(0, 5).map((item, idx) => ({
-    date: item.date || latest.date,
-    summary: idx === 0 ? '최근 검사' : '이전 검사',
-    scores: {
-      attention: item.scores?.attention ?? 0,
-      memory: item.scores?.memory ?? 0,
-      reaction: item.scores?.reaction ?? 0,
-      visual: item.scores?.visual ?? 0,
-      inhibition: item.scores?.inhibition ?? 0
-
-    }
-  }));
-
-  if (formattedHistory.length === 1) {
-    const only = formattedHistory[0];
-    formattedHistory.push({
-      date: only.date,
-      summary: '첫 검사',
-      scores: { ...only.scores }
-    });
-  }
+  const formattedHistory = buildDisplayHistory(dedupedHistory, latest);
 
   const previous = formattedHistory[1];
   const diff = previous ? (latest.overall - Math.round((previous.scores.attention + previous.scores.memory + previous.scores.reaction + previous.scores.inhibition + previous.scores.visual) / 5)) : 0;
