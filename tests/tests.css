@@ -943,6 +943,8 @@ body {
 /* 결과 안내 팝업 */
 .result-popup-content {
     animation: result-pop 0.22s ease-out;
+    max-height: min(88dvh, 720px);
+    overflow-y: auto;
 }
 
 .result-popup-emoji {
@@ -959,6 +961,81 @@ body {
 
 #game-result-text strong {
     color: #0E1D3E;
+}
+
+.popup-result-board {
+    margin: 1rem 0 1.1rem;
+    text-align: left;
+}
+
+.popup-result-guide {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    padding: 0.85rem 1rem;
+    border-radius: 0.9rem;
+    background: #FFF4F4;
+    color: #5B6475;
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+
+.popup-result-guide-icon {
+    flex: 0 0 auto;
+    line-height: 1.5;
+}
+
+.popup-result-guide p {
+    margin: 0;
+}
+
+.popup-result-card {
+    margin-top: 1rem;
+    padding: 1.05rem 1.1rem 1rem;
+    border: 1px solid #EEF0F4;
+    border-radius: 1rem;
+    background: #FFFFFF;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+}
+
+.popup-result-card h4 {
+    margin: 0 0 0.9rem;
+    color: #111827;
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+.popup-result-header {
+    grid-template-columns: 1fr 1.3fr 1fr 1.1fr;
+    padding: 0 0.15rem 0.55rem;
+    border-bottom: 1px solid #EEF0F4;
+    color: #9CA3AF;
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.popup-result-list {
+    margin-top: 0.35rem;
+}
+
+.popup-result-list .leaderboard-row {
+    grid-template-columns: 1fr 1.3fr 1fr 1.1fr;
+    min-height: 2.25rem;
+    border-radius: 0.5rem;
+    background: #FFF8E8;
+    color: #EA6A00;
+    font-weight: 900;
+}
+
+.popup-result-list .review-empty {
+    padding: 0.75rem 0.25rem 0.2rem;
+    color: #9CA3AF;
+    font-size: 0.82rem;
+    text-align: center;
+}
+
+.result-board {
+    display: none !important;
 }
 
 @keyframes result-pop {

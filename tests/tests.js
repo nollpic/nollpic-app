@@ -312,6 +312,7 @@ function showGameResultPopup(title, message, emoji = "🎉", buttonText = "확�
     const buttonEl = document.getElementById("game-result-button");
     const retryButtonEl = document.getElementById("game-result-retry-button");
     const actionsEl = document.getElementById("game-result-actions");
+    const liveBoardEl = document.getElementById("game-result-live-board");
     const popup = document.getElementById("game-result-popup");
 
     gameResultConfirmAction = typeof onConfirm === "function" ? onConfirm : null;
@@ -326,6 +327,14 @@ function showGameResultPopup(title, message, emoji = "🎉", buttonText = "확�
         retryButtonEl.style.display = gameResultRetryAction ? "" : "none";
     }
     if (actionsEl) actionsEl.classList.toggle("single-action", !gameResultRetryAction);
+    if (liveBoardEl) {
+        if (options.resultType) {
+            liveBoardEl.hidden = false;
+            renderPopupResultBoard(options.resultType);
+        } else {
+            liveBoardEl.hidden = true;
+        }
+    }
 
     if (options.completeVoice) {
         playTestCompleteVoice();
@@ -1182,7 +1191,7 @@ function endSchulteGame() {
         "⚡",
         "다음 미션 도전",
         goToMemoryTest,
-        { onRetry: restartSchulteGame }
+        { resultType: "schulte", onRetry: restartSchulteGame }
     );
 }
 
@@ -1388,7 +1397,7 @@ function endMemoryGame() {
         "🧩",
         "다음 미션 도전",
         goToReactionTest,
-        { onRetry: restartMemoryGame }
+        { resultType: "memory", onRetry: restartMemoryGame }
     );
 }
 
@@ -1849,7 +1858,7 @@ function endReactionGame() {
         "🟢",
         "다음 미션 도전",
         goToVisualSearchTest,
-        { onRetry: restartReactionGame }
+        { resultType: "reaction", onRetry: restartReactionGame }
     );
 }
 
@@ -2192,7 +2201,7 @@ function endVisualSearchGame(message) {
         "🔎",
         "다음 미션 도전",
         goToFlankerTest,
-        { onRetry: restartVisualSearchGame }
+        { resultType: "visual", onRetry: restartVisualSearchGame }
     );
 }
 
@@ -2525,7 +2534,7 @@ function endFlankerGame(message) {
         "🎯",
         "검사 완료",
         finishAllTests,
-        { noSound: true, onRetry: restartFlankerGame }
+        { resultType: "flanker", noSound: true, onRetry: restartFlankerGame }
     );
 }
 
@@ -2857,8 +2866,22 @@ function isCurrentGradeResult(item) {
     return !currentGrade || item.grade === currentGrade;
 }
 
-async function renderPublicResults(type) {
-    const list = document.getElementById(`${type}-review-list`);
+const POPUP_RESULT_GUIDES = {
+    schulte: "Schulte Table 개념을 바탕으로 구성된 활동입니다. 숫자를 순서대로 찾으며 시각적 주의력과 정보 탐색 능력을 활용합니다.",
+    memory: "시공간 작업기억을 평가하는 Corsi Block Test의 개념을 바탕으로 구성된 활동입니다. 잠시 본 위치를 기억한 뒤 다시 찾아보며 시각 기억력과 위치 기억 능력을 활용합니다.",
+    reaction: "반응속도와 충동 조절을 살펴보는 활동입니다. 화면 변화에 맞춰 빠르게 반응하면서도 정확한 선택을 유지하는 능력을 활용합니다.",
+    visual: "여러 자극 속에서 목표를 빠르게 찾는 시각탐색 활동입니다. 필요한 정보를 구분하고 집중을 유지하는 능력을 활용합니다.",
+    flanker: "방해 자극 속에서 목표 방향을 선택하는 Flanker 과제 개념을 바탕으로 구성된 활동입니다. 충동을 억제하고 필요한 정보에 집중하는 능력을 활용합니다."
+};
+
+function renderPopupResultBoard(type) {
+    const guideEl = document.getElementById("game-result-guide-text");
+    if (guideEl) guideEl.textContent = POPUP_RESULT_GUIDES[type] || POPUP_RESULT_GUIDES.memory;
+    renderPublicResults(type, "game-result-live-list", 3);
+}
+
+async function renderPublicResults(type, listId = `${type}-review-list`, maxItems = 8) {
+    const list = document.getElementById(listId);
     if (!list) return;
 
     list.innerHTML = `<div class="review-empty">결과값을 불러오는 중이에요.</div>`;
@@ -2898,7 +2921,7 @@ async function renderPublicResults(type) {
         return;
     }
 
-    list.innerHTML = results.slice(0, 8).map(item => `
+    list.innerHTML = results.slice(0, maxItems).map(item => `
         <div class="leaderboard-row ${item.isCurrentPlayer ? "highlight" : ""}">
             <span>${escapeResultText(item.grade)}</span>
             <span>${escapeResultText(item.name)}</span>
