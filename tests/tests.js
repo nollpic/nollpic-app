@@ -2922,6 +2922,13 @@ function formatPopupResultRecord(value) {
     return String(value || "").replace(/단계\s*달성/g, "단계");
 }
 
+function formatPopupResultGrade(value) {
+    const text = String(value || "");
+    const elementaryMatch = text.match(/초등\s*(\d)\s*학년/);
+    if (elementaryMatch) return `초${elementaryMatch[1]}`;
+    return text.replace("미취학", "미취").replace("학년", "").replace(/\s+/g, "");
+}
+
 async function renderPublicResults(type, listId = `${type}-review-list`, maxItems = 8) {
     const list = document.getElementById(listId);
     if (!list) return;
@@ -2965,7 +2972,7 @@ async function renderPublicResults(type, listId = `${type}-review-list`, maxItem
 
     list.innerHTML = results.slice(0, maxItems).map(item => `
         <div class="leaderboard-row ${item.isCurrentPlayer ? "highlight" : ""}">
-            <span>${escapeResultText(item.grade)}</span>
+            <span>${escapeResultText(formatPopupResultGrade(item.grade))}</span>
             <span>${escapeResultText(item.name)}</span>
             <span>${escapeResultText(formatPopupResultRecord(item.time))}</span>
             <span>${escapeResultText(formatShortResultDate(item.date))}</span>
