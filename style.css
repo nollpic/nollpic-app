@@ -1763,6 +1763,7 @@ body {
 #page-7 .play-header {
     padding: 28px 22px 18px;
     flex-shrink: 0;
+    text-align: center;
 }
 
 #page-7 .play-title {
