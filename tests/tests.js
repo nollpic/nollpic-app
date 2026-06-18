@@ -957,6 +957,23 @@ function scrollCurrentTestToTop() {
     scrollTestViewportTop(activeScreen);
 }
 
+function bindFastPress(el, handler) {
+    if (!el || typeof handler !== "function") return;
+
+    let handledByPointer = false;
+    el.addEventListener("pointerdown", event => {
+        handledByPointer = true;
+        handler(event);
+    });
+    el.addEventListener("click", event => {
+        if (handledByPointer) {
+            handledByPointer = false;
+            return;
+        }
+        handler(event);
+    });
+}
+
 function showScreen(screenId) {
     const screens = document.querySelectorAll(".test-screen");
     screens.forEach(screen => screen.classList.remove("active"));
@@ -1293,10 +1310,7 @@ function renderMemoryCards(show) {
             card.classList.add("reveal");
         }
 
-        // div 태그에 클릭 이벤트 바인딩
-        card.addEventListener("click", () => {
-            handleMemoryCardClick(card, isAnswer);
-        });
+        bindFastPress(card, () => handleMemoryCardClick(card, isAnswer));
         board.appendChild(card);
     }
 }
@@ -1680,7 +1694,7 @@ function spawnReactionCircle() {
     circle.style.left = `${pos.x}px`;
     circle.style.top = `${pos.y}px`;
 
-   circle.addEventListener("click", (event) => handleReactionClick(circle, event));
+   bindFastPress(circle, event => handleReactionClick(circle, event));
     stage.appendChild(circle);
 
     state.currentCircle = circle;
@@ -2048,9 +2062,7 @@ function startVisualLevel() {
         cell.className = "visual-cell";
         cell.innerText = item;
 
-        cell.addEventListener("click", () => {
-            handleVisualCellClick(cell, item, cfg);
-        });
+        bindFastPress(cell, () => handleVisualCellClick(cell, item, cfg));
 
         board.appendChild(cell);
     });
@@ -2370,7 +2382,7 @@ function showFlankerChoices(cfg) {
             btn.type = "button";
             btn.className = "flanker-choice";
             btn.innerText = item;
-            btn.addEventListener("click", () => handleFlankerChoice(item));
+            bindFastPress(btn, () => handleFlankerChoice(item));
             choicesEl.appendChild(btn);
         });
     }

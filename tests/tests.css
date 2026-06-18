@@ -13,6 +13,15 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+button,
+[role="button"],
+.memory-card,
+.check-card {
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
 html,
 body {
     width: 100%;

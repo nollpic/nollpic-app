@@ -91,6 +91,15 @@
     letter-spacing: -0.02em;
 }
 
+button,
+a,
+[onclick],
+input,
+select,
+label {
+    touch-action: manipulation;
+}
+
 html, body {
     width: 100%;
     height: 100%;

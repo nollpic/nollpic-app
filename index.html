@@ -456,9 +456,8 @@
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         _pwaInstallPrompt = e;
-        if (!sessionStorage.getItem('pwa_banner_closed')) {
-            showPwaBanner();
-        }
+        hidePwaBanner();
+        sessionStorage.setItem('pwa_banner_closed', '1');
     });
 
     window.addEventListener('appinstalled', () => {
@@ -474,17 +473,8 @@
     }
 
     function triggerPwaInstall() {
-        if (_pwaInstallPrompt) {
-            _pwaInstallPrompt.prompt();
-            _pwaInstallPrompt.userChoice.then((choice) => {
-                if (choice.outcome === 'accepted') {
-                    hidePwaBanner();
-                }
-                _pwaInstallPrompt = null;
-            });
-        } else {
-            alert('홈 화면에 추가하려면\n브라우저 메뉴(⋮) → "홈 화면에 추가"를 눌러주세요.');
-        }
+        hidePwaBanner();
+        alert('현재는 앱 설치 대신 브라우저에서 바로 이용해주세요.');
     }
 
     if ('serviceWorker' in navigator) {
