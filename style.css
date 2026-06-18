@@ -1675,7 +1675,7 @@ body {
 
 /* ── 상단 타이틀 공통 크기 ── */
 .complete-title {
-    font-size: 25px !important;
+    font-size: 27px !important;
     font-weight: 900 !important;
     color: #0E1D3E;
     line-height: 1.25;
@@ -1816,7 +1816,7 @@ body {
 }
 
 #page-7 .play-title {
-    font-size: 25px;
+    font-size: 27px;
     font-weight: 950;
     color: #0E1D3E;
     letter-spacing: -0.6px;
