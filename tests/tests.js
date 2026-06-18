@@ -920,7 +920,16 @@ function scrollTestViewportTop(target = null) {
     window.scrollTo({ top: 0, behavior: "auto" });
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
+    const testBody = document.querySelector(".test-body");
+    if (testBody) testBody.scrollTop = 0;
+    const activeScreen = document.querySelector(".test-screen.active");
+    if (activeScreen) activeScreen.scrollTop = 0;
     if (target) target.scrollTop = 0;
+}
+
+function scrollCurrentTestToTop() {
+    const activeScreen = document.querySelector(".test-screen.active");
+    scrollTestViewportTop(activeScreen);
 }
 
 function showScreen(screenId) {
@@ -1135,6 +1144,7 @@ function endSchulteGame() {
 function restartSchulteGame() {
     const overlay = document.getElementById("schulte-countdown-overlay");
 
+    scrollCurrentTestToTop();
     resetSchulteIntroPopup();
     if (overlay) overlay.classList.add("active");
     setTimeout(() => playTestIntroVoice("schulte"), 120);
@@ -1371,6 +1381,7 @@ function resetMemoryIntroPopup(options = {}) {
 }
 
 function restartMemoryGame() {
+    scrollCurrentTestToTop();
     resetMemoryIntroPopup({ showRetry: false });
     showTestIntroPopup("memory-popup", "memory");
 }
@@ -1795,6 +1806,7 @@ function endReactionGame() {
 }
 
 function restartReactionGame() {
+    scrollCurrentTestToTop();
     const popup = document.getElementById("reaction-popup");
     const stage = document.getElementById("reaction-stage");
     const ready = document.getElementById("reaction-ready");
@@ -2136,6 +2148,7 @@ function endVisualSearchGame(message) {
 }
 
 function restartVisualSearchGame() {
+    scrollCurrentTestToTop();
     const state = testState.visualSearch;
     const popup = document.getElementById("visual-search-popup");
     const board = document.getElementById("visual-board");
@@ -2469,6 +2482,7 @@ function endFlankerGame(message) {
 
 function restartFlankerGame() {
     stopTestCompleteVoice();
+    scrollCurrentTestToTop();
     const state = testState.flanker;
     const popup = document.getElementById("flanker-popup");
     const stimulus = document.getElementById("flanker-stimulus");
