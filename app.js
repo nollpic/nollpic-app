@@ -1337,7 +1337,7 @@ function _resultGetDisplayChildName(value) {
 
 function _resultGetRecommendationSubject(childName) {
     const displayName = _resultGetDisplayChildName(childName);
-    return displayName ? `우리 "${displayName}"은` : '우리 아이는';
+    return displayName ? `'${displayName}'는` : '우리 아이는';
 }
 
 function _resultGetWeakArea(scores = {}) {
