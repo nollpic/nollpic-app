@@ -931,6 +931,9 @@ body {
 /* 결과 안내 팝업 */
 .result-popup-content {
     animation: result-pop 0.22s ease-out;
+    max-width: min(390px, calc(100vw - 2.25rem));
+    padding-left: 0.85rem;
+    padding-right: 0.85rem;
     max-height: min(88dvh, 720px);
     overflow-y: auto;
 }
@@ -960,7 +963,7 @@ body {
     display: flex;
     gap: 0.7rem;
     align-items: flex-start;
-    padding: 0.85rem 1rem;
+    padding: 0.9rem 0.8rem;
     border-radius: 0.9rem;
     background: #FFF4F4;
     color: #5B6475;
@@ -979,7 +982,7 @@ body {
 
 .popup-result-card {
     margin-top: 1rem;
-    padding: 1rem 0.65rem 0.9rem;
+    padding: 1rem 0.45rem 0.9rem;
     border: 1px solid #EEF0F4;
     border-radius: 1rem;
     background: #FFFFFF;
