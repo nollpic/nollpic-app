@@ -1211,7 +1211,7 @@ const _resultRecommendConfig = {
     inhibition: {
         area: '충동조절',
         title: '우리 아이는',
-        desc: '기다림보다 즉시 행동하려는 경향이 있습니다.',
+        desc: '기다림보다는 즉시 행동하려는 경향이 있습니다.',
         fallback: [
             { title:'컬러 스톱', description:'색깔 신호를 보고 멈추는 연습을 해요.' },
             { title:'신호등 게임', description:'초록불에는 움직이고 빨간불에는 멈춰요.' },
@@ -1272,6 +1272,14 @@ function _resultEscape(value) {
     }[char]));
 }
 
+function _resultGetDisplayChildName(value) {
+    const childName = String(value || '')
+        .split('·')[0]
+        .replace(/\s*\([^)]*\)\s*$/g, '')
+        .trim();
+    return childName || '우리 아이';
+}
+
 function _resultGetWeakArea(scores = {}) {
     const keys = ['attention', 'memory', 'reaction', 'visual', 'inhibition'];
     return keys
@@ -1296,7 +1304,7 @@ async function _resultFetchRecommendedPlays() {
     return _resultRecommendedPlayCache;
 }
 
-function _resultSetRecommendationContent(areaKey, plays) {
+function _resultSetRecommendationContent(areaKey, plays, childName = '') {
     const card = document.getElementById('result-recommend-card');
     const areaEl = document.getElementById('result-recommend-area');
     const titleEl = document.getElementById('result-recommend-title');
@@ -1307,8 +1315,8 @@ function _resultSetRecommendationContent(areaKey, plays) {
     const config = _resultRecommendConfig[areaKey] || _resultRecommendConfig.inhibition;
     const items = (plays && plays.length ? plays : config.fallback).slice(0, 3);
     areaEl.textContent = config.area;
-    titleEl.textContent = config.title;
-    descEl.textContent = config.desc;
+    titleEl.textContent = '이 놀이를 추천 드려요!';
+    descEl.textContent = `우리 "${_resultGetDisplayChildName(childName)}"은 ${config.desc}`;
     listEl.innerHTML = items.map((item, index) => {
         const thumb = item.thumbnail
             ? `<img class="recommend-thumb" src="${_resultEscape(item.thumbnail)}" alt="">`
@@ -1333,11 +1341,12 @@ async function _resultRenderRecommendedPlays(data) {
     };
     const areaKey = _resultGetWeakArea(scores);
     const config = _resultRecommendConfig[areaKey] || _resultRecommendConfig.inhibition;
+    const childName = data?.childName || data?.child || '';
 
-    _resultSetRecommendationContent(areaKey, config.fallback);
+    _resultSetRecommendationContent(areaKey, config.fallback, childName);
     const plays = await _resultFetchRecommendedPlays();
     const areaPlays = plays.filter(item => item.area === areaKey);
-    if (areaPlays.length) _resultSetRecommendationContent(areaKey, areaPlays);
+    if (areaPlays.length) _resultSetRecommendationContent(areaKey, areaPlays, childName);
 }
 
 /* ── 아이 목록 수집 ── */
