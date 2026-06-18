@@ -428,6 +428,34 @@ body {
     box-shadow: 0 0 0 2px #fd6217;
 }
 
+.consent-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 6px 0 18px;
+    padding: 13px 14px;
+    border: 1px solid #F1E4DF;
+    border-radius: 14px;
+    background: #FFF9F7;
+    color: #5E6675;
+    font-size: 12px;
+    font-weight: 750;
+    line-height: 1.45;
+}
+
+.consent-check input {
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+    flex-shrink: 0;
+    accent-color: #FF6B00;
+}
+
+.consent-check a {
+    color: #E8532A;
+    font-weight: 900;
+}
+
 /* 행동 체크리스트 카드 */
 .checklist-container {
     display: flex;

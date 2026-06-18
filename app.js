@@ -49,6 +49,7 @@ function validateInfoPage() {
     const nameInput = document.getElementById('child-name');
     const gradeSelect = document.getElementById('child-grade');
     const genderRadio = document.querySelector('input[name="child-gender"]:checked');
+    const guardianConsent = document.getElementById('guardian-consent');
 
     if (!nameInput.value.trim()) {
         alert('아이 이름을 입력해주세요.');
@@ -64,6 +65,12 @@ function validateInfoPage() {
 
     if (!genderRadio) {
         alert('아이의 성별을 선택해주세요.');
+        return;
+    }
+
+    if (guardianConsent && !guardianConsent.checked) {
+        alert('보호자 동의 확인이 필요합니다.');
+        guardianConsent.focus();
         return;
     }
 
