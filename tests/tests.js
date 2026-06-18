@@ -2556,7 +2556,6 @@ function endFlankerGame(message) {
     localStorage.setItem("nollpic_flanker_records", JSON.stringify(flankerRecords));
     publishTestResult("flanker", flankerRecords[0]);
     renderFlankerLeaderboard();
-    playTestCompleteVoice();
 
     const nextBtn = document.getElementById("flanker-next-btn");
     if (nextBtn) nextBtn.disabled = false;
