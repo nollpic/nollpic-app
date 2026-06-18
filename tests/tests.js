@@ -2925,7 +2925,7 @@ function formatPopupResultGrade(value) {
     const text = String(value || "");
     const elementaryMatch = text.match(/초등\s*(\d)\s*학년/);
     if (elementaryMatch) return `초${elementaryMatch[1]}`;
-    return text.replace("미취학", "미취").replace("학년", "").replace(/\s+/g, "");
+    return text === "미취학" ? text : text.replace("학년", "").replace(/\s+/g, "");
 }
 
 async function renderPublicResults(type, listId = `${type}-review-list`, maxItems = 8) {
