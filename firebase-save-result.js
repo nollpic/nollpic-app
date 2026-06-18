@@ -87,6 +87,7 @@ function getLocalResultData() {
     overall: Number(latest.overall || 0),
     scores,
     analysis: latest.analysis || "",
+    raw: latest.raw || {},
 
     appVersion: APP_VERSION,
     testVersion: latest.testVersion || TEST_VERSION,

@@ -1447,7 +1447,7 @@ function _resultGetData(selectedChildId) {
     }
 
     const scores  = latest.scores || {};
-    const achievements = _resultBuildAchievements(latest.raw || {});
+    const achievements = _resultBuildAchievements(latest.raw || latest || {});
     const items   = history.length ? history : [latest];
     const seen    = new Set();
     const deduped = items.filter(i => {
@@ -1659,33 +1659,8 @@ function _resultDecodeSharePayload(value) {
     }
 }
 
-function _resultGetShareUrl(data) {
-    const payload = {
-        child: data.child,
-        date: data.date,
-        overall: data.overall,
-        comment: data.comment,
-        scores: {
-            attention: Number(data.abilities?.[0]?.[3]) || 0,
-            memory: Number(data.abilities?.[1]?.[3]) || 0,
-            reaction: Number(data.abilities?.[2]?.[3]) || 0,
-            visual: Number(data.abilities?.[3]?.[3]) || 0,
-            inhibition: Number(data.abilities?.[4]?.[3]) || 0
-        },
-        achievements: {
-            attention: data.abilities?.[0]?.[4] || '',
-            memory: data.abilities?.[1]?.[4] || '',
-            reaction: data.abilities?.[2]?.[4] || '',
-            visual: data.abilities?.[3]?.[4] || '',
-            inhibition: data.abilities?.[4]?.[4] || ''
-        }
-    };
-    const url = new URL(window.location.href);
-    url.search = '';
-    url.hash = '';
-    url.searchParams.set('page', 'result');
-    url.searchParams.set('sharedResult', _resultEncodeSharePayload(payload));
-    return url.href;
+function _resultGetShareUrl() {
+    return new URL('/', window.location.origin).href;
 }
 
 function _resultGetSharedData() {

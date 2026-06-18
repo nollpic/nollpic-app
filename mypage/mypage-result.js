@@ -205,24 +205,8 @@ function encodeResultSharePayload(payload) {
     .replace(/=+$/g, '');
 }
 
-function getResultShareUrl(data) {
-  const payload = {
-    child: data.child,
-    date: data.date,
-    overall: data.overall,
-    comment: data.comment,
-    scores: {
-      attention: Number(data.abilities?.[0]?.[3]) || 0,
-      memory: Number(data.abilities?.[1]?.[3]) || 0,
-      reaction: Number(data.abilities?.[2]?.[3]) || 0,
-      visual: Number(data.abilities?.[3]?.[3]) || 0,
-      inhibition: Number(data.abilities?.[4]?.[3]) || 0
-    }
-  };
-  const url = new URL('../index.html', window.location.href);
-  url.searchParams.set('page', 'result');
-  url.searchParams.set('sharedResult', encodeResultSharePayload(payload));
-  return url.href;
+function getResultShareUrl() {
+  return new URL('/', window.location.origin).href;
 }
 
 async function shareResult() {
