@@ -2880,6 +2880,11 @@ function renderPopupResultBoard(type) {
     renderPublicResults(type, "game-result-live-list", 3);
 }
 
+function formatShortResultDate(value) {
+    const text = String(value || "");
+    return text.replace(/^(\d{2})\d{2}([.-]\d{2}[.-]\d{2})$/, "$1$2");
+}
+
 async function renderPublicResults(type, listId = `${type}-review-list`, maxItems = 8) {
     const list = document.getElementById(listId);
     if (!list) return;
@@ -2926,7 +2931,7 @@ async function renderPublicResults(type, listId = `${type}-review-list`, maxItem
             <span>${escapeResultText(item.grade)}</span>
             <span>${escapeResultText(item.name)}</span>
             <span>${escapeResultText(item.time)}</span>
-            <span>${escapeResultText(item.date)}</span>
+            <span>${escapeResultText(formatShortResultDate(item.date))}</span>
         </div>
     `).join("");
 }
