@@ -1277,7 +1277,12 @@ function _resultGetDisplayChildName(value) {
         .split('·')[0]
         .replace(/\s*\([^)]*\)\s*$/g, '')
         .trim();
-    return childName || '우리 아이';
+    return childName === '우리 아이' ? '' : childName;
+}
+
+function _resultGetRecommendationSubject(childName) {
+    const displayName = _resultGetDisplayChildName(childName);
+    return displayName ? `우리 "${displayName}"은` : '우리 아이는';
 }
 
 function _resultGetWeakArea(scores = {}) {
@@ -1316,7 +1321,7 @@ function _resultSetRecommendationContent(areaKey, plays, childName = '') {
     const items = (plays && plays.length ? plays : config.fallback).slice(0, 3);
     areaEl.textContent = config.area;
     titleEl.textContent = '이 놀이를 추천 드려요!';
-    descEl.textContent = `우리 "${_resultGetDisplayChildName(childName)}"은 ${config.desc}`;
+    descEl.textContent = `${_resultGetRecommendationSubject(childName)} ${config.desc}`;
     listEl.innerHTML = items.map((item, index) => {
         const thumb = item.thumbnail
             ? `<img class="recommend-thumb" src="${_resultEscape(item.thumbnail)}" alt="">`
@@ -1439,8 +1444,8 @@ function _resultGetData(selectedChildId) {
         else if (latest && !_resultIsSameChild(latest, sel)) { latest = null; }
     }
 
-    const childName  = activeChild?.name || '우리 아이';
-    const gradeText  = activeChild?.gradeText || '';
+    const childName  = activeChild?.name || latest.child?.name || latest.childName || '우리 아이';
+    const gradeText  = activeChild?.gradeText || latest.child?.gradeText || latest.gradeText || '';
     const childLabel = gradeText ? `${childName} · ${gradeText.replace('초등 ','초')}` : childName;
 
     if (!latest) {
