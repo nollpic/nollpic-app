@@ -1725,7 +1725,7 @@ function spawnReactionCircle() {
     circle.dataset.clicked = "false";
 
     const stageRect = stage.getBoundingClientRect();
-    const size = 58;
+    const size = 74;
     const pos = getRandomCirclePosition(stageRect.width, stageRect.height, size);
 
     circle.style.left = `${pos.x}px`;
