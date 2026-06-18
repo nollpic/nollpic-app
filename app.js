@@ -1333,7 +1333,7 @@ function _resultSetRecommendationContent(areaKey, plays, childName = '') {
 }
 
 function openRecommendedPlayDetail() {
-    window.location.href = 'https://nollpic.com/index.html';
+    window.open('https://nollpic.com/index.html', '_blank', 'noopener,noreferrer');
 }
 
 async function _resultRenderRecommendedPlays(data) {

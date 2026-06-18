@@ -1599,6 +1599,7 @@ body {
     color: #fff;
     font-size: 14px;
     font-weight: 900;
+    cursor: pointer;
 }
 
 /* 면책 */
