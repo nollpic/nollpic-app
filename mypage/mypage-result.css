@@ -167,7 +167,23 @@ line-height: 1.35;
 }
 
 /* ── 아이 선택 카드 ── */
-.child-select-card { display: block; }
+.child-select-card {
+  display: block;
+  position: relative;
+}
+
+.child-select-card::after {
+  content: "";
+  position: absolute;
+  right: 32px;
+  top: 57px;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid #7C879B;
+  border-bottom: 2px solid #7C879B;
+  transform: rotate(45deg);
+  pointer-events: none;
+}
 .result-child-title span {
   display: block; margin-bottom: 8px;
   color: #7c7280; font-size: 12px; font-weight: 800;
@@ -176,8 +192,10 @@ line-height: 1.35;
   width: 100%; height: 52px;
   background: #fff4ee; color: #0E1D3E;
   border: 1.5px solid rgba(255,107,0,.15);
-  border-radius: 16px; padding: 0 14px;
+  border-radius: 16px; padding: 0 50px 0 14px;
   font-size: 16px; font-weight: 900; outline: none; cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
 }
 .visually-hidden {
   position: absolute; width: 1px; height: 1px;

@@ -1369,12 +1369,31 @@ body {
 
 /* 아이 선택 */
 .result-child-title span { display: block; margin-bottom: 8px; color: #7c7280; font-size: 12px; font-weight: 800; }
+.child-select-card {
+    position: relative;
+}
+
+.child-select-card::after {
+    content: "";
+    position: absolute;
+    right: 32px;
+    bottom: 36px;
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid #7C879B;
+    border-bottom: 2px solid #7C879B;
+    transform: rotate(45deg);
+    pointer-events: none;
+}
+
 .result-child-selector {
     width: 100%; height: 52px;
     background: #fff4ee; color: #0E1D3E;
     border: 1.5px solid rgba(255,107,0,.15);
-    border-radius: 16px; padding: 0 14px;
+    border-radius: 16px; padding: 0 50px 0 14px;
     font-size: 16px; font-weight: 900; outline: none; cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 /* 섹션 헤더 */

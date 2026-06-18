@@ -1577,7 +1577,7 @@ function _resultSetupSelector(selectedChildId) {
         selector.appendChild(opt); selector.disabled = true; return null;
     }
 
-    selector.disabled = children.length <= 1;
+    selector.disabled = false;
 
     children.forEach((child, idx) => {
         const opt = document.createElement('option');
