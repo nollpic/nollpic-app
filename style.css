@@ -1059,8 +1059,8 @@ body {
 }
 
 #page-1 .title-block .img-title{
-    max-width: min(72vw, 185px);
-    height: 25px;
+    max-width: min(78vw, 260px);
+    height: 44px;
     object-fit: contain;
     display: block;
     margin-left: auto;
