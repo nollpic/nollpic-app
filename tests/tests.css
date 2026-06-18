@@ -1099,56 +1099,63 @@ body {
 
 
 .schulte-demo {
-    position: relative;
-    width: 180px;
-    height: 92px;
+    width: 206px;
+    min-height: 134px;
     margin: 0 auto 1rem;
-    background: #F7F8FC;
-    border-radius: 1rem;
-    border: 1px solid #E5E7EB;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.45rem;
+    padding: 0.55rem;
+    background: #F8FAFC;
+    border-radius: 1.05rem;
+    border: 1px solid #EEF2F7;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.6);
 }
 
 /* 1 순서대로 번호 누르기 테스트 데모 */
 .demo-num {
-    position: absolute;
-    width: 34px;
-    height: 34px;
-    border-radius: 999px;
+    aspect-ratio: 1 / 1;
+    min-width: 0;
+    border-radius: 0.7rem;
     background: #FFFFFF;
     color: #0E1D3E;
     font-weight: 900;
-    font-size: 0.9rem;
+    font-size: 1.15rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 6px 14px rgba(14, 29, 62, 0.12);
-    animation: demoClick 3.6s 2;
+    border: 1px solid #EEF2F7;
+    box-shadow: 0 5px 12px rgba(14, 29, 62, 0.06);
+    animation: demoClickBox 4.2s infinite;
 }
 
-.schulte-demo .n1 { left: 16px; top: 14px; animation-delay: 0s; }
-.schulte-demo .n2 { left: 74px; top: 46px; animation-delay: 0.45s; }
-.schulte-demo .n3 { right: 16px; top: 18px; animation-delay: 0.9s; }
-.schulte-demo .n4 { left: 34px; bottom: 12px; animation-delay: 1.35s; }
-.schulte-demo .n5 { right: 48px; bottom: 14px; animation-delay: 1.8s; }
-.schulte-demo .n6 { left: 86px; top: 10px; animation-delay: 2.25s; }
+.schulte-demo .demo-num:nth-child(2) { animation-delay: 0s; }
+.schulte-demo .demo-num:nth-child(4) { animation-delay: 0.45s; }
+.schulte-demo .demo-num:nth-child(6) { animation-delay: 0.9s; }
+.schulte-demo .demo-num:nth-child(3) { animation-delay: 1.35s; }
+.schulte-demo .demo-num:nth-child(1) { animation-delay: 1.8s; }
+.schulte-demo .demo-num:nth-child(5) { animation-delay: 2.25s; }
 
-@keyframes demoClick {
-    0%, 70%, 100% {
+@keyframes demoClickBox {
+    0%, 64%, 100% {
         background: #FFFFFF;
         color: #0E1D3E;
         transform: scale(1);
+        border-color: #EEF2F7;
     }
 
-    10% {
-        background: #0E1D3E;
-        color: #FFFFFF;
-        transform: scale(1.18);
+    8% {
+        background: #E0F7F4;
+        color: #14B8A6;
+        transform: translateY(-1px) scale(1.04);
+        border-color: #CCFBF1;
     }
 
-    22% {
-        background: #DCEAFE;
+    18% {
+        background: #FFFFFF;
         color: #0E1D3E;
-        transform: scale(1);
+        transform: translateY(0) scale(1);
+        border-color: #EEF2F7;
     }
 }
 
