@@ -1197,6 +1197,7 @@ window.addEventListener('popstate', (event) => {
 // Firebase module에서 안정적으로 호출할 수 있도록 전역에 연결합니다.
 window.nextPage = nextPage;
 window.prevPage = prevPage;
+window.stopAndUnloadTestFrame = stopAndUnloadTestFrame;
 window.editChild = editChild;
 window.deleteChild = deleteChild;
 window.startTestForChild = startTestForChild;
