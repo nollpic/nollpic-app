@@ -18,6 +18,16 @@ service cloud.firestore {
       return signedIn() && request.auth.uid == userId;
     }
 
+    function isGuestWrite(guestId) {
+      return request.resource.data.guestId == guestId
+        && request.resource.data.isGuest == true;
+    }
+
+    function isCompleteResultWrite() {
+      return request.resource.data.isComplete == true
+        || request.resource.data.finishedTests == 5;
+    }
+
     match /recommendedPlays/{playId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
@@ -36,14 +46,17 @@ service cloud.firestore {
     }
 
     match /guestUsers/{guestId} {
-      allow read, create, update, delete: if isAdmin();
+      allow read, delete: if isAdmin();
+      allow create, update: if isAdmin() || isGuestWrite(guestId);
 
       match /children/{childId} {
-        allow read, create, update, delete: if isAdmin();
+        allow read, delete: if isAdmin();
+        allow create, update: if isAdmin() || isGuestWrite(guestId);
       }
 
       match /results/{resultId} {
-        allow read, create, update, delete: if isAdmin();
+        allow read, update, delete: if isAdmin();
+        allow create: if isAdmin() || (isGuestWrite(guestId) && isCompleteResultWrite());
       }
     }
 
