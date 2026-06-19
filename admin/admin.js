@@ -56,7 +56,6 @@ const playTable          = document.getElementById("play-table");
 const gnbItems           = document.querySelectorAll(".admin-gnb-item");
 
 let allRows = [];
-let displayRows = [];
 let currentFilteredRows = [];
 let recommendedPlays = [];
 
@@ -152,7 +151,6 @@ function showAdmin() {
 async function loadAdminData() {
   resultTable.innerHTML = `<tr><td colspan="15" class="loading-msg">⏳ 데이터를 불러오는 중...</td></tr>`;
   allRows = [];
-  displayRows = [];
   if(thCheck) thCheck.checked = false;
 
   let todayCount = 0;
@@ -198,7 +196,6 @@ async function loadAdminData() {
         id: resultDoc.id,
         refPath: resultDoc.ref.path,
         date,
-        savedAtMs: getTimestampMs(r.savedAt || r.createdAt),
         userEmail,
         childId,
         childKey,
@@ -230,8 +227,7 @@ async function loadAdminData() {
     document.getElementById("result-count").textContent = completedRows.length;
     document.getElementById("today-result-count").textContent = todayCount;
 
-    allRows.sort(compareLatestRows);
-    displayRows = getLatestRowsByChild(allRows);
+    allRows.sort((a, b) => String(b.date).localeCompare(String(a.date)));
     applyFilter();
 
   } catch (err) {
@@ -402,7 +398,7 @@ function applyFilter() {
   
   if(thCheck) thCheck.checked = false;
 
-  currentFilteredRows = displayRows.filter(row => {
+  currentFilteredRows = allRows.filter(row => {
     const matchSearch = !q ||
       row.childName.toLowerCase().includes(q) ||
       row.childId.toLowerCase().includes(q) ||
@@ -647,7 +643,7 @@ async function deleteSelectedRows() {
 // [수정] 다운로드 브라우저 버그 수정 및 필터링 데이터 연동 적용
 function exportCSV() {
   // 현재 화면에 필터링되어 보이는 데이터를 기준으로 다운로드 (없으면 전체 데이터)
-  const targetRows = currentFilteredRows.length > 0 ? currentFilteredRows : displayRows;
+  const targetRows = currentFilteredRows.length > 0 ? currentFilteredRows : allRows;
 
   if (targetRows.length === 0) {
     alert("다운로드할 데이터가 없습니다.");
@@ -701,34 +697,4 @@ function formatFirestoreDate(timestamp) {
     return `${d.getFullYear()}. ${String(d.getMonth() + 1).padStart(2, '0')}. ${String(d.getDate()).padStart(2, '0')}`;
   }
   return String(timestamp);
-}
-
-function getTimestampMs(timestamp) {
-  if (!timestamp) return 0;
-  if (typeof timestamp.toMillis === "function") return timestamp.toMillis();
-  if (Number.isFinite(timestamp.seconds)) return timestamp.seconds * 1000;
-  const parsed = Date.parse(String(timestamp));
-  return Number.isFinite(parsed) ? parsed : 0;
-}
-
-function compareLatestRows(a, b) {
-  const dateCompare = String(b.date || "").localeCompare(String(a.date || ""));
-  if (dateCompare !== 0) return dateCompare;
-  return (b.savedAtMs || 0) - (a.savedAtMs || 0);
-}
-
-function getLatestRowsByChild(rows) {
-  const latestByChild = new Map();
-
-  rows.forEach(row => {
-    const key = row.childKey || `${row.userEmail}_${row.childName}_${row.gradeText}`;
-    if (!key) return;
-
-    const previous = latestByChild.get(key);
-    if (!previous || compareLatestRows(row, previous) < 0) {
-      latestByChild.set(key, row);
-    }
-  });
-
-  return Array.from(latestByChild.values()).sort(compareLatestRows);
 }
