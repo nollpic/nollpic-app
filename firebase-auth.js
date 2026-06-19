@@ -1,8 +1,4 @@
-import {
-  getApp,
-  getApps,
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
   getAuth,
@@ -23,7 +19,7 @@ const firebaseConfig = {
   measurementId: "G-MGB2F1HNJV"
 };
 
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 let googleLoginInProgress = false;

@@ -1,10 +1,6 @@
 console.log("🔥 [완벽 수정본] firebase-save-result.js 실행됨");
 
-import {
-  getApp,
-  getApps,
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
   getAuth,
@@ -31,7 +27,7 @@ const firebaseConfig = {
   measurementId: "G-MGB2F1HNJV"
 };
 
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
@@ -45,38 +41,6 @@ function safeJsonParse(value, fallback = null) {
   } catch (e) {
     return fallback;
   }
-}
-
-function getStoredNollpicUser() {
-  return safeJsonParse(localStorage.getItem("nollpic_user"));
-}
-
-function hasStoredLoginUser() {
-  const storedUser = getStoredNollpicUser();
-  return !!(storedUser && storedUser.uid);
-}
-
-function waitForAuthUser(timeoutMs = 3000) {
-  if (auth.currentUser) return Promise.resolve(auth.currentUser);
-
-  return new Promise((resolve) => {
-    let isDone = false;
-    let unsubscribe = () => {};
-
-    const finish = (user) => {
-      if (isDone) return;
-      isDone = true;
-      clearTimeout(timer);
-      unsubscribe();
-      resolve(user || auth.currentUser || null);
-    };
-
-    const timer = setTimeout(() => finish(auth.currentUser), timeoutMs);
-
-    unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) finish(user);
-    });
-  });
 }
 
 function getChallengeWeek() {
@@ -390,11 +354,6 @@ async function uploadGuestProcess(resultData, triggerSource) {
 // [트리거 1] 로그인 상태 변경 및 페이지 진입 시 미동기화 데이터 수급
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    if (hasStoredLoginUser()) {
-      console.log("Stored login user exists, so guest result upload is skipped while Firebase Auth is not ready.");
-      return;
-    }
-
     console.log("로그인 사용자가 없습니다. 비로그인 결과 저장을 시도합니다.");
     const resultData = getLocalResultData();
     if (resultData) {
@@ -410,15 +369,10 @@ onAuthStateChanged(auth, async (user) => {
 
 // [트리거 2] 검사 완료 페이지 진입 시 실시간 강제 연동
 window.addEventListener("nollpic-result-saved", async (event) => {
-  const user = auth.currentUser || (hasStoredLoginUser() ? await waitForAuthUser() : null);
+  const user = auth.currentUser;
   const resultData = event.detail || getLocalResultData();
 
   if (!user) {
-    if (hasStoredLoginUser()) {
-      console.log("Result save event received before Firebase Auth was ready. Guest upload was skipped for the stored login user.");
-      return;
-    }
-
     console.log("검사 완료 수신: 비로그인 결과 저장을 시도합니다.");
     if (resultData) {
       await uploadGuestProcess(resultData, "비로그인 검사완료 실시간 트리거");
