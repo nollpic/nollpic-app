@@ -495,7 +495,6 @@
 
     /* ── 플레이 탭 ── */
     function goBottomPlay() {
-        if (typeof stopAndUnloadTestFrame === 'function') stopAndUnloadTestFrame();
         if (typeof nextPage === 'function') nextPage(7);
     }
     window.goBottomPlay = goBottomPlay;
@@ -515,7 +514,6 @@
 
     /* ── 플레이 카드 클릭 ── */
     function openPlayItem(type) {
-        if (typeof stopAndUnloadTestFrame === 'function') stopAndUnloadTestFrame();
         const map = {
             dice:        { page: 8,  frame: 'dice-frame',     src: 'play/dice.html' },
             arrow:       { page: 9,  frame: 'arrow-frame',    src: 'play/arrow.html' },
