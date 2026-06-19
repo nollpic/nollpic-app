@@ -212,6 +212,7 @@ const testIntroAudioSrc = {
 let nollpicIntroVoice = null;
 let nollpicIntroAudio = null;
 let nollpicCompleteAudio = null;
+let nollpicIntroVoiceTimer = null;
 let hasUserInteractedForIntro = false;
 
 function getNollpicKidVoice() {
@@ -226,6 +227,11 @@ function getNollpicKidVoice() {
 }
 
 function stopTestIntroVoice() {
+    if (nollpicIntroVoiceTimer) {
+        clearTimeout(nollpicIntroVoiceTimer);
+        nollpicIntroVoiceTimer = null;
+    }
+
     if (nollpicIntroAudio) {
         nollpicIntroAudio.pause();
         nollpicIntroAudio.currentTime = 0;
@@ -297,7 +303,11 @@ function showTestIntroPopup(popupId, voiceType) {
     resetIntroCountdownControls(popupId);
     const popup = document.getElementById(popupId);
     if (popup) popup.classList.add("active");
-    setTimeout(() => playTestIntroVoice(voiceType), 120);
+    stopTestIntroVoice();
+    nollpicIntroVoiceTimer = setTimeout(() => {
+        nollpicIntroVoiceTimer = null;
+        playTestIntroVoice(voiceType);
+    }, 120);
 }
 
 const INTRO_COUNTDOWN_CONTROLS = {
