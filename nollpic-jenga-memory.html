@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>놀픽 모양기억 놀이</title>
+  <style>
+    @font-face {
+      font-family: "Pretendard";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Regular.woff2") format("woff2");
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Pretendard";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Bold.woff2") format("woff2");
+      font-weight: 700;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Pretendard";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-ExtraBold.woff2") format("woff2");
+      font-weight: 800;
+      font-display: swap;
+    }
+
+    :root {
+      --ink: #0e1d3e;
+      --muted: #657085;
+      --orange: #ff6b16;
+      --orange-dark: #e95709;
+      --sky: #49c3f1;
+      --blue: #1788d8;
+      --pink: #ff6f91;
+      --card: rgba(255, 255, 255, .96);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      color: var(--ink);
+      background: #eef3f8;
+      display: grid;
+      place-items: center;
+    }
+
+    .phone {
+      position: relative;
+      width: min(100vw, 420px);
+      min-height: 100dvh;
+      padding: 16px 18px 18px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 20% 8%, rgba(255, 107, 22, .12), transparent 26%),
+        linear-gradient(180deg, #fffafa 0%, #ffffff 46%, #eef8fc 100%);
+      border: 8px solid #fff;
+      border-radius: 34px;
+      box-shadow: 0 18px 34px rgba(14, 29, 62, .16);
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 2px 4px 14px;
+    }
+
+    .back {
+      width: 38px;
+      height: 38px;
+      border: 0;
+      border-radius: 14px;
+      background: #fff4ee;
+      color: var(--orange);
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .title {
+      flex: 1;
+    }
+
+    .title small {
+      display: block;
+      color: var(--orange);
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 3px;
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .skill {
+      flex: 0 0 auto;
+      padding: 8px 10px;
+      border: 1px solid rgba(255, 107, 22, .28);
+      border-radius: 999px;
+      background: #fff8f2;
+      color: var(--orange-dark);
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .mission {
+      padding: 16px;
+      border-radius: 24px;
+      background: var(--card);
+      box-shadow: 0 18px 34px rgba(14, 29, 62, .10);
+    }
+
+    .mission-top {
+      display: grid;
+      grid-template-columns: 1fr 76px;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .target-card {
+      min-height: 104px;
+      padding: 14px;
+      border: 2px solid rgba(14, 29, 62, .08);
+      border-radius: 20px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .target-card strong {
+      display: grid;
+      place-items: center;
+      width: 64px;
+      height: 64px;
+      border-radius: 19px;
+      background: linear-gradient(180deg, #fff7d7, #ffe19a);
+      border: 3px solid #ffc247;
+      color: var(--orange);
+      font-size: 34px;
+      font-weight: 900;
+      box-shadow: inset 0 -5px 0 rgba(255, 107, 22, .10);
+    }
+
+    .target-card span {
+      display: block;
+      color: var(--orange-dark);
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .target-card b {
+      display: block;
+      font-size: 19px;
+      line-height: 1.25;
+      word-break: keep-all;
+    }
+
+    .timer {
+      border-radius: 20px;
+      border: 3px solid #9ee9f2;
+      background: #ecfbff;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #1090bd;
+      font-weight: 900;
+      box-shadow: inset 0 -5px 0 rgba(73, 195, 241, .12);
+    }
+
+    .timer small {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
+
+    .timer strong {
+      display: block;
+      font-size: 34px;
+      line-height: .95;
+    }
+
+    .stage {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 50% 8%, rgba(255,255,255,.46), transparent 34%),
+        linear-gradient(180deg, #f7fbff 0%, #eaf7ff 100%);
+      min-height: 398px;
+      box-shadow: 0 18px 34px rgba(14, 29, 62, .10);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .prompt {
+      min-height: 344px;
+      border-radius: 24px;
+      background: rgba(255,255,255,.94);
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid rgba(14, 29, 62, .06);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.8);
+    }
+
+    .prompt::before {
+      content: "5초 동안 기억해요";
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #fff4ee;
+      color: var(--orange-dark);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .prompt.is-hidden::before {
+      content: "실제 젠가로 만들어봐요";
+    }
+
+    .target-image {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 14px;
+    }
+
+    .target-image-wrap {
+      width: min(310px, 94%);
+      height: 274px;
+      margin-top: 26px;
+      border-radius: 22px;
+      background: #ffffff;
+      border: 2px solid rgba(14, 29, 62, .08);
+      padding: 12px;
+      box-shadow: 0 14px 24px rgba(14, 29, 62, .12);
+    }
+
+    .prompt.is-hidden .target-image-wrap {
+      filter: blur(9px);
+      opacity: .3;
+    }
+
+    .cover-text {
+      position: absolute;
+      inset: 0;
+      display: none;
+      place-items: center;
+      padding-top: 24px;
+      color: var(--ink);
+      font-size: 21px;
+      font-weight: 900;
+      text-align: center;
+      background: rgba(255,255,255,.68);
+    }
+
+    .prompt.is-hidden .cover-text {
+      display: grid;
+    }
+
+    .build-note {
+      margin: 12px 6px 0;
+      color: #4d5a6e;
+      font-size: 14px;
+      font-weight: 850;
+      line-height: 1.45;
+      text-align: center;
+      word-break: keep-all;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1.45fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .btn {
+      height: 54px;
+      border: 0;
+      border-radius: 18px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 900;
+      box-shadow: 0 9px 0 rgba(14, 29, 62, .12);
+    }
+
+    .btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 6px 0 rgba(14, 29, 62, .12);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, .94);
+      color: var(--ink);
+      border: 1px solid rgba(14, 29, 62, .12);
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      color: white;
+    }
+
+    .feedback {
+      position: absolute;
+      left: 50%;
+      top: 52%;
+      transform: translate(-50%, -50%);
+      z-index: 4;
+      padding: 11px 18px;
+      border-radius: 999px;
+      background: rgba(14, 29, 62, .80);
+      color: white;
+      font-size: 16px;
+      font-weight: 900;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease, transform .2s ease;
+    }
+
+    .feedback.show {
+      opacity: 1;
+      transform: translate(-50%, -62%);
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: grid;
+      place-items: center;
+      padding: 26px;
+      background: rgba(14, 29, 62, .55);
+      backdrop-filter: blur(5px);
+    }
+
+    .overlay.hide {
+      display: none;
+    }
+
+    .panel {
+      width: min(100%, 340px);
+      padding: 30px 22px 22px;
+      border-radius: 24px;
+      background: white;
+      box-shadow: 0 22px 48px rgba(14, 29, 62, .26);
+      text-align: center;
+    }
+
+    .panel h2 {
+      margin: 0 0 8px;
+      font-size: 25px;
+      line-height: 1.15;
+    }
+
+    .panel p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.55;
+    }
+
+    .panel .btn {
+      width: 100%;
+    }
+
+    @media (max-width: 380px) {
+      .phone {
+        padding: 14px 12px 16px;
+      }
+
+      .target-card {
+        gap: 10px;
+      }
+
+      .target-card strong {
+        width: 58px;
+        height: 58px;
+        font-size: 30px;
+      }
+
+      .target-card b {
+        font-size: 17px;
+      }
+
+      .stage {
+        min-height: 374px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="phone">
+    <header>
+      <button class="back" type="button" aria-label="뒤로가기" onclick="exitToChallenge()">‹</button>
+      <div class="title">
+        <small>오늘의 미션</small>
+        <h1>모양기억 놀이</h1>
+      </div>
+      <span class="skill">시각탐색 · 보통</span>
+    </header>
+
+    <section class="mission" aria-label="미션 정보">
+      <div class="mission-top">
+        <div class="target-card">
+          <strong id="levelNumber">1</strong>
+          <div>
+            <span id="levelMeta">레벨 1 · 0/3 성공</span>
+            <b>5초 보고 젠가로 만들기</b>
+          </div>
+        </div>
+        <div class="timer">
+          <div>
+            <small id="timerLabel">기억시간</small>
+            <strong id="timerValue">5</strong>
+            <small>초</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stage">
+      <div class="prompt" id="prompt">
+        <div class="target-image-wrap">
+          <img class="target-image" id="targetImage" alt="기억할 젠가 모양">
+        </div>
+        <div class="cover-text">기억한 모양을<br>젠가로 만들어봐요</div>
+      </div>
+      <p class="build-note" id="buildNote">예시를 자세히 보고, 사라지면 실제 젠가로 같은 모양을 만들어요.</p>
+    </section>
+
+    <div class="actions">
+      <button class="btn btn-secondary" type="button" onclick="restartRound()">다시 보기</button>
+      <button class="btn btn-primary" type="button" id="startBtn" onclick="primaryAction()">시작하기</button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <section class="overlay" id="overlay">
+      <div class="panel">
+        <h2 id="overlayTitle">모양기억 놀이</h2>
+        <p id="overlayText">5초 동안 젠가 모양을 크게 보고<br>실제 젠가로 같은 모양을 만들어요.</p>
+        <button class="btn btn-primary" type="button" id="overlayBtn">시작하기</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const levels = [
+      { name: "같은 방향 · 도형 4개", images: ["jenga-level1-1.webp", "jenga-level1-2.webp", "jenga-level1-3.webp"] },
+      { name: "같은 방향 · 도형 6개", images: ["jenga-level2-1.webp", "jenga-level2-2.webp", "jenga-level2-3.webp"] },
+      { name: "다른 방향 · 도형 4개", images: ["jenga-level3-1.webp", "jenga-level3-2.webp", "jenga-level3-3.webp"] },
+      { name: "다른 방향 · 도형 6개", images: ["jenga-level4-1.webp", "jenga-level4-2.webp", "jenga-level4-3.webp"] },
+      { name: "어려운 형태", images: ["jenga-level5-1.webp", "jenga-level5-2.webp", "jenga-level5-3.webp"] }
+    ];
+
+    const imageBase = "images/jenga-shapes/";
+    const allImages = levels.flatMap((level, levelIndex) => level.images.map((file, roundIndex) => ({
+      file,
+      levelIndex,
+      roundIndex
+    })));
+
+    const els = {
+      levelNumber: document.getElementById("levelNumber"),
+      levelMeta: document.getElementById("levelMeta"),
+      timerLabel: document.getElementById("timerLabel"),
+      timerValue: document.getElementById("timerValue"),
+      prompt: document.getElementById("prompt"),
+      targetImage: document.getElementById("targetImage"),
+      buildNote: document.getElementById("buildNote"),
+      feedback: document.getElementById("feedback"),
+      overlay: document.getElementById("overlay"),
+      overlayTitle: document.getElementById("overlayTitle"),
+      overlayText: document.getElementById("overlayText"),
+      overlayBtn: document.getElementById("overlayBtn"),
+      startBtn: document.getElementById("startBtn")
+    };
+
+    let level = 0;
+    let round = 0;
+    let current = null;
+    let accepting = false;
+    let phase = "intro";
+    let timer = null;
+    let feedbackTimer = null;
+
+    function shuffle(items) {
+      const copy = [...items];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function updateText() {
+      const cfg = levels[level];
+      els.levelNumber.textContent = String(level + 1);
+      els.levelMeta.textContent = `레벨 ${level + 1} · ${round}/${cfg.images.length} 성공`;
+    }
+
+    function showFeedback(text, good = true) {
+      clearTimeout(feedbackTimer);
+      els.feedback.textContent = text;
+      els.feedback.style.background = good ? "rgba(24, 183, 122, .9)" : "rgba(239, 68, 68, .9)";
+      els.feedback.classList.add("show");
+      feedbackTimer = setTimeout(() => els.feedback.classList.remove("show"), 850);
+    }
+
+    function pickCurrentImage() {
+      const cfg = levels[level];
+      return {
+        file: cfg.images[round],
+        levelIndex: level,
+        roundIndex: round
+      };
+    }
+
+    function startRound() {
+      clearInterval(timer);
+      current = pickCurrentImage();
+      accepting = false;
+      phase = "memory";
+      els.prompt.classList.remove("is-hidden");
+      els.targetImage.src = `${imageBase}${current.file}`;
+      els.buildNote.textContent = "예시를 자세히 보고, 사라지면 실제 젠가로 같은 모양을 만들어요.";
+      els.startBtn.textContent = "기억 중";
+      els.startBtn.disabled = true;
+      updateText();
+
+      let left = 5;
+      els.timerLabel.textContent = "기억시간";
+      els.timerValue.textContent = String(left);
+      timer = setInterval(() => {
+        left -= 1;
+        els.timerValue.textContent = String(Math.max(0, left));
+        if (left <= 0) {
+          clearInterval(timer);
+          phase = "build";
+          accepting = true;
+          els.prompt.classList.add("is-hidden");
+          els.timerLabel.textContent = "만들기";
+          els.timerValue.textContent = "✓";
+          els.buildNote.textContent = "실제 젠가로 완성한 뒤 아래 버튼을 눌러요.";
+          els.startBtn.textContent = "완성했어요";
+          els.startBtn.disabled = false;
+        }
+      }, 1000);
+    }
+
+    function completeBuild() {
+      if (!accepting) return;
+      accepting = false;
+      round += 1;
+      showFeedback("모양 완성!", true);
+      els.startBtn.disabled = true;
+      setTimeout(nextRound, 650);
+    }
+
+    function nextRound() {
+      if (round >= levels[level].images.length) {
+        if (level >= levels.length - 1) {
+          completeGame();
+          return;
+        }
+        level += 1;
+        round = 0;
+      }
+      startRound();
+    }
+
+    function completeGame() {
+      clearInterval(timer);
+      accepting = false;
+      phase = "done";
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.completeChallengeStep === "function") {
+          window.parent.completeChallengeStep(3);
+        }
+      } catch (error) {}
+      els.overlayTitle.textContent = "오늘의 모양 미션 완료!";
+      els.overlayText.innerHTML = `모양을 끝까지 잘 기억했어요.<br>실제 젠가로 차근차근 만들었어요.<br><strong>+200P 적립 성공</strong>`;
+      els.overlayBtn.textContent = "방학챌린지로";
+      els.overlay.classList.remove("hide");
+      els.startBtn.textContent = "시작하기";
+    }
+
+    function startGame() {
+      level = 0;
+      round = 0;
+      els.overlay.classList.add("hide");
+      startRound();
+    }
+
+    function restartRound() {
+      if (phase === "intro" || phase === "done") {
+        startGame();
+        return;
+      }
+      startRound();
+    }
+
+    function primaryAction() {
+      if (phase === "build") {
+        completeBuild();
+        return;
+      }
+      if (phase === "done") {
+        startGame();
+        return;
+      }
+      startGame();
+    }
+
+    function exitToChallenge() {
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.prevPage === "function") {
+          window.parent.prevPage(11);
+          return;
+        }
+      } catch (error) {}
+      window.location.href = "index.html?page=challenge";
+    }
+
+    els.overlayBtn.addEventListener("click", () => {
+      if (phase === "done" && level >= levels.length - 1 && round >= levels[level].images.length) {
+        exitToChallenge();
+        return;
+      }
+      startGame();
+    });
+
+    current = { file: levels[0].images[0], levelIndex: 0, roundIndex: 0 };
+    els.targetImage.src = `${imageBase}${current.file}`;
+    updateText();
+  </script>
+</body>
+</html>

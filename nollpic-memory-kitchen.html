@@ -1,0 +1,2864 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>놀픽 기억공방</title>
+  <style>
+    @font-face {
+      font-family: "Pretendard";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Regular.woff2") format("woff2");
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Pretendard";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Bold.woff2") format("woff2");
+      font-weight: 700;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Pretendard";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-ExtraBold.woff2") format("woff2");
+      font-weight: 800;
+      font-display: swap;
+    }
+
+    :root {
+      --app-bg: #fff8f8;
+      --paper: #ffffff;
+      --ink: #071936;
+      --navy: #0e1d3e;
+      --muted: #536079;
+      --soft: #f2f5f8;
+      --line: #edf0f4;
+      --orange: #ff6b00;
+      --orange-dark: #e85314;
+      --peach: #fff0e8;
+      --blue: #1297dc;
+      --green: #2fb356;
+      --shadow: 0 16px 36px rgba(14, 29, 62, .08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      letter-spacing: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      background: #e2e8f0;
+      color: var(--ink);
+    }
+
+    body {
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 8px 0;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      font: inherit;
+    }
+
+    .app-device {
+      width: min(100%, 410px);
+      height: min(840px, calc(100dvh - 16px));
+      min-height: 680px;
+      position: relative;
+      overflow: hidden;
+      border: 8px solid #ffffff;
+      border-radius: 40px;
+      background: var(--app-bg);
+      box-shadow: 0 25px 60px rgba(14, 29, 62, .12);
+    }
+
+    .game {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background:
+        linear-gradient(180deg, rgba(255, 248, 248, .98), rgba(255, 255, 255, .94) 62%, #f5fbff),
+        radial-gradient(circle at 10% 10%, rgba(255, 107, 0, .08), transparent 28%);
+    }
+
+    .topbar {
+      flex-shrink: 0;
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1fr);
+      align-items: start;
+      gap: 10px;
+      padding: 14px 18px 8px;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: var(--peach);
+      color: var(--orange-dark);
+      font-size: 26px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .title-area {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .today-label {
+      display: block;
+      color: var(--orange-dark);
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .title-line {
+      width: 100%;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h1 {
+      flex: 1 1 auto;
+      display: inline-flex;
+      align-items: center;
+      min-width: 0;
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 18px;
+      line-height: 1.1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .workshop-prefix {
+      flex: 0 0 auto;
+    }
+
+    #workshopTitle {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .skill-pill {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: #fff4ee;
+      color: var(--orange-dark);
+      border: 1px solid rgba(255, 107, 0, .18);
+      font-size: 10.5px;
+      font-weight: 900;
+      box-shadow: 0 6px 12px rgba(255, 107, 0, .08);
+    }
+
+    .progress-wrap {
+      flex-shrink: 0;
+      padding: 0 20px 12px;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .progress {
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e9edf3;
+    }
+
+    .progress span {
+      display: block;
+      width: 20%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #ff8a1f, #ff5e1a);
+      transition: width .36s ease;
+    }
+
+    .screen {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      gap: 14px;
+      padding: 0 20px 20px;
+      overflow: hidden;
+    }
+
+    .mission-card,
+    .stage-card,
+    .result-card {
+      border-radius: 20px;
+      background: rgba(255, 255, 255, .96);
+      box-shadow: var(--shadow);
+    }
+
+    .mission-card {
+      padding: 16px;
+      border: 1px solid rgba(14, 29, 62, .04);
+    }
+
+    .mission-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .stage-label {
+      color: var(--orange-dark);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .timer-chip {
+      min-width: 54px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: #fff4ee;
+      color: var(--orange-dark);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .timer-chip.stage-timer {
+      min-width: 78px;
+      height: 58px;
+      align-self: center;
+      margin: -2px 0 2px;
+      border-radius: 18px;
+      font-size: 22px;
+      font-weight: 950;
+      box-shadow: 0 10px 22px rgba(255, 107, 0, .14);
+    }
+
+    .mission-text {
+      color: var(--ink);
+      font-size: 19px;
+      line-height: 1.32;
+      font-weight: 900;
+    }
+
+    .mission-sub {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.42;
+      font-weight: 700;
+    }
+
+    .mission-sub.tutorial-copy {
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.48;
+      font-weight: 800;
+      word-break: keep-all;
+    }
+
+    .tutorial-copy strong {
+      color: var(--orange-dark);
+      font-weight: 900;
+    }
+
+    .tutorial-copy span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-weight: 750;
+    }
+
+    .mission-sub.rule-highlight {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+    .rule-chip {
+      min-height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #fff4ee;
+      color: var(--orange-dark);
+      box-shadow: 0 5px 12px rgba(255, 107, 0, .12);
+    }
+
+    .rule-chip.strong {
+      background: var(--navy);
+      color: #ffffff;
+    }
+
+    .rule-arrow {
+      color: var(--orange);
+      font-size: 20px;
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    .rule-note {
+      flex: 1 0 100%;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+
+    .stage-card {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 12px;
+      padding: 18px 16px;
+      overflow: hidden;
+    }
+
+    .sequence-strip {
+      width: 100%;
+      min-height: 34px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 12px;
+      border-radius: 14px;
+      background: #fff4ee;
+      color: var(--ink);
+      border: 1px solid rgba(255, 107, 0, .14);
+      box-shadow: 0 8px 16px rgba(255, 107, 0, .09);
+      font-size: 13px;
+      line-height: 1.24;
+      font-weight: 900;
+      text-align: center;
+      word-break: keep-all;
+    }
+
+    .sequence-strip.is-visible {
+      display: flex;
+    }
+
+    .stage-card.is-making {
+      justify-content: flex-start;
+      overflow: hidden;
+    }
+
+    .board {
+      position: relative;
+      min-height: 208px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      background:
+        radial-gradient(ellipse at 50% 50%, rgba(255, 240, 210, .75), transparent 55%),
+        linear-gradient(180deg, #fff9f7, #ffffff);
+      border: 1px solid rgba(14, 29, 62, .04);
+      overflow: hidden;
+    }
+
+    .board::before,
+    .board::after {
+      content: "";
+      display: none;
+    }
+
+    .board.hidden-mode {
+      background:
+        radial-gradient(circle at 50% 42%, rgba(255, 107, 0, .13), transparent 34%),
+        linear-gradient(180deg, #fff4ee, #f7fbff);
+    }
+
+    .board.hidden-mode::before,
+    .board.hidden-mode::after {
+      display: none;
+    }
+
+    .example-label {
+      position: absolute;
+      left: 50%;
+      top: 18px;
+      z-index: 3;
+      transform: translateX(-50%);
+      min-height: 27px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 13px;
+      border-radius: 999px;
+      background: #fff4ee;
+      color: var(--orange-dark);
+      font-size: 13px;
+      line-height: 1;
+      font-weight: 900;
+      box-shadow: 0 7px 14px rgba(255, 107, 0, .12);
+    }
+
+    .board.hidden-mode .example-label {
+      display: none;
+    }
+
+    .board:not(.show-example) .example-label {
+      display: none;
+    }
+
+    .board,
+    .board * {
+      cursor: none;
+    }
+
+    .plate {
+      position: relative;
+      width: min(334px, 100%);
+      height: 142px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: transparent;
+      z-index: 1;
+    }
+
+    .gimbap-stack {
+      position: relative;
+      z-index: 1;
+      width: min(326px, 96%);
+      height: 132px;
+      border-radius: 999px;
+      background: linear-gradient(145deg, #152131, #0d1624);
+      box-shadow:
+        inset 0 0 0 2px rgba(255,255,255,.12),
+        0 6px 0 rgba(13, 20, 32, .12),
+        0 14px 24px rgba(14, 29, 62, .16);
+    }
+
+    .gimbap-stack::before {
+      content: "";
+      position: absolute;
+      inset: 7px;
+      z-index: 0;
+      border-radius: 999px;
+      background:
+        radial-gradient(ellipse at 8% 22%, rgba(255,255,255,.96) 0 6px, transparent 7px),
+        radial-gradient(ellipse at 14% 55%, rgba(255,255,255,.82) 0 5px, transparent 6px),
+        radial-gradient(ellipse at 21% 18%, rgba(255,255,255,.92) 0 7px, transparent 8px),
+        radial-gradient(ellipse at 28% 74%, rgba(255,255,255,.9) 0 6px, transparent 7px),
+        radial-gradient(ellipse at 35% 35%, rgba(255,255,255,.86) 0 5px, transparent 6px),
+        radial-gradient(ellipse at 43% 80%, rgba(255,255,255,.88) 0 7px, transparent 8px),
+        radial-gradient(ellipse at 51% 18%, rgba(255,255,255,.94) 0 6px, transparent 7px),
+        radial-gradient(ellipse at 58% 58%, rgba(255,255,255,.86) 0 5px, transparent 6px),
+        radial-gradient(ellipse at 66% 28%, rgba(255,255,255,.92) 0 7px, transparent 8px),
+        radial-gradient(ellipse at 74% 76%, rgba(255,255,255,.88) 0 6px, transparent 7px),
+        radial-gradient(ellipse at 82% 22%, rgba(255,255,255,.9) 0 6px, transparent 7px),
+        radial-gradient(ellipse at 91% 58%, rgba(255,255,255,.84) 0 7px, transparent 8px),
+        repeating-radial-gradient(ellipse at 50% 50%, rgba(255,255,255,.28) 0 2px, transparent 3px 13px),
+        linear-gradient(180deg, #fff9eb 0%, #f5eddb 100%);
+      box-shadow:
+        inset 0 4px 10px rgba(255,255,255,.68),
+        inset 0 -5px 12px rgba(116, 91, 54, .08);
+    }
+
+    .gimbap-stack::after {
+      content: "";
+      position: absolute;
+      inset: 15px;
+      z-index: 1;
+      border-radius: 999px;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.18), transparent 42%),
+        radial-gradient(ellipse at 18% 30%, rgba(232,217,188,.48) 0 2px, transparent 3px),
+        radial-gradient(ellipse at 39% 24%, rgba(255,255,255,.76) 0 2px, transparent 3px),
+        radial-gradient(ellipse at 62% 67%, rgba(232,217,188,.48) 0 2px, transparent 3px),
+        radial-gradient(ellipse at 81% 37%, rgba(255,255,255,.76) 0 2px, transparent 3px);
+      opacity: .95;
+    }
+
+    .ingredient {
+      position: relative;
+      z-index: 2;
+      width: 56px;
+      height: 82px;
+      flex: 0 0 56px;
+      border-radius: 21px;
+      box-shadow:
+        inset 0 8px 12px rgba(255,255,255,.36),
+        inset 0 -7px 12px rgba(14,29,62,.1),
+        0 6px 0 rgba(14,29,62,.08);
+    }
+
+    .gimbap-stack > .ingredient {
+      position: absolute;
+      left: var(--x, 50%);
+      top: var(--y, 50%);
+      transform: translate(-50%, -50%);
+    }
+
+    .gimbap-stack > .ingredient.demo-pop {
+      animation: ingredientDemoPop .74s cubic-bezier(.2, .9, .25, 1.1) both;
+    }
+
+    .ingredient.carrot {
+      background:
+        repeating-linear-gradient(128deg, rgba(155,58,0,.24) 0 5px, transparent 5px 13px),
+        repeating-linear-gradient(70deg, transparent 0 18px, rgba(255,190,80,.16) 18px 24px),
+        linear-gradient(180deg, #ff8e22, #ff6b00);
+    }
+
+    .ingredient.egg {
+      background:
+        radial-gradient(ellipse at 50% 52%, transparent 0 25px, rgba(255,180,0,.18) 26px 30px, transparent 31px),
+        radial-gradient(ellipse at 44% 76%, rgba(236,164,0,.12) 0 3px, transparent 4px),
+        linear-gradient(180deg, #ffe477, #ffc928);
+    }
+
+    .ingredient.radish {
+      background:
+        radial-gradient(circle at 34% 28%, rgba(255,220,150,.2) 0 3px, transparent 4px),
+        radial-gradient(circle at 68% 68%, rgba(92,45,21,.18) 0 4px, transparent 5px),
+        repeating-linear-gradient(125deg, rgba(77,37,18,.18) 0 5px, transparent 5px 12px),
+        linear-gradient(180deg, #b97937, #7a421d);
+    }
+
+    .ingredient.cucumber {
+      background:
+        radial-gradient(circle at 28% 34%, rgba(35,129,52,.28) 0 4px, transparent 5px),
+        radial-gradient(circle at 72% 62%, rgba(35,129,52,.26) 0 4px, transparent 5px),
+        radial-gradient(circle at 55% 82%, rgba(35,129,52,.2) 0 3px, transparent 4px),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.24) 0 7px, transparent 7px 16px),
+        linear-gradient(180deg, #8fe36d, #25aa54);
+    }
+
+    .ingredient.ham {
+      background:
+        repeating-linear-gradient(90deg, rgba(194,55,83,.18) 0 7px, transparent 7px 16px),
+        linear-gradient(90deg, rgba(255,255,255,.2), transparent 18%, transparent 82%, rgba(150,30,60,.12)),
+        linear-gradient(180deg, #ff9eb0, #ef5c7e);
+    }
+
+    body[data-theme="gimbap"] .ingredient.egg,
+    body[data-theme="gimbap"] .ingredient.ham,
+    body[data-theme="gimbap"] .ingredient.carrot,
+    body[data-theme="gimbap"] .ingredient.cucumber {
+      background-image: url("gimbap-level2-reference.png");
+      background-repeat: no-repeat;
+      background-size: 400% 100%;
+      background-color: transparent;
+      box-shadow:
+        inset 0 7px 9px rgba(255,255,255,.2),
+        inset 0 -7px 10px rgba(14,29,62,.08),
+        0 6px 0 rgba(14,29,62,.07);
+    }
+
+    body[data-theme="gimbap"] .ingredient.egg {
+      background-position: 0% 50%;
+    }
+
+    body[data-theme="gimbap"] .ingredient.ham {
+      background-position: 33.333% 50%;
+    }
+
+    body[data-theme="gimbap"] .ingredient.carrot {
+      background-position: 66.667% 50%;
+    }
+
+    body[data-theme="gimbap"] .ingredient.cucumber {
+      background-position: 100% 50%;
+    }
+
+    body[data-theme="gimbap"] .ingredient.radish {
+      background-image: url("gimbap-burdock.png");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 106% 110%;
+      background-color: transparent;
+      box-shadow:
+        inset 0 8px 12px rgba(255,255,255,.12),
+        inset 0 -7px 12px rgba(14,29,62,.14),
+        0 6px 0 rgba(14,29,62,.08);
+    }
+
+    body[data-theme="gimbap"] .gimbap-stack,
+    body[data-theme="gimbap"] .slots {
+      height: 146px;
+      background: url("gimbap-rice-board.png") center / 100% 100% no-repeat;
+      box-shadow:
+        0 6px 0 rgba(13, 20, 32, .1),
+        0 14px 24px rgba(14, 29, 62, .14);
+    }
+
+    body[data-theme="gimbap"] .plate {
+      height: 156px;
+    }
+
+    body[data-theme="gimbap"] .slots {
+      flex-basis: 146px;
+    }
+
+    body[data-theme="gimbap"] .gimbap-stack::before,
+    body[data-theme="gimbap"] .gimbap-stack::after,
+    body[data-theme="gimbap"] .slots::before,
+    body[data-theme="gimbap"] .slots::after {
+      display: none;
+    }
+
+    .ingredient.salmon {
+      background:
+        repeating-linear-gradient(135deg, rgba(255,255,255,.34) 0 5px, transparent 5px 17px),
+        linear-gradient(180deg, #ff986e, #f36542);
+    }
+
+    .ingredient.tuna {
+      background:
+        repeating-linear-gradient(90deg, rgba(120, 13, 32, .16) 0 8px, transparent 8px 18px),
+        linear-gradient(180deg, #ef4f64, #c9263f);
+    }
+
+    .ingredient.shrimp {
+      background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,.45) 0 6px, transparent 6px 17px),
+        linear-gradient(180deg, #ffb093, #f36e59);
+    }
+
+    .ingredient.bun {
+      background:
+        radial-gradient(ellipse at 24% 28%, rgba(255,255,255,.9) 0 2px, transparent 3px),
+        radial-gradient(ellipse at 47% 20%, rgba(255,255,255,.86) 0 2px, transparent 3px),
+        radial-gradient(ellipse at 72% 34%, rgba(255,255,255,.86) 0 2px, transparent 3px),
+        linear-gradient(180deg, #f6a13f, #e87521);
+    }
+
+    .ingredient.patty {
+      background:
+        repeating-linear-gradient(14deg, rgba(67, 28, 16, .18) 0 4px, transparent 4px 11px),
+        linear-gradient(180deg, #9c4e32, #69301e);
+    }
+
+    .ingredient.cheese {
+      background:
+        radial-gradient(circle at 26% 42%, rgba(189,121,0,.18) 0 4px, transparent 5px),
+        radial-gradient(circle at 67% 58%, rgba(189,121,0,.16) 0 3px, transparent 4px),
+        linear-gradient(180deg, #ffd858, #f5ac23);
+    }
+
+    .ingredient.lettuce {
+      background:
+        radial-gradient(ellipse at 25% 50%, rgba(255,255,255,.2) 0 14px, transparent 15px),
+        radial-gradient(ellipse at 55% 40%, rgba(255,255,255,.18) 0 16px, transparent 17px),
+        linear-gradient(180deg, #88df34, #4bbd22);
+    }
+
+    .ingredient.tomato {
+      background:
+        radial-gradient(circle at 34% 48%, rgba(255,188,122,.42) 0 4px, transparent 5px),
+        radial-gradient(circle at 66% 47%, rgba(255,188,122,.34) 0 4px, transparent 5px),
+        linear-gradient(180deg, #ef3f2f, #c5221d);
+    }
+
+    body[data-theme="sushi"] .board {
+      background:
+        radial-gradient(ellipse at 50% 52%, rgba(118, 205, 255, .18), transparent 52%),
+        linear-gradient(180deg, #f7fbff, #ffffff);
+    }
+
+    body[data-theme="sushi"] .gimbap-stack,
+    body[data-theme="sushi"] .slots {
+      width: min(326px, 98%);
+      height: 132px;
+      border-radius: 28px;
+      background: #ffffff;
+      box-shadow:
+        inset 0 0 0 2px rgba(18, 151, 220, .08),
+        0 13px 24px rgba(14, 29, 62, .12);
+    }
+
+    body[data-theme="sushi"] .gimbap-stack::before,
+    body[data-theme="sushi"] .slots::before {
+      inset: 8px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, #fff9eb, #f3ead9);
+    }
+
+    body[data-theme="sushi"] .gimbap-stack::after,
+    body[data-theme="sushi"] .slots::after {
+      inset: 18px;
+      border-radius: 20px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.34), transparent 50%),
+        radial-gradient(ellipse at 25% 42%, rgba(232,217,188,.35) 0 2px, transparent 3px),
+        radial-gradient(ellipse at 65% 52%, rgba(232,217,188,.35) 0 2px, transparent 3px);
+    }
+
+    body[data-theme="sushi"] .ingredient {
+      width: 72px;
+      height: 58px;
+      border-radius: 0;
+      box-shadow: none;
+      filter: drop-shadow(0 8px 7px rgba(14, 29, 62, .12));
+    }
+
+    body[data-theme="sushi"] .ingredient.salmon {
+      background: url("sushi-salmon.png") center / contain no-repeat;
+    }
+
+    body[data-theme="sushi"] .ingredient.tuna {
+      background: url("sushi-tuna.png") center / contain no-repeat;
+    }
+
+    body[data-theme="sushi"] .ingredient.shrimp {
+      background: url("sushi-shrimp.png") center / contain no-repeat;
+      width: 66px;
+      height: 66px;
+    }
+
+    body[data-theme="sushi"] .ingredient.sushi-roe {
+      background: url("sushi-roe.png") center / contain no-repeat;
+      width: 66px;
+      height: 66px;
+    }
+
+    body[data-theme="sushi"] .ingredient.sushi-seaweed {
+      background: url("sushi-seaweed.png") center / contain no-repeat;
+      width: 66px;
+      height: 66px;
+    }
+
+    body[data-theme="sushi"] .ingredient.sushi-white {
+      background: url("sushi-white.png") center / contain no-repeat;
+    }
+
+    body[data-theme="sushi"] .ingredient.sushi-eel {
+      background: url("sushi-eel.png") center / contain no-repeat;
+    }
+
+    body[data-theme="sushi"] .ingredient.sushi-egg {
+      background: url("sushi-egg.png") center / contain no-repeat;
+    }
+
+    body[data-theme="sushi"] .ingredient.sushi-pink {
+      background: url("sushi-pink.png") center / contain no-repeat;
+    }
+
+    body[data-theme="sushi"] .slot {
+      width: 70px;
+      height: 68px;
+      border-radius: 20px;
+    }
+
+    body[data-theme="sushi"] .ingredient-btn .ingredient {
+      width: 45px;
+      height: 34px;
+      border-radius: 0;
+      filter: drop-shadow(0 4px 4px rgba(14, 29, 62, .1));
+    }
+
+    body[data-theme="sushi"] .ingredient-btn .ingredient.shrimp {
+      width: 40px;
+      height: 38px;
+    }
+
+    body[data-theme="sushi"] .ingredient-btn .ingredient.sushi-roe,
+    body[data-theme="sushi"] .ingredient-btn .ingredient.sushi-seaweed {
+      width: 40px;
+      height: 38px;
+    }
+
+    body[data-theme="burger"] .board {
+      align-items: start;
+      justify-items: center;
+      overflow: visible;
+      background:
+        radial-gradient(ellipse at 50% 58%, rgba(255, 175, 83, .16), transparent 54%),
+        linear-gradient(180deg, #fffaf3, #ffffff);
+      min-height: 238px;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    body[data-theme="burger"] .gimbap-stack,
+    body[data-theme="burger"] .slots {
+      width: min(320px, 100%);
+      height: 220px;
+      border-radius: 28px;
+      background:
+        radial-gradient(ellipse at 50% 100%, rgba(255, 186, 86, .18), transparent 52%),
+        radial-gradient(ellipse at 50% 18%, rgba(255, 255, 255, .98), rgba(255, 255, 255, .5) 50%, transparent 76%),
+        linear-gradient(180deg, rgba(255, 249, 239, .92), rgba(255,255,255,.66));
+      box-shadow: 0 12px 24px rgba(14, 29, 62, .08);
+    }
+
+    body[data-theme="burger"] .example-label {
+      top: -18px;
+      z-index: 6;
+    }
+
+    body[data-theme="burger"] .gimbap-stack::before,
+    body[data-theme="burger"] .gimbap-stack::after,
+    body[data-theme="burger"] .slots::before,
+    body[data-theme="burger"] .slots::after {
+      display: none;
+    }
+
+    body[data-theme="burger"] .ingredient {
+      width: 154px;
+      height: 42px;
+      border-radius: 999px;
+      background-color: transparent;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      box-shadow: none;
+      filter: drop-shadow(0 7px 6px rgba(14, 29, 62, .12));
+    }
+
+    body[data-theme="burger"] .ingredient.bun {
+      width: 168px;
+      height: 74px;
+      background-image: url("burger-bun.png");
+    }
+
+    body[data-theme="burger"] .ingredient.cheese {
+      width: 164px;
+      height: 72px;
+      background-image: url("burger-cheese.png");
+    }
+
+    body[data-theme="burger"] .ingredient.lettuce {
+      width: 142px;
+      height: 58px;
+      background-image: url("burger-lettuce.png");
+    }
+
+    body[data-theme="burger"] .ingredient.patty {
+      width: 142px;
+      height: 58px;
+      background-image: url("burger-patty.png");
+    }
+
+    body[data-theme="burger"] .ingredient.tomato {
+      width: 146px;
+      height: 82px;
+      background-image: url("burger-tomato.png");
+    }
+
+    body[data-theme="burger"] .ingredient.fried-egg {
+      width: 168px;
+      height: 82px;
+      background-image: url("burger-fried-egg.png");
+    }
+
+    body[data-theme="burger"] .ingredient-btn .ingredient {
+      width: 54px;
+      height: 34px;
+      clip-path: none;
+      filter: drop-shadow(0 4px 4px rgba(14, 29, 62, .1));
+    }
+
+    body[data-theme="burger"] .slot {
+      width: 270px;
+      height: 42px;
+      border-radius: 17px;
+      border-color: rgba(255, 107, 0, .32);
+      background: rgba(255, 247, 237, .48);
+    }
+
+    body[data-theme="burger"] .slots {
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 0;
+    }
+
+    body[data-theme="burger"] .slots .slot {
+      position: relative;
+      left: auto;
+      top: auto;
+      flex: 0 0 auto;
+      transform: none;
+    }
+
+    body[data-theme="burger"] .slot.is-filled {
+      background: transparent;
+    }
+
+    body[data-theme="burger"] .slot .ingredient {
+      width: 168px;
+      height: 54px;
+    }
+
+    body[data-theme="burger"] .slot .ingredient.bun {
+      height: 70px;
+    }
+
+    body[data-theme="burger"] .slot .ingredient.cheese {
+      width: 162px;
+      height: 62px;
+    }
+
+    body[data-theme="burger"] .slot .ingredient.lettuce {
+      width: 140px;
+      height: 50px;
+    }
+
+    body[data-theme="burger"] .slot .ingredient.patty {
+      width: 140px;
+      height: 50px;
+    }
+
+    body[data-theme="burger"] .slot .ingredient.tomato {
+      width: 146px;
+      height: 60px;
+    }
+
+    body[data-theme="burger"] .slot .ingredient.fried-egg {
+      width: 156px;
+      height: 58px;
+    }
+
+    .focus-wrap {
+      display: none;
+      position: relative;
+      width: 220px;
+      height: 220px;
+    }
+
+    .focus-ring {
+      position: absolute;
+      inset: 30px;
+      border: 12px solid rgba(255, 107, 0, .16);
+      border-top-color: var(--orange);
+      border-radius: 50%;
+      animation: spin 1.1s linear infinite;
+    }
+
+    .focus-wrap.is-auto .focus-ring {
+      animation: spin 1.1s linear 3;
+    }
+
+    .focus-core {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 88px;
+      height: 88px;
+      transform: translate(-50%, -50%);
+      display: grid;
+      place-items: center;
+      border-radius: 32px;
+      background: #ffffff;
+      box-shadow: 0 14px 26px rgba(255, 107, 0, .14);
+    }
+
+    .focus-dot {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #ff8a1f, #ff5e1a);
+      animation: pulse .8s ease-in-out infinite alternate;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      from { transform: scale(.78); opacity: .68; }
+      to { transform: scale(1.06); opacity: 1; }
+    }
+
+    .order-area {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 11px;
+      width: 100%;
+    }
+
+    .slots {
+      position: relative;
+      width: min(326px, 96%);
+      height: 132px;
+      flex: 0 0 132px;
+      border-radius: 999px;
+      background: linear-gradient(145deg, #152131, #0d1624);
+      box-shadow:
+        inset 0 0 0 2px rgba(255,255,255,.12),
+        0 6px 0 rgba(13, 20, 32, .12),
+        0 14px 24px rgba(14, 29, 62, .14);
+    }
+
+    .slots::before,
+    .slots::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+      border-radius: 999px;
+    }
+
+    .slots::before {
+      inset: 7px;
+      background:
+        radial-gradient(ellipse at 8% 22%, rgba(255,255,255,.96) 0 6px, transparent 7px),
+        radial-gradient(ellipse at 14% 55%, rgba(255,255,255,.82) 0 5px, transparent 6px),
+        radial-gradient(ellipse at 21% 18%, rgba(255,255,255,.92) 0 7px, transparent 8px),
+        radial-gradient(ellipse at 28% 74%, rgba(255,255,255,.9) 0 6px, transparent 7px),
+        radial-gradient(ellipse at 35% 35%, rgba(255,255,255,.86) 0 5px, transparent 6px),
+        radial-gradient(ellipse at 43% 80%, rgba(255,255,255,.88) 0 7px, transparent 8px),
+        radial-gradient(ellipse at 51% 18%, rgba(255,255,255,.94) 0 6px, transparent 7px),
+        radial-gradient(ellipse at 58% 58%, rgba(255,255,255,.86) 0 5px, transparent 6px),
+        radial-gradient(ellipse at 66% 28%, rgba(255,255,255,.92) 0 7px, transparent 8px),
+        radial-gradient(ellipse at 74% 76%, rgba(255,255,255,.88) 0 6px, transparent 7px),
+        radial-gradient(ellipse at 82% 22%, rgba(255,255,255,.9) 0 6px, transparent 7px),
+        radial-gradient(ellipse at 91% 58%, rgba(255,255,255,.84) 0 7px, transparent 8px),
+        repeating-radial-gradient(ellipse at 50% 50%, rgba(255,255,255,.28) 0 2px, transparent 3px 13px),
+        linear-gradient(180deg, #fff9eb 0%, #f5eddb 100%);
+      box-shadow:
+        inset 0 4px 10px rgba(255,255,255,.68),
+        inset 0 -5px 12px rgba(116, 91, 54, .08);
+    }
+
+    .slots::after {
+      inset: 15px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.18), transparent 42%),
+        radial-gradient(ellipse at 18% 30%, rgba(232,217,188,.48) 0 2px, transparent 3px),
+        radial-gradient(ellipse at 39% 24%, rgba(255,255,255,.76) 0 2px, transparent 3px),
+        radial-gradient(ellipse at 62% 67%, rgba(232,217,188,.48) 0 2px, transparent 3px),
+        radial-gradient(ellipse at 81% 37%, rgba(255,255,255,.76) 0 2px, transparent 3px);
+      opacity: .95;
+    }
+
+    .slot {
+      position: absolute;
+      left: var(--x, 50%);
+      top: var(--y, 50%);
+      z-index: 2;
+      width: 60px;
+      height: 86px;
+      display: grid;
+      place-items: center;
+      transform: translate(-50%, -50%);
+      border: 2px dashed rgba(255, 107, 0, .38);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, .38);
+      backdrop-filter: blur(1px);
+      transition: .18s ease;
+    }
+
+    .slot.is-filled {
+      border-style: solid;
+      border-color: rgba(14, 29, 62, .08);
+      background: transparent;
+      backdrop-filter: none;
+      box-shadow: none;
+      cursor: grab;
+    }
+
+    .slot.is-filled:active {
+      cursor: grabbing;
+    }
+
+    .slot.is-slot-dragging {
+      opacity: .52;
+      transform: translate(-50%, -50%) scale(.94);
+    }
+
+    .slot.is-target {
+      border-color: rgba(255, 255, 255, .94);
+      box-shadow: 0 0 0 5px rgba(255, 107, 0, .22);
+    }
+
+    .slot.is-wrong {
+      border-style: solid;
+      border-color: rgba(232, 83, 20, .72);
+      background: rgba(255, 244, 238, .72);
+      box-shadow: 0 0 0 4px rgba(232, 83, 20, .12);
+    }
+
+    .slot .ingredient {
+      position: relative;
+      left: auto;
+      top: auto;
+      width: 50px;
+      height: 82px;
+      flex-basis: 50px;
+      transform: none;
+    }
+
+    .tray {
+      display: grid;
+      grid-template-columns: repeat(var(--tray-columns, var(--tray-count, 4)), minmax(0, 1fr));
+      gap: 7px;
+      width: min(100%, calc(var(--tray-columns, var(--tray-count, 4)) * 103px + (var(--tray-columns, var(--tray-count, 4)) - 1) * 7px));
+      max-width: 326px;
+      justify-self: center;
+      margin-inline: auto;
+    }
+
+    .ingredient-btn {
+      min-width: 0;
+      min-height: 67px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 6px 3px;
+      border-radius: 15px;
+      background: #ffffff;
+      box-shadow: 0 8px 18px rgba(14, 29, 62, .06);
+      border: 1px solid rgba(14, 29, 62, .05);
+      touch-action: none;
+      user-select: none;
+    }
+
+    .ingredient-btn:active {
+      transform: translateY(2px);
+    }
+
+    .ingredient-btn.is-dragging {
+      opacity: .45;
+    }
+
+    .ingredient-btn.selected {
+      border-color: rgba(255, 107, 0, .5);
+      background: #fff4ee;
+      box-shadow: 0 0 0 3px rgba(255, 107, 0, .14);
+    }
+
+    .ingredient-btn .ingredient {
+      position: relative;
+      left: auto;
+      top: auto;
+      width: 28px;
+      height: 33px;
+      flex-basis: auto;
+      border-radius: 11px;
+      transform: none;
+    }
+
+    .ingredient-btn span {
+      color: var(--ink);
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .drag-ghost {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 999;
+      width: 62px;
+      height: 88px;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      filter: drop-shadow(0 12px 16px rgba(14, 29, 62, .2));
+    }
+
+    .feedback {
+      display: none;
+    }
+
+    #missionSub {
+      display: none;
+    }
+
+    .feedback.good {
+      color: #1f9a50;
+    }
+
+    .feedback.bad {
+      color: #e85314;
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr);
+      gap: 10px;
+    }
+
+    .btn-secondary,
+    .btn-primary {
+      min-height: 56px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 18px;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .btn-secondary {
+      background: #eef2f7;
+      color: #536079;
+    }
+
+    .btn-primary {
+      background: var(--navy);
+      color: #ffffff;
+      box-shadow: 0 8px 20px rgba(14, 29, 62, .18);
+    }
+
+    .btn-primary.orange {
+      background: linear-gradient(180deg, #ff7e1c, #ff5e1a);
+      box-shadow: 0 8px 20px rgba(255, 107, 0, .22);
+    }
+
+    .btn-primary:disabled,
+    .btn-secondary:disabled {
+      opacity: .46;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .result-card {
+      display: none;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .result-card h2 {
+      margin-top: 6px;
+      margin-bottom: 8px;
+      color: var(--ink);
+      font-size: 28px;
+      line-height: 1.15;
+      font-weight: 900;
+    }
+
+    .score-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 9px;
+      margin: 15px 0;
+    }
+
+    .score-box {
+      padding: 12px 6px;
+      border-radius: 16px;
+      background: #f8fafc;
+    }
+
+    .score-box small {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .score-box strong {
+      color: var(--navy);
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .level-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      padding: 0 20px 12px;
+    }
+
+    .level-chip {
+      min-height: 40px;
+      border-radius: 15px;
+      background: #ffffff;
+      color: #64748b;
+      box-shadow: 0 6px 14px rgba(14, 29, 62, .05);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .level-chip.active {
+      background: var(--navy);
+      color: #ffffff;
+    }
+
+    .confetti {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .confetti i {
+      position: absolute;
+      top: -18px;
+      width: 8px;
+      height: 12px;
+      border-radius: 2px;
+      background: var(--c);
+      left: var(--x);
+      animation: fall var(--d) linear forwards;
+    }
+
+    @keyframes fall {
+      to { transform: translateY(760px) rotate(520deg); opacity: .2; }
+    }
+
+    @keyframes ingredientDemoPop {
+      0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+      }
+      42% {
+        transform: translate(-50%, -64%) scale(1.24);
+      }
+    }
+
+    @media (max-width: 419px) {
+      body {
+        padding: 0;
+        background: var(--app-bg);
+      }
+
+      .app-device {
+        width: 100%;
+        height: 100dvh;
+        min-height: 0;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+    }
+
+    @media (max-height: 740px) {
+      .app-device {
+        min-height: 0;
+      }
+
+      .board {
+        min-height: 178px;
+        place-items: center;
+      }
+
+      .plate {
+        width: min(300px, 100%);
+        height: 150px;
+        place-items: center;
+      }
+
+      .gimbap-stack {
+        width: min(292px, 96%);
+        height: 150px;
+        margin: auto;
+      }
+
+      .ingredient {
+        width: 45px;
+        height: 68px;
+        flex-basis: 45px;
+      }
+
+      .stage-card {
+        gap: 10px;
+        padding: 14px;
+      }
+
+      .slots {
+        width: min(292px, 96%);
+        height: 108px;
+        flex-basis: 108px;
+      }
+
+      body[data-theme="gimbap"] .slots {
+        height: 140px;
+        flex-basis: 140px;
+      }
+
+      .slot {
+        width: 48px;
+        height: 72px;
+        border-radius: 18px;
+      }
+
+      .slot .ingredient {
+        width: 45px;
+        height: 68px;
+      }
+
+      .ingredient-btn {
+        min-height: 58px;
+      }
+
+      .ingredient-btn .ingredient {
+        width: 24px;
+        height: 29px;
+      }
+
+      body[data-theme="burger"] .slots,
+      body[data-theme="burger"] .gimbap-stack {
+        width: min(306px, 100%);
+        height: 220px;
+        flex-basis: 220px;
+      }
+
+      body[data-theme="burger"] .slot {
+        width: 258px;
+        height: 40px;
+      }
+
+      body[data-theme="burger"] .gimbap-stack > .ingredient,
+      body[data-theme="burger"] .slot .ingredient {
+        width: 154px;
+        height: 62px;
+      }
+
+      body[data-theme="burger"] .gimbap-stack > .ingredient.bun,
+      body[data-theme="burger"] .slot .ingredient.bun {
+        width: 160px;
+        height: 66px;
+      }
+
+      body[data-theme="burger"] .gimbap-stack > .ingredient.cheese,
+      body[data-theme="burger"] .slot .ingredient.cheese {
+        width: 152px;
+        height: 56px;
+      }
+
+      body[data-theme="burger"] .gimbap-stack > .ingredient.lettuce,
+      body[data-theme="burger"] .slot .ingredient.lettuce {
+        width: 132px;
+        height: 50px;
+      }
+
+      body[data-theme="burger"] .gimbap-stack > .ingredient.patty,
+      body[data-theme="burger"] .slot .ingredient.patty {
+        width: 132px;
+        height: 50px;
+      }
+
+      body[data-theme="burger"] .gimbap-stack > .ingredient.tomato,
+      body[data-theme="burger"] .slot .ingredient.tomato {
+        width: 136px;
+        height: 74px;
+      }
+
+      body[data-theme="burger"] .gimbap-stack > .ingredient.fried-egg,
+      body[data-theme="burger"] .slot .ingredient.fried-egg {
+        width: 160px;
+        height: 76px;
+      }
+    }
+  </style>
+</head>
+<body data-theme="sushi">
+  <main class="app-device" aria-label="놀픽 기억공방">
+    <section class="game">
+      <header class="topbar">
+        <button class="icon-btn" type="button" aria-label="뒤로" onclick="goBackToChallenge()">‹</button>
+        <div class="title-area">
+          <span class="today-label">오늘의 미션</span>
+          <div class="title-line">
+            <h1><span class="workshop-prefix">기억하기 놀이 - </span><span id="workshopTitle">스시공방</span></h1>
+            <span class="skill-pill">작업기억력</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="level-strip" aria-label="난이도 선택">
+        <button class="level-chip active" type="button" data-mode="easy">레벨1 스시</button>
+        <button class="level-chip" type="button" data-mode="middle">레벨2 김밥</button>
+        <button class="level-chip" type="button" data-mode="hard">레벨3 햄버거</button>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span id="stepName">1단계 기억하기</span>
+          <span id="roundInfo">1 / 4</span>
+        </div>
+        <div class="progress"><span id="progressBar"></span></div>
+      </div>
+
+      <div class="screen">
+        <section class="mission-card">
+          <div class="mission-line">
+            <span class="stage-label" id="missionLabel">5초 동안 기억해요</span>
+            <span class="timer-chip" id="timerChip">4</span>
+          </div>
+          <p class="mission-text" id="missionText">스시 재료 순서를 잘 봐요.</p>
+          <p class="mission-sub" id="missionSub">재료가 사라진 뒤 같은 순서로 넣으면 완성됩니다.</p>
+        </section>
+
+        <section class="stage-card" id="stageCard">
+          <p class="sequence-strip" id="sequenceStrip" aria-live="polite"></p>
+          <div class="board" id="board">
+            <span class="example-label">예시</span>
+            <div class="plate" id="plate">
+              <div class="gimbap-stack" id="memoryStack"></div>
+            </div>
+            <div class="focus-wrap" id="focusWrap" aria-hidden="true">
+              <div class="focus-ring"></div>
+              <div class="focus-core"><span class="focus-dot"></span></div>
+            </div>
+          </div>
+
+          <div class="order-area" id="orderArea">
+            <div class="slots" id="slots"></div>
+            <div class="tray" id="tray"></div>
+            <p class="feedback" id="feedback">재료를 순서대로 넣어주세요.</p>
+          </div>
+        </section>
+
+        <section class="result-card" id="resultCard">
+          <h2 id="resultTitle">스시 완성!</h2>
+          <p class="mission-sub" id="resultText">작업기억력 미션을 성공했어요.</p>
+          <div class="score-row">
+            <div class="score-box"><small>점수</small><strong id="scoreText">100</strong></div>
+            <div class="score-box"><small>XP</small><strong>+15</strong></div>
+            <div class="score-box"><small>연속</small><strong id="streakText">1</strong></div>
+          </div>
+        </section>
+
+        <div class="action-row">
+          <button class="btn-secondary" type="button" id="resetBtn">다시</button>
+          <button class="btn-primary" type="button" id="nextBtn">시작하기</button>
+        </div>
+      </div>
+      <div class="confetti" id="confetti" aria-hidden="true"></div>
+    </section>
+  </main>
+
+  <script>
+    const ingredients = {
+      carrot: { label: "당근", color: "orange" },
+      egg: { label: "계란말이", color: "yellow" },
+      radish: { label: "우엉", color: "brown" },
+      cucumber: { label: "오이", color: "green" },
+      ham: { label: "소세지", color: "pink" },
+      salmon: { label: "연어", color: "orange" },
+      tuna: { label: "참치", color: "red" },
+      shrimp: { label: "새우", color: "pink" },
+      "sushi-roe": { label: "연어알", color: "orange" },
+      "sushi-seaweed": { label: "미역", color: "green" },
+      "sushi-white": { label: "흰살", color: "white" },
+      "sushi-eel": { label: "장어", color: "brown" },
+      "sushi-egg": { label: "계란", color: "yellow" },
+      "sushi-pink": { label: "참치살", color: "pink" },
+      bun: { label: "빵", color: "orange" },
+      patty: { label: "패티", color: "brown" },
+      cheese: { label: "치즈", color: "yellow" },
+      lettuce: { label: "상추", color: "green" },
+      tomato: { label: "토마토", color: "red" }
+    };
+
+    ingredients.lettuce = { label: "\uD53C\uB9DD", color: "green" };
+    ingredients["fried-egg"] = { label: "\uACC4\uB780\uD6C4\uB77C\uC774", color: "yellow" };
+
+    const modes = {
+      easy: {
+        label: "레벨 1",
+        dish: "스시",
+        workshop: "스시공방",
+        theme: "sushi",
+        length: 3,
+        rounds: 5,
+        ingredients: ["salmon", "tuna", "shrimp", "sushi-roe", "sushi-seaweed", "sushi-white", "sushi-eel", "sushi-egg", "sushi-pink"],
+        tray: "mixed",
+        trayCount: 6,
+        mission: "그대로 만들어라",
+        transform: seq => seq
+      },
+      middle: {
+        label: "레벨 2",
+        dish: "김밥",
+        workshop: "김밥공방",
+        theme: "gimbap",
+        length: 4,
+        rounds: 3,
+        ingredients: ["egg", "ham", "carrot", "cucumber", "radish"],
+        tray: "all",
+        mission: "보고 그대로 만들어라",
+        allowRepeats: true,
+        transform: seq => seq
+      },
+      hard: {
+        label: "레벨 3",
+        dish: "햄버거",
+        workshop: "햄버거공방",
+        theme: "burger",
+        length: 4,
+        rounds: 4,
+        ingredients: ["bun", "patty", "cheese", "lettuce", "fried-egg"],
+        tray: "all",
+        mission: "그대로 만들어라",
+        transform: seq => seq
+      }
+    };
+
+    const difficultyProfiles = {
+      need: {
+        label: "노력바람",
+        easyTrayCount: 3,
+        showSequenceTextModes: ["easy", "middle"]
+      },
+      normal: {
+        label: "보통",
+        easyTrayCount: 3,
+        showSequenceTextModes: []
+      },
+      strong: {
+        label: "잘함",
+        easyTrayCount: 6,
+        showSequenceTextModes: []
+      }
+    };
+
+    function normalizeTier(value) {
+      if (!value) return "";
+      const tier = String(value).trim().toLowerCase();
+      if (["need", "low", "weak", "effort"].includes(tier) || value === "노력바람") return "need";
+      if (["normal", "middle", "medium", "average"].includes(tier) || value === "보통") return "normal";
+      if (["strong", "good", "high", "well"].includes(tier) || value === "잘함") return "strong";
+      return "";
+    }
+
+    function readJsonFromStorage(storage, key) {
+      try {
+        return JSON.parse(storage.getItem(key) || "null");
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function storedLatestResult() {
+      const localLatest = readJsonFromStorage(localStorage, "nollpic_latest_result");
+      const guestLatest = readJsonFromStorage(sessionStorage, "nollpic_guest_latest_result");
+      return localLatest || guestLatest || null;
+    }
+
+    function urlTierOverride() {
+      const params = new URLSearchParams(window.location.search);
+      const ownTier = normalizeTier(params.get("memoryTier") || params.get("wm"));
+      if (ownTier) return ownTier;
+
+      try {
+        if (window.parent && window.parent !== window) {
+          const parentParams = new URLSearchParams(window.parent.location.search);
+          return normalizeTier(parentParams.get("memoryTier") || parentParams.get("wm"));
+        }
+      } catch (error) {
+        return "";
+      }
+      return "";
+    }
+
+    function resolveMemoryTier() {
+      const override = urlTierOverride();
+      if (override) return override;
+
+      const latest = storedLatestResult();
+      const score = Number(latest?.scores?.memory);
+      if (Number.isFinite(score) && score > 0) {
+        if (score >= 80) return "strong";
+        if (score >= 60) return "normal";
+        return "need";
+      }
+
+      const level = Number(latest?.raw?.memoryLevel ?? latest?.memoryLevel);
+      if (Number.isFinite(level) && level > 0) {
+        if (level >= 3) return "strong";
+        if (level >= 2) return "normal";
+        return "need";
+      }
+
+      return "normal";
+    }
+
+    let ingredientKeys = modes.easy.ingredients;
+    let mode = "easy";
+    const memoryTier = resolveMemoryTier();
+    let phase = "ready";
+    let round = 1;
+    let streak = 0;
+    let score = 0;
+    let memorySequence = [];
+    let answerSequence = [];
+    let playerSequence = [];
+    let traySequence = [];
+    let activeSwapRule = null;
+    let mistakeIndexes = new Set();
+    let selectedIngredient = null;
+    let suppressTrayClick = false;
+    let draggedSlotIndex = null;
+    let timer = null;
+    let tutorialTimers = [];
+    const missionSpinMs = 3300;
+    const levelFlow = ["easy", "middle", "hard"];
+
+    const els = {
+      stepName: document.getElementById("stepName"),
+      roundInfo: document.getElementById("roundInfo"),
+      progressBar: document.getElementById("progressBar"),
+      missionLabel: document.getElementById("missionLabel"),
+      missionText: document.getElementById("missionText"),
+      missionSub: document.getElementById("missionSub"),
+      workshopTitle: document.getElementById("workshopTitle"),
+      skillPill: document.querySelector(".skill-pill"),
+      timerChip: document.getElementById("timerChip"),
+      board: document.getElementById("board"),
+      sequenceStrip: document.getElementById("sequenceStrip"),
+      plate: document.getElementById("plate"),
+      memoryStack: document.getElementById("memoryStack"),
+      focusWrap: document.getElementById("focusWrap"),
+      orderArea: document.getElementById("orderArea"),
+      slots: document.getElementById("slots"),
+      tray: document.getElementById("tray"),
+      feedback: document.getElementById("feedback"),
+      stageCard: document.getElementById("stageCard"),
+      resultCard: document.getElementById("resultCard"),
+      resultTitle: document.getElementById("resultTitle"),
+      resultText: document.getElementById("resultText"),
+      scoreText: document.getElementById("scoreText"),
+      streakText: document.getElementById("streakText"),
+      resetBtn: document.getElementById("resetBtn"),
+      nextBtn: document.getElementById("nextBtn"),
+      confetti: document.getElementById("confetti")
+    };
+
+    function shuffle(values) {
+      return [...values].sort(() => Math.random() - 0.5);
+    }
+
+    function currentProfile() {
+      return difficultyProfiles[memoryTier] || difficultyProfiles.normal;
+    }
+
+    function isBasicCourse() {
+      return memoryTier === "need";
+    }
+
+    function recommendedCourseEndMode() {
+      if (isBasicCourse()) return "easy";
+      if (memoryTier === "normal") return "middle";
+      return "hard";
+    }
+
+    function isRecommendedCourseComplete(modeKey = mode) {
+      return modeKey === recommendedCourseEndMode();
+    }
+
+    function dishName(modeKey = mode) {
+      return {
+        easy: "\uC2A4\uC2DC\uACF5\uBC29",
+        middle: "\uAE40\uBC25\uACF5\uBC29",
+        hard: "\uD584\uBC84\uAC70\uACF5\uBC29"
+      }[modeKey] || "";
+    }
+
+    function memoryStageLabelText() {
+      const seconds = rememberSeconds();
+      return seconds > 0 ? `${seconds}\uCD08 \uB3D9\uC548 \uAE30\uC5B5\uD574\uC694` : "\uBC14\uB85C \uB9DE\uCD94\uAE30";
+    }
+
+    function currentMode() {
+      const base = modes[mode];
+      const cfg = { ...base, ingredients: [...base.ingredients] };
+
+      if (mode === "easy") {
+        cfg.rounds = isBasicCourse() ? 5 : 3;
+        cfg.length = 3;
+        cfg.trayCount = 3;
+        cfg.mission = "\uADF8\uB300\uB85C \uB9CC\uB4E4\uC5B4\uB77C";
+        cfg.swapRules = null;
+        cfg.appliedRules = null;
+        cfg.transform = seq => seq;
+      }
+
+      if (mode === "middle") {
+        if (memoryTier === "need") {
+          cfg.mission = "그대로 만들어라";
+          cfg.swapRules = null;
+          cfg.appliedRules = null;
+          cfg.transform = seq => seq;
+        } else {
+          cfg.length = 5;
+          cfg.mission = "응용해서 만들어라";
+          cfg.swapRules = null;
+          cfg.appliedRules = [
+            { type: "swap", a: 3, b: 4, title: "4번과 5번을 바꿔라", keep: "앞 3칸 그대로", note: "4번과 5번만 서로 바꿔 넣어요." },
+            { type: "swap", a: 0, b: 3, title: "1번과 4번을 바꿔라", keep: "나머지 그대로", note: "1번과 4번만 서로 바꿔 넣어요." },
+            { type: "swap", a: 1, b: 2, title: "2번과 3번을 바꿔라", keep: "양끝 그대로", note: "2번과 3번만 서로 바꿔 넣어요." },
+            { type: "duplicate", key: "ham", title: "소세지를 두 번 넣어라", keep: "두 개", note: "한 칸을 소세지로 바꿔 소세지가 두 개가 되게 넣어요." }
+          ];
+          cfg.transform = seq => seq;
+        }
+      }
+
+      if (mode === "middle") {
+        cfg.rounds = 3;
+        cfg.length = 4;
+        cfg.mission = "\uBCF4\uACE0 \uADF8\uB300\uB85C \uB9CC\uB4E4\uC5B4\uB77C";
+        cfg.swapRules = null;
+        cfg.appliedRules = null;
+        cfg.allowRepeats = false;
+        cfg.transform = seq => seq;
+      }
+
+      if (mode === "hard") {
+        cfg.rounds = 4;
+        cfg.length = round <= 2 ? 4 : 5;
+        cfg.mission = "\uADF8\uB300\uB85C \uB9CC\uB4E4\uC5B4\uB77C";
+        cfg.appliedRules = null;
+        cfg.swapRules = null;
+        cfg.transform = seq => seq;
+      }
+
+      return cfg;
+    }
+
+    function showSequenceTextForCurrentMode() {
+      return currentProfile().showSequenceTextModes.includes(mode);
+    }
+
+    function nextModeKey() {
+      const index = levelFlow.indexOf(mode);
+      return index >= 0 ? levelFlow[index + 1] : null;
+    }
+
+    function rememberSeconds() {
+      if (isBasicCourse() && mode === "easy") return 0;
+      if (mode === "middle" || mode === "hard") return 5;
+      return 3;
+    }
+
+    function audioContext() {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return null;
+      if (!window.nollpicAudioContext) {
+        window.nollpicAudioContext = new AudioContext();
+      }
+      if (window.nollpicAudioContext.state === "suspended") {
+        window.nollpicAudioContext.resume();
+      }
+      return window.nollpicAudioContext;
+    }
+
+    function playTone(frequency, startAt, duration, gainValue = 0.08, type = "sine") {
+      const ctx = audioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(frequency, startAt);
+      gain.gain.setValueAtTime(0.0001, startAt);
+      gain.gain.exponentialRampToValueAtTime(gainValue, startAt + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(startAt);
+      osc.stop(startAt + duration + 0.02);
+    }
+
+    function playTimerBeep() {
+      const ctx = audioContext();
+      if (!ctx) return;
+      playTone(880, ctx.currentTime, 0.1, 0.095, "square");
+    }
+
+    function playWowSound() {
+      const ctx = audioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      playTone(523.25, now, 0.13, 0.07, "triangle");
+      playTone(659.25, now + 0.12, 0.15, 0.075, "triangle");
+      playTone(783.99, now + 0.25, 0.22, 0.08, "triangle");
+    }
+
+    function setActiveLevelChip() {
+      document.querySelectorAll(".level-chip").forEach(chip => {
+        chip.textContent = dishName(chip.dataset.mode);
+        chip.classList.toggle("active", chip.dataset.mode === mode);
+      });
+    }
+
+    function nextDoneButtonText() {
+      if (round < currentMode().rounds) return "\uB2E4\uC74C \uBB38\uD56D";
+      const nextMode = nextModeKey();
+      if (!nextMode) return "\uD648\uC73C\uB85C \uC774\uB3D9";
+      if (isBasicCourse() && mode === "easy") return "\uC608, \uB3C4\uC804\uD560\uB798\uC694";
+      if (mode === "middle") return "\uB3C4\uC804\uD558\uAE30";
+      return "\uACC4\uC18D\uD558\uAE30";
+    }
+
+    function resultCopy(nextMode) {
+      const workshopDone = round >= currentMode().rounds;
+      if (!workshopDone) {
+        return {
+          title: `${currentMode().dish} \uC644\uC131!`,
+          text: `${round}\uBC88 \uBB38\uD56D\uC744 \uC798 \uD574\uB0C8\uC5B4\uC694.`
+        };
+      }
+
+      if (isBasicCourse() && mode === "easy") {
+        return {
+          title: "\uD83C\uDF89 \uC624\uB298\uC758 \uB180\uC774\uB97C \uBAA8\uB450 \uC644\uB8CC\uD588\uC5B4\uC694!",
+          text: "\uC815\uB9D0 \uC798\uD588\uC5B4\uC694.\n\uC870\uAE08 \uB354 \uC5B4\uB824\uC6B4 \uAE40\uBC25\uACF5\uBC29\uC5D0\uB3C4 \uB3C4\uC804\uD574 \uBCFC\uAE4C\uC694?"
+        };
+      }
+
+      if (mode === "easy" && nextMode) {
+        return {
+          title: "\uC2A4\uC2DC\uACF5\uBC29\uC744 \uC644\uC131\uD588\uC5B4\uC694!",
+          text: "\uB2E4\uC74C\uC740 \uC870\uAE08 \uB354 \uC5B4\uB824\uC6B4 \uAE40\uBC25\uACF5\uBC29\uC774\uC5D0\uC694."
+        };
+      }
+
+      if (mode === "middle" && nextMode) {
+        return {
+          title: "\uAE40\uBC25\uACF5\uBC29\uAE4C\uC9C0 \uC644\uC131\uD588\uC5B4\uC694!",
+          text: "\uB9C8\uC9C0\uB9C9 \uD584\uBC84\uAC70\uACF5\uBC29\uC5D0 \uB3C4\uC804\uD574 \uBCFC\uAE4C\uC694?"
+        };
+      }
+
+      return {
+        title: "\uD83C\uDF89 \uC624\uB298\uC758 \uB180\uC774\uB97C \uBAA8\uB450 \uC644\uB8CC\uD588\uC5B4\uC694!",
+        text: "\uC815\uB9D0 \uC798\uD588\uC5B4\uC694. \uC624\uB298\uC758 \uACF5\uBC29 \uCF54\uC2A4\uB97C \uBA4B\uC9C0\uAC8C \uB05D\uB0C8\uC5B4\uC694."
+      };
+    }
+
+    function applyModeUi() {
+      const cfg = currentMode();
+      ingredientKeys = cfg.ingredients;
+      document.body.dataset.theme = cfg.theme;
+      els.workshopTitle.textContent = cfg.workshop;
+      els.skillPill.textContent = `작업기억력 · ${currentProfile().label}`;
+      els.resultTitle.textContent = `${cfg.dish} 완성!`;
+    }
+
+    function goBackToChallenge() {
+      if (window.parent && window.parent !== window && typeof window.parent.prevPage === "function") {
+        window.parent.prevPage(11);
+        return;
+      }
+      history.back();
+    }
+
+    function layoutFor(count) {
+      const cfg = currentMode();
+      if (cfg.theme === "burger") {
+        const layouts = {
+          3: [
+            { x: 50, y: 74 },
+            { x: 50, y: 56 },
+            { x: 50, y: 38 }
+          ],
+          4: [
+            { x: 50, y: 82 },
+            { x: 50, y: 64 },
+            { x: 50, y: 46 },
+            { x: 50, y: 28 }
+          ],
+          5: [
+            { x: 50, y: 82 },
+            { x: 50, y: 68 },
+            { x: 50, y: 54 },
+            { x: 50, y: 40 },
+            { x: 50, y: 26 }
+          ]
+        };
+        return layouts[count] || layouts[5];
+      }
+
+      if (cfg.theme === "sushi") {
+        const layouts = {
+          3: [
+            { x: 22, y: 50 },
+            { x: 50, y: 50 },
+            { x: 78, y: 50 }
+          ],
+          4: [
+            { x: 14, y: 50 },
+            { x: 38, y: 50 },
+            { x: 62, y: 50 },
+            { x: 86, y: 50 }
+          ],
+          5: [
+            { x: 10, y: 50 },
+            { x: 30, y: 50 },
+            { x: 50, y: 50 },
+            { x: 70, y: 50 },
+            { x: 90, y: 50 }
+          ]
+        };
+        return layouts[count] || layouts[4];
+      }
+
+      const layouts = {
+        3: [
+          { x: 30, y: 50 },
+          { x: 50, y: 50 },
+          { x: 70, y: 50 }
+        ],
+        4: [
+          { x: 23, y: 50 },
+          { x: 41, y: 50 },
+          { x: 59, y: 50 },
+          { x: 77, y: 50 }
+        ],
+        5: [
+          { x: 18, y: 50 },
+          { x: 34, y: 50 },
+          { x: 50, y: 50 },
+          { x: 66, y: 50 },
+          { x: 82, y: 50 }
+        ]
+      };
+      return layouts[count] || layouts[4];
+    }
+
+    function selectSwapRule(cfg) {
+      const rules = cfg.appliedRules || cfg.swapRules;
+      activeSwapRule = rules ? shuffle(rules)[0] : null;
+    }
+
+    function transformSequence(seq, cfg) {
+      if (activeSwapRule?.type === "swap" || (activeSwapRule && Number.isInteger(activeSwapRule.a))) {
+        const next = [...seq];
+        const left = next[activeSwapRule.a];
+        next[activeSwapRule.a] = next[activeSwapRule.b];
+        next[activeSwapRule.b] = left;
+        return next;
+      }
+      if (activeSwapRule?.type === "move-front") {
+        const rest = seq.filter(key => key !== activeSwapRule.key);
+        return [activeSwapRule.key, ...rest].slice(0, seq.length);
+      }
+      if (activeSwapRule?.type === "duplicate") {
+        const next = [...seq];
+        const firstIndex = next.indexOf(activeSwapRule.key);
+        if (firstIndex < 0) return next;
+        const replaceIndex = next.findIndex((key, index) => key !== activeSwapRule.key && index !== firstIndex);
+        if (replaceIndex >= 0) next[replaceIndex] = activeSwapRule.key;
+        return next;
+      }
+      if (activeSwapRule?.type === "remove") {
+        return seq.filter(key => key !== activeSwapRule.key);
+      }
+      return cfg.transform(seq);
+    }
+
+    function requiredIngredientsForRule(rule) {
+      if (!rule?.key) return [];
+      if (["move-front", "duplicate", "remove"].includes(rule.type)) return [rule.key];
+      return [];
+    }
+
+    function makeBaseSequence(cfg) {
+      const required = [...new Set(requiredIngredientsForRule(activeSwapRule))]
+        .filter(key => ingredientKeys.includes(key));
+
+      if (cfg.allowRepeats) {
+        if (cfg.length <= 4) {
+          return shuffle(ingredientKeys).slice(0, cfg.length);
+        }
+
+        const sequence = [...required];
+        while (sequence.length < cfg.length) {
+          sequence.push(ingredientKeys[Math.floor(Math.random() * ingredientKeys.length)]);
+        }
+        if (cfg.length >= 5 && !sequence.some((key, index) => sequence.indexOf(key) !== index)) {
+          sequence[cfg.length - 2] = sequence[cfg.length - 3];
+        }
+        return shuffle(sequence).slice(0, cfg.length);
+      }
+
+      const rest = ingredientKeys.filter(key => !required.includes(key));
+      const fill = shuffle(rest).slice(0, Math.max(0, cfg.length - required.length));
+      const sequence = shuffle([...required, ...fill]).slice(0, cfg.length);
+      if (activeSwapRule?.type === "move-front" && sequence[0] === activeSwapRule.key && sequence.length > 1) {
+        const swapIndex = 1 + Math.floor(Math.random() * (sequence.length - 1));
+        [sequence[0], sequence[swapIndex]] = [sequence[swapIndex], sequence[0]];
+      }
+      return sequence;
+    }
+
+    function makeTraySequence(cfg) {
+      if (cfg.tray === "all") return shuffle([...new Set(ingredientKeys)]);
+      const required = [...new Set(answerSequence)];
+      const count = cfg.trayCount || required.length;
+      const extras = shuffle(ingredientKeys.filter(key => !required.includes(key))).slice(0, Math.max(0, count - required.length));
+      return shuffle([...required, ...extras]);
+    }
+
+    function makeSequence() {
+      const cfg = currentMode();
+      selectSwapRule(cfg);
+      const base = makeBaseSequence(cfg);
+      memorySequence = base;
+      answerSequence = transformSequence(base.slice(0, cfg.length), cfg);
+      if (answerSequence.length < 3) {
+        answerSequence = base.slice(0, 3);
+      }
+      playerSequence = Array(answerSequence.length).fill(null);
+      traySequence = makeTraySequence(cfg);
+      mistakeIndexes = new Set();
+      selectedIngredient = null;
+    }
+
+    function ingredientEl(key, position) {
+      const item = ingredients[key];
+      const node = document.createElement("span");
+      node.className = `ingredient ${key}`;
+      node.setAttribute("aria-label", item.label);
+      if (position) {
+        node.style.setProperty("--x", `${position.x}%`);
+        node.style.setProperty("--y", `${position.y}%`);
+      }
+      return node;
+    }
+
+    function renderMemory() {
+      els.memoryStack.innerHTML = "";
+      const positions = layoutFor(memorySequence.length);
+      memorySequence.forEach((key, index) => {
+        const node = ingredientEl(key, positions[index]);
+        node.dataset.order = String(index);
+        els.memoryStack.appendChild(node);
+      });
+    }
+
+    function clearTutorialDemo() {
+      tutorialTimers.forEach(id => clearTimeout(id));
+      tutorialTimers = [];
+      document.querySelectorAll(".drag-ghost").forEach(node => node.remove());
+      els.memoryStack.querySelectorAll(".demo-pop").forEach(node => {
+        node.classList.remove("demo-pop");
+      });
+    }
+
+    function setReadyTutorialCopy() {
+      els.missionSub.className = "mission-sub tutorial-copy";
+      els.missionSub.dataset.narration = "스시 재료 순서를 잘 보세요. 그럼 마우스를 드래그해서 빈칸에 방금 기억한 스시를 차례대로 갖다 놓는 거예요. 이해 되셨죠? 그럼 아래 시작 버튼을 눌러주세요!";
+      els.missionSub.innerHTML = `
+        <strong>스시 재료 순서를 잘 보세요!</strong>
+        <span>재료가 하나씩 커지면 순서를 기억하고, 시작 후 마우스로 드래그해서 빈칸에 차례대로 놓아요.</span>
+      `;
+    }
+
+    function setReadyTutorialCopy() {
+      els.missionSub.className = "mission-sub tutorial-copy";
+      const foodName = {
+        sushi: "\uC2A4\uC2DC",
+        gimbap: "\uAE40\uBC25",
+        burger: "\uD584\uBC84\uAC70"
+      }[currentMode().theme] || "\uC2A4\uC2DC";
+      els.missionSub.dataset.narration = `${foodName} \uC7AC\uB8CC \uC21C\uC11C\uB97C \uC798 \uBCF4\uC138\uC694. \uADF8\uB7FC \uB9C8\uC6B0\uC2A4\uB97C \uB4DC\uB798\uADF8\uD574\uC11C \uBE48\uCE78\uC5D0 \uBC29\uAE08 \uAE30\uC5B5\uD55C ${foodName}\uB97C \uCC28\uB840\uB300\uB85C \uAC16\uB2E4 \uB193\uB294 \uAC70\uC608\uC694. \uC774\uD574 \uB418\uC168\uC8E0? \uADF8\uB7FC \uC544\uB798 \uC2DC\uC791 \uBC84\uD2BC\uC744 \uB20C\uB7EC\uC8FC\uC138\uC694!`;
+      els.missionSub.innerHTML = `<strong>${foodName} \uC7AC\uB8CC \uC21C\uC11C\uB97C \uC798 \uBCF4\uC138\uC694!</strong>`;
+    }
+
+    function placeTimerAboveBoard() {
+      if (!els.timerChip || !els.stageCard || !els.board) return;
+      els.timerChip.classList.add("stage-timer");
+      els.stageCard.insertBefore(els.timerChip, els.board);
+    }
+
+    function startTutorialDemo() {
+      clearTutorialDemo();
+      if (phase !== "ready") return;
+      els.timerChip.style.display = "none";
+
+      const items = [...els.memoryStack.querySelectorAll(".ingredient")];
+      if (!items.length) return;
+
+      const playOnce = () => {
+        if (phase !== "ready") return;
+        items.forEach(item => item.classList.remove("demo-pop"));
+        items.forEach((item, index) => {
+          tutorialTimers.push(setTimeout(() => {
+            if (phase !== "ready") return;
+            items.forEach(node => node.classList.remove("demo-pop"));
+            item.classList.remove("demo-pop");
+            void item.offsetWidth;
+            item.classList.add("demo-pop");
+            tutorialTimers.push(setTimeout(() => {
+              item.classList.remove("demo-pop");
+            }, 620));
+          }, index * 760));
+        });
+      };
+
+      playOnce();
+      tutorialTimers.push(setTimeout(function loopDemo() {
+        if (phase !== "ready") return;
+        playOnce();
+        tutorialTimers.push(setTimeout(loopDemo, Math.max(3000, items.length * 760 + 900)));
+      }, Math.max(3000, items.length * 760 + 900)));
+    }
+
+    function renderSlots() {
+      els.slots.innerHTML = "";
+      const positions = layoutFor(answerSequence.length);
+      answerSequence.forEach((_, index) => {
+        const slot = document.createElement("button");
+        slot.type = "button";
+        slot.className = `slot ${playerSequence[index] ? "is-filled" : ""} ${selectedIngredient ? "is-target" : ""} ${mistakeIndexes.has(index) ? "is-wrong" : ""}`;
+        slot.draggable = !!playerSequence[index];
+        slot.style.setProperty("--x", `${positions[index].x}%`);
+        slot.style.setProperty("--y", `${positions[index].y}%`);
+        slot.style.zIndex = String(index + 2);
+        slot.dataset.index = String(index);
+        slot.setAttribute("aria-label", `${index + 1}번째 재료`);
+        slot.addEventListener("click", () => {
+          if (selectedIngredient) {
+            setIngredient(index, selectedIngredient);
+            return;
+          }
+          removeAt(index);
+        });
+        slot.addEventListener("dragstart", event => {
+          if (!playerSequence[index]) {
+            event.preventDefault();
+            return;
+          }
+          draggedSlotIndex = index;
+          slot.classList.add("is-slot-dragging");
+          event.dataTransfer.effectAllowed = "move";
+          event.dataTransfer.setData("application/x-nollpic-slot", String(index));
+          event.dataTransfer.setData("text/plain", playerSequence[index]);
+        });
+        slot.addEventListener("dragend", () => {
+          draggedSlotIndex = null;
+          slot.classList.remove("is-slot-dragging");
+        });
+        slot.addEventListener("dragover", event => event.preventDefault());
+        slot.addEventListener("drop", event => {
+          event.preventDefault();
+          const sourceSlot = event.dataTransfer.getData("application/x-nollpic-slot");
+          if (sourceSlot !== "") {
+            moveSlotIngredient(Number(sourceSlot), index);
+            return;
+          }
+          const key = event.dataTransfer.getData("text/plain");
+          if (key) setIngredient(index, key);
+        });
+        if (playerSequence[index]) slot.appendChild(ingredientEl(playerSequence[index]));
+        els.slots.appendChild(slot);
+      });
+    }
+
+    function moveSlotIngredient(fromIndex, toIndex) {
+      if (phase !== "make") return;
+      if (!Number.isInteger(fromIndex) || !Number.isInteger(toIndex)) return;
+      if (fromIndex === toIndex) return;
+      const moving = playerSequence[fromIndex];
+      if (!moving) return;
+
+      const target = playerSequence[toIndex];
+      playerSequence[toIndex] = moving;
+      playerSequence[fromIndex] = target || null;
+      mistakeIndexes.delete(fromIndex);
+      mistakeIndexes.delete(toIndex);
+      selectedIngredient = null;
+      draggedSlotIndex = null;
+      afterInput();
+    }
+
+    function renderTray() {
+      els.tray.innerHTML = "";
+      els.tray.style.setProperty("--tray-count", String(Math.max(3, traySequence.length)));
+      els.tray.style.setProperty("--tray-columns", String(traySequence.length >= 6 ? 3 : Math.max(3, traySequence.length)));
+      traySequence.forEach((key, index) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `ingredient-btn ${selectedIngredient === key ? "selected" : ""}`;
+        btn.draggable = false;
+        btn.dataset.key = key;
+        btn.appendChild(ingredientEl(key));
+        const label = document.createElement("span");
+        label.textContent = ingredients[key].label;
+        btn.appendChild(label);
+        btn.addEventListener("click", event => {
+          if (suppressTrayClick) {
+            event.preventDefault();
+            return;
+          }
+          selectIngredient(key);
+        });
+        btn.addEventListener("pointerdown", event => beginTouchDrag(event, key, btn));
+        els.tray.appendChild(btn);
+      });
+    }
+
+    function beginTouchDrag(event, key, button) {
+      if (phase !== "make") return;
+      event.preventDefault();
+
+      const startX = event.clientX;
+      const startY = event.clientY;
+      let moved = false;
+      const ghost = ingredientEl(key);
+      ghost.classList.add("drag-ghost");
+      document.body.appendChild(ghost);
+      button.classList.add("is-dragging");
+      button.setPointerCapture?.(event.pointerId);
+
+      function moveGhost(x, y) {
+        ghost.style.left = `${x}px`;
+        ghost.style.top = `${y}px`;
+      }
+
+      function onMove(moveEvent) {
+        const dx = moveEvent.clientX - startX;
+        const dy = moveEvent.clientY - startY;
+        if (Math.hypot(dx, dy) > 8) moved = true;
+        moveGhost(moveEvent.clientX, moveEvent.clientY);
+      }
+
+    function onUp(upEvent) {
+        suppressTrayClick = true;
+        window.setTimeout(() => {
+          suppressTrayClick = false;
+        }, 120);
+        document.removeEventListener("pointermove", onMove);
+        document.removeEventListener("pointerup", onUp);
+        document.removeEventListener("pointercancel", onUp);
+        button.releasePointerCapture?.(event.pointerId);
+        ghost.remove();
+        button.classList.remove("is-dragging");
+
+        if (!moved) {
+          selectIngredient(key);
+          return;
+        }
+
+        const slot = findSlotAt(upEvent.clientX, upEvent.clientY);
+        if (slot && slot.dataset.index) {
+          setIngredient(Number(slot.dataset.index), key);
+          return;
+        }
+
+        selectedIngredient = null;
+        renderSlots();
+        renderTray();
+        els.feedback.className = "feedback";
+        els.feedback.textContent = "빈칸 위에서 손을 떼면 재료가 들어가요.";
+      }
+
+      moveGhost(startX, startY);
+      document.addEventListener("pointermove", onMove);
+      document.addEventListener("pointerup", onUp);
+      document.addEventListener("pointercancel", onUp);
+    }
+
+    function findSlotAt(x, y) {
+      const target = document.elementFromPoint(x, y);
+      const directSlot = target ? target.closest(".slot") : null;
+      if (directSlot) return directSlot;
+
+      const slots = [...els.slots.querySelectorAll(".slot")];
+      const containing = slots.filter(slot => {
+        const rect = slot.getBoundingClientRect();
+        return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+      });
+      if (containing.length) {
+        return containing.sort((a, b) => {
+          const aRect = a.getBoundingClientRect();
+          const bRect = b.getBoundingClientRect();
+          return Math.abs(y - (aRect.top + aRect.height / 2)) - Math.abs(y - (bRect.top + bRect.height / 2));
+        })[0];
+      }
+      return null;
+    }
+
+    function selectIngredient(key) {
+      if (phase !== "make") return;
+      selectedIngredient = selectedIngredient === key ? null : key;
+      renderSlots();
+      renderTray();
+      els.feedback.className = "feedback";
+      els.feedback.textContent = selectedIngredient ? `${ingredients[key].label} 선택` : "재료를 골라주세요.";
+    }
+
+    function setIngredient(index, key) {
+      if (phase !== "make") return;
+      playerSequence[index] = key;
+      mistakeIndexes.delete(index);
+      selectedIngredient = null;
+      afterInput();
+    }
+
+    function removeAt(index) {
+      if (phase !== "make") return;
+      playerSequence[index] = null;
+      mistakeIndexes.delete(index);
+      afterInput();
+    }
+
+    function afterInput() {
+      renderSlots();
+      renderTray();
+      const filledCount = playerSequence.filter(Boolean).length;
+      els.feedback.className = "feedback";
+      els.feedback.textContent = `${filledCount} / ${answerSequence.length}개 놓았어요.`;
+      if (filledCount === answerSequence.length) checkAnswer();
+    }
+
+    function sameSequence(left, right) {
+      return left.length === right.length && left.every((key, index) => key === right[index]);
+    }
+
+    function checkAnswer() {
+      const ok = sameSequence(playerSequence, answerSequence);
+      if (!ok) {
+        if (
+          mode === "middle" &&
+          activeSwapRule &&
+          (activeSwapRule.type === "swap" || Number.isInteger(activeSwapRule.a)) &&
+          sameSequence(playerSequence, memorySequence)
+        ) {
+          mistakeIndexes = new Set([activeSwapRule.a, activeSwapRule.b]);
+          renderSlots();
+          els.feedback.className = "feedback";
+          els.feedback.textContent = `기억한 순서예요. ${activeSwapRule.note}`;
+          return;
+        }
+        mistakeIndexes = new Set(
+          playerSequence
+            .map((key, index) => key !== answerSequence[index] ? index : null)
+            .filter(index => index !== null)
+        );
+        renderSlots();
+        renderTray();
+        els.feedback.className = "feedback bad";
+        els.feedback.textContent = "틀렸어요. 빨간 칸을 눌러 지우거나 다른 재료로 바꿔보세요.";
+        selectedIngredient = null;
+        return;
+      }
+      mistakeIndexes = new Set();
+      finishRound();
+    }
+
+    function answerLabelText() {
+      return answerSequence.map(key => ingredients[key].label).join(", ");
+    }
+
+    function memoryLabelText() {
+      return memorySequence.map(key => ingredients[key].label).join(" > ");
+    }
+
+    function setSequenceStrip(visible) {
+      els.sequenceStrip.classList.toggle("is-visible", visible);
+      els.sequenceStrip.textContent = visible ? memoryLabelText() : "";
+    }
+
+    function setMissionSubText(text) {
+      els.missionSub.className = "mission-sub";
+      els.missionSub.textContent = text;
+    }
+
+    function missionTitleText() {
+      if (activeSwapRule?.title) {
+        return activeSwapRule.title;
+      }
+      if (activeSwapRule?.type === "swap" || (activeSwapRule && Number.isInteger(activeSwapRule.a))) {
+        return `${activeSwapRule.a + 1}번과 ${activeSwapRule.b + 1}번을 바꿔라`;
+      }
+      return currentMode().mission;
+    }
+
+    function setMissionRuleGuide() {
+      els.missionSub.className = "mission-sub rule-highlight";
+      if (activeSwapRule?.type === "swap" || (activeSwapRule && Number.isInteger(activeSwapRule.a))) {
+        const left = activeSwapRule.a + 1;
+        const right = activeSwapRule.b + 1;
+        els.missionSub.innerHTML = `
+          <span class="rule-chip strong">${left}번</span>
+          <span class="rule-arrow">⇄</span>
+          <span class="rule-chip strong">${right}번</span>
+          <span class="rule-chip">${activeSwapRule.keep}</span>
+          <span class="rule-note">${activeSwapRule.note}</span>
+        `;
+        return;
+      }
+
+      const ingredientName = activeSwapRule?.key ? ingredients[activeSwapRule.key].label : "주문";
+      els.missionSub.innerHTML = `
+        <span class="rule-chip strong">${ingredientName}</span>
+        <span class="rule-chip">${activeSwapRule.keep || "손님 주문"}</span>
+        <span class="rule-note">${activeSwapRule.note}</span>
+      `;
+    }
+
+    function setMissionGuide() {
+      if (activeSwapRule) {
+        setMissionRuleGuide();
+        return;
+      }
+      setMissionSubText(ruleGuideText());
+    }
+
+    function ruleGuideText() {
+      const cfg = currentMode();
+      if (activeSwapRule?.note) {
+        return activeSwapRule.note;
+      }
+      if (activeSwapRule?.type === "swap" || (activeSwapRule && Number.isInteger(activeSwapRule.a))) {
+        return `${activeSwapRule.a + 1}번과 ${activeSwapRule.b + 1}번 위치를 바꿔 ${answerSequence.length}칸을 채워요.`;
+      }
+      return `기억한 ${cfg.dish} 재료 ${answerSequence.length}개를 순서대로 넣어요.`;
+    }
+
+    function setProgress(step) {
+      const names = [
+        "1단계 기억하기",
+        "2단계 집중하기",
+        "3단계 미션 공개",
+        "4단계 드래그 제작",
+        "5단계 완성"
+      ];
+      els.stepName.textContent = names[step - 1];
+      els.progressBar.style.width = `${step * 20}%`;
+      els.roundInfo.textContent = `${round} / ${currentMode().rounds}`;
+    }
+
+    function showRemember() {
+      clearTutorialDemo();
+      phase = "remember";
+      setProgress(1);
+      applyModeUi();
+      makeSequence();
+      renderMemory();
+      els.stageCard.style.display = "flex";
+      els.stageCard.classList.remove("is-making");
+      els.resultCard.style.display = "none";
+      els.board.style.display = "grid";
+      els.board.classList.remove("hidden-mode");
+      els.board.classList.remove("show-example");
+      els.plate.style.display = "grid";
+      els.focusWrap.style.display = "none";
+      els.orderArea.style.display = "none";
+      els.timerChip.style.display = "inline-flex";
+      els.missionLabel.textContent = memoryStageLabelText();
+      els.missionText.textContent = `${currentMode().dish} 재료 순서를 잘 봐요.`;
+      if (showSequenceTextForCurrentMode()) {
+        setMissionSubText("글씨와 그림을 함께 보고 재료 순서를 기억해요.");
+        setSequenceStrip(true);
+      } else {
+        setMissionSubText("그림 위치를 보고 재료 순서를 기억해요.");
+        setSequenceStrip(false);
+      }
+      els.nextBtn.disabled = true;
+      els.nextBtn.textContent = "기억 중";
+      if (rememberSeconds() <= 0) {
+        els.timerChip.style.display = "none";
+        window.setTimeout(showMake, 120);
+      } else {
+        countDown(rememberSeconds(), showMake);
+      }
+    }
+
+    function showFocus() {
+      phase = "focus";
+      setProgress(2);
+      els.stageCard.classList.remove("is-making");
+      els.board.style.display = "grid";
+      els.board.classList.add("hidden-mode");
+      els.plate.style.display = "none";
+      els.focusWrap.style.display = "block";
+      els.focusWrap.classList.remove("is-auto");
+      els.orderArea.style.display = "none";
+      els.missionLabel.textContent = "잠깐 집중";
+      els.missionText.textContent = "재료가 사라졌어요.";
+      if (showSequenceTextForCurrentMode()) {
+        setMissionSubText("2단계까지는 전체 순서를 다시 확인할 수 있어요.");
+        setSequenceStrip(true);
+      } else {
+        setMissionSubText("방금 본 그림 순서를 떠올려 보세요.");
+        setSequenceStrip(false);
+      }
+      els.nextBtn.disabled = true;
+      els.nextBtn.textContent = "집중 중";
+      countDown(3, () => {
+        if (activeSwapRule) showMission();
+        else showMake();
+      });
+    }
+
+    function showMission() {
+      phase = "mission";
+      setProgress(3);
+      els.timerChip.style.display = "none";
+      els.board.style.display = "none";
+      els.board.classList.add("hidden-mode");
+      els.plate.style.display = "none";
+      els.focusWrap.style.display = "none";
+      els.focusWrap.classList.remove("is-auto");
+      els.orderArea.style.display = "none";
+      setSequenceStrip(mode === "middle");
+      els.missionLabel.textContent = `${modes[mode].label} 미션`;
+      els.missionText.textContent = missionTitleText();
+      setMissionGuide();
+      els.nextBtn.disabled = true;
+      els.nextBtn.textContent = "정답 준비";
+      clearInterval(timer);
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        if (phase === "mission") showMake();
+      }, missionSpinMs);
+    }
+
+    function showMake() {
+      phase = "make";
+      clearInterval(timer);
+      clearTimeout(timer);
+      setProgress(2);
+      els.stageCard.classList.add("is-making");
+      els.board.classList.remove("hidden-mode");
+      els.board.style.display = "none";
+      els.plate.style.display = "none";
+      els.focusWrap.style.display = "none";
+      els.focusWrap.classList.remove("is-auto");
+      els.orderArea.style.display = "flex";
+      setSequenceStrip(false);
+      els.missionLabel.textContent = `${currentMode().dish} 만들기`;
+      els.missionText.textContent = missionTitleText();
+      setMissionGuide();
+      els.feedback.className = "feedback";
+      els.feedback.textContent = `${answerLabelText()}를 빈칸에 끌어 넣어요.`;
+      els.nextBtn.disabled = true;
+      els.nextBtn.textContent = "만드는 중";
+      renderSlots();
+      renderTray();
+    }
+
+    function finishRound() {
+      phase = "done";
+      playWowSound();
+      setProgress(5);
+      streak += 1;
+      score += mode === "easy" ? 90 : mode === "middle" ? 130 : 170;
+      els.stageCard.classList.remove("is-making");
+      els.stageCard.style.display = "none";
+      setSequenceStrip(false);
+      els.resultCard.style.display = "block";
+      const nextMode = round >= currentMode().rounds ? nextModeKey() : null;
+      const isFinalMission = round >= currentMode().rounds && !nextMode;
+      els.resultTitle.textContent = isFinalMission ? "오늘의 미션끝!" : `${currentMode().dish} 완성!`;
+      els.resultText.textContent = isFinalMission
+        ? "+200P 적립 성공! 잘했어요! 내일 또 만나요!"
+        : nextMode
+          ? `${modes[mode].label} 완료. 다음은 ${modes[nextMode].label} ${modes[nextMode].dish}이에요.`
+          : `${modes[mode].label} ${round}문항 성공. 작업기억력 XP +15`;
+      els.scoreText.textContent = String(score);
+      els.streakText.textContent = String(streak);
+      els.nextBtn.disabled = false;
+      els.nextBtn.textContent = nextDoneButtonText();
+      els.nextBtn.classList.add("orange");
+      const copy = resultCopy(nextMode);
+      els.resultTitle.textContent = copy.title;
+      els.resultText.textContent = copy.text;
+      els.resetBtn.textContent = round >= currentMode().rounds ? "\uC624\uB298\uC740 \uC5EC\uAE30\uAE4C\uC9C0" : "\uB2E4\uC2DC";
+      popConfetti();
+    }
+
+    function countDown(seconds, done) {
+      clearInterval(timer);
+      clearTimeout(timer);
+      placeTimerAboveBoard();
+      els.timerChip.style.display = "inline-flex";
+      let left = seconds;
+      els.timerChip.textContent = String(left);
+      playTimerBeep();
+      timer = setInterval(() => {
+        left -= 1;
+        els.timerChip.textContent = String(Math.max(0, left));
+        if (left > 0) playTimerBeep();
+        if (left <= 0) {
+          clearInterval(timer);
+          done();
+        }
+      }, 1000);
+    }
+
+    function nextAction() {
+      if (phase === "ready") {
+        if (rememberSeconds() <= 0) showMake();
+        else showRemember();
+      }
+      else if (phase === "mission") showMake();
+      else if (phase === "done") {
+        if (round >= currentMode().rounds) {
+          const nextMode = nextModeKey();
+          if (!nextMode) {
+            goBackToChallenge();
+            return;
+          }
+          if (nextMode) mode = nextMode;
+          round = 1;
+          setActiveLevelChip();
+        } else {
+          round += 1;
+        }
+        els.nextBtn.classList.remove("orange");
+        if (rememberSeconds() <= 0) retryCurrentQuestion();
+        else showRemember();
+      }
+    }
+
+    function secondaryAction() {
+      if (phase === "done" && round >= currentMode().rounds) {
+        goBackToChallenge();
+        return;
+      }
+      retryCurrentQuestion();
+    }
+
+    function resetGame() {
+      clearInterval(timer);
+      clearTimeout(timer);
+      clearTutorialDemo();
+      phase = "ready";
+      round = 1;
+      streak = 0;
+      score = 0;
+      playerSequence = [];
+      selectedIngredient = null;
+      traySequence = [];
+      mistakeIndexes = new Set();
+      applyModeUi();
+      setProgress(1);
+      els.stageCard.classList.remove("is-making");
+      els.stageCard.style.display = "flex";
+      els.resultCard.style.display = "none";
+      els.board.style.display = "grid";
+      els.board.classList.remove("hidden-mode");
+      els.board.classList.add("show-example");
+      els.plate.style.display = "grid";
+      els.focusWrap.style.display = "none";
+      els.focusWrap.classList.remove("is-auto");
+      els.orderArea.style.display = "none";
+      setSequenceStrip(false);
+      els.timerChip.style.display = rememberSeconds() > 0 ? "inline-flex" : "none";
+      els.timerChip.textContent = String(rememberSeconds());
+      els.missionLabel.textContent = memoryStageLabelText();
+      els.missionText.textContent = `${currentMode().dish} 재료 순서를 잘 봐요.`;
+      setMissionSubText("재료가 사라진 뒤 같은 순서로 넣으면 완성됩니다.");
+      els.nextBtn.disabled = false;
+      els.nextBtn.textContent = "시작하기";
+      els.nextBtn.classList.remove("orange");
+      els.resetBtn.textContent = "\uB2E4\uC2DC";
+      makeSequence();
+      renderMemory();
+      els.missionLabel.textContent = memoryStageLabelText();
+      els.missionText.textContent = `${currentMode().dish} 재료 순서를 잘 봐요.`;
+      els.nextBtn.textContent = "시작하기";
+      setReadyTutorialCopy();
+      startTutorialDemo();
+    }
+
+    function retryCurrentQuestion() {
+      clearInterval(timer);
+      clearTimeout(timer);
+      clearTutorialDemo();
+      phase = "ready";
+      playerSequence = [];
+      selectedIngredient = null;
+      traySequence = [];
+      mistakeIndexes = new Set();
+      applyModeUi();
+      setProgress(1);
+      els.stageCard.classList.remove("is-making");
+      els.stageCard.style.display = "flex";
+      els.resultCard.style.display = "none";
+      els.board.style.display = "grid";
+      els.board.classList.remove("hidden-mode");
+      els.board.classList.add("show-example");
+      els.plate.style.display = "grid";
+      els.focusWrap.style.display = "none";
+      els.focusWrap.classList.remove("is-auto");
+      els.orderArea.style.display = "none";
+      setSequenceStrip(false);
+      els.timerChip.style.display = rememberSeconds() > 0 ? "inline-flex" : "none";
+      els.timerChip.textContent = String(rememberSeconds());
+      els.missionLabel.textContent = memoryStageLabelText();
+      els.missionText.textContent = `${currentMode().dish} 재료 순서를 잘 봐요.`;
+      setMissionSubText("현재 문항을 다시 시작해요.");
+      els.nextBtn.disabled = false;
+      els.nextBtn.textContent = "시작하기";
+      els.nextBtn.classList.remove("orange");
+      els.resetBtn.textContent = "\uB2E4\uC2DC";
+      makeSequence();
+      renderMemory();
+      els.missionLabel.textContent = memoryStageLabelText();
+      els.missionText.textContent = `${currentMode().dish} 재료 순서를 잘 봐요.`;
+      els.nextBtn.textContent = "시작하기";
+      setReadyTutorialCopy();
+      startTutorialDemo();
+    }
+
+    function popConfetti() {
+      els.confetti.innerHTML = "";
+      const colors = ["#ff6b00", "#1297dc", "#ffd43b", "#2fb356", "#ff80b4"];
+      for (let i = 0; i < 24; i += 1) {
+        const piece = document.createElement("i");
+        piece.style.setProperty("--x", `${Math.random() * 100}%`);
+        piece.style.setProperty("--d", `${1.2 + Math.random() * 1.2}s`);
+        piece.style.setProperty("--c", colors[i % colors.length]);
+        els.confetti.appendChild(piece);
+      }
+      setTimeout(() => {
+        els.confetti.innerHTML = "";
+      }, 2500);
+    }
+
+    document.querySelectorAll(".level-chip").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".level-chip").forEach(chip => chip.classList.remove("active"));
+        button.classList.add("active");
+        mode = button.dataset.mode;
+        resetGame();
+      });
+    });
+
+    els.nextBtn.addEventListener("click", nextAction);
+    els.resetBtn.addEventListener("click", secondaryAction);
+    resetGame();
+  </script>
+</body>
+</html>
+

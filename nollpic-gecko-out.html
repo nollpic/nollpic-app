@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>놀픽 길찾기 탈출 놀이</title>
+<style>
+:root {
+  --ink: #071936;
+  --muted: #657189;
+  --paper: #fffaf6;
+  --line: #dce8f7;
+  --orange: #ff7a2f;
+  --yellow: #ffd449;
+  --blue: #2fb8ff;
+  --green: #61d36f;
+  --pink: #ff6f9d;
+}
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; }
+body {
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(180deg, #fff6ef 0%, #eef8ff 55%, #f8fffb 100%);
+  color: var(--ink);
+  overflow: hidden;
+}
+.game {
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 18px 16px 20px;
+  gap: 12px;
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.back {
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--ink);
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 900;
+  box-shadow: 0 8px 18px rgba(49, 72, 98, .12);
+}
+.title strong {
+  display: block;
+  font-size: 19px;
+  font-weight: 950;
+  letter-spacing: 0;
+}
+.title span {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+.timer {
+  min-width: 70px;
+  padding: 8px 10px;
+  border-radius: 16px;
+  background: #14284e;
+  color: #fff;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 950;
+  box-shadow: inset 0 -3px 0 rgba(0,0,0,.18);
+}
+.stage {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 14px;
+  min-height: 0;
+}
+.board-wrap {
+  position: relative;
+  width: min(92vw, 380px);
+  aspect-ratio: 1;
+  padding: 10px;
+  border: 4px solid #ffffff;
+  border-radius: 18px;
+  background: #bfe5ff;
+  box-shadow: 0 20px 40px rgba(58, 102, 138, .22), inset 0 0 0 2px rgba(25, 120, 189, .12);
+}
+.board {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background:
+    linear-gradient(#8fc9ef 2px, transparent 2px) 0 0 / calc(100% / 6) calc(100% / 6),
+    linear-gradient(90deg, #8fc9ef 2px, transparent 2px) 0 0 / calc(100% / 6) calc(100% / 6),
+    #cdeeff;
+}
+.exit {
+  position: absolute;
+  width: calc(100% / 6 - 10px);
+  height: calc(100% / 6 - 10px);
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+  border: 8px solid var(--exit-color);
+  background: #10294c;
+  box-shadow: 0 5px 0 rgba(7, 25, 54, .18);
+  z-index: 1;
+}
+.piece {
+  position: absolute;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color);
+  box-shadow: 0 8px 0 var(--shade), 0 10px 18px rgba(49, 72, 98, .24);
+  transition: left .18s ease, top .18s ease, transform .12s ease, opacity .2s ease;
+  z-index: 3;
+}
+.piece.selected {
+  outline: 4px solid rgba(255, 255, 255, .9);
+  transform: translateY(-3px);
+}
+.piece.done {
+  opacity: 0;
+  pointer-events: none;
+}
+.piece::before,
+.piece::after {
+  content: "";
+  position: absolute;
+  top: 24%;
+  width: 13px;
+  height: 18px;
+  border-radius: 999px;
+  background: #071936;
+  box-shadow: inset 3px 0 0 rgba(255,255,255,.78);
+}
+.piece.horizontal::before { right: 18px; }
+.piece.horizontal::after { right: 42px; }
+.piece.vertical::before { left: 28%; }
+.piece.vertical::after { right: 28%; }
+.piece .tail {
+  position: absolute;
+  border-radius: 999px;
+  background: rgba(255,255,255,.26);
+}
+.piece.horizontal .tail {
+  left: 12px;
+  top: 50%;
+  width: 38%;
+  height: 11px;
+  transform: translateY(-50%);
+}
+.piece.vertical .tail {
+  left: 50%;
+  bottom: 12px;
+  width: 11px;
+  height: 38%;
+  transform: translateX(-50%);
+}
+.controls {
+  width: min(92vw, 380px);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+}
+.pad {
+  display: grid;
+  grid-template-columns: repeat(3, 44px);
+  grid-template-rows: repeat(3, 44px);
+  gap: 7px;
+}
+.pad button,
+.reset,
+.finish {
+  border: 0;
+  border-radius: 14px;
+  background: #ffffff;
+  color: var(--ink);
+  font-weight: 950;
+  box-shadow: 0 8px 16px rgba(49, 72, 98, .12);
+}
+.pad button {
+  font-size: 21px;
+}
+.pad button:active,
+.reset:active,
+.finish:active,
+.back:active {
+  transform: translateY(2px);
+  box-shadow: 0 4px 10px rgba(49, 72, 98, .12);
+}
+.pad .blank { visibility: hidden; }
+.reset,
+.finish {
+  height: 44px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+.finish {
+  background: #ff7a2f;
+  color: #fff;
+}
+.status {
+  min-height: 36px;
+  width: min(92vw, 380px);
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.72);
+  color: #31405a;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 850;
+}
+@media (max-height: 690px) {
+  .game { padding-top: 12px; gap: 8px; }
+  .board-wrap { width: min(84vw, 330px); }
+  .status { min-height: 30px; padding: 8px 10px; }
+  .pad { grid-template-columns: repeat(3, 40px); grid-template-rows: repeat(3, 40px); }
+}
+</style>
+</head>
+<body>
+<main class="game">
+  <header class="topbar">
+    <button class="back" type="button" onclick="goBack()" aria-label="방학챌린지로 돌아가기">‹</button>
+    <div class="title">
+      <strong>길찾기 탈출 놀이</strong>
+      <span>같은 색 출구까지 밀어주세요</span>
+    </div>
+    <div class="timer" id="timer">00:00</div>
+  </header>
+
+  <section class="stage">
+    <div class="board-wrap">
+      <div class="board" id="board" aria-label="길찾기 탈출 놀이판"></div>
+    </div>
+    <div class="status" id="status">블록을 누른 뒤 화살표로 움직여요.</div>
+  </section>
+
+  <footer class="controls">
+    <button class="reset" type="button" onclick="resetGame()">다시하기</button>
+    <div class="pad" aria-label="이동 버튼">
+      <span class="blank"></span><button type="button" onclick="moveSelected(0,-1)">▲</button><span class="blank"></span>
+      <button type="button" onclick="moveSelected(-1,0)">◀</button><span class="blank"></span><button type="button" onclick="moveSelected(1,0)">▶</button>
+      <span class="blank"></span><button type="button" onclick="moveSelected(0,1)">▼</button><span class="blank"></span>
+    </div>
+    <button class="finish" type="button" onclick="completeGame()">완료</button>
+  </footer>
+</main>
+
+<script>
+const size = 6;
+const board = document.getElementById('board');
+const statusEl = document.getElementById('status');
+const timerEl = document.getElementById('timer');
+const cell = () => board.clientWidth / size;
+let selectedId = 'blue';
+let startedAt = Date.now();
+let timerId = null;
+
+const starts = [
+  { id: 'green', color: '#61d36f', shade: '#32a642', x: 1, y: 0, w: 1, h: 2, exit: { x: 1.5, y: .5 } },
+  { id: 'pink', color: '#ff6f9d', shade: '#d84673', x: 0, y: 2, w: 3, h: 1, exit: { x: .5, y: 1.5 } },
+  { id: 'orange', color: '#ffae56', shade: '#d77c2f', x: 3, y: 3, w: 2, h: 1, exit: { x: 4.5, y: .5 } },
+  { id: 'blue', color: '#39c8e8', shade: '#1595b7', x: 5, y: 1, w: 1, h: 4, exit: { x: 5.5, y: .5 } }
+];
+let pieces = [];
+
+function copyStarts() {
+  pieces = starts.map(item => ({ ...item, exit: { ...item.exit }, done: false }));
+}
+
+function cellsFor(piece, x = piece.x, y = piece.y) {
+  const cells = [];
+  for (let row = 0; row < piece.h; row += 1) {
+    for (let col = 0; col < piece.w; col += 1) cells.push(`${x + col},${y + row}`);
+  }
+  return cells;
+}
+
+function isBlocked(piece, nx, ny) {
+  if (nx < 0 || ny < 0 || nx + piece.w > size || ny + piece.h > size) return true;
+  const target = new Set(cellsFor(piece, nx, ny));
+  return pieces.some(other => {
+    if (other.id === piece.id || other.done) return false;
+    return cellsFor(other).some(pos => target.has(pos));
+  });
+}
+
+function canExit(piece) {
+  if (piece.id === 'green') return piece.x === 1 && piece.y === 0;
+  if (piece.id === 'pink') return piece.x === 0 && piece.y === 1;
+  if (piece.id === 'orange') return piece.x === 3 && piece.y === 0;
+  if (piece.id === 'blue') return piece.x === 5 && piece.y === 0;
+  return false;
+}
+
+function render() {
+  const c = cell();
+  board.innerHTML = '';
+
+  pieces.forEach(piece => {
+    const exit = document.createElement('span');
+    exit.className = 'exit';
+    exit.style.setProperty('--exit-color', piece.color);
+    exit.style.left = `${piece.exit.x * c}px`;
+    exit.style.top = `${piece.exit.y * c}px`;
+    board.appendChild(exit);
+  });
+
+  pieces.forEach(piece => {
+    const el = document.createElement('button');
+    el.type = 'button';
+    el.className = `piece ${piece.w > piece.h ? 'horizontal' : 'vertical'}${piece.id === selectedId ? ' selected' : ''}${piece.done ? ' done' : ''}`;
+    el.style.setProperty('--color', piece.color);
+    el.style.setProperty('--shade', piece.shade);
+    el.style.left = `${piece.x * c + 5}px`;
+    el.style.top = `${piece.y * c + 5}px`;
+    el.style.width = `${piece.w * c - 10}px`;
+    el.style.height = `${piece.h * c - 10}px`;
+    el.setAttribute('aria-label', `${piece.id} 블록`);
+    el.innerHTML = '<span class="tail"></span>';
+    el.addEventListener('click', () => selectPiece(piece.id));
+    board.appendChild(el);
+  });
+}
+
+function selectPiece(id) {
+  selectedId = id;
+  const piece = pieces.find(item => item.id === id);
+  statusEl.textContent = piece && piece.w > piece.h ? '가로 방향으로 움직일 수 있어요.' : '세로 방향으로 움직일 수 있어요.';
+  render();
+}
+
+function moveSelected(dx, dy) {
+  const piece = pieces.find(item => item.id === selectedId && !item.done);
+  if (!piece) return;
+  if ((piece.w > piece.h && dy !== 0) || (piece.h > piece.w && dx !== 0)) {
+    statusEl.textContent = '블록 방향에 맞춰 움직여주세요.';
+    return;
+  }
+  const nx = piece.x + dx;
+  const ny = piece.y + dy;
+  if (isBlocked(piece, nx, ny)) {
+    statusEl.textContent = '막혀 있어요. 다른 블록을 먼저 움직여요.';
+    return;
+  }
+  piece.x = nx;
+  piece.y = ny;
+  if (canExit(piece)) {
+    piece.done = true;
+    statusEl.textContent = '좋아요! 같은 색 출구로 빠져나갔어요.';
+    const next = pieces.find(item => !item.done);
+    selectedId = next ? next.id : '';
+  } else {
+    statusEl.textContent = '좋아요. 출구까지 길을 만들어봐요.';
+  }
+  render();
+  if (pieces.every(item => item.done)) completeGame();
+}
+
+function resetGame() {
+  copyStarts();
+  selectedId = 'blue';
+  startedAt = Date.now();
+  statusEl.textContent = '블록을 누른 뒤 화살표로 움직여요.';
+  render();
+}
+
+function completeGame() {
+  statusEl.textContent = '5번 놀이 완료! 방학챌린지에 기록했어요.';
+  try {
+    if (parent && typeof parent.completeChallengeStep === 'function') parent.completeChallengeStep(5);
+  } catch (error) {}
+}
+
+function goBack() {
+  try {
+    if (parent && typeof parent.prevPage === 'function') parent.prevPage(11);
+    else parent.postMessage({ type: 'exitPlay' }, '*');
+  } catch (error) {
+    window.history.back();
+  }
+}
+
+function tick() {
+  const elapsed = Math.floor((Date.now() - startedAt) / 1000);
+  const min = String(Math.floor(elapsed / 60)).padStart(2, '0');
+  const sec = String(elapsed % 60).padStart(2, '0');
+  timerEl.textContent = `${min}:${sec}`;
+}
+
+window.addEventListener('keydown', event => {
+  const map = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] };
+  if (!map[event.key]) return;
+  event.preventDefault();
+  moveSelected(...map[event.key]);
+});
+window.addEventListener('resize', render);
+copyStarts();
+render();
+timerId = window.setInterval(tick, 250);
+</script>
+</body>
+</html>

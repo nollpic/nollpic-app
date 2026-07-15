@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,7 @@
     <meta property="og:image" content="https://nollpic.web.app/images/kakao-banner-20260618.png" />
     <meta property="og:image:width" content="1537" />
     <meta property="og:image:height" content="778" />
-    <link rel="stylesheet" href="style.css?v=20260715-challenge-subtitle-visible">
+    <link rel="stylesheet" href="style.css?v=20260713-restore-map">
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -491,24 +491,24 @@
                         <span>1</span>
                         <i>✓</i>
                     </button>
-                    <button type="button" class="road-node done" style="--x:50%; --y:8px;" onclick="openNumberFocusGame()" aria-label="2번 숫자더하기 놀이 시작">
+                    <div class="road-node done" style="--x:50%; --y:8px;">
                         <span>2</span>
                         <i>✓</i>
-                    </button>
+                    </div>
                     <button type="button" class="road-chest" data-chest-id="chest-1" style="--x:87%; --y:8px;" aria-label="보물상자"></button>
                     <button type="button" class="road-chest" data-chest-id="chest-2" style="--x:13%; --y:162px;" aria-label="보물상자"></button>
-                    <button type="button" class="road-node color-node" style="--x:50%; --y:162px;" onclick="openColorMatchGame()" aria-label="4번 컬러맞추기 놀이 시작">
+                    <div class="road-node locked secret-number-four" style="--x:50%; --y:162px;">
                         <span>4</span>
                         <i></i>
-                    </button>
-                    <button type="button" class="road-node jenga-node" style="--x:87%; --y:162px;" onclick="openJengaMemoryGame()" aria-label="3번 모양기억 놀이 시작">
+                    </div>
+                    <div class="road-node locked secret-bush-right" style="--x:87%; --y:162px;">
                         <span>3</span>
                         <i></i>
-                    </button>
-                    <button type="button" class="road-node gecko-node secret-flower" style="--x:13%; --y:316px;" onclick="openNollpicGeckoGame()" aria-label="5번 길찾기 탈출 놀이 시작">
+                    </div>
+                    <div class="road-node locked secret-flower" style="--x:13%; --y:316px;">
                         <span>5</span>
                         <i></i>
-                    </button>
+                    </div>
                     <div class="road-node locked secret-plain" style="--x:50%; --y:316px;">
                         <span>6</span>
                         <i></i>
@@ -658,51 +658,7 @@
                     <h2>순서 기억 놀이</h2>
                 </div>
             </header>
-            <iframe id="memory-kitchen-frame" class="memory-kitchen-frame" src="nollpic-memory-kitchen.html?v=20260715-sushi-all-three" title="놀픽 기억공방 게임"></iframe>
-        </div>
-
-        <div id="page-17" class="page memory-kitchen-host-page number-focus-host-page">
-            <header class="memory-kitchen-host-header">
-                <button type="button" class="challenge-sub-back" onclick="prevPage(11)" aria-label="방학챌린지로 돌아가기">‹</button>
-                <div>
-                    <span class="challenge-sub-kicker">오늘의 미션</span>
-                    <h2>숫자더하기 놀이</h2>
-                </div>
-            </header>
-            <iframe id="number-focus-frame" class="memory-kitchen-frame" src="nollpic-number-focus.html?v=20260715-number-current" title="놀픽 숫자더하기 놀이 게임"></iframe>
-        </div>
-
-        <div id="page-18" class="page memory-kitchen-host-page number-focus-host-page">
-            <header class="memory-kitchen-host-header">
-                <button type="button" class="challenge-sub-back" onclick="prevPage(11)" aria-label="방학챌린지로 돌아가기">‹</button>
-                <div>
-                    <span class="challenge-sub-kicker">오늘의 미션</span>
-                    <h2>모양기억 놀이</h2>
-                </div>
-            </header>
-            <iframe id="jenga-memory-frame" class="memory-kitchen-frame" src="nollpic-jenga-memory.html" title="놀픽 모양기억 놀이 게임"></iframe>
-        </div>
-
-        <div id="page-19" class="page memory-kitchen-host-page number-focus-host-page">
-            <header class="memory-kitchen-host-header">
-                <button type="button" class="challenge-sub-back" onclick="prevPage(11)" aria-label="방학챌린지로 돌아가기">‹</button>
-                <div>
-                    <span class="challenge-sub-kicker">오늘의 미션</span>
-                    <h2>컬러맞추기 놀이</h2>
-                </div>
-            </header>
-            <iframe id="color-match-frame" class="memory-kitchen-frame" src="nollpic-color-match.html?v=20260715-color-corner-fit" title="놀픽 컬러맞추기 놀이 게임"></iframe>
-        </div>
-
-        <div id="page-20" class="page memory-kitchen-host-page number-focus-host-page">
-            <header class="memory-kitchen-host-header">
-                <button type="button" class="challenge-sub-back" onclick="prevPage(11)" aria-label="방학챌린지로 돌아가기">‹</button>
-                <div>
-                    <span class="challenge-sub-kicker">오늘의 미션</span>
-                    <h2>길찾기 탈출 놀이</h2>
-                </div>
-            </header>
-            <iframe id="gecko-out-frame" class="memory-kitchen-frame" src="nollpic-gecko-out.html?v=20260715-gecko-out" title="놀픽 길찾기 탈출 놀이 게임"></iframe>
+            <iframe id="memory-kitchen-frame" class="memory-kitchen-frame" src="nollpic-memory-kitchen.html" title="놀픽 기억공방 게임"></iframe>
         </div>
 
     <!-- 하단 고정 메뉴 -->
@@ -748,46 +704,14 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="app.js?v=20260715-chest-reward-fx"></script>
+    <script src="app.js?v=20260713-restore-map"></script>
     <script>
         function openMemoryKitchenGame() {
             const frame = document.getElementById('memory-kitchen-frame');
             if (frame && !frame.getAttribute('src')) {
-                frame.setAttribute('src', 'nollpic-memory-kitchen.html?v=20260715-sushi-all-three');
+                frame.setAttribute('src', 'nollpic-memory-kitchen.html');
             }
             nextPage(16);
-        }
-
-        function openNumberFocusGame() {
-            const frame = document.getElementById('number-focus-frame');
-            if (frame && !frame.getAttribute('src')) {
-                frame.setAttribute('src', 'nollpic-number-focus.html?v=20260715-number-current');
-            }
-            nextPage(17);
-        }
-
-        function openJengaMemoryGame() {
-            const frame = document.getElementById('jenga-memory-frame');
-            if (frame && !frame.getAttribute('src')) {
-                frame.setAttribute('src', 'nollpic-jenga-memory.html');
-            }
-            nextPage(18);
-        }
-
-        function openColorMatchGame() {
-            const frame = document.getElementById('color-match-frame');
-            if (frame && !frame.getAttribute('src')) {
-                frame.setAttribute('src', 'nollpic-color-match.html?v=20260715-color-corner-fit');
-            }
-            nextPage(19);
-        }
-
-        function openNollpicGeckoGame() {
-            const frame = document.getElementById('gecko-out-frame');
-            if (frame && !frame.getAttribute('src')) {
-                frame.setAttribute('src', 'nollpic-gecko-out.html?v=20260715-gecko-out');
-            }
-            nextPage(20);
         }
 
         window.googleLogin = window.googleLogin || function () {
@@ -1113,8 +1037,55 @@
         });
     })();
 
+    (function setupChallengeChests() {
+        const storageKey = 'nollpic_challenge_opened_chests';
+
+        function readOpenedChests() {
+            try {
+                return JSON.parse(localStorage.getItem(storageKey) || '[]');
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function saveOpenedChests(opened) {
+            localStorage.setItem(storageKey, JSON.stringify([...new Set(opened)]));
+        }
+
+        function applyOpenedChests() {
+            const opened = readOpenedChests();
+            document.querySelectorAll('.road-chest[data-chest-id]').forEach(chest => {
+                const isOpen = opened.includes(chest.dataset.chestId);
+                chest.classList.toggle('opened', isOpen);
+                chest.setAttribute('aria-label', isOpen ? '열린 보물상자' : '보물상자');
+                chest.setAttribute('aria-pressed', isOpen ? 'true' : 'false');
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyOpenedChests();
+            document.querySelectorAll('.road-chest[data-chest-id]').forEach(chest => {
+                chest.addEventListener('click', () => {
+                    const opened = readOpenedChests();
+                    if (!opened.includes(chest.dataset.chestId)) {
+                        opened.push(chest.dataset.chestId);
+                        saveOpenedChests(opened);
+                    }
+                    applyOpenedChests();
+                });
+            });
+        });
+
+        window.openChallengeChest = function openChallengeChest(chestId) {
+            const opened = readOpenedChests();
+            if (!opened.includes(chestId)) {
+                opened.push(chestId);
+                saveOpenedChests(opened);
+            }
+            applyOpenedChests();
+        };
+    })();
     </script>
     
 </body>
 </html><!-- privacy link style은 style.css에 추가 필요 -->
-

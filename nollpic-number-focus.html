@@ -1,0 +1,1695 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>놀픽 숫자더하기 놀이</title>
+  <style>
+    @font-face {
+      font-family: "Pretendard";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Regular.woff2") format("woff2");
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Pretendard";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Bold.woff2") format("woff2");
+      font-weight: 700;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Pretendard";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-ExtraBold.woff2") format("woff2");
+      font-weight: 800;
+      font-display: swap;
+    }
+
+    :root {
+      --ink: #0e1d3e;
+      --muted: #667085;
+      --orange: #ff6b16;
+      --orange-dark: #e95709;
+      --yellow: #ffd166;
+      --sky: #41b9ec;
+      --blue: #147fd3;
+      --green: #18b77a;
+      --red: #ef4444;
+      --card: rgba(255, 255, 255, .96);
+      --shadow: 0 14px 28px rgba(14, 29, 62, .16);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      letter-spacing: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      color: var(--ink);
+      background: #e2e8f0;
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+    }
+
+    .app {
+      position: relative;
+      width: min(100%, 410px);
+      height: min(840px, 100vh);
+      min-height: 680px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255, 248, 248, .98), rgba(255, 255, 255, .94) 62%, #f5fbff),
+        radial-gradient(circle at 10% 10%, rgba(255, 107, 0, .08), transparent 28%);
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .app::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      display: none;
+      pointer-events: none;
+    }
+
+    .top {
+      position: relative;
+      z-index: 4;
+      padding: 14px 18px 8px;
+    }
+
+    .mission-header {
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1fr);
+      align-items: start;
+      gap: 10px;
+      min-height: 48px;
+    }
+
+    .back-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: #fff2eb;
+      color: var(--orange-dark);
+      font-size: 26px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .header-title {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .header-title small {
+      display: block;
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 900;
+      color: var(--orange-dark);
+    }
+
+    .title-line {
+      width: 100%;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-title h1 {
+      flex: 1 1 auto;
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.1;
+      font-weight: 900;
+      color: var(--ink);
+      letter-spacing: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .skill-badge {
+      min-width: 66px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 7px;
+      border-radius: 999px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: var(--orange-dark);
+      font-size: 10.5px;
+      font-weight: 900;
+      white-space: nowrap;
+      box-shadow: 0 6px 12px rgba(255, 107, 0, .08);
+    }
+
+    .mission {
+      position: relative;
+      z-index: 4;
+      margin: 0 18px;
+      padding: 14px;
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.98), rgba(245,251,255,.96));
+      border: 3px solid rgba(255, 255, 255, .78);
+      box-shadow: 0 14px 28px rgba(14, 29, 62, .14);
+      display: grid;
+      gap: 12px;
+    }
+
+    .mission-main {
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .target {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+      padding: 9px 10px;
+      border-radius: 22px;
+      background: #ffffff;
+      border: 2px solid #eef2f7;
+      box-shadow: 0 10px 20px rgba(14, 29, 62, .06);
+    }
+
+    .target strong {
+      position: relative;
+      width: 76px;
+      height: 72px;
+      border-radius: 24px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, #fff7e8, #ffdf9c);
+      color: #ff5d0b;
+      border: 3px solid #ffb84d;
+      font-size: 48px;
+      font-weight: 900;
+      line-height: 1;
+      text-shadow: 0 2px 0 #ffffff;
+      box-shadow: inset 0 -7px 0 rgba(255, 171, 20, .18), 0 8px 16px rgba(255, 107, 0, .12);
+    }
+
+    .target strong::before {
+      content: "합";
+      position: absolute;
+      top: 6px;
+      left: 0;
+      right: 0;
+      font-size: 11px;
+      line-height: 1;
+      color: #d86200;
+      text-shadow: none;
+    }
+
+    .target span {
+      display: block;
+      font-size: 12px;
+      color: var(--orange-dark);
+      font-weight: 900;
+    }
+
+    .target b {
+      display: block;
+      margin-top: 4px;
+      font-size: 20px;
+      line-height: 1.15;
+      white-space: nowrap;
+      color: var(--ink);
+    }
+
+    .timer {
+      width: 66px;
+      min-width: 66px;
+      min-height: 58px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 2px;
+      background: linear-gradient(180deg, #ffffff, #e7fbff);
+      border: 3px solid #a9eef7;
+      box-shadow: 0 8px 18px rgba(20, 188, 211, .14), inset 0 -5px 0 rgba(20, 188, 211, .08);
+      font-size: 22px;
+      font-weight: 900;
+      color: #0a92b8;
+    }
+
+    .timer::before {
+      content: attr(data-label);
+      display: block;
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1;
+      color: #438ca5;
+    }
+
+    .timer::after {
+      content: attr(data-unit);
+      display: block;
+      margin-top: -2px;
+      font-size: 10px;
+      font-weight: 900;
+      color: #438ca5;
+    }
+
+    .timer::after:empty {
+      display: none;
+    }
+
+    .timer.urgent {
+      background: #fff0f0;
+      border-color: #ff8f8f;
+      color: var(--red);
+      animation: pulse .55s infinite;
+    }
+
+    @keyframes pulse {
+      50% { transform: scale(1.08); }
+    }
+
+    .mission-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+    }
+
+    .hearts {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 999px;
+      background: #fff2f5;
+      border: 3px solid #ffc2d4;
+      color: #ef3b5d;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      box-shadow: inset 0 -4px 0 rgba(239, 59, 93, .10), 0 7px 14px rgba(239, 59, 93, .10);
+    }
+
+    .mission {
+      padding: 16px 18px 18px;
+      border-radius: 28px;
+      gap: 14px;
+    }
+
+    .mission-main {
+      gap: 10px;
+    }
+
+    .target {
+      min-height: 118px;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 12px;
+      border-radius: 24px;
+      border: 3px solid #e5e7eb;
+      box-shadow: inset 0 -4px 0 rgba(14, 29, 62, .04), 0 10px 20px rgba(14, 29, 62, .05);
+    }
+
+    .target::before {
+      content: "더해서";
+      display: block;
+      color: #05070c;
+      font-size: 29px;
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .target strong {
+      width: auto;
+      min-width: 74px;
+      height: auto;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #ff5d0b;
+      font-size: 76px;
+      line-height: .9;
+      text-shadow: none;
+      box-shadow: none;
+    }
+
+    .target strong::before {
+      content: none;
+    }
+
+    .target span {
+      display: none;
+    }
+
+    .target b {
+      margin-top: 0;
+      color: #05070c;
+      font-size: 0;
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .target b::after {
+      content: "만들기";
+      font-size: 29px;
+    }
+
+    .timer {
+      width: 78px;
+      min-width: 78px;
+      min-height: 118px;
+      border-radius: 24px;
+      gap: 4px;
+      font-size: 34px;
+    }
+
+    .timer::before {
+      content: attr(data-label);
+      font-size: 15px;
+    }
+
+    .timer::after {
+      content: attr(data-unit);
+      margin-top: 0;
+      font-size: 16px;
+    }
+
+    .mission-bottom {
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .mission-bottom::after {
+      content: attr(data-level);
+      color: var(--orange-dark);
+      font-size: 20px;
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .mission-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 66px;
+      align-items: stretch;
+      gap: 8px;
+    }
+
+    .target {
+      min-width: 0;
+      min-height: 92px;
+      gap: 6px;
+      padding: 10px 8px;
+      overflow: hidden;
+    }
+
+    .target::before {
+      font-size: 24px;
+      flex: 0 1 auto;
+    }
+
+    .target strong {
+      min-width: 56px;
+      font-size: 56px;
+      flex: 0 0 auto;
+    }
+
+    .target b::after {
+      font-size: 24px;
+    }
+
+    .timer {
+      width: 66px;
+      min-width: 66px;
+      min-height: 92px;
+      border-radius: 20px;
+      gap: 0;
+      align-content: center;
+      font-size: 21px;
+      line-height: .92;
+      overflow: hidden;
+    }
+
+    .timer::before {
+      font-size: 13px;
+      line-height: 1;
+      padding-bottom: 4px;
+    }
+
+    .mission-bottom::after {
+      min-width: 0;
+      max-width: 210px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 18px;
+    }
+
+    .stage {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 292px;
+      bottom: 86px;
+      z-index: 2;
+      overflow: hidden;
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(255, 255, 255, .42) 0 0, transparent 23%),
+        linear-gradient(180deg, #63cff8 0%, #1498df 58%, #0878c9 100%);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.28), 0 14px 28px rgba(14, 29, 62, .1);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .feedback {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 5;
+      min-width: 220px;
+      max-width: 320px;
+      padding: 13px 18px;
+      border-radius: 999px;
+      text-align: center;
+      color: white;
+      background: rgba(14, 29, 62, .9);
+      box-shadow: 0 13px 24px rgba(14, 29, 62, .22);
+      font-size: 15px;
+      font-weight: 900;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(.92);
+      pointer-events: none;
+      transition: opacity .18s, transform .18s;
+    }
+
+    .feedback.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .level-popup {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 8;
+      min-width: 300px;
+      padding: 0;
+      border-radius: 0;
+      text-align: center;
+      color: #ffffff;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      font-size: 30px;
+      font-weight: 900;
+      text-shadow: 0 5px 16px rgba(14, 29, 62, .58), 0 2px 4px rgba(14, 29, 62, .5);
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(.82);
+      pointer-events: none;
+      transition: opacity .18s, transform .18s;
+    }
+
+    .level-popup.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.08);
+    }
+
+    .level-popup strong {
+      color: #ff6b16;
+      font-size: 72px;
+      line-height: .9;
+      vertical-align: -2px;
+      -webkit-text-stroke: 2px #ffffff;
+    }
+
+    .bottom {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 12px;
+      z-index: 4;
+      display: grid;
+      grid-template-columns: 1fr 1.45fr;
+      gap: 12px;
+    }
+
+    button {
+      border: 0;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .btn {
+      height: 64px;
+      border-radius: 20px;
+      font-size: 18px;
+      font-weight: 900;
+      box-shadow: 0 9px 0 rgba(14, 29, 62, .12);
+    }
+
+    .btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 6px 0 rgba(14, 29, 62, .12);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, .94);
+      color: var(--ink);
+      border: 1px solid rgba(14, 29, 62, .12);
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      color: white;
+    }
+
+    .btn-accent {
+      background: var(--orange);
+      color: white;
+      border: 1px solid rgba(255, 107, 22, .28);
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      background: rgba(14, 29, 62, .55);
+      backdrop-filter: blur(5px);
+    }
+
+    .panel {
+      width: min(100%, 340px);
+      padding: 30px 22px 22px;
+      border-radius: 24px;
+      background: white;
+      box-shadow: 0 22px 48px rgba(14, 29, 62, .26);
+      text-align: center;
+    }
+
+    .panel-icon {
+      display: none;
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 12px;
+      border-radius: 26px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: linear-gradient(135deg, #ff8a1f, #ff5d0b);
+      font-size: 35px;
+      font-weight: 900;
+      box-shadow: inset 0 -7px 0 rgba(0, 0, 0, .1);
+    }
+
+    .panel h2 {
+      margin: 0 0 8px;
+      font-size: 25px;
+      line-height: 1.15;
+    }
+
+    .panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.55;
+    }
+
+    .overlay-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .overlay-actions.two-buttons {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .overlay-actions.two-buttons #challengeBtn {
+      order: -1;
+    }
+
+    .panel .btn {
+      width: 100%;
+      margin-top: 0;
+      padding: 0 10px;
+      font-size: 14px;
+      white-space: normal;
+      line-height: 1.2;
+    }
+
+    .hide { display: none; }
+
+    @media (max-height: 720px) {
+      .top { padding-top: 10px; }
+      .mission-header { min-height: 54px; }
+      .header-title h1 { font-size: 18px; }
+      .stage { top: 282px; bottom: 78px; }
+      .bottom { bottom: 10px; }
+      .btn { height: 48px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app" aria-label="놀픽 숫자더하기 놀이">
+    <section class="top">
+      <div class="mission-header">
+        <button class="back-btn" type="button" onclick="exitToChallenge()" aria-label="방학챌린지로 돌아가기">‹</button>
+        <div class="header-title">
+          <small>오늘의 미션</small>
+          <div class="title-line">
+            <h1>숫자더하기 놀이</h1>
+            <span class="skill-badge">집중유지력 · 보통</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mission" aria-label="미션 정보">
+      <div class="mission-main">
+        <div class="target">
+          <strong id="targetSum">5</strong>
+          <div>
+            <span id="levelText">레벨 1</span>
+            <b id="targetActionText">목표 7 만들기</b>
+          </div>
+        </div>
+        <div class="timer" id="timer">12</div>
+      </div>
+      <div class="mission-bottom">
+        <div class="hearts" id="heartChip">♥ ♥ ♥</div>
+      </div>
+    </section>
+
+    <section class="stage" aria-label="숫자 놀이판">
+      <canvas id="game"></canvas>
+    </section>
+
+    <div class="feedback" id="feedback">좋아요!</div>
+    <div class="level-popup" id="levelPopup" aria-live="polite"></div>
+
+    <div class="bottom">
+      <button class="btn btn-secondary" type="button" id="resetBtn">다시</button>
+      <button class="btn btn-primary" type="button" id="startBtn">시작하기</button>
+    </div>
+
+    <section class="overlay" id="overlay">
+      <div class="panel">
+        <h2 id="overlayTitle">숫자더하기 놀이</h2>
+        <p id="overlayText">숫자 공을 골라 목표 합을 만들어요.<br>해파리는 보너스, 문어는 조심해요.</p>
+        <div class="overlay-actions">
+          <button class="btn btn-primary" type="button" id="overlayBtn">시작하기</button>
+          <button class="btn btn-secondary hide" type="button" id="challengeBtn">조금 어려운 숫자 도전</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+    const targetSumEl = document.getElementById("targetSum");
+    const levelTextEl = document.getElementById("levelText");
+    const targetActionTextEl = document.getElementById("targetActionText");
+    const timerEl = document.getElementById("timer");
+    const heartChipEl = document.getElementById("heartChip");
+    const missionBottomEl = document.querySelector(".mission-bottom");
+    const selectedLineEl = document.getElementById("selectedLine");
+    const feedbackEl = document.getElementById("feedback");
+    const levelPopupEl = document.getElementById("levelPopup");
+    const startBtn = document.getElementById("startBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const overlay = document.getElementById("overlay");
+    const overlayTitle = document.getElementById("overlayTitle");
+    const overlayText = document.getElementById("overlayText");
+    const overlayBtn = document.getElementById("overlayBtn");
+    const challengeBtn = document.getElementById("challengeBtn");
+    const overlayActionsEl = document.querySelector(".overlay-actions");
+    const jellyfishImage = new Image();
+    jellyfishImage.src = "jellyfish.svg";
+    const octopusImage = new Image();
+    octopusImage.src = "octopus.svg";
+
+    const easyLevels = [
+      { target: 5, max: 4, need: 10, time: 0, speed: 0.53, spawn: 1580, initial: 3 },
+      { target: 6, max: 5, need: 10, time: 0, speed: 0.53, spawn: 1580, initial: 3 },
+      { target: 7, max: 6, need: 10, time: 0, speed: 0.53, spawn: 1580, initial: 3 },
+      { target: 8, max: 7, need: 10, time: 0, speed: 0.53, spawn: 1580, initial: 3 },
+      { target: 9, max: 8, need: 10, time: 0, speed: 0.53, spawn: 1580, initial: 4 },
+      { target: 10, max: 9, need: 10, time: 0, speed: 0.53, spawn: 1580, initial: 4 },
+      { target: 11, max: 10, need: 10, time: 0, speed: 0.68, spawn: 1270, initial: 4 },
+      { target: 12, max: 11, need: 10, time: 0, speed: 0.71, spawn: 1220, initial: 4 },
+      { target: 13, max: 12, need: 10, time: 0, speed: 0.74, spawn: 1170, initial: 4 }
+    ];
+
+    const upperBasicLevels = [
+      ...easyLevels,
+      { target: 14, max: 13, need: 10, time: 0, speed: 0.77, spawn: 1120, initial: 4 },
+      { target: 15, max: 14, need: 10, time: 0, speed: 0.80, spawn: 1070, initial: 4 },
+      { target: 16, max: 15, need: 10, time: 0, speed: 0.83, spawn: 1020, initial: 4 }
+    ];
+
+    const hardLevels = [
+      { target: 17, max: 16, need: 10, time: 0, speed: 0.78, spawn: 1060, initial: 4 },
+      { target: 19, max: 18, need: 10, time: 0, speed: 0.82, spawn: 1010, initial: 4 },
+      { target: 21, max: 20, need: 10, time: 0, speed: 0.86, spawn: 970, initial: 4 },
+      { target: 23, max: 22, need: 10, time: 0, speed: 0.90, spawn: 930, initial: 4 },
+      { target: 25, max: 24, need: 10, time: 0, speed: 0.94, spawn: 900, initial: 4 }
+    ];
+
+    let levels = easyLevels;
+    let currentMode = "easy";
+    let basicLevelCount = easyLevels.length;
+
+    let width = 0;
+    let height = 0;
+    let level = 0;
+    let target = levels[0].target;
+    let score = 0;
+    let baseScore = 0;
+    let levelStartScore = 0;
+    let challengeBestLevel = 0;
+    let cleared = 0;
+    let combo = 0;
+    let hearts = 3;
+    const maxHearts = 3;
+    let timeLeft = levels[0].time;
+    let running = false;
+    let finished = false;
+    let balls = [];
+    let popEffects = [];
+    let selected = [];
+    let lastTime = 0;
+    let spawnTimer = 0;
+    let secondTimer = 0;
+    let feedbackTimer = 0;
+    let levelPopupTimer = 0;
+    let gameElapsedMs = 0;
+    let solvableCheckTimer = 0;
+    let bonusJellyfishSpawned = false;
+    let audioCtx = null;
+    let lastPopSoundAt = 0;
+
+    function getAudioContext() {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return null;
+      if (!audioCtx) audioCtx = new AudioContextClass();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playTone(frequency, startOffset, duration, gainValue, type = "sine", endFrequency = frequency) {
+      const ctxAudio = getAudioContext();
+      if (!ctxAudio) return;
+      const start = ctxAudio.currentTime + startOffset;
+      const oscillator = ctxAudio.createOscillator();
+      const gain = ctxAudio.createGain();
+      oscillator.type = type;
+      oscillator.frequency.setValueAtTime(frequency, start);
+      oscillator.frequency.exponentialRampToValueAtTime(Math.max(20, endFrequency), start + duration);
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(gainValue, start + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+      oscillator.connect(gain);
+      gain.connect(ctxAudio.destination);
+      oscillator.start(start);
+      oscillator.stop(start + duration + 0.02);
+    }
+
+    function playButtonSound() {
+      playTone(620, 0, 0.075, 0.045, "triangle", 860);
+      playTone(880, 0.085, 0.09, 0.04, "triangle", 1220);
+    }
+
+    function playPopSound() {
+      const now = performance.now();
+      if (now - lastPopSoundAt < 90) return;
+      lastPopSoundAt = now;
+      playTone(145, 0, 0.13, 0.075, "sine", 55);
+      playTone(72, 0.018, 0.11, 0.045, "triangle", 38);
+    }
+
+    function playTapSound() {
+      playTone(520, 0, 0.055, 0.028, "triangle", 680);
+    }
+
+    function playBonusSound() {
+      playTone(880, 0, 0.08, 0.045, "sine", 1320);
+      playTone(1320, 0.085, 0.12, 0.038, "triangle", 1760);
+      playTone(1760, 0.19, 0.13, 0.028, "sine", 1560);
+    }
+
+    function fitCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      width = rect.width;
+      height = rect.height;
+      const nextWidth = Math.max(1, Math.floor(width * dpr));
+      const nextHeight = Math.max(1, Math.floor(height * dpr));
+      if (canvas.width !== nextWidth) canvas.width = nextWidth;
+      if (canvas.height !== nextHeight) canvas.height = nextHeight;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function rand(min, max) {
+      return min + Math.random() * (max - min);
+    }
+
+    function targetPairs() {
+      const cfg = levels[level];
+      const pairs = [];
+      for (let a = 1; a <= cfg.max; a += 1) {
+        const b = target - a;
+        if (b >= a && b <= cfg.max) pairs.push([a, b]);
+      }
+      return pairs.length ? pairs : [[1, Math.min(cfg.max, target - 1)]];
+    }
+
+    function pickHelpfulNumber() {
+      const cfg = levels[level];
+      const currentSum = sumSelected();
+      const complement = target - currentSum;
+      if (currentSum > 0 && complement >= 1 && complement <= cfg.max && Math.random() < .7) {
+        return complement;
+      }
+      const useful = [];
+      targetPairs().forEach(pair => useful.push(...pair));
+      return useful[Math.floor(Math.random() * useful.length)] || pickNumber();
+    }
+
+    function pickDistractorNumber() {
+      const cfg = levels[level];
+      const selectedSum = sumSelected();
+      const complement = target - selectedSum;
+      const pairValues = new Set(targetPairs().flat());
+      const candidates = [];
+      const distractorMax = Math.min(cfg.max, target - 1);
+      for (let value = 1; value <= distractorMax; value += 1) {
+        if (value === target) continue;
+        if (selectedSum > 0 && value === complement) continue;
+        if (selectedSum > 0 && selectedSum + value === target) continue;
+        if (!pairValues.has(value)) {
+          candidates.push(value, value);
+        } else if (Math.random() < .35) {
+          candidates.push(value);
+        }
+      }
+      return candidates[Math.floor(Math.random() * candidates.length)] || Math.floor(rand(1, cfg.max + 1));
+    }
+
+    function pickNoiseNumber() {
+      const cfg = levels[level];
+      const selectedSum = sumSelected();
+      const visibleValues = visibleNumberValues();
+      const candidates = [];
+      for (let value = 1; value <= Math.min(cfg.max, target - 1); value += 1) {
+        if (selectedSum > 0 && selectedSum + value === target) continue;
+        if (visibleValues.some(visible => visible + value === target)) continue;
+        candidates.push(value);
+      }
+      return candidates[Math.floor(Math.random() * candidates.length)] || pickDistractorNumber();
+    }
+
+    function visibleMinusCount() {
+      return balls.filter(ball => !ball.bomb && !ball.heart && !ball.bonus && ball.value < 0 && ball.y + ball.r > 0 && ball.y - ball.r < dangerLineY()).length;
+    }
+
+    function pickMinusNumber() {
+      return Math.random() < .58 ? -1 : -3;
+    }
+
+    function pickNumber() {
+      const cfg = levels[level];
+      if (currentMode === "hard" && visibleMinusCount() < 2 && Math.random() < .18) return pickMinusNumber();
+      if (Math.random() < .42) return pickNoiseNumber();
+      if (Math.random() < .74) return pickDistractorNumber();
+      if (Math.random() < .9) return pickHelpfulNumber();
+      return Math.floor(rand(1, cfg.max + 1));
+    }
+
+    function findOpenSpawnX(radius) {
+      const minX = radius + 34;
+      const maxX = width - radius - 34;
+      let bestX = rand(minX, maxX);
+      let bestDistance = -1;
+      for (let attempt = 0; attempt < 42; attempt += 1) {
+        const candidate = rand(minX, maxX);
+        const nearest = balls.reduce((distance, ball) => {
+          if (ball.y > dangerLineY() - 24) return distance;
+          const dx = Math.abs(ball.x - candidate);
+          const dy = Math.abs(ball.y - (radius + 8));
+          const gap = Math.sqrt(dx * dx + dy * dy) - ball.r - radius;
+          return Math.min(distance, gap);
+        }, Infinity);
+        if (nearest > bestDistance) {
+          bestDistance = nearest;
+          bestX = candidate;
+        }
+        if (nearest > radius * 2.9) break;
+      }
+      return bestX;
+    }
+
+    function spawnBall(valueOverride = null, visible = false, type = "number", xOverride = null) {
+      const cfg = levels[level];
+      const hasValueOverride = valueOverride !== null && valueOverride !== undefined && Number.isFinite(Number(valueOverride));
+      const isHeart = type === "heart";
+      const isBomb = false;
+      const value = isHeart ? 0 : hasValueOverride ? Number(valueOverride) : pickNumber();
+      const radius = isHeart ? rand(20, 24) : isBomb ? rand(24, 29) : rand(24, 30);
+      const visibleY = visible ? rand(156, Math.max(178, Math.min(dangerLineY() - 78, height * .58))) : radius + 8;
+      balls.push({
+        id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}_${Math.random()}`,
+        x: xOverride ?? findOpenSpawnX(radius),
+        y: visibleY,
+        r: radius,
+        value,
+        vy: cfg.speed + rand(0, .22),
+        vx: rand(-.14, .14),
+        bomb: isBomb,
+        heart: isHeart,
+        bonus: false,
+        selected: false
+      });
+    }
+
+    function spawnCharacter(type, visible = false) {
+      const cfg = levels[level];
+      const isBonus = type === "jellyfish";
+      const radius = isBonus ? rand(24, 28) : rand(24, 29);
+      const visibleY = visible ? rand(156, Math.max(178, Math.min(dangerLineY() - 78, height * .58))) : radius + 8;
+      balls.push({
+        id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}_${Math.random()}`,
+        x: findOpenSpawnX(radius),
+        y: visibleY,
+        r: radius,
+        value: 0,
+        vy: cfg.speed + rand(0, .22),
+        vx: rand(-.14, .14),
+        bomb: !isBonus,
+        heart: false,
+        bonus: isBonus,
+        selected: false
+      });
+    }
+
+    function spawnJellyfish(visible = false) {
+      if (bonusJellyfishSpawned) return;
+      bonusJellyfishSpawned = true;
+      spawnCharacter("jellyfish", visible);
+    }
+
+    function spawnOctopus(visible = false) {
+      if (balls.some(ball => ball.bomb)) return;
+      spawnCharacter("octopus", visible);
+    }
+
+    function fallSpeedBoost() {
+      const progressClears = level * levels[0].need + cleared;
+      const elapsedBoost = Math.min(0.38, gameElapsedMs / 85000);
+      const successBoost = Math.min(0.32, progressClears * 0.018);
+      return 1 + elapsedBoost + successBoost;
+    }
+
+    function levelChangeSlowdown() {
+      return levelPopupTimer > 0 ? 0.18 : 1;
+    }
+
+    function visibleNumberValues() {
+      return balls
+        .filter(ball => !ball.bomb && !ball.heart && !ball.bonus && ball.y + ball.r > 0 && ball.y - ball.r < dangerLineY())
+        .map(ball => ball.value);
+    }
+
+    function visibleNumberCount() {
+      return balls.filter(ball => !ball.bomb && !ball.heart && !ball.bonus && ball.y + ball.r > 0 && ball.y - ball.r < dangerLineY()).length;
+    }
+
+    function maxVisibleNumberCount() {
+      return currentMode === "hard" ? 6 : 5;
+    }
+
+    function trimVisibleNumbers(keepCount = 3) {
+      const numbers = balls.filter(ball => !ball.bomb && !ball.heart && !ball.bonus && !ball.selected);
+      const removeCount = Math.max(0, visibleNumberCount() - keepCount);
+      if (!removeCount) return;
+      const removable = numbers
+        .filter(ball => ball.y + ball.r > 0 && ball.y - ball.r < dangerLineY())
+        .sort((a, b) => b.y - a.y)
+        .slice(0, removeCount);
+      const removeIds = new Set(removable.map(ball => ball.id));
+      balls = balls.filter(ball => !removeIds.has(ball.id));
+    }
+
+    function hasCompletablePair() {
+      const values = visibleNumberValues();
+      for (let i = 0; i < values.length; i += 1) {
+        for (let j = i + 1; j < values.length; j += 1) {
+          if (values[i] + values[j] === target) return true;
+        }
+      }
+      const selectedSum = sumSelected();
+      if (selectedSum > 0) {
+        return values.some(value => selectedSum + value === target);
+      }
+      return false;
+    }
+
+    function spawnCompletablePair(visible = false) {
+      const pairs = targetPairs();
+      const pair = pairs[Math.floor(Math.random() * pairs.length)];
+      pair.forEach(value => spawnBall(value, visible));
+    }
+
+    function spawnPairWithDistractor(visible = false) {
+      spawnCompletablePair(visible);
+      if (visibleNumberCount() < maxVisibleNumberCount() && Math.random() < .45) {
+        const value = currentMode === "hard" && visibleMinusCount() < 2 && Math.random() < .35 ? pickMinusNumber() : pickNoiseNumber();
+        spawnBall(value, visible);
+      }
+      if (currentMode === "easy" && visibleNumberCount() < maxVisibleNumberCount() && Math.random() < .18) {
+        spawnBall(pickDistractorNumber(), visible);
+      }
+    }
+
+    function refreshNumberSetForTarget() {
+      balls = balls.filter(ball => ball.heart);
+      selected = [];
+      if (!hasCompletablePair()) spawnCompletablePair();
+    }
+
+    function ensureSolvablePair() {
+      if (hasCompletablePair()) return;
+      const maxNumbers = maxVisibleNumberCount();
+      if (visibleNumberCount() >= maxNumbers) {
+        trimVisibleNumbers(2);
+      }
+      if (visibleNumberCount() <= maxNumbers - 2) spawnCompletablePair();
+    }
+
+    function spawnStartingSet() {
+      const cfg = levels[level];
+      const pairs = targetPairs();
+      const pair = pairs[Math.floor(Math.random() * pairs.length)];
+      const values = [...pair];
+      while (values.length < cfg.initial) {
+        values.push(currentMode === "hard" && values.length === cfg.initial - 1 && Math.random() < .45 ? pickMinusNumber() : pickNoiseNumber());
+      }
+      values.slice(0, cfg.initial).forEach(value => spawnBall(value, false));
+    }
+
+    function sumSelected() {
+      return selected.reduce((sum, ball) => sum + ball.value, 0);
+    }
+
+    function showFeedback(text, good = true) {
+      feedbackEl.textContent = text;
+      feedbackEl.style.background = good ? "rgba(24, 183, 122, .94)" : "rgba(239, 68, 68, .94)";
+      feedbackEl.classList.add("show");
+      feedbackTimer = 900;
+    }
+
+    function showLevelPopup(nextTarget) {
+      if (!levelPopupEl) return;
+      levelPopupEl.innerHTML = `숫자 합 <strong>${nextTarget}</strong>으로 변경`;
+      levelPopupEl.classList.add("show");
+      levelPopupTimer = 2200;
+    }
+
+    function dangerLineY() {
+      return Math.max(220, height - 12);
+    }
+
+    function updateHearts() {
+      if (!heartChipEl) return;
+      const full = "♥ ".repeat(Math.max(0, hearts)).trim();
+      const empty = "♡ ".repeat(Math.max(0, 3 - Math.min(3, hearts))).trim();
+      heartChipEl.textContent = [full, empty].filter(Boolean).join(" ");
+    }
+
+    function retryCurrentLevel() {
+      cleared = 0;
+      combo = 0;
+      score = levelStartScore;
+      balls = [];
+      popEffects = [];
+      selected = [];
+      solvableCheckTimer = 0;
+      spawnTimer = 0;
+      secondTimer = 0;
+      ctx.clearRect(0, 0, width, height);
+      spawnStartingSet();
+      showLevelPopup(target);
+      updateText();
+    }
+
+    function endGameByHearts() {
+      running = false;
+      balls = [];
+      clearSelected();
+      overlayTitle.textContent = "하트가 모두 없어졌어요";
+      if (currentMode === "hard") {
+        overlayText.innerHTML = `이번 점수 <strong>${score}점</strong><br>하드모드 다시 도전하시겠습니까?`;
+        overlayBtn.textContent = "하드모드 다시 도전";
+      } else {
+        overlayText.innerHTML = `이번 점수 <strong>${baseScore || score}점</strong><br>다시 도전하면 처음부터 시작해요.`;
+        overlayBtn.textContent = "다시 시작";
+      }
+      overlayBtn.classList.add("btn-primary");
+      overlayBtn.classList.remove("btn-secondary");
+      if (challengeBtn) {
+        challengeBtn.classList.add("hide");
+        challengeBtn.classList.remove("btn-accent");
+      }
+      if (overlayActionsEl) overlayActionsEl.classList.remove("two-buttons");
+      startBtn.textContent = "시작하기";
+      startBtn.disabled = false;
+      overlay.classList.remove("hide");
+    }
+
+    function loseHeart(reason = "하트 -1") {
+      hearts = Math.max(0, hearts - 1);
+      updateHearts();
+      showFeedback(reason, false);
+      if (hearts <= 0) {
+        endGameByHearts();
+        return false;
+      }
+      return true;
+    }
+
+    function addPopEffect(x, y, text = "펑!") {
+      playPopSound();
+      popEffects.push({ x, y, text, life: 620, total: 620 });
+    }
+
+    function addBonusEffect(x, y) {
+      popEffects.push({ x, y, text: "띠링 +30점", life: 720, total: 720, bonus: true });
+    }
+
+    function formatScore(value) {
+      if (value >= 10000) return `${(value / 10000).toFixed(value >= 100000 ? 0 : 1)}만`;
+      return String(value);
+    }
+
+    function updateText() {
+      const cfg = levels[level];
+      targetSumEl.textContent = target;
+      targetActionTextEl.textContent = `목표 ${target} 만들기`;
+      levelTextEl.textContent = `레벨 ${level + 1} · ${cleared}/${cfg.need} 성공`;
+      if (missionBottomEl) missionBottomEl.dataset.level = `점수 ${score}점`;
+      timerEl.dataset.label = `레벨 ${overallLevelNumber()}`;
+      timerEl.dataset.unit = "";
+      timerEl.textContent = `${cleared}/${cfg.need}`;
+      timerEl.classList.remove("urgent");
+      updateHearts();
+
+      const sum = sumSelected();
+      if (selectedLineEl) {
+        selectedLineEl.textContent = selected.length ? `${selected.map(ball => ball.value).join(" + ")} = ${sum}` : `콤보 ${combo}`;
+      }
+    }
+
+    function clearSelected() {
+      selected.forEach(ball => ball.selected = false);
+      selected = [];
+      updateText();
+    }
+
+    function removeBall(ball) {
+      balls = balls.filter(item => item.id !== ball.id);
+    }
+
+    function readChildGradeValue() {
+      try {
+        const profile = JSON.parse(localStorage.getItem("nollpic_selected_child") || localStorage.getItem("nollpic_child_profile") || "null");
+        if (profile && profile.gradeValue !== undefined) return profile.gradeValue;
+      } catch (error) {}
+      try {
+        const gradeText = localStorage.getItem("nollpic_child_grade") || "";
+        const match = gradeText.match(/\d+/);
+        if (match) return match[0];
+      } catch (error) {}
+      return "";
+    }
+
+    function isUpperGradeChild() {
+      const gradeValue = readChildGradeValue();
+      if (String(gradeValue) === "adult") return true;
+      const gradeNum = Number.parseInt(gradeValue, 10);
+      return Number.isFinite(gradeNum) && gradeNum >= 4;
+    }
+
+    function getBasicLevels() {
+      return isUpperGradeChild() ? upperBasicLevels : easyLevels;
+    }
+
+    function overallLevelNumber() {
+      return currentMode === "hard" ? basicLevelCount + level + 1 : level + 1;
+    }
+
+    function updateChallengeBestLevel() {
+      challengeBestLevel = Math.max(challengeBestLevel, overallLevelNumber());
+    }
+
+    function basicRankChange(value) {
+      const before = Math.max(2, 12 - Math.floor(value / 160));
+      const after = Math.max(1, before - 2);
+      return { before, after };
+    }
+
+    function makeInfiniteLevel(index) {
+      const targetValue = 27 + index * 2;
+      return {
+        target: targetValue,
+        max: targetValue - 1,
+        need: 10,
+        time: 0,
+        speed: Math.min(1.0, 0.90 + index * 0.03),
+        spawn: Math.max(860, 940 - index * 24),
+        initial: 4
+      };
+    }
+
+    function levelUp() {
+      if (level >= levels.length - 1) {
+        if (currentMode === "hard") {
+          levels.push(makeInfiniteLevel(levels.length - hardLevels.length));
+        } else {
+          completeGame();
+          return;
+        }
+      }
+      if (currentMode !== "hard" && level >= levels.length - 1) {
+        completeGame();
+        return;
+      }
+      level += 1;
+      target = levels[level].target;
+      cleared = 0;
+      bonusJellyfishSpawned = false;
+      balls = balls.filter(ball => !ball.bomb && !ball.bonus);
+      levelStartScore = score;
+      updateChallengeBestLevel();
+      timeLeft = levels[level].time;
+      clearSelected();
+      showLevelPopup(target);
+      if (!hasCompletablePair()) spawnCompletablePair();
+    }
+
+    function resetRoundTimer() {
+      timeLeft = levels[level].time;
+      secondTimer = 0;
+      updateText();
+    }
+
+    function resetRoundAfterMiss() {
+      clearSelected();
+      balls = [];
+      popEffects = [];
+      solvableCheckTimer = 0;
+      ctx.clearRect(0, 0, width, height);
+      spawnStartingSet();
+      resetRoundTimer();
+    }
+
+    function completeGame() {
+      running = false;
+      finished = true;
+      balls = [];
+      clearSelected();
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.completeChallengeStep === "function") {
+          window.parent.completeChallengeStep(2);
+        }
+      } catch (error) {}
+
+      baseScore = score;
+      challengeBestLevel = basicLevelCount;
+      overlayTitle.textContent = `${challengeBestLevel}단계 ${baseScore}점 성공!`;
+      overlayText.innerHTML = `오늘의 기본 놀이를 끝까지 해냈어요.<br>더 어려운 단계에 도전해볼까요?`;
+      overlayBtn.textContent = "오늘의 놀이 끝내기";
+      overlayBtn.classList.add("btn-secondary");
+      overlayBtn.classList.remove("btn-primary");
+      if (challengeBtn) {
+        challengeBtn.textContent = "더 어려운 레벨 도전";
+        challengeBtn.classList.add("btn-accent");
+        challengeBtn.classList.remove("hide");
+      }
+      if (overlayActionsEl) overlayActionsEl.classList.add("two-buttons");
+      overlay.classList.remove("hide");
+    }
+
+    function checkSelected() {
+      const total = sumSelected();
+      if (total === target) {
+        if (currentMode !== "hard") score += 10;
+        combo += 1;
+        cleared += 1;
+        selected.forEach(removeBall);
+        selected = [];
+        resetRoundTimer();
+
+        if (cleared >= levels[level].need) levelUp();
+      } else if (total > target) {
+        combo = 0;
+        if (loseHeart("틀렸어요! 하트 -1")) clearSelected();
+      }
+      updateText();
+    }
+
+    function tapBall(x, y) {
+      if (!running) return;
+      let hit = null;
+      let hitDistance = Infinity;
+      for (let i = balls.length - 1; i >= 0; i -= 1) {
+        const ball = balls[i];
+        const dx = x - ball.x;
+        const dy = y - ball.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance <= ball.r + 14 && distance < hitDistance) {
+          hit = ball;
+          hitDistance = distance;
+        }
+      }
+      if (!hit) return;
+      playTapSound();
+      if (hit.bomb) {
+        combo = 0;
+        removeBall(hit);
+        loseHeart("문어 조심! 하트 -1");
+        updateText();
+        return;
+      }
+      if (hit.bonus) {
+        score += 30;
+        playBonusSound();
+        addBonusEffect(hit.x, hit.y);
+        removeBall(hit);
+        updateText();
+        return;
+      }
+      if (hit.selected) {
+        hit.selected = false;
+        selected = selected.filter(item => item.id !== hit.id);
+      } else {
+        hit.selected = true;
+        selected.push(hit);
+      }
+      checkSelected();
+      updateText();
+    }
+
+    function drawBall(ball) {
+      ctx.save();
+      ctx.translate(ball.x, ball.y);
+      ctx.beginPath();
+      ctx.arc(0, 0, ball.r, 0, Math.PI * 2);
+      if (ball.bonus && jellyfishImage.complete && jellyfishImage.naturalWidth > 0) {
+        ctx.rotate(Math.sin(ball.y * .02) * .08);
+        const size = ball.r * 2.25;
+        ctx.drawImage(jellyfishImage, -size / 2, -size / 2, size, size);
+        ctx.restore();
+        return;
+      }
+      if (ball.bomb && octopusImage.complete && octopusImage.naturalWidth > 0) {
+        ctx.rotate(Math.sin(ball.y * .02) * .08);
+        const maxSize = ball.r * 2.45;
+        const ratio = octopusImage.naturalWidth / octopusImage.naturalHeight;
+        const drawWidth = ratio >= 1 ? maxSize : maxSize * ratio;
+        const drawHeight = ratio >= 1 ? maxSize / ratio : maxSize;
+        ctx.drawImage(octopusImage, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight);
+        ctx.restore();
+        return;
+      }
+
+      const grad = ctx.createRadialGradient(-ball.r * .35, -ball.r * .45, 2, 0, 0, ball.r);
+      if (ball.heart) {
+        grad.addColorStop(0, "#fff1f5");
+        grad.addColorStop(1, "#fb4d78");
+      } else
+      if (ball.bomb) {
+        grad.addColorStop(0, "#ffbbe8");
+        grad.addColorStop(1, "#fc4f8b");
+      } else {
+        grad.addColorStop(0, "#ffffff");
+        grad.addColorStop(1, ball.selected ? "#ff9f2f" : "#e8f5ff");
+      }
+      ctx.fillStyle = grad;
+      ctx.fill();
+      ctx.lineWidth = ball.selected ? 5 : 3;
+      ctx.strokeStyle = ball.selected ? "#ffffff" : ball.bomb ? "#111827" : "rgba(20, 127, 211, .18)";
+      ctx.stroke();
+
+      ctx.fillStyle = ball.bomb || ball.heart ? "#ffffff" : "#0e1d3e";
+      ctx.font = `900 ${ball.r * (ball.bomb || ball.heart ? .86 : .92)}px Malgun Gothic, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(ball.heart ? "♥" : ball.bomb ? "!" : String(ball.value), 0, 2);
+
+      ctx.restore();
+    }
+
+    function drawDangerLine() {
+    }
+
+    function drawPopEffects() {
+      popEffects.forEach(effect => {
+        const progress = 1 - (effect.life / effect.total);
+        const alpha = Math.max(0, effect.life / effect.total);
+        const scale = 1 + progress * .65;
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.translate(effect.x, effect.y - progress * 28);
+        ctx.scale(scale, scale);
+        ctx.fillStyle = "#ffffff";
+        ctx.strokeStyle = effect.bonus ? "rgba(14, 29, 62, .18)" : "#ff6b16";
+        ctx.lineWidth = effect.bonus ? 2 : 5;
+        ctx.font = `900 ${effect.bonus ? 17 : 24}px Malgun Gothic, sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.strokeText(effect.text, 0, 0);
+        ctx.fillText(effect.text, 0, 0);
+        ctx.restore();
+      });
+    }
+
+    function drawStage() {
+      fitCanvas();
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "rgba(255, 255, 255, .28)";
+      for (let i = 0; i < 9; i += 1) {
+        const x = (i * 83 + 28) % Math.max(width, 1);
+        const y = (i * 57 + 44) % Math.max(height, 1);
+        ctx.fillRect(x, y, 34, 5);
+        ctx.fillRect(x + 7, y + 10, 24, 5);
+      }
+
+      drawDangerLine();
+      balls.forEach(drawBall);
+      drawPopEffects();
+
+      ctx.fillStyle = "rgba(255, 255, 255, .75)";
+      ctx.font = "900 13px Malgun Gothic, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(`점수 ${score}`, width / 2, height - 18);
+    }
+
+    function tick(now) {
+      if (!lastTime) lastTime = now;
+      const dt = Math.min(40, now - lastTime);
+      lastTime = now;
+
+        if (running) {
+        const cfg = levels[level];
+        gameElapsedMs += dt;
+        spawnTimer += dt;
+        solvableCheckTimer += dt;
+        feedbackTimer -= dt;
+        levelPopupTimer -= dt;
+        popEffects.forEach(effect => {
+          effect.life -= dt;
+        });
+        popEffects = popEffects.filter(effect => effect.life > 0);
+
+        if (levelPopupTimer <= 0 && spawnTimer >= cfg.spawn) {
+          spawnTimer = 0;
+          const numberCount = visibleNumberCount();
+          const maxNumbers = maxVisibleNumberCount();
+          if (numberCount <= 3 && !hasCompletablePair()) {
+            spawnPairWithDistractor();
+          } else if (!bonusJellyfishSpawned && (cleared >= Math.max(2, cfg.need - 3) || Math.random() < .15)) {
+            spawnJellyfish();
+          } else if (Math.random() < .07) {
+            spawnOctopus();
+          } else if (numberCount <= 3 && Math.random() < .25) {
+            spawnPairWithDistractor();
+          } else if (numberCount < maxNumbers) {
+            spawnBall(Math.random() < .62 ? pickDistractorNumber() : pickHelpfulNumber());
+          }
+        }
+
+        if (solvableCheckTimer >= 1500) {
+          solvableCheckTimer = 0;
+          ensureSolvablePair();
+        }
+
+        if (feedbackTimer <= 0) feedbackEl.classList.remove("show");
+        if (levelPopupTimer <= 0 && levelPopupEl) levelPopupEl.classList.remove("show");
+
+        const lineY = dangerLineY();
+        const nextBalls = [];
+        let removedAtLine = false;
+        balls.forEach(ball => {
+          ball.x += ball.vx * dt / 16;
+          ball.y += ball.vy * fallSpeedBoost() * levelChangeSlowdown() * dt / 16;
+          if (ball.x < ball.r || ball.x > width - ball.r) ball.vx *= -1;
+          if (ball.y + ball.r >= lineY) {
+            selected = selected.filter(item => item.id !== ball.id);
+            addPopEffect(ball.x, lineY - 18, "펑!");
+            removedAtLine = true;
+            return;
+          }
+          if (ball.y < height + ball.r + 20) nextBalls.push(ball);
+        });
+        balls = nextBalls;
+        if (removedAtLine) updateText();
+      }
+
+      drawStage();
+      requestAnimationFrame(tick);
+    }
+
+    function startGame(mode = currentMode, keepScore = false) {
+      currentMode = mode;
+      const basicLevels = getBasicLevels();
+      basicLevelCount = basicLevels.length;
+      levels = currentMode === "hard" ? hardLevels : basicLevels;
+      level = 0;
+      if (!keepScore) score = 0;
+      if (!keepScore) baseScore = 0;
+      if (!keepScore) challengeBestLevel = currentMode === "hard" ? basicLevelCount + 1 : 1;
+      levelStartScore = score;
+      cleared = 0;
+      combo = 0;
+      if (!keepScore) hearts = maxHearts;
+      target = levels[0].target;
+      timeLeft = levels[0].time;
+      running = true;
+      finished = false;
+      startBtn.textContent = "집중 중";
+      startBtn.disabled = true;
+      balls = [];
+      popEffects = [];
+      selected = [];
+      spawnTimer = 0;
+      solvableCheckTimer = 0;
+      bonusJellyfishSpawned = false;
+      secondTimer = 0;
+      feedbackTimer = 0;
+      levelPopupTimer = 0;
+      gameElapsedMs = 0;
+      overlay.classList.add("hide");
+      overlayBtn.classList.remove("btn-secondary");
+      overlayBtn.classList.add("btn-primary");
+      if (challengeBtn) {
+        challengeBtn.classList.add("hide");
+        challengeBtn.classList.remove("btn-accent");
+      }
+      if (overlayActionsEl) overlayActionsEl.classList.remove("two-buttons");
+      if (levelPopupEl) levelPopupEl.classList.remove("show");
+      spawnStartingSet();
+      updateText();
+    }
+
+    function startChallengeMode() {
+      startGame("hard", true);
+      finished = false;
+      updateChallengeBestLevel();
+      showLevelPopup(target);
+    }
+
+    function exitToChallenge() {
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.prevPage === "function") {
+          window.parent.prevPage(11);
+          return;
+        }
+      } catch (error) {}
+      history.back();
+    }
+
+    canvas.addEventListener("pointerdown", (event) => {
+      const rect = canvas.getBoundingClientRect();
+      tapBall(event.clientX - rect.left, event.clientY - rect.top);
+    });
+
+    startBtn.addEventListener("click", () => {
+      playButtonSound();
+      if (finished) exitToChallenge();
+      else startGame();
+    });
+    resetBtn.addEventListener("click", () => {
+      playButtonSound();
+      startGame(currentMode);
+    });
+    overlayBtn.addEventListener("click", () => {
+      playButtonSound();
+      if (finished) exitToChallenge();
+      else startGame();
+    });
+    if (challengeBtn) {
+      challengeBtn.addEventListener("click", () => {
+        playButtonSound();
+        startChallengeMode();
+      });
+    }
+
+    window.addEventListener("resize", fitCanvas);
+    fitCanvas();
+    updateText();
+    requestAnimationFrame(tick);
+  </script>
+</body>
+</html>

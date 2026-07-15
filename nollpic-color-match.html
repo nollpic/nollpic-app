@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>놀픽 컬러맞추기 놀이</title>
+  <style>
+    @font-face {
+      font-family: "Pretendard";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Regular.woff2") format("woff2");
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Pretendard";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Bold.woff2") format("woff2");
+      font-weight: 700;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Pretendard";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-ExtraBold.woff2") format("woff2");
+      font-weight: 800;
+      font-display: swap;
+    }
+
+    :root {
+      --ink: #0e1d3e;
+      --muted: #657085;
+      --orange: #ff6b16;
+      --orange-dark: #e95709;
+      --sky: #49c3f1;
+      --blue: #168fd8;
+      --card: rgba(255, 255, 255, .96);
+      --shadow: 0 18px 34px rgba(14, 29, 62, .12);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      letter-spacing: 0;
+    }
+
+    body {
+      margin: 0;
+      width: 100%;
+      min-height: 100dvh;
+      font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      color: var(--ink);
+      background: #eef3f8;
+      display: grid;
+      place-items: center;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .phone {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      min-height: 100dvh;
+      padding: 16px 18px 18px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 16% 8%, rgba(255, 107, 22, .10), transparent 26%),
+        linear-gradient(180deg, #fffafa 0%, #ffffff 46%, #eef8fc 100%);
+      border: 8px solid #fff;
+      border-radius: 34px;
+      box-shadow: 0 18px 34px rgba(14, 29, 62, .16);
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 2px 4px 12px;
+    }
+
+    button {
+      border: 0;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .back {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background: #fff4ee;
+      color: var(--orange);
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .title {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .title small {
+      display: block;
+      color: var(--orange);
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 3px;
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 900;
+    }
+
+    .skill {
+      flex: 0 0 auto;
+      padding: 8px 10px;
+      border: 1px solid rgba(255, 107, 22, .28);
+      border-radius: 999px;
+      background: #fff8f2;
+      color: var(--orange-dark);
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .mission {
+      padding: 14px;
+      border-radius: 24px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .mission-top {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .target-card {
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .target-card strong {
+      display: none;
+    }
+
+    .target-card span {
+      display: inline-block;
+      color: var(--orange-dark);
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 0;
+      white-space: nowrap;
+    }
+
+    .target-card b {
+      display: inline-block;
+      font-size: 19px;
+      line-height: 1.2;
+      word-break: keep-all;
+      white-space: nowrap;
+    }
+
+    .score-card {
+      border-radius: 20px;
+      border: 3px solid #9ee9f2;
+      background: #ecfbff;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #1090bd;
+      font-weight: 900;
+      box-shadow: inset 0 -5px 0 rgba(73, 195, 241, .12);
+    }
+
+    .score-card small {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
+
+    .score-card strong {
+      display: block;
+      font-size: 27px;
+      line-height: 1;
+    }
+
+    .mode-row {
+      margin-top: 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .mode-btn {
+      height: 42px;
+      border-radius: 15px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 900;
+      box-shadow: 0 6px 0 rgba(14, 29, 62, .08);
+    }
+
+    .mode-btn.active {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .stage {
+      margin-top: 10px;
+      padding: 16px 10px 12px;
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 50% 8%, rgba(255,255,255,.46), transparent 34%),
+        linear-gradient(180deg, #f7fbff 0%, #eaf7ff 100%);
+      box-shadow: var(--shadow);
+    }
+
+    .guide {
+      display: none;
+    }
+
+    .boards {
+      display: grid;
+      grid-template-columns: .78fr 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .phone.hard-mode .boards {
+      grid-template-columns: 1fr;
+    }
+
+    .phone.easy-mode .boards {
+      grid-template-columns: 1fr;
+    }
+
+    .phone.hard-mode .preview-wrap,
+    .phone.easy-mode .preview-wrap {
+      display: none;
+    }
+
+    .preview-wrap,
+    .board-wrap {
+      border-radius: 22px;
+      background: rgba(255,255,255,.94);
+      border: 2px solid rgba(14, 29, 62, .06);
+      padding: 45px 18px 55px 18px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.8);
+    }
+
+    .preview-wrap b,
+    .board-wrap b {
+      display: block;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .pattern,
+    .board {
+      --grid: 2;
+      display: grid;
+      grid-template-columns: repeat(var(--grid), 1fr);
+      gap: 5px;
+      aspect-ratio: 1;
+      width: 100%;
+      position: relative;
+    }
+
+    .phone.hard-mode .board,
+    .phone.easy-mode .board {
+      margin: 6px auto 8px;
+      gap: 0;
+      background: #d7d7d7;
+      border: 1px solid #5a5a5a;
+      overflow: visible;
+    }
+
+    .phone.hard-mode .board {
+      width: min(100%, 224px);
+    }
+
+    .phone.easy-mode .board {
+      width: min(100%, 168px);
+    }
+
+    .phone.hard-mode .pattern,
+    .phone.easy-mode .pattern {
+      display: none;
+    }
+
+    .cell,
+    .slot {
+      border-radius: 12px;
+      min-width: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cell {
+      box-shadow: inset 0 -6px 0 rgba(14, 29, 62, .10);
+    }
+
+    .slot {
+      background: #f4f7fb;
+      border: 2px dashed #bfc9d7;
+      display: grid;
+      place-items: center;
+    }
+
+    .slot::after {
+      content: "";
+      position: absolute;
+      inset: 7px;
+      border-radius: 9px;
+      background: rgba(255,255,255,.42);
+    }
+
+    .tile::before,
+    .tile::after,
+    .phone.hard-mode .slot::before,
+    .phone.hard-mode .slot::after,
+    .phone.easy-mode .slot::before,
+    .phone.easy-mode .slot::after {
+      content: "";
+      position: absolute;
+      left: -21%;
+      top: 50%;
+      width: 142%;
+      height: 1px;
+      background: rgba(38, 38, 38, .68);
+      transform: rotate(45deg);
+      transform-origin: center;
+      z-index: 2;
+    }
+
+    .tile::after,
+    .phone.hard-mode .slot::after,
+    .phone.easy-mode .slot::after {
+      transform: rotate(-45deg);
+    }
+
+    .phone.hard-mode .slot,
+    .phone.easy-mode .slot {
+      border: 1px solid #5a5a5a;
+      border-radius: 0;
+      background: #d7d7d7;
+    }
+
+    .phone.hard-mode .slot.filled,
+    .phone.easy-mode .slot.filled {
+      border-color: #505050;
+      box-shadow: none;
+    }
+
+    .phone.hard-mode .slot.filled::before,
+    .phone.hard-mode .slot.filled::after,
+    .phone.easy-mode .slot.filled::before,
+    .phone.easy-mode .slot.filled::after {
+      background: rgba(38, 38, 38, .72);
+    }
+
+    .slot.filled {
+      border-style: solid;
+      border-color: rgba(14, 29, 62, .08);
+      box-shadow: inset 0 -6px 0 rgba(14, 29, 62, .09);
+    }
+
+    .tray {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.92);
+      border: 2px solid rgba(14, 29, 62, .06);
+      display: grid;
+      grid-template-columns: repeat(var(--tray-cols), 1fr);
+      gap: 8px;
+      min-height: 96px;
+    }
+
+    .phone.hard-mode .tray,
+    .phone.easy-mode .tray {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      padding: 6px 4px;
+      background: transparent;
+      border: 0;
+      width: min(100%, 286px);
+      margin-left: auto;
+      margin-right: auto;
+      overflow: hidden;
+    }
+
+    .phone.easy-mode .tray {
+      grid-template-columns: repeat(4, 1fr);
+      width: min(100%, 226px);
+    }
+
+    .piece {
+      min-height: 58px;
+      border-radius: 16px;
+      box-shadow: 0 8px 0 rgba(14, 29, 62, .12), inset 0 -5px 0 rgba(14, 29, 62, .08);
+      border: 3px solid rgba(255,255,255,.86);
+      touch-action: none;
+      position: relative;
+      z-index: 2;
+    }
+
+    .phone.hard-mode .piece,
+    .phone.easy-mode .piece {
+      aspect-ratio: 1;
+      min-height: auto;
+      border-radius: 0;
+      border: 1px solid #5a5a5a;
+      box-shadow: 0 5px 0 rgba(14, 29, 62, .11);
+      overflow: hidden;
+    }
+
+    .piece.dragging {
+      position: fixed;
+      width: 56px;
+      height: 56px;
+      z-index: 50;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(1.04);
+      box-shadow: 0 14px 24px rgba(14, 29, 62, .22);
+    }
+
+    .phone.hard-mode .piece.dragging,
+    .phone.easy-mode .piece.dragging {
+      border-radius: 0;
+    }
+
+    .piece.is-used {
+      opacity: .25;
+      transform: scale(.92);
+      pointer-events: none;
+    }
+
+    .edge-hint {
+      position: absolute;
+      width: var(--edge-width, 33.333%);
+      height: var(--edge-depth, 18.666%);
+      z-index: 0;
+      pointer-events: none;
+      border: 1px solid #5a5a5a;
+    }
+
+    .edge-hint.top {
+      top: calc(var(--edge-depth, 18.666%) * -1);
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    }
+
+    .edge-hint.bottom {
+      bottom: calc(var(--edge-depth, 18.666%) * -1);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+    }
+
+    .edge-hint.left,
+    .edge-hint.right {
+      width: var(--edge-depth, 18.666%);
+      height: var(--edge-width, 33.333%);
+    }
+
+    .edge-hint.left {
+      left: calc(var(--edge-depth, 18.666%) * -1);
+      clip-path: polygon(100% 0, 100% 100%, 0 50%);
+    }
+
+    .edge-hint.right {
+      right: calc(var(--edge-depth, 18.666%) * -1);
+      clip-path: polygon(0 0, 100% 50%, 0 100%);
+    }
+
+    .bottom {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    #checkBtn {
+      display: none;
+    }
+
+    .btn {
+      height: 52px;
+      border-radius: 18px;
+      font-size: 17px;
+      font-weight: 900;
+      box-shadow: 0 8px 0 rgba(14, 29, 62, .12);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,.94);
+      color: var(--ink);
+      border: 1px solid rgba(14, 29, 62, .12);
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      color: #fff;
+    }
+
+    .feedback {
+      margin-top: 6px;
+      min-height: 22px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .feedback.good {
+      color: #15975d;
+    }
+
+    .feedback.bad {
+      color: #e24b4b;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 80;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgba(14, 29, 62, .52);
+      backdrop-filter: blur(5px);
+    }
+
+    .panel {
+      width: min(100%, 340px);
+      padding: 28px 22px 22px;
+      border-radius: 24px;
+      background: #fff;
+      text-align: center;
+      box-shadow: 0 22px 48px rgba(14, 29, 62, .26);
+    }
+
+    .panel h2 {
+      margin: 0 0 10px;
+      font-size: 25px;
+      line-height: 1.18;
+      font-weight: 900;
+    }
+
+    .panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.55;
+    }
+
+    .panel .btn {
+      width: 100%;
+      margin-top: 18px;
+    }
+
+    .hide {
+      display: none;
+    }
+
+    .answer-pop {
+      position: absolute;
+      left: 50%;
+      top: 52%;
+      z-index: 70;
+      transform: translate(-50%, -50%) scale(.94);
+      padding: 16px 26px;
+      border-radius: 999px;
+      background: rgba(255, 107, 22, .96);
+      color: #fff;
+      font-size: 30px;
+      font-weight: 900;
+      box-shadow: 0 16px 28px rgba(255, 107, 22, .24);
+      animation: answerPop .72s ease both;
+      pointer-events: none;
+    }
+
+    @keyframes answerPop {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(.78); }
+      18% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+      100% { opacity: 0; transform: translate(-50%, -54%) scale(1); }
+    }
+
+    @media (max-width: 380px) {
+      .phone {
+        padding-inline: 14px;
+      }
+
+      .boards {
+        gap: 8px;
+      }
+
+      .target-card b {
+        font-size: 17px;
+      }
+
+      .piece {
+        min-height: 52px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .phone {
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="phone" aria-label="놀픽 컬러맞추기 놀이">
+    <header>
+      <button class="back" type="button" onclick="exitToChallenge()" aria-label="방학챌린지로 돌아가기">‹</button>
+      <div class="title">
+        <small>오늘의 미션</small>
+        <h1>컬러맞추기 놀이</h1>
+      </div>
+      <span class="skill">시각탐색 · 보통</span>
+    </header>
+
+    <section class="mission" aria-label="미션 정보">
+      <div class="mission-top">
+        <div class="target-card">
+          <strong id="levelNumber">1</strong>
+          <div>
+            <span id="levelText">이지 모드</span>
+            <b id="missionText">색 조각 4개 맞추기</b>
+          </div>
+        </div>
+      </div>
+      <div class="mode-row" aria-label="난이도 선택">
+        <button class="mode-btn active" type="button" data-mode="easy">이지</button>
+        <button class="mode-btn" type="button" data-mode="hard">하드</button>
+      </div>
+    </section>
+
+    <section class="stage" aria-label="컬러 맞추기 영역">
+      <div class="guide">
+        <span id="guideText">위 색 순서를 보고 아래 칸에 놓아요.</span>
+      </div>
+      <div class="boards">
+        <div class="preview-wrap">
+          <b>예시</b>
+          <div class="pattern" id="pattern"></div>
+        </div>
+        <div class="board-wrap">
+          <div class="board" id="board"></div>
+        </div>
+      </div>
+      <div class="tray" id="tray" aria-label="색 조각"></div>
+      <div class="feedback" id="feedback">조각을 끌어서 같은 위치에 놓아보세요.</div>
+    </section>
+
+    <div class="bottom">
+      <button class="btn btn-secondary" type="button" id="resetBtn">다시</button>
+      <button class="btn btn-primary" type="button" id="checkBtn">확인하기</button>
+    </div>
+    <div class="answer-pop hide" id="answerPop">정답!</div>
+
+    <section class="overlay hide" id="overlay" aria-live="polite">
+      <div class="panel">
+        <h2 id="overlayTitle">컬러맞추기 성공!</h2>
+        <p id="overlayText">색 조각을 잘 보고 맞췄어요.</p>
+        <button class="btn btn-primary" type="button" id="overlayBtn">방학챌린지로</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const colors = {
+      lime: "#99d10b",
+      coral: "#ee8d77",
+      sky: "#8498cf",
+      lemon: "#f4f09a",
+      mint: "#6fcf97",
+      pink: "#f48fb1",
+      orange: "#ff9f43",
+      blue: "#58a6ff",
+      purple: "#a78bfa"
+    };
+
+    const puzzleColors = ["lime", "coral", "sky", "lemon"];
+
+    function pickColor(offset) {
+      return puzzleColors[((offset % puzzleColors.length) + puzzleColors.length) % puzzleColors.length];
+    }
+
+    function makePuzzle(prefix, size, puzzleIndex) {
+      const topEdges = Array.from({ length: size }, (_, col) => pickColor(puzzleIndex + col));
+      const bottomEdges = Array.from({ length: size }, (_, col) => pickColor(puzzleIndex + col + 2));
+      const leftEdges = Array.from({ length: size }, (_, row) => pickColor(puzzleIndex + row + 3));
+      const rightEdges = Array.from({ length: size }, (_, row) => pickColor(puzzleIndex + row + 1));
+      const verticalEdges = Array.from({ length: size - 1 }, (_, row) =>
+        Array.from({ length: size }, (_, col) => pickColor(puzzleIndex + row + col + 1))
+      );
+      const horizontalEdges = Array.from({ length: size }, (_, row) =>
+        Array.from({ length: size - 1 }, (_, col) => pickColor(puzzleIndex + row + col + 2))
+      );
+
+      return Array.from({ length: size * size }, (_, index) => {
+        const row = Math.floor(index / size);
+        const col = index % size;
+        return {
+          id: `${prefix}${puzzleIndex + 1}-${row + 1}-${col + 1}`,
+          top: row === 0 ? topEdges[col] : verticalEdges[row - 1][col],
+          right: col === size - 1 ? rightEdges[row] : horizontalEdges[row][col],
+          bottom: row === size - 1 ? bottomEdges[col] : verticalEdges[row][col],
+          left: col === 0 ? leftEdges[row] : horizontalEdges[row][col - 1]
+        };
+      });
+    }
+
+    const modes = {
+      easy: {
+        label: "이지 모드",
+        mission: "색 조각 4개 맞추기",
+        size: 2,
+        trayCols: 4,
+        puzzles: Array.from({ length: 5 }, (_, index) => makePuzzle("e", 2, index))
+      },
+      hard: {
+        label: "하드 모드",
+        mission: "색 조각 9개 맞추기",
+        size: 3,
+        trayCols: 5,
+        puzzles: Array.from({ length: 5 }, (_, index) => makePuzzle("h", 3, index))
+      }
+    };
+
+    const patternEl = document.getElementById("pattern");
+    const boardEl = document.getElementById("board");
+    const trayEl = document.getElementById("tray");
+    const levelNumberEl = document.getElementById("levelNumber");
+    const levelTextEl = document.getElementById("levelText");
+    const missionTextEl = document.getElementById("missionText");
+    const feedbackEl = document.getElementById("feedback");
+    const overlay = document.getElementById("overlay");
+    const overlayTitle = document.getElementById("overlayTitle");
+    const overlayText = document.getElementById("overlayText");
+    const overlayBtn = document.getElementById("overlayBtn");
+    const answerPop = document.getElementById("answerPop");
+    const resetBtn = document.getElementById("resetBtn");
+    const checkBtn = document.getElementById("checkBtn");
+    const modeButtons = [...document.querySelectorAll(".mode-btn")];
+
+    let mode = "easy";
+    let problemIndex = { easy: 0, hard: 0 };
+    let placed = [];
+    let dragPiece = null;
+    let dragSource = null;
+    let isAdvancing = false;
+
+    function shuffle(values) {
+      return [...values].sort(() => Math.random() - 0.5);
+    }
+
+    function tileBackground(tile) {
+      return `conic-gradient(from 45deg, ${colors[tile.right]} 0 90deg, ${colors[tile.bottom]} 90deg 180deg, ${colors[tile.left]} 180deg 270deg, ${colors[tile.top]} 270deg 360deg)`;
+    }
+
+    function paintTile(el, tile) {
+      el.classList.add("tile");
+      el.style.background = tileBackground(tile);
+    }
+
+    function tilesMatch(a, b) {
+      return a && b
+        && a.id === b.id
+        && a.top === b.top
+        && a.right === b.right
+        && a.bottom === b.bottom
+        && a.left === b.left;
+    }
+
+    function boardEdgesMatch(items) {
+      const cfg = modes[mode];
+      for (let index = 0; index < items.length; index += 1) {
+        const item = items[index];
+        const col = index % cfg.size;
+        const rightItem = col < cfg.size - 1 ? items[index + 1] : null;
+        const bottomItem = index + cfg.size < items.length ? items[index + cfg.size] : null;
+        if (rightItem && item.right !== rightItem.left) return false;
+        if (bottomItem && item.bottom !== bottomItem.top) return false;
+      }
+      return true;
+    }
+
+    function currentPattern() {
+      return modes[mode].puzzles[problemIndex[mode]];
+    }
+
+    function addEdgeHints() {
+      const cfg = modes[mode];
+      const pattern = currentPattern();
+      const edgeWidth = 100 / cfg.size;
+      const edgeDepth = edgeWidth * .56;
+      boardEl.style.setProperty("--edge-width", `${edgeWidth}%`);
+      boardEl.style.setProperty("--edge-depth", `${edgeDepth}%`);
+      const top = pattern.slice(0, cfg.size);
+      const right = Array.from({ length: cfg.size }, (_, index) => pattern[index * cfg.size + cfg.size - 1]);
+      const bottom = pattern.slice(pattern.length - cfg.size);
+      const left = Array.from({ length: cfg.size }, (_, index) => pattern[index * cfg.size]);
+      const hints = [
+        ...top.map((tile, index) => ({ side: "top", index, color: tile.top })),
+        ...right.map((tile, index) => ({ side: "right", index, color: tile.right })),
+        ...bottom.map((tile, index) => ({ side: "bottom", index, color: tile.bottom })),
+        ...left.map((tile, index) => ({ side: "left", index, color: tile.left }))
+      ];
+
+      hints.forEach((hint) => {
+        const el = document.createElement("span");
+        el.className = `edge-hint ${hint.side}`;
+        el.style.setProperty("--edge-width", `${edgeWidth}%`);
+        el.style.setProperty("--edge-depth", `${edgeDepth}%`);
+        el.style.background = colors[hint.color];
+        if (hint.side === "top" || hint.side === "bottom") {
+          el.style.left = `${hint.index * (100 / cfg.size)}%`;
+        } else {
+          el.style.top = `${hint.index * (100 / cfg.size)}%`;
+        }
+        boardEl.appendChild(el);
+      });
+    }
+
+    function render() {
+      const cfg = modes[mode];
+      const pattern = currentPattern();
+      isAdvancing = false;
+      placed = Array(pattern.length).fill(null);
+      document.querySelector(".phone").classList.toggle("hard-mode", mode === "hard");
+      document.querySelector(".phone").classList.toggle("easy-mode", mode === "easy");
+      levelNumberEl.textContent = String(pattern.length);
+      levelTextEl.textContent = `${cfg.label} ${problemIndex[mode] + 1}/5`;
+      missionTextEl.textContent = cfg.mission;
+      patternEl.style.setProperty("--grid", cfg.size);
+      boardEl.style.setProperty("--grid", cfg.size);
+      trayEl.style.setProperty("--tray-cols", cfg.trayCols || cfg.size);
+      patternEl.innerHTML = "";
+      boardEl.innerHTML = "";
+      trayEl.innerHTML = "";
+      feedbackEl.textContent = mode === "hard" ? "아래 9개 조각을 끌어서 큰 판을 완성해요." : "조각을 끌어서 같은 위치에 놓아보세요.";
+      feedbackEl.className = "feedback";
+
+      pattern.forEach((tile) => {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        paintTile(cell, tile);
+        patternEl.appendChild(cell);
+      });
+
+      pattern.forEach((_, index) => {
+        const slot = document.createElement("button");
+        slot.className = "slot";
+        slot.type = "button";
+        slot.dataset.index = index;
+        slot.setAttribute("aria-label", `${index + 1}번 칸`);
+        slot.addEventListener("click", () => removeFromSlot(index));
+        boardEl.appendChild(slot);
+      });
+      addEdgeHints();
+
+      shuffle(pattern).forEach((item) => {
+        const piece = document.createElement("button");
+        piece.className = "piece";
+        piece.type = "button";
+        piece.dataset.id = item.id;
+        piece.dataset.tile = JSON.stringify(item);
+        piece.setAttribute("aria-label", `${item.id} 색 조각`);
+        paintTile(piece, item);
+        piece.addEventListener("pointerdown", startDrag);
+        trayEl.appendChild(piece);
+      });
+    }
+
+    function setMode(nextMode) {
+      mode = nextMode;
+      problemIndex[mode] = 0;
+      modeButtons.forEach((button) => button.classList.toggle("active", button.dataset.mode === mode));
+      overlay.classList.add("hide");
+      render();
+    }
+
+    function startDrag(event) {
+      const piece = event.currentTarget;
+      if (piece.classList.contains("is-used")) return;
+      event.preventDefault();
+      dragSource = piece;
+      dragPiece = piece.cloneNode(true);
+      dragPiece.classList.add("dragging");
+      paintTile(dragPiece, JSON.parse(piece.dataset.tile));
+      document.body.appendChild(dragPiece);
+      moveDrag(event.clientX, event.clientY);
+      window.addEventListener("pointermove", onDragMove);
+      window.addEventListener("pointerup", endDrag, { once: true });
+    }
+
+    function onDragMove(event) {
+      moveDrag(event.clientX, event.clientY);
+    }
+
+    function moveDrag(x, y) {
+      if (!dragPiece) return;
+      dragPiece.style.left = `${x}px`;
+      dragPiece.style.top = `${y}px`;
+    }
+
+    function endDrag(event) {
+      window.removeEventListener("pointermove", onDragMove);
+      const target = document.elementFromPoint(event.clientX, event.clientY);
+      const slot = target && target.closest ? target.closest(".slot") : null;
+      if (slot && dragSource) placePiece(Number(slot.dataset.index), dragSource);
+      if (dragPiece) dragPiece.remove();
+      dragPiece = null;
+      dragSource = null;
+    }
+
+    function placePiece(index, piece) {
+      const previousId = placed[index]?.id;
+      if (previousId) {
+        const previousPiece = trayEl.querySelector(`[data-id="${previousId}"]`);
+        if (previousPiece) previousPiece.classList.remove("is-used");
+      }
+
+      const tile = JSON.parse(piece.dataset.tile);
+      placed[index] = { ...tile };
+      piece.classList.add("is-used");
+      const slot = boardEl.querySelector(`[data-index="${index}"]`);
+      slot.classList.add("filled");
+      paintTile(slot, tile);
+      feedbackEl.textContent = "좋아요. 맞으면 바로 다음 문제로 넘어가요.";
+      feedbackEl.className = "feedback";
+      autoCheckAnswer();
+    }
+
+    function removeFromSlot(index) {
+      const item = placed[index];
+      if (!item) return;
+      const piece = trayEl.querySelector(`[data-id="${item.id}"]`);
+      if (piece) piece.classList.remove("is-used");
+      placed[index] = null;
+      const slot = boardEl.querySelector(`[data-index="${index}"]`);
+      slot.classList.remove("filled");
+      slot.classList.remove("tile");
+      slot.removeAttribute("style");
+    }
+
+    function autoCheckAnswer() {
+      if (isAdvancing || placed.some((item) => !item)) return;
+      window.setTimeout(() => checkAnswer(true), 80);
+    }
+
+    function showAnswerPop() {
+      answerPop.classList.remove("hide");
+      answerPop.style.animation = "none";
+      answerPop.offsetHeight;
+      answerPop.style.animation = "";
+      window.setTimeout(() => answerPop.classList.add("hide"), 720);
+    }
+
+    function checkAnswer(isAuto = false) {
+      const cfg = modes[mode];
+      const pattern = currentPattern();
+      if (placed.some((item) => !item)) {
+        feedbackEl.textContent = "빈칸이 남아 있어요.";
+        feedbackEl.className = "feedback bad";
+        return;
+      }
+
+      const success = placed.every((item, index) => tilesMatch(item, pattern[index])) && boardEdgesMatch(placed);
+      if (!success) {
+        let removedCount = 0;
+        placed.forEach((item, index) => {
+          if (item && !tilesMatch(item, pattern[index])) {
+            removeFromSlot(index);
+            removedCount += 1;
+          }
+        });
+        feedbackEl.textContent = `아쉬워요. 다른 위치의 조각 ${removedCount}개를 다시 놓아보세요.`;
+        feedbackEl.className = "feedback bad";
+        return;
+      }
+
+      isAdvancing = true;
+      feedbackEl.textContent = "정답!";
+      feedbackEl.className = "feedback good";
+      showAnswerPop();
+      window.setTimeout(() => {
+        if (problemIndex[mode] < cfg.puzzles.length - 1) {
+          problemIndex[mode] += 1;
+          render();
+          return;
+        }
+
+      if (mode === "easy") {
+        overlayTitle.textContent = "이지 모드 성공!";
+          overlayText.innerHTML = `이지 모드 5문제를 모두 맞췄어요.<br>하드 모드 9조각에 도전해볼까요?`;
+        overlayBtn.textContent = "하드 모드 도전";
+        overlayBtn.onclick = () => {
+          overlay.classList.add("hide");
+          setMode("hard");
+        };
+      } else {
+        try {
+          if (window.parent && window.parent !== window && typeof window.parent.completeChallengeStep === "function") {
+            window.parent.completeChallengeStep(4);
+          }
+        } catch (error) {}
+        overlayTitle.textContent = "컬러맞추기 성공!";
+          overlayText.innerHTML = `하드 모드 5문제를 모두 맞췄어요.<br>오늘의 컬러 미션을 완성했어요.`;
+        overlayBtn.textContent = "방학챌린지로";
+        overlayBtn.onclick = exitToChallenge;
+      }
+      overlay.classList.remove("hide");
+      }, 760);
+    }
+
+    function exitToChallenge() {
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.prevPage === "function") {
+          window.parent.prevPage(11);
+          return;
+        }
+      } catch (error) {}
+      history.back();
+    }
+
+    modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+    resetBtn.addEventListener("click", render);
+    checkBtn.addEventListener("click", checkAnswer);
+    overlayBtn.onclick = () => overlay.classList.add("hide");
+    render();
+  </script>
+</body>
+</html>
