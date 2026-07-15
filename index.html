@@ -505,10 +505,10 @@
                         <span>3</span>
                         <i></i>
                     </button>
-                    <button type="button" class="road-node gecko-node secret-flower" style="--x:13%; --y:316px;" onclick="openNollpicGeckoGame()" aria-label="5번 길찾기 탈출 놀이 시작">
+                    <div class="road-node locked secret-flower" style="--x:13%; --y:316px;">
                         <span>5</span>
                         <i></i>
-                    </button>
+                    </div>
                     <div class="road-node locked secret-plain" style="--x:50%; --y:316px;">
                         <span>6</span>
                         <i></i>
@@ -694,17 +694,6 @@
             <iframe id="color-match-frame" class="memory-kitchen-frame" src="nollpic-color-match.html?v=20260715-color-corner-fit" title="놀픽 컬러맞추기 놀이 게임"></iframe>
         </div>
 
-        <div id="page-20" class="page memory-kitchen-host-page number-focus-host-page">
-            <header class="memory-kitchen-host-header">
-                <button type="button" class="challenge-sub-back" onclick="prevPage(11)" aria-label="방학챌린지로 돌아가기">‹</button>
-                <div>
-                    <span class="challenge-sub-kicker">오늘의 미션</span>
-                    <h2>길찾기 탈출 놀이</h2>
-                </div>
-            </header>
-            <iframe id="gecko-out-frame" class="memory-kitchen-frame" src="nollpic-gecko-out.html?v=20260715-gecko-out" title="놀픽 길찾기 탈출 놀이 게임"></iframe>
-        </div>
-
     <!-- 하단 고정 메뉴 -->
     <nav class="bottom-tab-nav" aria-label="하단 메뉴">
         <button type="button" class="bottom-tab active" data-tab="home" onclick="goBottomHome()">
@@ -780,14 +769,6 @@
                 frame.setAttribute('src', 'nollpic-color-match.html?v=20260715-color-corner-fit');
             }
             nextPage(19);
-        }
-
-        function openNollpicGeckoGame() {
-            const frame = document.getElementById('gecko-out-frame');
-            if (frame && !frame.getAttribute('src')) {
-                frame.setAttribute('src', 'nollpic-gecko-out.html?v=20260715-gecko-out');
-            }
-            nextPage(20);
         }
 
         window.googleLogin = window.googleLogin || function () {

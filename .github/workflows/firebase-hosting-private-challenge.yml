@@ -1,0 +1,14 @@
+name: Deploy Firebase private challenge channel
+on:
+  workflow_dispatch:
+jobs:
+  deploy_private_challenge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_NOLLPIC }}
+          projectId: nollpic
+          channelId: private-challenge-203736

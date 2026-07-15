@@ -1251,7 +1251,7 @@ function updateBottomNav(pageNumber) {
     if (pageNumber === 5) activeTab = 'home';
     if (pageNumber === 6) activeTab = 'result';
     if ([7, 8, 9, 10, 12].includes(pageNumber)) activeTab = 'play';
-    if ([11, 13, 14, 15, 16, 17, 18, 19, 20].includes(pageNumber)) activeTab = 'challenge';
+    if ([11, 13, 14, 15, 16, 17, 18, 19].includes(pageNumber)) activeTab = 'challenge';
 
     const target = document.querySelector(`.bottom-tab[data-tab="${activeTab}"]`);
     if (target) target.classList.add('active');
@@ -1519,8 +1519,7 @@ function renderChallengeState() {
         const number = getRoadNodeNumber(node);
         const isJengaNode = number === 3 && node.classList.contains('jenga-node');
         const isColorNode = number === 4 && node.classList.contains('color-node');
-        const isGeckoNode = number === 5 && node.classList.contains('gecko-node');
-        const isPlayablePreview = isJengaNode || isColorNode || isGeckoNode;
+        const isPlayablePreview = isJengaNode || isColorNode;
         const isDone = number > 0 && number <= state.completed;
         const isNext = number === state.completed + 1;
 
@@ -1665,7 +1664,6 @@ window.startTestForChild = startTestForChild;
 window.logoutNollpic = logoutNollpic;
 window.goBottomChallenge = goBottomChallenge;
 window.openChallengePanel = openChallengePanel;
-window.completeChallengeStep = completeChallengeStep;
 
 /* ================================================================
    검사결과 page-6 — mypage-result.js 통합
