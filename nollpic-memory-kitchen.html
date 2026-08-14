@@ -478,21 +478,7 @@
       inset: 7px;
       z-index: 0;
       border-radius: 999px;
-      background:
-        radial-gradient(ellipse at 8% 22%, rgba(255,255,255,.96) 0 6px, transparent 7px),
-        radial-gradient(ellipse at 14% 55%, rgba(255,255,255,.82) 0 5px, transparent 6px),
-        radial-gradient(ellipse at 21% 18%, rgba(255,255,255,.92) 0 7px, transparent 8px),
-        radial-gradient(ellipse at 28% 74%, rgba(255,255,255,.9) 0 6px, transparent 7px),
-        radial-gradient(ellipse at 35% 35%, rgba(255,255,255,.86) 0 5px, transparent 6px),
-        radial-gradient(ellipse at 43% 80%, rgba(255,255,255,.88) 0 7px, transparent 8px),
-        radial-gradient(ellipse at 51% 18%, rgba(255,255,255,.94) 0 6px, transparent 7px),
-        radial-gradient(ellipse at 58% 58%, rgba(255,255,255,.86) 0 5px, transparent 6px),
-        radial-gradient(ellipse at 66% 28%, rgba(255,255,255,.92) 0 7px, transparent 8px),
-        radial-gradient(ellipse at 74% 76%, rgba(255,255,255,.88) 0 6px, transparent 7px),
-        radial-gradient(ellipse at 82% 22%, rgba(255,255,255,.9) 0 6px, transparent 7px),
-        radial-gradient(ellipse at 91% 58%, rgba(255,255,255,.84) 0 7px, transparent 8px),
-        repeating-radial-gradient(ellipse at 50% 50%, rgba(255,255,255,.28) 0 2px, transparent 3px 13px),
-        linear-gradient(180deg, #fff9eb 0%, #f5eddb 100%);
+      background: linear-gradient(180deg, #fff9eb 0%, #f5eddb 100%);
       box-shadow:
         inset 0 4px 10px rgba(255,255,255,.68),
         inset 0 -5px 12px rgba(116, 91, 54, .08);
@@ -505,12 +491,7 @@
       z-index: 1;
       border-radius: 999px;
       pointer-events: none;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.18), transparent 42%),
-        radial-gradient(ellipse at 18% 30%, rgba(232,217,188,.48) 0 2px, transparent 3px),
-        radial-gradient(ellipse at 39% 24%, rgba(255,255,255,.76) 0 2px, transparent 3px),
-        radial-gradient(ellipse at 62% 67%, rgba(232,217,188,.48) 0 2px, transparent 3px),
-        radial-gradient(ellipse at 81% 37%, rgba(255,255,255,.76) 0 2px, transparent 3px);
+      background: linear-gradient(180deg, rgba(255,255,255,.12), transparent 42%);
       opacity: .95;
     }
 
@@ -580,7 +561,7 @@
     body[data-theme="gimbap"] .ingredient.ham,
     body[data-theme="gimbap"] .ingredient.carrot,
     body[data-theme="gimbap"] .ingredient.cucumber {
-      background-image: url("gimbap-level2-reference.png");
+      background-image: url("images/gimbap-level2-reference.png");
       background-repeat: no-repeat;
       background-size: 400% 100%;
       background-color: transparent;
@@ -607,7 +588,7 @@
     }
 
     body[data-theme="gimbap"] .ingredient.radish {
-      background-image: url("gimbap-burdock.png");
+      background-image: url("images/gimbap-burdock.png");
       background-repeat: no-repeat;
       background-position: center;
       background-size: 106% 110%;
@@ -621,7 +602,7 @@
     body[data-theme="gimbap"] .gimbap-stack,
     body[data-theme="gimbap"] .slots {
       height: 146px;
-      background: url("gimbap-rice-board.png") center / 100% 100% no-repeat;
+      background: linear-gradient(180deg, #fff9eb 0%, #f5eddb 100%);
       box-shadow:
         0 6px 0 rgba(13, 20, 32, .1),
         0 14px 24px rgba(14, 29, 62, .14);
@@ -738,45 +719,47 @@
     }
 
     body[data-theme="sushi"] .ingredient.salmon {
-      background: url("sushi-salmon.png") center / contain no-repeat;
+      background: url("images/sushi-salmon.png") center / contain no-repeat;
     }
 
     body[data-theme="sushi"] .ingredient.tuna {
-      background: url("sushi-tuna.png") center / contain no-repeat;
+      background: url("images/sushi-salmon.png") center / contain no-repeat;
     }
 
     body[data-theme="sushi"] .ingredient.shrimp {
-      background: url("sushi-shrimp.png") center / contain no-repeat;
+      background: url("images/sushi-shrimp.png") center / contain no-repeat;
       width: 66px;
       height: 66px;
     }
 
     body[data-theme="sushi"] .ingredient.sushi-roe {
-      background: url("sushi-roe.png") center / contain no-repeat;
+      background: url("images/sushi-roe.png") center / contain no-repeat;
       width: 66px;
       height: 66px;
     }
 
     body[data-theme="sushi"] .ingredient.sushi-seaweed {
-      background: url("sushi-seaweed.png") center / contain no-repeat;
+      background: url("images/sushi-roe.png") center / contain no-repeat;
       width: 66px;
       height: 66px;
     }
 
     body[data-theme="sushi"] .ingredient.sushi-white {
-      background: url("sushi-white.png") center / contain no-repeat;
+      background: url("images/sushi-shrimp.png") center / contain no-repeat;
     }
 
     body[data-theme="sushi"] .ingredient.sushi-eel {
-      background: url("sushi-eel.png") center / contain no-repeat;
+      background: url("images/sushi-eel.png") center / contain no-repeat;
     }
 
     body[data-theme="sushi"] .ingredient.sushi-egg {
-      background: url("sushi-egg.png") center / contain no-repeat;
+      background: url("images/sushi-egg.png") center / contain no-repeat;
+      width: 86px;
+      height: 70px;
     }
 
     body[data-theme="sushi"] .ingredient.sushi-pink {
-      background: url("sushi-pink.png") center / contain no-repeat;
+      background: url("images/sushi-salmon.png") center / contain no-repeat;
     }
 
     body[data-theme="sushi"] .slot {
@@ -803,6 +786,11 @@
       height: 38px;
     }
 
+    body[data-theme="sushi"] .ingredient-btn .ingredient.sushi-egg {
+      width: 57px;
+      height: 46px;
+    }
+
     body[data-theme="burger"] .board {
       align-items: start;
       justify-items: center;
@@ -815,16 +803,31 @@
       padding-bottom: 0;
     }
 
+    body[data-theme="burger"] .plate {
+      width: min(320px, 100%);
+      height: 270px;
+      display: grid;
+      place-items: center;
+    }
+
     body[data-theme="burger"] .gimbap-stack,
     body[data-theme="burger"] .slots {
       width: min(320px, 100%);
-      height: 220px;
+      height: 270px;
       border-radius: 28px;
       background:
         radial-gradient(ellipse at 50% 100%, rgba(255, 186, 86, .18), transparent 52%),
         radial-gradient(ellipse at 50% 18%, rgba(255, 255, 255, .98), rgba(255, 255, 255, .5) 50%, transparent 76%),
         linear-gradient(180deg, rgba(255, 249, 239, .92), rgba(255,255,255,.66));
       box-shadow: 0 12px 24px rgba(14, 29, 62, .08);
+    }
+
+    body[data-theme="burger"] .gimbap-stack {
+      margin-inline: auto;
+    }
+
+    body[data-theme="burger"] .timer-chip.stage-timer + .board .gimbap-stack {
+      margin-top: -38px;
     }
 
     body[data-theme="burger"] .example-label {
@@ -854,37 +857,37 @@
     body[data-theme="burger"] .ingredient.bun {
       width: 168px;
       height: 74px;
-      background-image: url("burger-bun.png");
+      background-image: url("images/burger-bun.png");
     }
 
     body[data-theme="burger"] .ingredient.cheese {
       width: 164px;
       height: 72px;
-      background-image: url("burger-cheese.png");
+      background-image: url("images/burger-cheese.png");
     }
 
     body[data-theme="burger"] .ingredient.lettuce {
       width: 142px;
       height: 58px;
-      background-image: url("burger-lettuce.png");
+      background-image: url("images/burger-lettuce.png");
     }
 
     body[data-theme="burger"] .ingredient.patty {
       width: 142px;
       height: 58px;
-      background-image: url("burger-patty.png");
+      background-image: url("images/burger-patty.png");
     }
 
     body[data-theme="burger"] .ingredient.tomato {
       width: 146px;
       height: 82px;
-      background-image: url("burger-tomato.png");
+      background-image: url("images/burger-patty.png");
     }
 
     body[data-theme="burger"] .ingredient.fried-egg {
       width: 168px;
       height: 82px;
-      background-image: url("burger-fried-egg.png");
+      background-image: url("images/burger-fried-egg.png");
     }
 
     body[data-theme="burger"] .ingredient-btn .ingredient {
@@ -1039,21 +1042,7 @@
 
     .slots::before {
       inset: 7px;
-      background:
-        radial-gradient(ellipse at 8% 22%, rgba(255,255,255,.96) 0 6px, transparent 7px),
-        radial-gradient(ellipse at 14% 55%, rgba(255,255,255,.82) 0 5px, transparent 6px),
-        radial-gradient(ellipse at 21% 18%, rgba(255,255,255,.92) 0 7px, transparent 8px),
-        radial-gradient(ellipse at 28% 74%, rgba(255,255,255,.9) 0 6px, transparent 7px),
-        radial-gradient(ellipse at 35% 35%, rgba(255,255,255,.86) 0 5px, transparent 6px),
-        radial-gradient(ellipse at 43% 80%, rgba(255,255,255,.88) 0 7px, transparent 8px),
-        radial-gradient(ellipse at 51% 18%, rgba(255,255,255,.94) 0 6px, transparent 7px),
-        radial-gradient(ellipse at 58% 58%, rgba(255,255,255,.86) 0 5px, transparent 6px),
-        radial-gradient(ellipse at 66% 28%, rgba(255,255,255,.92) 0 7px, transparent 8px),
-        radial-gradient(ellipse at 74% 76%, rgba(255,255,255,.88) 0 6px, transparent 7px),
-        radial-gradient(ellipse at 82% 22%, rgba(255,255,255,.9) 0 6px, transparent 7px),
-        radial-gradient(ellipse at 91% 58%, rgba(255,255,255,.84) 0 7px, transparent 8px),
-        repeating-radial-gradient(ellipse at 50% 50%, rgba(255,255,255,.28) 0 2px, transparent 3px 13px),
-        linear-gradient(180deg, #fff9eb 0%, #f5eddb 100%);
+      background: linear-gradient(180deg, #fff9eb 0%, #f5eddb 100%);
       box-shadow:
         inset 0 4px 10px rgba(255,255,255,.68),
         inset 0 -5px 12px rgba(116, 91, 54, .08);
@@ -1061,12 +1050,7 @@
 
     .slots::after {
       inset: 15px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.18), transparent 42%),
-        radial-gradient(ellipse at 18% 30%, rgba(232,217,188,.48) 0 2px, transparent 3px),
-        radial-gradient(ellipse at 39% 24%, rgba(255,255,255,.76) 0 2px, transparent 3px),
-        radial-gradient(ellipse at 62% 67%, rgba(232,217,188,.48) 0 2px, transparent 3px),
-        radial-gradient(ellipse at 81% 37%, rgba(255,255,255,.76) 0 2px, transparent 3px);
+      background: linear-gradient(180deg, rgba(255,255,255,.12), transparent 42%);
       opacity: .95;
     }
 
@@ -1257,12 +1241,16 @@
 
     .result-card {
       display: none;
+      min-height: 478px;
       padding: 18px;
       text-align: center;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     .result-card h2 {
-      margin-top: 6px;
+      margin-top: 0;
       margin-bottom: 8px;
       color: var(--ink);
       font-size: 28px;
@@ -1271,10 +1259,14 @@
     }
 
     .score-row {
-      display: grid;
+      display: none;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 9px;
       margin: 15px 0;
+    }
+
+    .result-card .mission-sub:empty {
+      display: none;
     }
 
     .score-box {
@@ -1295,6 +1287,76 @@
       color: var(--navy);
       font-size: 18px;
       font-weight: 900;
+    }
+
+    .point-reward-wrap {
+      position: relative;
+      display: none;
+      justify-content: center;
+      margin: 14px 0 4px;
+      min-height: 58px;
+    }
+
+    .point-reward-wrap.show {
+      display: flex;
+    }
+
+    .point-reward-btn {
+      min-height: 54px;
+      width: min(100%, 280px);
+      border-radius: 18px;
+      background: linear-gradient(180deg, #ff8a24, #ff651a);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 900;
+      box-shadow: 0 10px 22px rgba(255, 107, 0, .24);
+    }
+
+    .point-reward-btn.claimed {
+      background: #eef2f7;
+      color: #536079;
+      box-shadow: none;
+    }
+
+    .point-burst {
+      position: absolute;
+      left: 50%;
+      top: 4px;
+      transform: translate(-50%, 0);
+      color: var(--orange);
+      font-size: 26px;
+      font-weight: 900;
+      text-shadow: 0 3px 0 rgba(255,255,255,.95);
+      pointer-events: none;
+      animation: pointBurst 920ms ease-out forwards;
+    }
+
+    .point-coin {
+      position: absolute;
+      left: 50%;
+      top: 16px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 32%, #fff5a8, #ffc53d 58%, #f7931e 100%);
+      transform: translate(-50%, 0);
+      pointer-events: none;
+      animation: pointCoin 880ms ease-out forwards;
+    }
+
+    @keyframes pointBurst {
+      0% { opacity: 0; transform: translate(-50%, 8px) scale(.82); }
+      20% { opacity: 1; transform: translate(-50%, -4px) scale(1.08); }
+      100% { opacity: 0; transform: translate(-50%, -42px) scale(1); }
+    }
+
+    @keyframes pointCoin {
+      0% { opacity: 0; transform: translate(-50%, 8px) scale(.7); }
+      20% { opacity: 1; }
+      100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--dx, 0px)), -54px) scale(1.05) rotate(260deg);
+      }
     }
 
     .level-strip {
@@ -1433,8 +1495,13 @@
       body[data-theme="burger"] .slots,
       body[data-theme="burger"] .gimbap-stack {
         width: min(306px, 100%);
-        height: 220px;
-        flex-basis: 220px;
+        height: 270px;
+        flex-basis: 270px;
+      }
+
+      body[data-theme="burger"] .plate {
+        width: min(306px, 100%);
+        height: 270px;
       }
 
       body[data-theme="burger"] .slot {
@@ -1520,7 +1587,7 @@
             <span class="stage-label" id="missionLabel">5초 동안 기억해요</span>
             <span class="timer-chip" id="timerChip">4</span>
           </div>
-          <p class="mission-text" id="missionText">스시 재료 순서를 잘 봐요.</p>
+          <p class="mission-text" id="missionText">스시 재료 순서를 잘 보세요!</p>
           <p class="mission-sub" id="missionSub">재료가 사라진 뒤 같은 순서로 넣으면 완성됩니다.</p>
         </section>
 
@@ -1551,6 +1618,9 @@
             <div class="score-box"><small>점수</small><strong id="scoreText">100</strong></div>
             <div class="score-box"><small>XP</small><strong>+15</strong></div>
             <div class="score-box"><small>연속</small><strong id="streakText">1</strong></div>
+          </div>
+          <div class="point-reward-wrap" id="pointRewardWrap">
+            <button class="point-reward-btn" type="button" id="pointRewardBtn">오늘의 포인트 받기 200P</button>
           </div>
         </section>
 
@@ -1597,7 +1667,7 @@
         theme: "sushi",
         length: 3,
         rounds: 5,
-        ingredients: ["salmon", "tuna", "shrimp", "sushi-roe", "sushi-seaweed", "sushi-white", "sushi-eel", "sushi-egg", "sushi-pink"],
+        ingredients: ["salmon", "shrimp", "sushi-roe", "sushi-eel", "sushi-egg"],
         tray: "mixed",
         trayCount: 6,
         mission: "그대로 만들어라",
@@ -1725,6 +1795,7 @@
     let selectedIngredient = null;
     let suppressTrayClick = false;
     let draggedSlotIndex = null;
+    let dailyPointClaimed = false;
     let timer = null;
     let tutorialTimers = [];
     const missionSpinMs = 3300;
@@ -1755,6 +1826,8 @@
       resultText: document.getElementById("resultText"),
       scoreText: document.getElementById("scoreText"),
       streakText: document.getElementById("streakText"),
+      pointRewardWrap: document.getElementById("pointRewardWrap"),
+      pointRewardBtn: document.getElementById("pointRewardBtn"),
       resetBtn: document.getElementById("resetBtn"),
       nextBtn: document.getElementById("nextBtn"),
       confetti: document.getElementById("confetti")
@@ -1802,7 +1875,7 @@
       if (mode === "easy") {
         cfg.rounds = isBasicCourse() ? 5 : 3;
         cfg.length = 3;
-        cfg.trayCount = 3;
+        cfg.trayCount = round >= 2 ? 4 : 3;
         cfg.mission = "\uADF8\uB300\uB85C \uB9CC\uB4E4\uC5B4\uB77C";
         cfg.swapRules = null;
         cfg.appliedRules = null;
@@ -1849,6 +1922,10 @@
       }
 
       return cfg;
+    }
+
+    function memoryPromptText() {
+      return `${currentMode().dish} 재료 순서를 잘 보세요!`;
     }
 
     function showSequenceTextForCurrentMode() {
@@ -1909,6 +1986,15 @@
       playTone(783.99, now + 0.25, 0.22, 0.08, "triangle");
     }
 
+    function playPointRewardSound() {
+      const ctx = audioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      playTone(1046.5, now, 0.1, 0.08, "sine");
+      playTone(1318.5, now + 0.09, 0.13, 0.08, "sine");
+      playTone(1760, now + 0.21, 0.2, 0.07, "triangle");
+    }
+
     function setActiveLevelChip() {
       document.querySelectorAll(".level-chip").forEach(chip => {
         chip.textContent = dishName(chip.dataset.mode);
@@ -1929,8 +2015,8 @@
       const workshopDone = round >= currentMode().rounds;
       if (!workshopDone) {
         return {
-          title: `${currentMode().dish} \uC644\uC131!`,
-          text: `${round}\uBC88 \uBB38\uD56D\uC744 \uC798 \uD574\uB0C8\uC5B4\uC694.`
+          title: `${round}\uB2E8\uACC4 ${currentMode().dish} \uC644\uC131!`,
+          text: ""
         };
       }
 
@@ -1978,27 +2064,88 @@
       history.back();
     }
 
+    function goHome() {
+      if (window.parent && window.parent !== window && typeof window.parent.prevPage === "function") {
+        window.parent.prevPage(1);
+        return;
+      }
+      history.back();
+    }
+
+    function isCourseFinalDone() {
+      return phase === "done" && round >= currentMode().rounds && !nextModeKey();
+    }
+
+    function updatePointRewardUi(show = false) {
+      if (!els.pointRewardWrap || !els.pointRewardBtn) return;
+      els.pointRewardWrap.classList.toggle("show", show);
+      els.pointRewardBtn.disabled = dailyPointClaimed;
+      els.pointRewardBtn.classList.toggle("claimed", dailyPointClaimed);
+      els.pointRewardBtn.textContent = dailyPointClaimed ? "200P 받았어요" : "오늘의 포인트 받기 200P";
+    }
+
+    function showPointRewardEffect() {
+      if (!els.pointRewardWrap) return;
+      els.pointRewardWrap.querySelectorAll(".point-burst, .point-coin").forEach(node => node.remove());
+      const burst = document.createElement("span");
+      burst.className = "point-burst";
+      burst.textContent = "+200P";
+      els.pointRewardWrap.appendChild(burst);
+      [-42, -22, 20, 42].forEach((dx, index) => {
+        const coin = document.createElement("span");
+        coin.className = "point-coin";
+        coin.style.setProperty("--dx", `${dx}px`);
+        coin.style.animationDelay = `${index * 45}ms`;
+        els.pointRewardWrap.appendChild(coin);
+      });
+      window.setTimeout(() => {
+        burst.remove();
+        els.pointRewardWrap.querySelectorAll(".point-coin").forEach(node => node.remove());
+      }, 1100);
+    }
+
+    function claimTodayPoint() {
+      if (dailyPointClaimed) return;
+      dailyPointClaimed = true;
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.claimChallengeStepReward === "function") {
+          window.parent.claimChallengeStepReward(1);
+        }
+      } catch (error) {}
+      playPointRewardSound();
+      updatePointRewardUi(true);
+      showPointRewardEffect();
+    }
+
+    function restartFromSushiWorkshop() {
+      mode = "easy";
+      round = 1;
+      dailyPointClaimed = false;
+      setActiveLevelChip();
+      resetGame();
+    }
+
     function layoutFor(count) {
       const cfg = currentMode();
       if (cfg.theme === "burger") {
         const layouts = {
           3: [
-            { x: 50, y: 74 },
-            { x: 50, y: 56 },
-            { x: 50, y: 38 }
+            { x: 50, y: 68 },
+            { x: 50, y: 50 },
+            { x: 50, y: 32 }
           ],
           4: [
-            { x: 50, y: 82 },
-            { x: 50, y: 64 },
-            { x: 50, y: 46 },
-            { x: 50, y: 28 }
+            { x: 50, y: 77 },
+            { x: 50, y: 59 },
+            { x: 50, y: 41 },
+            { x: 50, y: 23 }
           ],
           5: [
-            { x: 50, y: 82 },
-            { x: 50, y: 68 },
-            { x: 50, y: 54 },
-            { x: 50, y: 40 },
-            { x: 50, y: 26 }
+            { x: 50, y: 80 },
+            { x: 50, y: 65 },
+            { x: 50, y: 50 },
+            { x: 50, y: 35 },
+            { x: 50, y: 20 }
           ]
         };
         return layouts[count] || layouts[5];
@@ -2498,6 +2645,9 @@
       if (activeSwapRule?.type === "swap" || (activeSwapRule && Number.isInteger(activeSwapRule.a))) {
         return `${activeSwapRule.a + 1}번과 ${activeSwapRule.b + 1}번을 바꿔라`;
       }
+      if (mode === "easy") {
+        return "\uC608\uC2DC \uC21C\uC11C\uB97C \uC798 \uAE30\uC5B5\uD558\uACE0, \uC21C\uC11C\uB300\uB85C \uC62C\uB824\uBCF4\uC138\uC694.";
+      }
       return currentMode().mission;
     }
 
@@ -2574,7 +2724,7 @@
       els.orderArea.style.display = "none";
       els.timerChip.style.display = "inline-flex";
       els.missionLabel.textContent = memoryStageLabelText();
-      els.missionText.textContent = `${currentMode().dish} 재료 순서를 잘 봐요.`;
+      els.missionText.textContent = memoryPromptText();
       if (showSequenceTextForCurrentMode()) {
         setMissionSubText("글씨와 그림을 함께 보고 재료 순서를 기억해요.");
         setSequenceStrip(true);
@@ -2675,7 +2825,7 @@
       els.stageCard.classList.remove("is-making");
       els.stageCard.style.display = "none";
       setSequenceStrip(false);
-      els.resultCard.style.display = "block";
+      els.resultCard.style.display = "flex";
       const nextMode = round >= currentMode().rounds ? nextModeKey() : null;
       const isFinalMission = round >= currentMode().rounds && !nextMode;
       els.resultTitle.textContent = isFinalMission ? "오늘의 미션끝!" : `${currentMode().dish} 완성!`;
@@ -2692,7 +2842,13 @@
       const copy = resultCopy(nextMode);
       els.resultTitle.textContent = copy.title;
       els.resultText.textContent = copy.text;
-      els.resetBtn.textContent = round >= currentMode().rounds ? "\uC624\uB298\uC740 \uC5EC\uAE30\uAE4C\uC9C0" : "\uB2E4\uC2DC";
+      updatePointRewardUi(isFinalMission);
+      if (isFinalMission) {
+        els.resetBtn.textContent = "다시하기";
+        els.nextBtn.textContent = "오늘은 여기까지";
+      } else {
+        els.resetBtn.textContent = round >= currentMode().rounds ? "\uC624\uB298\uC740 \uC5EC\uAE30\uAE4C\uC9C0" : "\uB2E4\uC2DC";
+      }
       popConfetti();
     }
 
@@ -2722,6 +2878,10 @@
       }
       else if (phase === "mission") showMake();
       else if (phase === "done") {
+        if (isCourseFinalDone()) {
+          goBackToChallenge();
+          return;
+        }
         if (round >= currentMode().rounds) {
           const nextMode = nextModeKey();
           if (!nextMode) {
@@ -2741,6 +2901,10 @@
     }
 
     function secondaryAction() {
+      if (isCourseFinalDone()) {
+        restartFromSushiWorkshop();
+        return;
+      }
       if (phase === "done" && round >= currentMode().rounds) {
         goBackToChallenge();
         return;
@@ -2765,6 +2929,7 @@
       els.stageCard.classList.remove("is-making");
       els.stageCard.style.display = "flex";
       els.resultCard.style.display = "none";
+      updatePointRewardUi(false);
       els.board.style.display = "grid";
       els.board.classList.remove("hidden-mode");
       els.board.classList.add("show-example");
@@ -2776,7 +2941,7 @@
       els.timerChip.style.display = rememberSeconds() > 0 ? "inline-flex" : "none";
       els.timerChip.textContent = String(rememberSeconds());
       els.missionLabel.textContent = memoryStageLabelText();
-      els.missionText.textContent = `${currentMode().dish} 재료 순서를 잘 봐요.`;
+      els.missionText.textContent = memoryPromptText();
       setMissionSubText("재료가 사라진 뒤 같은 순서로 넣으면 완성됩니다.");
       els.nextBtn.disabled = false;
       els.nextBtn.textContent = "시작하기";
@@ -2785,7 +2950,7 @@
       makeSequence();
       renderMemory();
       els.missionLabel.textContent = memoryStageLabelText();
-      els.missionText.textContent = `${currentMode().dish} 재료 순서를 잘 봐요.`;
+      els.missionText.textContent = memoryPromptText();
       els.nextBtn.textContent = "시작하기";
       setReadyTutorialCopy();
       startTutorialDemo();
@@ -2805,6 +2970,7 @@
       els.stageCard.classList.remove("is-making");
       els.stageCard.style.display = "flex";
       els.resultCard.style.display = "none";
+      updatePointRewardUi(false);
       els.board.style.display = "grid";
       els.board.classList.remove("hidden-mode");
       els.board.classList.add("show-example");
@@ -2816,7 +2982,7 @@
       els.timerChip.style.display = rememberSeconds() > 0 ? "inline-flex" : "none";
       els.timerChip.textContent = String(rememberSeconds());
       els.missionLabel.textContent = memoryStageLabelText();
-      els.missionText.textContent = `${currentMode().dish} 재료 순서를 잘 봐요.`;
+      els.missionText.textContent = memoryPromptText();
       setMissionSubText("현재 문항을 다시 시작해요.");
       els.nextBtn.disabled = false;
       els.nextBtn.textContent = "시작하기";
@@ -2825,7 +2991,7 @@
       makeSequence();
       renderMemory();
       els.missionLabel.textContent = memoryStageLabelText();
-      els.missionText.textContent = `${currentMode().dish} 재료 순서를 잘 봐요.`;
+      els.missionText.textContent = memoryPromptText();
       els.nextBtn.textContent = "시작하기";
       setReadyTutorialCopy();
       startTutorialDemo();
@@ -2857,8 +3023,10 @@
 
     els.nextBtn.addEventListener("click", nextAction);
     els.resetBtn.addEventListener("click", secondaryAction);
+    els.pointRewardBtn?.addEventListener("click", claimTodayPoint);
     resetGame();
   </script>
+<script src="challenge-common.js?v=20260811-common2" data-step="1"></script>
 </body>
 </html>
 

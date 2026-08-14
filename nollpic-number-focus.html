@@ -662,6 +662,63 @@
       margin-top: 18px;
     }
 
+    .point-reward-btn {
+      width: 100%;
+      min-height: 52px;
+      margin-top: 16px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #ff8a24, #ff651a);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 900;
+      box-shadow: 0 10px 22px rgba(255, 107, 0, .22);
+    }
+
+    .point-reward-btn.claimed {
+      background: #eef2f7;
+      color: #536079;
+      box-shadow: none;
+    }
+
+    .point-burst,
+    .point-coin {
+      position: absolute;
+      left: 50%;
+      pointer-events: none;
+    }
+
+    .point-burst {
+      top: 50%;
+      z-index: 12;
+      color: var(--orange);
+      font-size: 28px;
+      font-weight: 900;
+      text-shadow: 0 3px 0 rgba(255,255,255,.95);
+      animation: pointBurst 920ms ease-out forwards;
+    }
+
+    .point-coin {
+      top: 52%;
+      z-index: 11;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 32%, #fff5a8, #ffc53d 58%, #f7931e 100%);
+      animation: pointCoin 880ms ease-out forwards;
+    }
+
+    @keyframes pointBurst {
+      0% { opacity: 0; transform: translate(-50%, 8px) scale(.82); }
+      20% { opacity: 1; transform: translate(-50%, -4px) scale(1.08); }
+      100% { opacity: 0; transform: translate(-50%, -48px) scale(1); }
+    }
+
+    @keyframes pointCoin {
+      0% { opacity: 0; transform: translate(-50%, 8px) scale(.7); }
+      20% { opacity: 1; }
+      100% { opacity: 0; transform: translate(calc(-50% + var(--dx, 0px)), -62px) rotate(260deg); }
+    }
+
     .overlay-actions.two-buttons {
       grid-template-columns: 1fr 1fr;
     }
@@ -738,6 +795,7 @@
       <div class="panel">
         <h2 id="overlayTitle">숫자더하기 놀이</h2>
         <p id="overlayText">숫자 공을 골라 목표 합을 만들어요.<br>해파리는 보너스, 문어는 조심해요.</p>
+        <button class="point-reward-btn hide" type="button" id="pointRewardBtn">오늘의 포인트 받기 200P</button>
         <div class="overlay-actions">
           <button class="btn btn-primary" type="button" id="overlayBtn">시작하기</button>
           <button class="btn btn-secondary hide" type="button" id="challengeBtn">조금 어려운 숫자 도전</button>
@@ -765,37 +823,38 @@
     const overlayText = document.getElementById("overlayText");
     const overlayBtn = document.getElementById("overlayBtn");
     const challengeBtn = document.getElementById("challengeBtn");
+    const pointRewardBtn = document.getElementById("pointRewardBtn");
     const overlayActionsEl = document.querySelector(".overlay-actions");
     const jellyfishImage = new Image();
-    jellyfishImage.src = "jellyfish.svg";
+    jellyfishImage.src = "images/해파리.svg";
     const octopusImage = new Image();
-    octopusImage.src = "octopus.svg";
+    octopusImage.src = "images/문어.svg";
 
     const easyLevels = [
-      { target: 5, max: 4, need: 10, time: 0, speed: 0.53, spawn: 1580, initial: 3 },
-      { target: 6, max: 5, need: 10, time: 0, speed: 0.53, spawn: 1580, initial: 3 },
-      { target: 7, max: 6, need: 10, time: 0, speed: 0.53, spawn: 1580, initial: 3 },
-      { target: 8, max: 7, need: 10, time: 0, speed: 0.53, spawn: 1580, initial: 3 },
-      { target: 9, max: 8, need: 10, time: 0, speed: 0.53, spawn: 1580, initial: 4 },
-      { target: 10, max: 9, need: 10, time: 0, speed: 0.53, spawn: 1580, initial: 4 },
-      { target: 11, max: 10, need: 10, time: 0, speed: 0.68, spawn: 1270, initial: 4 },
-      { target: 12, max: 11, need: 10, time: 0, speed: 0.71, spawn: 1220, initial: 4 },
-      { target: 13, max: 12, need: 10, time: 0, speed: 0.74, spawn: 1170, initial: 4 }
+      { target: 5, max: 4, need: 5, time: 0, speed: 0.53, spawn: 1580, initial: 3 },
+      { target: 6, max: 5, need: 5, time: 0, speed: 0.53, spawn: 1580, initial: 3 },
+      { target: 7, max: 6, need: 5, time: 0, speed: 0.53, spawn: 1580, initial: 3 },
+      { target: 8, max: 7, need: 5, time: 0, speed: 0.53, spawn: 1580, initial: 3 },
+      { target: 9, max: 8, need: 5, time: 0, speed: 0.53, spawn: 1580, initial: 4 },
+      { target: 10, max: 9, need: 5, time: 0, speed: 0.53, spawn: 1580, initial: 4 },
+      { target: 11, max: 10, need: 5, time: 0, speed: 0.68, spawn: 1270, initial: 4 },
+      { target: 12, max: 11, need: 5, time: 0, speed: 0.71, spawn: 1220, initial: 4 },
+      { target: 13, max: 12, need: 5, time: 0, speed: 0.74, spawn: 1170, initial: 4 }
     ];
 
     const upperBasicLevels = [
       ...easyLevels,
-      { target: 14, max: 13, need: 10, time: 0, speed: 0.77, spawn: 1120, initial: 4 },
-      { target: 15, max: 14, need: 10, time: 0, speed: 0.80, spawn: 1070, initial: 4 },
-      { target: 16, max: 15, need: 10, time: 0, speed: 0.83, spawn: 1020, initial: 4 }
+      { target: 14, max: 13, need: 5, time: 0, speed: 0.77, spawn: 1120, initial: 4 },
+      { target: 15, max: 14, need: 5, time: 0, speed: 0.80, spawn: 1070, initial: 4 },
+      { target: 16, max: 15, need: 5, time: 0, speed: 0.83, spawn: 1020, initial: 4 }
     ];
 
     const hardLevels = [
-      { target: 17, max: 16, need: 10, time: 0, speed: 0.78, spawn: 1060, initial: 4 },
-      { target: 19, max: 18, need: 10, time: 0, speed: 0.82, spawn: 1010, initial: 4 },
-      { target: 21, max: 20, need: 10, time: 0, speed: 0.86, spawn: 970, initial: 4 },
-      { target: 23, max: 22, need: 10, time: 0, speed: 0.90, spawn: 930, initial: 4 },
-      { target: 25, max: 24, need: 10, time: 0, speed: 0.94, spawn: 900, initial: 4 }
+      { target: 17, max: 16, need: 5, time: 0, speed: 0.78, spawn: 1060, initial: 4 },
+      { target: 19, max: 18, need: 5, time: 0, speed: 0.82, spawn: 1010, initial: 4 },
+      { target: 21, max: 20, need: 5, time: 0, speed: 0.86, spawn: 970, initial: 4 },
+      { target: 23, max: 22, need: 5, time: 0, speed: 0.90, spawn: 930, initial: 4 },
+      { target: 25, max: 24, need: 5, time: 0, speed: 0.94, spawn: 900, initial: 4 }
     ];
 
     let levels = easyLevels;
@@ -810,6 +869,7 @@
     let baseScore = 0;
     let levelStartScore = 0;
     let challengeBestLevel = 0;
+    let pointClaimed = false;
     let cleared = 0;
     let combo = 0;
     let hearts = 3;
@@ -880,6 +940,43 @@
       playTone(1760, 0.19, 0.13, 0.028, "sine", 1560);
     }
 
+    function playPointRewardSound() {
+      playTone(1046.5, 0, 0.1, 0.08, "sine", 1318.5);
+      playTone(1318.5, 0.09, 0.13, 0.08, "sine", 1760);
+      playTone(1760, 0.21, 0.2, 0.07, "triangle", 1560);
+    }
+
+    function showPointRewardEffect() {
+      overlay.querySelectorAll(".point-burst, .point-coin").forEach(node => node.remove());
+      const burst = document.createElement("span");
+      burst.className = "point-burst";
+      burst.textContent = "+200P";
+      overlay.appendChild(burst);
+      [-44, -22, 20, 44].forEach((dx, index) => {
+        const coin = document.createElement("span");
+        coin.className = "point-coin";
+        coin.style.setProperty("--dx", `${dx}px`);
+        coin.style.animationDelay = `${index * 45}ms`;
+        overlay.appendChild(coin);
+      });
+      window.setTimeout(() => overlay.querySelectorAll(".point-burst, .point-coin").forEach(node => node.remove()), 1100);
+    }
+
+    function claimPointReward() {
+      if (pointClaimed) return;
+      pointClaimed = true;
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.claimChallengeStepReward === "function") {
+          window.parent.claimChallengeStepReward(2);
+        }
+      } catch (error) {}
+      pointRewardBtn.textContent = "200P 받았어요";
+      pointRewardBtn.classList.add("claimed");
+      pointRewardBtn.disabled = true;
+      playPointRewardSound();
+      showPointRewardEffect();
+    }
+
     function fitCanvas() {
       const rect = canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
@@ -909,6 +1006,7 @@
     function pickHelpfulNumber() {
       const cfg = levels[level];
       const currentSum = sumSelected();
+      if (currentSum === 0 && Math.random() < .24) return target;
       const complement = target - currentSum;
       if (currentSum > 0 && complement >= 1 && complement <= cfg.max && Math.random() < .7) {
         return complement;
@@ -1017,7 +1115,7 @@
     function spawnCharacter(type, visible = false) {
       const cfg = levels[level];
       const isBonus = type === "jellyfish";
-      const radius = isBonus ? rand(24, 28) : rand(24, 29);
+      const radius = isBonus ? rand(28, 32) : rand(29, 34);
       const visibleY = visible ? rand(156, Math.max(178, Math.min(dangerLineY() - 78, height * .58))) : radius + 8;
       balls.push({
         id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}_${Math.random()}`,
@@ -1084,6 +1182,7 @@
 
     function hasCompletablePair() {
       const values = visibleNumberValues();
+      if (values.includes(target)) return true;
       for (let i = 0; i < values.length; i += 1) {
         for (let j = i + 1; j < values.length; j += 1) {
           if (values[i] + values[j] === target) return true;
@@ -1097,6 +1196,10 @@
     }
 
     function spawnCompletablePair(visible = false) {
+      if (Math.random() < .28) {
+        spawnBall(target, visible);
+        return;
+      }
       const pairs = targetPairs();
       const pair = pairs[Math.floor(Math.random() * pairs.length)];
       pair.forEach(value => spawnBall(value, visible));
@@ -1304,7 +1407,7 @@
       return {
         target: targetValue,
         max: targetValue - 1,
-        need: 10,
+        need: 5,
         time: 0,
         speed: Math.min(1.0, 0.90 + index * 0.03),
         spawn: Math.max(860, 940 - index * 24),
@@ -1368,13 +1471,17 @@
       baseScore = score;
       challengeBestLevel = basicLevelCount;
       overlayTitle.textContent = `${challengeBestLevel}단계 ${baseScore}점 성공!`;
-      overlayText.innerHTML = `오늘의 기본 놀이를 끝까지 해냈어요.<br>더 어려운 단계에 도전해볼까요?`;
-      overlayBtn.textContent = "오늘의 놀이 끝내기";
+      overlayText.innerHTML = `오늘의 기본 놀이를 끝까지 해냈어요.`;
+      pointRewardBtn.classList.remove("hide");
+      pointRewardBtn.textContent = pointClaimed ? "200P 받았어요" : "오늘의 포인트 받기 200P";
+      pointRewardBtn.classList.toggle("claimed", pointClaimed);
+      pointRewardBtn.disabled = pointClaimed;
+      overlayBtn.textContent = "오늘은 여기까지";
       overlayBtn.classList.add("btn-secondary");
       overlayBtn.classList.remove("btn-primary");
       if (challengeBtn) {
-        challengeBtn.textContent = "더 어려운 레벨 도전";
-        challengeBtn.classList.add("btn-accent");
+        challengeBtn.textContent = "다시하기";
+        challengeBtn.classList.remove("btn-accent");
         challengeBtn.classList.remove("hide");
       }
       if (overlayActionsEl) overlayActionsEl.classList.add("two-buttons");
@@ -1384,7 +1491,7 @@
     function checkSelected() {
       const total = sumSelected();
       if (total === target) {
-        if (currentMode !== "hard") score += 10;
+        score += 10;
         combo += 1;
         cleared += 1;
         selected.forEach(removeBall);
@@ -1448,14 +1555,14 @@
       ctx.arc(0, 0, ball.r, 0, Math.PI * 2);
       if (ball.bonus && jellyfishImage.complete && jellyfishImage.naturalWidth > 0) {
         ctx.rotate(Math.sin(ball.y * .02) * .08);
-        const size = ball.r * 2.25;
+        const size = ball.r * 2.35;
         ctx.drawImage(jellyfishImage, -size / 2, -size / 2, size, size);
         ctx.restore();
         return;
       }
       if (ball.bomb && octopusImage.complete && octopusImage.naturalWidth > 0) {
         ctx.rotate(Math.sin(ball.y * .02) * .08);
-        const maxSize = ball.r * 2.45;
+        const maxSize = ball.r * 2.55;
         const ratio = octopusImage.naturalWidth / octopusImage.naturalHeight;
         const drawWidth = ratio >= 1 ? maxSize : maxSize * ratio;
         const drawHeight = ratio >= 1 ? maxSize / ratio : maxSize;
@@ -1633,6 +1740,7 @@
       overlay.classList.add("hide");
       overlayBtn.classList.remove("btn-secondary");
       overlayBtn.classList.add("btn-primary");
+      pointRewardBtn.classList.add("hide");
       if (challengeBtn) {
         challengeBtn.classList.add("hide");
         challengeBtn.classList.remove("btn-accent");
@@ -1660,6 +1768,16 @@
       history.back();
     }
 
+    function goHome() {
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.prevPage === "function") {
+          window.parent.prevPage(1);
+          return;
+        }
+      } catch (error) {}
+      history.back();
+    }
+
     canvas.addEventListener("pointerdown", (event) => {
       const rect = canvas.getBoundingClientRect();
       tapBall(event.clientX - rect.left, event.clientY - rect.top);
@@ -1676,20 +1794,27 @@
     });
     overlayBtn.addEventListener("click", () => {
       playButtonSound();
-      if (finished) exitToChallenge();
+      if (finished) goHome();
       else startGame();
     });
     if (challengeBtn) {
       challengeBtn.addEventListener("click", () => {
         playButtonSound();
-        startChallengeMode();
+        if (finished) {
+          pointClaimed = false;
+          startGame("easy");
+        } else {
+          startChallengeMode();
+        }
       });
     }
+    pointRewardBtn.addEventListener("click", claimPointReward);
 
     window.addEventListener("resize", fitCanvas);
     fitCanvas();
     updateText();
     requestAnimationFrame(tick);
   </script>
+<script src="challenge-common.js?v=20260811-common2" data-step="2"></script>
 </body>
 </html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>놀픽 색깔 블록 연산 놀이</title>
+  <style>
+    :root{--navy:#0e1d3e;--orange:#ff6b16;--red:#ee2442;--blue:#2f73bd;--yellow:#f7cd25;--green:#28aa3b;--orange-block:#f48932}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Pretendard,"Malgun Gothic",sans-serif;color:var(--navy);background:#edf3f9}button{font:inherit}.app{position:relative;width:100%;height:100%;display:flex;flex-direction:column;background:radial-gradient(circle at 10% 18%,#ffe7d8 0 11%,transparent 12%),radial-gradient(circle at 92% 70%,#dff1ff 0 13%,transparent 14%),linear-gradient(180deg,#fff8f5 0 27%,#f2f8ff 64%,#eaf6ff 100%)}
+    header{min-height:76px;display:flex;align-items:center;gap:11px;padding:15px 17px 9px}.back{width:42px;height:42px;border:0;border-radius:15px;background:#fff0e8;color:var(--orange);font-size:29px;font-weight:900;cursor:pointer}.title{flex:1;min-width:0}.title small{color:var(--orange);font-size:12px;font-weight:900}.title h1{margin:2px 0 0;font-size:21px;line-height:1.1;font-weight:950}.badge{padding:8px 9px;border:1px solid #ffbd91;border-radius:999px;color:#ed6413;background:#fff8f3;font-size:10px;font-weight:900;white-space:nowrap}
+    .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:0 17px 9px;padding:6px;border-radius:18px;background:#fff;box-shadow:0 8px 20px rgba(14,29,62,.06)}.tab{height:39px;border:0;border-radius:13px;background:#f0f3f7;color:#7b8493;font-size:13px;font-weight:900;cursor:pointer}.tab.active{color:#fff;background:var(--orange);box-shadow:0 4px 10px rgba(255,107,22,.25)}
+    .mission{margin:0 17px 9px;padding:11px 14px;border-radius:19px;background:#fff;border:2px solid #edf0f4}.mission-top{display:flex;justify-content:space-between;gap:9px}.mission strong{color:var(--orange);font-size:14px;font-weight:950}.mission span{color:#6e7889;font-size:12px;font-weight:850}.rule{margin-top:5px;color:#526077;font-size:11px;font-weight:800}
+    .play{flex:1;min-height:0;margin:0 17px 11px;padding:13px;border-radius:30px;background:linear-gradient(160deg,rgba(255,255,255,.98),rgba(246,251,255,.94));display:flex;flex-direction:column;align-items:center;border:1px solid #fff;box-shadow:0 14px 32px rgba(36,74,112,.12),inset 0 0 0 1px rgba(14,29,62,.03)}
+    .instruction{min-height:44px;width:100%;padding:9px 12px;border-radius:16px;background:#fff1e8;text-align:center;display:flex;align-items:center;justify-content:center;color:#ef6314;font-size:13px;font-weight:950}.equation{width:100%;min-height:205px;display:flex;align-items:center;justify-content:center;gap:7px;margin:10px 0;padding:20px 8px;border-radius:25px;background:linear-gradient(145deg,#f7fbff,#fff7f2);box-shadow:inset 0 0 0 2px #fff,0 8px 22px rgba(14,29,62,.07)}.operator{width:25px;height:25px;flex:0 0 25px;display:grid;place-items:center;border-radius:50%;background:#fff;color:#16233d;font-size:23px;line-height:1;font-weight:950;box-shadow:0 3px 8px rgba(14,29,62,.13)}.matrix{width:82px;height:82px;flex:0 0 82px;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,1fr);border:3px solid #6b7890;border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 7px 13px rgba(14,29,62,.12)}.equation.complex{gap:4px}.equation.complex .matrix{width:64px;height:64px;flex-basis:64px;border-radius:10px}.equation.complex .operator{width:19px;height:19px;flex-basis:19px;font-size:19px;box-shadow:none;background:transparent}.matrix.unknown{border:4px solid #ff5a61;box-shadow:0 0 0 6px #ffe1df,0 9px 18px rgba(238,36,66,.18);animation:breathe 1.5s ease-in-out infinite}.matrix-cell{min-width:0;min-height:0;border:1px solid #a6b0bf;background:#fff;padding:0;transition:transform .14s ease,filter .14s ease}.matrix.unknown .matrix-cell{cursor:pointer}.matrix.unknown .matrix-cell:active{transform:scale(.88)}.matrix-cell.red{background:linear-gradient(145deg,#ff5269,var(--red))}.matrix-cell.blue{background:linear-gradient(145deg,#54a2ee,var(--blue))}.matrix-cell.yellow{background:linear-gradient(145deg,#ffe76c,var(--yellow))}.matrix-cell.green{background:linear-gradient(145deg,#62d66f,var(--green))}.matrix-cell.orange{background:linear-gradient(145deg,#ffb05f,var(--orange-block))}
+    .palette-label{width:100%;margin:2px 0 9px;text-align:center;color:#667085;font-size:12px;font-weight:900}.palette{display:flex;justify-content:center;gap:8px;width:100%}.swatch{position:relative;width:46px;height:55px;border:3px solid #fff;border-radius:16px;background:#fff;cursor:pointer;box-shadow:0 0 0 1px #d8dfe7,0 6px 11px rgba(14,29,62,.11);transition:.15s ease}.swatch span{position:absolute;left:50%;bottom:3px;transform:translateX(-50%);padding:1px 4px;border-radius:7px;background:#ffffffdd;color:#27344d;font-size:8px;font-weight:950;white-space:nowrap}.swatch.selected{box-shadow:0 0 0 3px var(--orange),0 8px 15px rgba(255,107,22,.2);transform:translateY(-4px) scale(1.04)}.swatch.red{background:linear-gradient(#ff5269,var(--red))}.swatch.blue{background:linear-gradient(#54a2ee,var(--blue))}.swatch.yellow{background:linear-gradient(#ffe76c,var(--yellow))}.swatch.green{background:linear-gradient(#62d66f,var(--green))}.swatch.orange{background:linear-gradient(#ffb05f,var(--orange-block))}.swatch.erase{display:grid;place-items:center;color:#7b8493;font-size:21px;font-weight:900;background:#fff}
+    .actions{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:auto;padding-top:13px}.btn{height:49px;border:0;border-radius:16px;font-size:13px;font-weight:950;cursor:pointer}.secondary{color:var(--navy);background:#fff;border:1px solid #dce3ea;box-shadow:0 4px 0 #dce3e9}.hint{color:#9a5a00;background:#fff3ce;box-shadow:0 4px 0 #ebd38e}.feedback{min-height:21px;margin-top:8px;color:#16804b;text-align:center;font-size:12px;font-weight:950}.answer-pop{position:absolute;z-index:20;left:50%;top:50%;transform:translate(-50%,-50%) scale(.7);min-width:190px;padding:25px 22px;border-radius:28px;background:#fff;text-align:center;color:#14955b;font-size:27px;font-weight:950;box-shadow:0 22px 65px rgba(14,29,62,.28),0 0 0 8px rgba(255,255,255,.55);opacity:0;pointer-events:none}.answer-pop.show{animation:answerPop .9s ease both}.answer-pop span{display:block;margin-bottom:5px;font-size:45px}
+    .overlay{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(14,29,62,.35);backdrop-filter:blur(5px)}.overlay.hide{display:none}.panel{width:min(100%,340px);padding:27px 22px 22px;border-radius:28px;background:#fff;text-align:center;box-shadow:0 22px 60px rgba(14,29,62,.24)}.hero{font-size:58px}.panel h2{margin:7px 0 10px;font-size:23px;font-weight:950}.panel p{margin:0 0 18px;color:#667085;font-size:14px;line-height:1.65;font-weight:750}.panel button{width:100%;height:52px;border:0;border-radius:18px;background:var(--orange);color:#fff;font-weight:950;cursor:pointer;box-shadow:0 6px 0 #d95109}.reward{display:none;margin-bottom:10px;height:46px!important;background:#fff3c8!important;color:#9b6500!important;box-shadow:none!important}.reward.show{display:block}
+    @keyframes breathe{50%{box-shadow:0 0 0 9px #ffe1df,0 12px 22px rgba(238,36,66,.22)}}@keyframes answerPop{0%{opacity:0;transform:translate(-50%,-50%) scale(.65)}18%,72%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-55%) scale(.92)}}
+    @media(max-width:370px){.equation{gap:4px}.matrix{width:74px;height:74px;flex-basis:74px}.equation.complex .matrix{width:58px;height:58px;flex-basis:58px}.operator{width:21px;flex-basis:21px}.swatch{width:41px}.actions{gap:7px}.btn{font-size:12px}}
+    @media(max-height:720px){header{min-height:64px;padding-top:8px}.tabs{margin-bottom:6px}.mission{padding:8px 12px;margin-bottom:6px}.play{padding:8px 10px}.equation{min-height:145px;padding:10px 5px;margin:5px 0}.matrix{width:67px;height:67px;flex-basis:67px}.equation.complex .matrix{width:55px;height:55px;flex-basis:55px}.palette-label{margin-bottom:5px}.swatch{width:38px;height:45px}.btn{height:43px}.actions{padding-top:8px}}
+    /* 부드러운 장난감 블록 디자인 */
+    .equation{background:linear-gradient(145deg,#fffaf6,#f5f9ff);box-shadow:inset 0 0 0 1px #f0e8e2,0 10px 25px rgba(28,55,91,.08)}
+    .matrix{gap:4px;padding:5px;border:0;border-radius:20px;background:#eef3f8;box-shadow:0 7px 0 #d8e1eb,0 11px 20px rgba(23,45,78,.13)}
+    .equation.complex .matrix{gap:3px;padding:4px;border-radius:16px}
+    .matrix.unknown{border:0;box-shadow:0 0 0 4px #ff7180,0 7px 0 #ffd0d5,0 12px 21px rgba(238,36,66,.16)}
+    .matrix-cell{border:0;border-radius:9px;background:#fff;box-shadow:inset 0 0 0 1px #dbe3ec,inset 0 -3px 0 rgba(91,111,137,.08);overflow:hidden}
+    .matrix-cell.red{background:linear-gradient(145deg,#ff7081 0 18%,#f43c59 55%,#df2443);box-shadow:inset 0 2px 0 #ffffff70,inset 0 -4px 0 #c91c38}
+    .matrix-cell.blue{background:linear-gradient(145deg,#67b6ff 0 18%,#3988d8 55%,#276bb1);box-shadow:inset 0 2px 0 #ffffff70,inset 0 -4px 0 #205d9e}
+    .matrix-cell.yellow{background:linear-gradient(145deg,#ffeb77 0 18%,#f8cf2e 55%,#e4b60d);box-shadow:inset 0 2px 0 #ffffff80,inset 0 -4px 0 #cda307}
+    .matrix-cell.green{background:linear-gradient(145deg,#76df81 0 18%,#39b84b 55%,#209432);box-shadow:inset 0 2px 0 #ffffff70,inset 0 -4px 0 #197f29}
+    .matrix-cell.orange{background:linear-gradient(145deg,#ffc076 0 18%,#f4923a 55%,#dc6f1f);box-shadow:inset 0 2px 0 #ffffff70,inset 0 -4px 0 #c35d17}
+    .operator{background:#fff;border:1px solid #e4e9ef;color:#233554;box-shadow:0 4px 0 #dfe5ec,0 7px 13px rgba(20,42,73,.12)}
+    .swatch{border:0;border-radius:18px;box-shadow:0 5px 0 #d8e1eb,0 8px 15px rgba(20,42,73,.12)}
+    .swatch.selected{box-shadow:0 0 0 3px #ff6818,0 6px 0 #ffc09a,0 10px 18px rgba(255,104,24,.18)}
+    @keyframes breathe{50%{box-shadow:0 0 0 7px #ffe1e5,0 8px 0 #ffc2ca,0 14px 24px rgba(238,36,66,.18)}}
+    .matrix{gap:2px;padding:3px;border:1px solid #ccd7e4;border-radius:15px;box-shadow:0 3px 0 #e0e6ed}
+    .equation.complex .matrix{gap:2px;padding:3px;border-radius:13px}
+    .matrix.unknown{animation:none;border:2px solid #ff6675;box-shadow:0 3px 0 #ffd5da}
+    .matrix-cell{border:1px solid #d5dee9;border-radius:7px;box-shadow:none}
+    .matrix-cell.red,.matrix-cell.blue,.matrix-cell.yellow,.matrix-cell.green,.matrix-cell.orange{box-shadow:inset 0 1px 0 #ffffff65}
+    .answer-pop{top:48%;min-width:0;padding:10px 18px;border-radius:15px;font-size:16px;box-shadow:0 8px 22px rgba(14,29,62,.18);background:#fff;color:#168552}
+    .answer-pop span{display:none}
+    .answer-pop.show{animation:smallAnswer .7s ease both}
+    @keyframes smallAnswer{0%{opacity:0;transform:translate(-50%,-50%) scale(.92)}20%,75%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-54%) scale(.98)}}
+    .matrix-cell.hint-cell{position:relative;z-index:2;outline:3px solid #ffb51b;outline-offset:-3px}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header><button class="back" type="button" onclick="exitToChallenge()" aria-label="방학챌린지로 돌아가기">‹</button><div class="title"><small>오늘의 미션</small><h1>색깔 블록 연산 놀이</h1></div><span class="badge">문제해결 · 보통</span></header>
+    <nav class="tabs" aria-label="난이도 선택"><button class="tab active" type="button" data-level="1">난이도 1</button><button class="tab" type="button" data-level="2">난이도 2</button><button class="tab" type="button" data-level="3">난이도 3</button></nav>
+    <section class="mission"><div class="mission-top"><strong id="levelTitle">색 블록 더하기</strong><span id="progress">1/5 문제</span></div><div class="rule" id="rule">+는 색을 놓아요. 결과와 똑같이 만들어보세요.</div></section>
+    <section class="play">
+      <div class="instruction" id="instruction">빨간 테두리 판을 완성하세요.</div>
+      <div class="equation" id="equation"></div>
+      <div class="palette-label">색을 고른 뒤 빨간 테두리 판의 칸을 눌러요.</div>
+      <div class="palette" id="palette"></div>
+      <div class="actions"><button class="btn secondary" type="button" id="resetBtn">↻ 다시 만들기</button><button class="btn hint" type="button" id="hintBtn">💡 한 칸 힌트</button></div>
+      <div class="feedback" id="feedback"></div>
+    </section>
+    <section class="overlay" id="overlay"><div class="panel"><div class="hero" id="overlayHero">🎨</div><h2 id="overlayTitle">색깔 블록을 더하고 빼요!</h2><p id="overlayText">+는 색깔 블록을 놓고,<br>−는 같은 위치의 색깔 블록을 빼요.<br>빨간 테두리 판을 완성해보세요.</p><button class="reward" type="button" id="rewardBtn">오늘의 포인트 받기 200P</button><button type="button" id="overlayBtn">놀이 시작</button></div></section>
+    <div class="answer-pop" id="answerPop"><span>🎉</span>정답!</div>
+  </main>
+  <script>
+    const colorSets={1:["red","blue"],2:["red","blue","yellow","green"],3:["red","blue","yellow","green","orange"]};
+    const titles={1:"색 블록 더하기",2:"색 블록 더하고 빼기",3:"빈 판 위치 찾기"};
+    const rules={1:"+는 빈칸에 색을 놓아요.",2:"+로 놓고 −로 같은 위치의 색을 빼요.",3:"빨간 테두리 판의 위치가 문제마다 달라져요."};
+    const equation=document.getElementById("equation"),palette=document.getElementById("palette"),levelTitle=document.getElementById("levelTitle"),progress=document.getElementById("progress"),rule=document.getElementById("rule"),feedback=document.getElementById("feedback"),answerPop=document.getElementById("answerPop"),overlay=document.getElementById("overlay"),overlayHero=document.getElementById("overlayHero"),overlayTitle=document.getElementById("overlayTitle"),overlayText=document.getElementById("overlayText"),overlayBtn=document.getElementById("overlayBtn"),rewardBtn=document.getElementById("rewardBtn"),tabs=[...document.querySelectorAll(".tab")];
+    let level=1,problemIndex=0,problems={},problem=null,user=["","","",""],selected="red",completedLevels=new Set(),pointClaimed=false,solved=false,advanceTimer=0;
+
+    function shuffle(values){const copy=[...values];for(let i=copy.length-1;i>0;i-=1){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]]}return copy}
+    function blank(){return ["","","",""]}
+    function pickColor(colors){return colors[Math.floor(Math.random()*colors.length)]}
+    function occupied(grid){return grid.map((value,index)=>value?index:-1).filter(index=>index>=0)}
+    function makeGrid(colors,count,blocked=[]){const grid=blank(),spots=shuffle([0,1,2,3].filter(index=>!blocked.includes(index))).slice(0,count);spots.forEach(index=>grid[index]=pickColor(colors));return grid}
+    function combine(a,b){return a.map((value,index)=>b[index]||value)}
+    function subtract(source,minus){return source.map((value,index)=>minus[index]?"":value)}
+    function problemColors(){if(!problem)return colorSets[level];const used=new Set([...problem.terms.flat(),...problem.result].filter(Boolean));return colorSets[level].filter(color=>used.has(color))}
+
+    function generate(levelNumber){
+      const colors=colorSets[levelNumber];
+      if(levelNumber===1){const a=makeGrid(colors,1),b=makeGrid(colors,Math.random()<.5?1:2,occupied(a)),d=combine(a,b);return {terms:[a,b],ops:["+"],result:d,missing:1,answer:b}}
+      if(levelNumber===2){const a=makeGrid(colors,2),b=makeGrid(colors,Math.random()<.5?1:2,occupied(a)),combined=combine(a,b),minusIndex=shuffle(occupied(combined)).slice(0,1),c=blank();minusIndex.forEach(index=>c[index]=combined[index]);const d=subtract(combined,c);return {terms:[a,b,c],ops:["+","−"],result:d,missing:1,answer:b}}
+      const a=makeGrid(colors,2),b=makeGrid(colors,2,occupied(a)),combined=combine(a,b),removeCount=Math.random()<.55?2:1,minusIndex=shuffle(occupied(combined)).slice(0,removeCount),c=blank();minusIndex.forEach(index=>c[index]=combined[index]);const d=subtract(combined,c),missing=Math.random()<.72?1:2;return {terms:[a,b,c],ops:["+","−"],result:d,missing,answer:[a,b,c][missing]};
+    }
+
+    function makeFive(levelNumber){const result=[],keys=new Set();while(result.length<5){const item=generate(levelNumber),key=JSON.stringify(item);if(!keys.has(key)){keys.add(key);result.push(item)}}return result}
+    function matrixHtml(values,unknown=false){return `<div class="matrix ${unknown?'unknown':''}">${values.map((value,index)=>`<button type="button" class="matrix-cell ${value}" data-index="${index}" ${unknown?'':'disabled'}></button>`).join("")}</div>`}
+    function renderEquation(){let html="";equation.classList.toggle("complex",problem.terms.length>2);problem.terms.forEach((term,index)=>{html+=matrixHtml(index===problem.missing?user:term,index===problem.missing);if(index<problem.ops.length)html+=`<span class="operator">${problem.ops[index]}</span>`});html+='<span class="operator">=</span>'+matrixHtml(problem.result,false);equation.innerHTML=html;equation.querySelectorAll(".matrix.unknown .matrix-cell").forEach(cell=>cell.addEventListener("click",()=>paintCell(Number(cell.dataset.index))))}
+    function renderPalette(){const labels={red:"빨강",blue:"파랑",yellow:"노랑",green:"초록",orange:"주황"};palette.innerHTML=problemColors().map(color=>`<button type="button" class="swatch ${color} ${selected===color?'selected':''}" data-color="${color}" aria-label="${labels[color]}"><span>${labels[color]}</span></button>`).join("")+'<button type="button" class="swatch erase '+(selected===''?'selected':'')+'" data-color="" aria-label="지우기">×<span>지우기</span></button>';palette.querySelectorAll(".swatch").forEach(button=>button.addEventListener("click",()=>{selected=button.dataset.color;renderPalette()}))}
+    function paintCell(index){if(solved)return;user[index]=user[index]===selected?"":selected;renderEquation();checkAutomatically()}
+    function startProblem(){window.clearTimeout(advanceTimer);if(!problems[level])problems[level]=makeFive(level);problem=problems[level][problemIndex];user=blank();selected=problemColors()[0]||colorSets[level][0];solved=false;levelTitle.textContent=titles[level];progress.textContent=`${problemIndex+1}/5 문제`;rule.textContent=rules[level];feedback.textContent="";answerPop.classList.remove("show");renderPalette();renderEquation();tabs.forEach(tab=>tab.classList.toggle("active",Number(tab.dataset.level)===level))}
+    function reset(){user=blank();feedback.textContent="";renderEquation()}
+    function hint(){if(solved)return;const emptyIndex=problem.answer.findIndex((value,index)=>value!==user[index]);if(emptyIndex<0){feedback.textContent="색과 위치를 다시 살펴보세요.";return}const names={red:"빨강",blue:"파랑",yellow:"노랑",green:"초록",orange:"주황","":"빈칸"},answer=problem.answer[emptyIndex];feedback.textContent=`${emptyIndex+1}번 칸은 ${names[answer]}이에요.`;renderEquation();const cell=equation.querySelector(`.matrix.unknown .matrix-cell[data-index="${emptyIndex}"]`);cell?.classList.add("hint-cell")}
+    function checkAutomatically(){const correct=user.every((value,index)=>value===problem.answer[index]);if(!correct)return;solved=true;feedback.textContent="";answerPop.classList.remove("show");void answerPop.offsetWidth;answerPop.classList.add("show");advanceTimer=window.setTimeout(nextProblem,900)}
+    function nextProblem(){if(problemIndex<4){problemIndex+=1;startProblem();return}completedLevels.add(level);if(completedLevels.size===3){finishGame();return}const next=level<3?level+1:[1,2,3].find(value=>!completedLevels.has(value));overlayHero.textContent="✨";overlayTitle.textContent=`난이도 ${level} 완료!`;overlayText.innerHTML="무작위 색 연산 5문제를 모두 풀었어요.<br>다음 단계에서는 규칙이 조금 더 어려워져요.";overlayBtn.textContent=`난이도 ${next} 시작`;overlayBtn.onclick=()=>{overlay.classList.add("hide");selectLevel(next)};overlay.classList.remove("hide")}
+    function selectLevel(next){level=Number(next);problemIndex=0;startProblem()}
+    function finishGame(){try{if(window.parent&&window.parent!==window&&typeof window.parent.completeChallengeStep==="function")window.parent.completeChallengeStep(7)}catch(error){}overlayHero.textContent="🎉";overlayTitle.textContent="색깔 블록 연산 완료!";overlayText.innerHTML="색을 더하고 빼서 모든 판을 완성했어요.<br>복잡한 색 위치도 정확하게 해결했어요.";rewardBtn.classList.add("show");overlayBtn.textContent="챌린지로 돌아가기";overlayBtn.onclick=exitToChallenge;overlay.classList.remove("hide")}
+    function claimReward(){if(pointClaimed)return;pointClaimed=true;try{if(window.parent&&window.parent!==window&&typeof window.parent.claimChallengeStepReward==="function")window.parent.claimChallengeStepReward(7)}catch(error){}rewardBtn.textContent="200P 받았어요";rewardBtn.disabled=true}
+    function startGame(){problems={1:makeFive(1),2:makeFive(2),3:makeFive(3)};completedLevels=new Set();overlay.classList.add("hide");selectLevel(1)}
+    function exitToChallenge(){try{if(window.parent&&window.parent!==window&&typeof window.parent.prevPage==="function"){window.parent.prevPage(11);return}}catch(error){}window.history.back()}
+    document.getElementById("resetBtn").addEventListener("click",reset);document.getElementById("hintBtn").addEventListener("click",hint);tabs.forEach(tab=>tab.addEventListener("click",()=>selectLevel(tab.dataset.level)));overlayBtn.onclick=startGame;rewardBtn.addEventListener("click",claimReward);renderPalette();
+  </script>
+<script src="challenge-common.js?v=20260811-common2" data-step="7"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>놀픽 컬러맞추기 놀이</title>
+  <title>놀픽 색 조각 맞추기</title>
   <style>
     @font-face {
       font-family: "Pretendard";
@@ -46,30 +46,42 @@
     body {
       margin: 0;
       width: 100%;
-      min-height: 100dvh;
+      height: 100dvh;
+      overflow: hidden;
       font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
       color: var(--ink);
       background: #eef3f8;
       display: grid;
       place-items: center;
       user-select: none;
-      touch-action: none;
+      touch-action: pan-y;
     }
 
     .phone {
       position: relative;
       width: 100%;
       max-width: 420px;
+      height: 100dvh;
       min-height: 100dvh;
-      padding: 16px 18px 18px;
-      overflow: hidden;
+      padding: 16px 18px 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior-y: contain;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: #ffb27e transparent;
+      background-clip: padding-box;
       background:
         radial-gradient(circle at 16% 8%, rgba(255, 107, 22, .10), transparent 26%),
         linear-gradient(180deg, #fffafa 0%, #ffffff 46%, #eef8fc 100%);
-      border: 8px solid #fff;
-      border-radius: 34px;
-      box-shadow: 0 18px 34px rgba(14, 29, 62, .16);
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
     }
+
+    .phone::-webkit-scrollbar { width: 6px; }
+    .phone::-webkit-scrollbar-track { background: transparent; }
+    .phone::-webkit-scrollbar-thumb { background: #ffb27e; border-radius: 999px; }
 
     header {
       display: flex;
@@ -150,7 +162,7 @@
       background: transparent;
       display: flex;
       align-items: baseline;
-      gap: 8px;
+      gap: 14px;
       min-width: 0;
     }
 
@@ -173,6 +185,7 @@
       line-height: 1.2;
       word-break: keep-all;
       white-space: nowrap;
+      padding-left: 4px;
     }
 
     .score-card {
@@ -213,6 +226,7 @@
       color: var(--muted);
       font-size: 14px;
       font-weight: 900;
+      border: 1px solid #c7c7c7;
       box-shadow: 0 6px 0 rgba(14, 29, 62, .08);
     }
 
@@ -397,7 +411,7 @@
 
     .phone.hard-mode .tray,
     .phone.easy-mode .tray {
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(var(--tray-cols), 1fr);
       gap: 5px;
       padding: 6px 4px;
       background: transparent;
@@ -406,6 +420,10 @@
       margin-left: auto;
       margin-right: auto;
       overflow: hidden;
+    }
+
+    .phone.hard-mode .tray {
+      width: min(100%, 316px);
     }
 
     .phone.easy-mode .tray {
@@ -576,6 +594,88 @@
       margin-top: 18px;
     }
 
+    .point-reward-btn {
+      width: 100%;
+      min-height: 52px;
+      margin-top: 16px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #ff8a24, #ff651a);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 900;
+      box-shadow: 0 10px 22px rgba(255, 107, 0, .22);
+    }
+
+    .challenge-home-btn {
+      width: 100%;
+      min-height: 50px;
+      margin-top: 16px;
+      border: 2px solid #ffd2b7;
+      border-radius: 18px;
+      background: #fff6ef;
+      color: var(--orange-dark);
+      font-size: 15px;
+      font-weight: 900;
+      box-shadow: 0 5px 0 #f1d7c8;
+    }
+
+    .point-reward-btn.claimed {
+      background: #eef2f7;
+      color: #536079;
+      box-shadow: none;
+    }
+
+    .overlay-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .overlay-actions .btn {
+      margin-top: 0;
+      font-size: 15px;
+    }
+
+    .point-burst,
+    .point-coin {
+      position: absolute;
+      left: 50%;
+      pointer-events: none;
+    }
+
+    .point-burst {
+      top: 50%;
+      z-index: 90;
+      color: var(--orange);
+      font-size: 28px;
+      font-weight: 900;
+      text-shadow: 0 3px 0 rgba(255,255,255,.95);
+      animation: pointBurst 920ms ease-out forwards;
+    }
+
+    .point-coin {
+      top: 52%;
+      z-index: 89;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 32%, #fff5a8, #ffc53d 58%, #f7931e 100%);
+      animation: pointCoin 880ms ease-out forwards;
+    }
+
+    @keyframes pointBurst {
+      0% { opacity: 0; transform: translate(-50%, 8px) scale(.82); }
+      20% { opacity: 1; transform: translate(-50%, -4px) scale(1.08); }
+      100% { opacity: 0; transform: translate(-50%, -48px) scale(1); }
+    }
+
+    @keyframes pointCoin {
+      0% { opacity: 0; transform: translate(-50%, 8px) scale(.7); }
+      20% { opacity: 1; }
+      100% { opacity: 0; transform: translate(calc(-50% + var(--dx, 0px)), -62px) rotate(260deg); }
+    }
+
     .hide {
       display: none;
     }
@@ -629,12 +729,12 @@
   </style>
 </head>
 <body>
-  <main class="phone" aria-label="놀픽 컬러맞추기 놀이">
+  <main class="phone" aria-label="놀픽 색 조각 맞추기">
     <header>
       <button class="back" type="button" onclick="exitToChallenge()" aria-label="방학챌린지로 돌아가기">‹</button>
       <div class="title">
         <small>오늘의 미션</small>
-        <h1>컬러맞추기 놀이</h1>
+        <h1>색 조각 맞추기</h1>
       </div>
       <span class="skill">시각탐색 · 보통</span>
     </header>
@@ -655,7 +755,7 @@
       </div>
     </section>
 
-    <section class="stage" aria-label="컬러 맞추기 영역">
+    <section class="stage" aria-label="색 조각 맞추기 영역">
       <div class="guide">
         <span id="guideText">위 색 순서를 보고 아래 칸에 놓아요.</span>
       </div>
@@ -680,9 +780,15 @@
 
     <section class="overlay hide" id="overlay" aria-live="polite">
       <div class="panel">
-        <h2 id="overlayTitle">컬러맞추기 성공!</h2>
+        <h2 id="overlayTitle">색 조각 맞추기 성공!</h2>
         <p id="overlayText">색 조각을 잘 보고 맞췄어요.</p>
-        <button class="btn btn-primary" type="button" id="overlayBtn">방학챌린지로</button>
+        <button class="challenge-home-btn hide" type="button" id="challengeHomeBtn">오늘은 여기까지</button>
+        <button class="point-reward-btn hide" type="button" id="pointRewardBtn">오늘의 포인트 받기 200P</button>
+        <div class="overlay-actions">
+          <button class="btn btn-secondary" type="button" id="retryBtn">다시하기</button>
+          <button class="btn btn-secondary hide" type="button" id="easyExitBtn">오늘은 여기까지</button>
+          <button class="btn btn-primary" type="button" id="overlayBtn">오늘은 여기까지</button>
+        </div>
       </div>
     </section>
   </main>
@@ -731,6 +837,32 @@
       });
     }
 
+    function tileSignature(tile) {
+      return [tile.top, tile.right, tile.bottom, tile.left].join("|");
+    }
+
+    function makeDistractorPieces(pattern, puzzleIndex, count = 3) {
+      const used = new Set(pattern.map(tileSignature));
+      const pieces = [];
+      let offset = 0;
+      while (pieces.length < count && offset < 30) {
+        const candidate = {
+          id: `d${puzzleIndex + 1}-${pieces.length + 1}`,
+          top: pickColor(puzzleIndex + offset + 1),
+          right: pickColor(puzzleIndex + offset + 3),
+          bottom: pickColor(puzzleIndex + offset + 2),
+          left: pickColor(puzzleIndex + offset + 5)
+        };
+        const signature = tileSignature(candidate);
+        if (!used.has(signature)) {
+          used.add(signature);
+          pieces.push(candidate);
+        }
+        offset += 1;
+      }
+      return pieces;
+    }
+
     const modes = {
       easy: {
         label: "이지 모드",
@@ -744,7 +876,9 @@
         mission: "색 조각 9개 맞추기",
         size: 3,
         trayCols: 5,
-        puzzles: Array.from({ length: 5 }, (_, index) => makePuzzle("h", 3, index))
+        distractors: 6,
+        hintLevel: "full",
+        puzzles: Array.from({ length: 3 }, (_, index) => makePuzzle("h", 3, index))
       }
     };
 
@@ -759,6 +893,10 @@
     const overlayTitle = document.getElementById("overlayTitle");
     const overlayText = document.getElementById("overlayText");
     const overlayBtn = document.getElementById("overlayBtn");
+    const retryBtn = document.getElementById("retryBtn");
+    const easyExitBtn = document.getElementById("easyExitBtn");
+    const challengeHomeBtn = document.getElementById("challengeHomeBtn");
+    const pointRewardBtn = document.getElementById("pointRewardBtn");
     const answerPop = document.getElementById("answerPop");
     const resetBtn = document.getElementById("resetBtn");
     const checkBtn = document.getElementById("checkBtn");
@@ -770,9 +908,74 @@
     let dragPiece = null;
     let dragSource = null;
     let isAdvancing = false;
+    let pointClaimed = false;
 
     function shuffle(values) {
       return [...values].sort(() => Math.random() - 0.5);
+    }
+
+    function audioContext() {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return null;
+      if (!window.nollpicAudioContext) window.nollpicAudioContext = new AudioContext();
+      if (window.nollpicAudioContext.state === "suspended") window.nollpicAudioContext.resume();
+      return window.nollpicAudioContext;
+    }
+
+    function playTone(frequency, startAt, duration, gainValue = 0.08, type = "sine") {
+      const ctx = audioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(frequency, startAt);
+      gain.gain.setValueAtTime(0.0001, startAt);
+      gain.gain.exponentialRampToValueAtTime(gainValue, startAt + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(startAt);
+      osc.stop(startAt + duration + 0.02);
+    }
+
+    function playPointRewardSound() {
+      const ctx = audioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      playTone(1046.5, now, 0.1, 0.08);
+      playTone(1318.5, now + 0.09, 0.13, 0.08);
+      playTone(1760, now + 0.21, 0.2, 0.07, "triangle");
+    }
+
+    function showPointRewardEffect() {
+      overlay.querySelectorAll(".point-burst, .point-coin").forEach(node => node.remove());
+      const burst = document.createElement("span");
+      burst.className = "point-burst";
+      burst.textContent = "+200P";
+      overlay.appendChild(burst);
+      [-44, -22, 20, 44].forEach((dx, index) => {
+        const coin = document.createElement("span");
+        coin.className = "point-coin";
+        coin.style.setProperty("--dx", `${dx}px`);
+        coin.style.animationDelay = `${index * 45}ms`;
+        overlay.appendChild(coin);
+      });
+      window.setTimeout(() => overlay.querySelectorAll(".point-burst, .point-coin").forEach(node => node.remove()), 1100);
+    }
+
+    function claimPointReward() {
+      if (pointClaimed) return;
+      pointClaimed = true;
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.claimChallengeStepReward === "function") {
+          window.parent.claimChallengeStepReward(4);
+        }
+      } catch (error) {}
+      pointRewardBtn.textContent = "200P 받았어요";
+      pointRewardBtn.classList.add("claimed");
+      pointRewardBtn.disabled = true;
+      playPointRewardSound();
+      showPointRewardEffect();
     }
 
     function tileBackground(tile) {
@@ -810,6 +1013,19 @@
       return modes[mode].puzzles[problemIndex[mode]];
     }
 
+    function currentTrayPieces() {
+      const pattern = currentPattern();
+      const cfg = modes[mode];
+      if (!cfg.distractors) return pattern;
+      return [...pattern, ...makeDistractorPieces(pattern, problemIndex[mode], cfg.distractors)];
+    }
+
+    function shouldShowEdgeHint(hint, hintOrder) {
+      const cfg = modes[mode];
+      if (cfg.hintLevel !== "partial") return true;
+      return (hint.index + hintOrder + problemIndex[mode]) % 2 === 0;
+    }
+
     function addEdgeHints() {
       const cfg = modes[mode];
       const pattern = currentPattern();
@@ -828,7 +1044,8 @@
         ...left.map((tile, index) => ({ side: "left", index, color: tile.left }))
       ];
 
-      hints.forEach((hint) => {
+      hints.forEach((hint, hintOrder) => {
+        if (!shouldShowEdgeHint(hint, hintOrder)) return;
         const el = document.createElement("span");
         el.className = `edge-hint ${hint.side}`;
         el.style.setProperty("--edge-width", `${edgeWidth}%`);
@@ -851,7 +1068,7 @@
       document.querySelector(".phone").classList.toggle("hard-mode", mode === "hard");
       document.querySelector(".phone").classList.toggle("easy-mode", mode === "easy");
       levelNumberEl.textContent = String(pattern.length);
-      levelTextEl.textContent = `${cfg.label} ${problemIndex[mode] + 1}/5`;
+      levelTextEl.textContent = `${cfg.label} ${problemIndex[mode] + 1}/${cfg.puzzles.length}`;
       missionTextEl.textContent = cfg.mission;
       patternEl.style.setProperty("--grid", cfg.size);
       boardEl.style.setProperty("--grid", cfg.size);
@@ -859,7 +1076,7 @@
       patternEl.innerHTML = "";
       boardEl.innerHTML = "";
       trayEl.innerHTML = "";
-      feedbackEl.textContent = mode === "hard" ? "아래 9개 조각을 끌어서 큰 판을 완성해요." : "조각을 끌어서 같은 위치에 놓아보세요.";
+      feedbackEl.textContent = mode === "hard" ? "방해 조각을 피해 정답 9개로 큰 판을 완성해요." : "조각을 끌어서 같은 위치에 놓아보세요.";
       feedbackEl.className = "feedback";
 
       pattern.forEach((tile) => {
@@ -880,7 +1097,7 @@
       });
       addEdgeHints();
 
-      shuffle(pattern).forEach((item) => {
+      shuffle(currentTrayPieces()).forEach((item) => {
         const piece = document.createElement("button");
         piece.className = "piece";
         piece.type = "button";
@@ -896,6 +1113,7 @@
     function setMode(nextMode) {
       mode = nextMode;
       problemIndex[mode] = 0;
+      pointClaimed = false;
       modeButtons.forEach((button) => button.classList.toggle("active", button.dataset.mode === mode));
       overlay.classList.add("hide");
       render();
@@ -1013,9 +1231,20 @@
         }
 
       if (mode === "easy") {
+        try {
+          if (window.parent && window.parent !== window && typeof window.parent.completeChallengeStep === "function") {
+            window.parent.completeChallengeStep(4);
+          }
+        } catch (error) {}
         overlayTitle.textContent = "이지 모드 성공!";
-          overlayText.innerHTML = `이지 모드 5문제를 모두 맞췄어요.<br>하드 모드 9조각에 도전해볼까요?`;
+        overlayText.innerHTML = `이지 모드 5문제를 모두 맞췄어요.<br>하드 모드 9조각에 도전해볼까요?`;
         overlayBtn.textContent = "하드 모드 도전";
+        pointRewardBtn.classList.add("hide");
+        challengeHomeBtn.classList.add("hide");
+        retryBtn.classList.add("hide");
+        retryBtn.style.gridColumn = "";
+        easyExitBtn.classList.remove("hide");
+        overlayBtn.classList.remove("hide");
         overlayBtn.onclick = () => {
           overlay.classList.add("hide");
           setMode("hard");
@@ -1026,10 +1255,17 @@
             window.parent.completeChallengeStep(4);
           }
         } catch (error) {}
-        overlayTitle.textContent = "컬러맞추기 성공!";
-          overlayText.innerHTML = `하드 모드 5문제를 모두 맞췄어요.<br>오늘의 컬러 미션을 완성했어요.`;
-        overlayBtn.textContent = "방학챌린지로";
-        overlayBtn.onclick = exitToChallenge;
+        overlayTitle.textContent = "색 조각 맞추기 성공!";
+          overlayText.innerHTML = `하드 모드 3문제를 모두 맞췄어요.<br>오늘의 컬러 미션을 완성했어요.`;
+        pointRewardBtn.classList.remove("hide");
+        challengeHomeBtn.classList.remove("hide");
+        retryBtn.classList.remove("hide");
+        retryBtn.style.gridColumn = "1 / -1";
+        easyExitBtn.classList.add("hide");
+        pointRewardBtn.textContent = pointClaimed ? "200P 받았어요" : "오늘의 포인트 받기 200P";
+        pointRewardBtn.classList.toggle("claimed", pointClaimed);
+        pointRewardBtn.disabled = pointClaimed;
+        overlayBtn.classList.add("hide");
       }
       overlay.classList.remove("hide");
       }, 760);
@@ -1045,11 +1281,35 @@
       history.back();
     }
 
+    function goHome() {
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.prevPage === "function") {
+          window.parent.prevPage(11);
+          return;
+        }
+      } catch (error) {}
+      history.back();
+    }
+
+    function restartAll() {
+      mode = "easy";
+      problemIndex = { easy: 0, hard: 0 };
+      pointClaimed = false;
+      modeButtons.forEach((button) => button.classList.toggle("active", button.dataset.mode === mode));
+      overlay.classList.add("hide");
+      render();
+    }
+
     modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
     resetBtn.addEventListener("click", render);
     checkBtn.addEventListener("click", checkAnswer);
+    retryBtn.addEventListener("click", restartAll);
+    easyExitBtn.addEventListener("click", goHome);
+    challengeHomeBtn.addEventListener("click", goHome);
+    pointRewardBtn.addEventListener("click", claimPointReward);
     overlayBtn.onclick = () => overlay.classList.add("hide");
     render();
   </script>
+<script src="challenge-common.js?v=20260811-common2" data-step="4"></script>
 </body>
 </html>

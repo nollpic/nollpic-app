@@ -42,9 +42,16 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    html,
     body {
       margin: 0;
-      min-height: 100dvh;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    body {
       font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
       color: var(--ink);
       background: #eef3f8;
@@ -54,16 +61,17 @@
 
     .phone {
       position: relative;
-      width: min(100vw, 420px);
-      min-height: 100dvh;
-      padding: 16px 18px 18px;
+      width: min(100%, 420px);
+      height: 100%;
+      min-height: 0;
+      padding: 12px 14px 8px;
       overflow: hidden;
       background:
         radial-gradient(circle at 20% 8%, rgba(255, 107, 22, .12), transparent 26%),
         linear-gradient(180deg, #fffafa 0%, #ffffff 46%, #eef8fc 100%);
-      border: 8px solid #fff;
-      border-radius: 34px;
-      box-shadow: 0 18px 34px rgba(14, 29, 62, .16);
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
     }
 
     header {
@@ -201,7 +209,7 @@
       background:
         radial-gradient(circle at 50% 8%, rgba(255,255,255,.46), transparent 34%),
         linear-gradient(180deg, #f7fbff 0%, #eaf7ff 100%);
-      min-height: 398px;
+      min-height: min(398px, calc(100dvh - 282px));
       box-shadow: 0 18px 34px rgba(14, 29, 62, .10);
       display: flex;
       flex-direction: column;
@@ -209,7 +217,7 @@
     }
 
     .prompt {
-      min-height: 344px;
+      min-height: min(344px, calc(100dvh - 336px));
       border-radius: 24px;
       background: rgba(255,255,255,.94);
       display: grid;
@@ -249,13 +257,10 @@
 
     .target-image-wrap {
       width: min(310px, 94%);
-      height: 274px;
+      height: min(274px, calc(100dvh - 410px));
+      min-height: 190px;
       margin-top: 26px;
       border-radius: 22px;
-      background: #ffffff;
-      border: 2px solid rgba(14, 29, 62, .08);
-      padding: 12px;
-      box-shadow: 0 14px 24px rgba(14, 29, 62, .12);
     }
 
     .prompt.is-hidden .target-image-wrap {
@@ -360,6 +365,10 @@
       display: none;
     }
 
+    .overlay .hide {
+      display: none !important;
+    }
+
     .panel {
       width: min(100%, 340px);
       padding: 30px 22px 22px;
@@ -387,9 +396,95 @@
       width: 100%;
     }
 
+    .point-reward-btn {
+      width: 100%;
+      min-height: 52px;
+      margin: 0 0 12px;
+      border: 0;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #ff8a24, #ff651a);
+      color: #fff;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 900;
+      box-shadow: 0 10px 22px rgba(255, 107, 0, .22);
+    }
+
+    .point-reward-btn.claimed {
+      background: #eef2f7;
+      color: #536079;
+      box-shadow: none;
+    }
+
+    .overlay-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .overlay-actions:has(.btn-secondary:not(.hide)) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    body[data-phase="build"] .mission-top {
+      grid-template-columns: 1fr;
+    }
+
+    body[data-phase="build"] .timer {
+      display: none;
+    }
+
+    body[data-phase="build"] .target-card {
+      justify-content: flex-start;
+      text-align: left;
+    }
+
+    body[data-phase="build"] .target-card strong {
+      display: grid;
+    }
+
+    .point-burst,
+    .point-coin {
+      position: absolute;
+      left: 50%;
+      pointer-events: none;
+    }
+
+    .point-burst {
+      top: 50%;
+      z-index: 12;
+      color: var(--orange);
+      font-size: 28px;
+      font-weight: 900;
+      text-shadow: 0 3px 0 rgba(255,255,255,.95);
+      animation: pointBurst 920ms ease-out forwards;
+    }
+
+    .point-coin {
+      top: 52%;
+      z-index: 11;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 32%, #fff5a8, #ffc53d 58%, #f7931e 100%);
+      animation: pointCoin 880ms ease-out forwards;
+    }
+
+    @keyframes pointBurst {
+      0% { opacity: 0; transform: translate(-50%, 8px) scale(.82); }
+      20% { opacity: 1; transform: translate(-50%, -4px) scale(1.08); }
+      100% { opacity: 0; transform: translate(-50%, -48px) scale(1); }
+    }
+
+    @keyframes pointCoin {
+      0% { opacity: 0; transform: translate(-50%, 8px) scale(.7); }
+      20% { opacity: 1; }
+      100% { opacity: 0; transform: translate(calc(-50% + var(--dx, 0px)), -62px) rotate(260deg); }
+    }
+
     @media (max-width: 380px) {
       .phone {
-        padding: 14px 12px 16px;
+        padding: 10px 10px 6px;
       }
 
       .target-card {
@@ -407,8 +502,18 @@
       }
 
       .stage {
-        min-height: 374px;
+        min-height: min(374px, calc(100dvh - 270px));
       }
+    }
+
+    @media (max-height: 720px) {
+      header { margin-bottom: 8px; }
+      .mission { padding: 12px; }
+      .target-card { min-height: 88px; padding: 10px; }
+      .target-card strong { width: 56px; height: 56px; font-size: 30px; }
+      .stage { margin-top: 10px; padding: 10px; }
+      .actions { margin-top: 9px; }
+      .btn { height: 48px; }
     }
   </style>
 </head>
@@ -429,7 +534,7 @@
           <strong id="levelNumber">1</strong>
           <div>
             <span id="levelMeta">레벨 1 · 0/3 성공</span>
-            <b>5초 보고 젠가로 만들기</b>
+            <b id="targetTitle">5초 보고 젠가로 만들기</b>
           </div>
         </div>
         <div class="timer">
@@ -463,7 +568,11 @@
       <div class="panel">
         <h2 id="overlayTitle">모양기억 놀이</h2>
         <p id="overlayText">5초 동안 젠가 모양을 크게 보고<br>실제 젠가로 같은 모양을 만들어요.</p>
-        <button class="btn btn-primary" type="button" id="overlayBtn">시작하기</button>
+        <button class="point-reward-btn hide" type="button" id="pointRewardBtn">오늘의 포인트 받기 200P</button>
+        <div class="overlay-actions">
+          <button class="btn btn-secondary hide" type="button" id="retryBtn">다시하기</button>
+          <button class="btn btn-primary" type="button" id="overlayBtn">시작하기</button>
+        </div>
       </div>
     </section>
   </main>
@@ -487,6 +596,7 @@
     const els = {
       levelNumber: document.getElementById("levelNumber"),
       levelMeta: document.getElementById("levelMeta"),
+      targetTitle: document.getElementById("targetTitle"),
       timerLabel: document.getElementById("timerLabel"),
       timerValue: document.getElementById("timerValue"),
       prompt: document.getElementById("prompt"),
@@ -497,6 +607,8 @@
       overlayTitle: document.getElementById("overlayTitle"),
       overlayText: document.getElementById("overlayText"),
       overlayBtn: document.getElementById("overlayBtn"),
+      retryBtn: document.getElementById("retryBtn"),
+      pointRewardBtn: document.getElementById("pointRewardBtn"),
       startBtn: document.getElementById("startBtn")
     };
 
@@ -507,6 +619,7 @@
     let phase = "intro";
     let timer = null;
     let feedbackTimer = null;
+    let pointClaimed = false;
 
     function shuffle(items) {
       const copy = [...items];
@@ -521,6 +634,40 @@
       const cfg = levels[level];
       els.levelNumber.textContent = String(level + 1);
       els.levelMeta.textContent = `레벨 ${level + 1} · ${round}/${cfg.images.length} 성공`;
+      els.targetTitle.textContent = `${cfg.name} 만들기`;
+    }
+
+    function levelIntroText() {
+      const descriptions = [
+        "이번에는 같은 방향으로 된 도형 4개의 모양을 보여줄 거예요.",
+        "이번에는 같은 방향으로 된 도형 6개의 모양을 보여줄 거예요.",
+        "이번에는 다른 방향이 섞인 도형 4개의 모양을 보여줄 거예요.",
+        "이번에는 다른 방향이 섞인 도형 6개의 모양을 보여줄 거예요.",
+        "이번에는 조금 더 어려운 젠가 모양을 보여줄 거예요."
+      ];
+      return descriptions[level] || descriptions[0];
+    }
+
+    function showLevelIntro() {
+      clearInterval(timer);
+      accepting = false;
+      phase = "level-intro";
+      document.body.dataset.phase = phase;
+      updateText();
+      els.timerLabel.textContent = "준비";
+      els.timerValue.textContent = String(level + 1);
+      els.prompt.classList.remove("is-hidden");
+      current = pickCurrentImage();
+      els.targetImage.src = `${imageBase}${current.file}`;
+      els.buildNote.textContent = "설명을 듣고 나면 예시 모양을 5초 동안 보여줘요.";
+      els.startBtn.textContent = "설명 확인";
+      els.startBtn.disabled = false;
+      els.overlayTitle.textContent = `레벨 ${level + 1} 안내`;
+      els.overlayText.innerHTML = `${levelIntroText()}<br>${levels[level].name}를 잘 기억해보세요.`;
+      els.pointRewardBtn.classList.add("hide");
+      els.retryBtn.classList.add("hide");
+      els.overlayBtn.textContent = "확인하기";
+      els.overlay.classList.remove("hide");
     }
 
     function showFeedback(text, good = true) {
@@ -529,6 +676,70 @@
       els.feedback.style.background = good ? "rgba(24, 183, 122, .9)" : "rgba(239, 68, 68, .9)";
       els.feedback.classList.add("show");
       feedbackTimer = setTimeout(() => els.feedback.classList.remove("show"), 850);
+    }
+
+    function audioContext() {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return null;
+      if (!window.nollpicAudioContext) window.nollpicAudioContext = new AudioContext();
+      if (window.nollpicAudioContext.state === "suspended") window.nollpicAudioContext.resume();
+      return window.nollpicAudioContext;
+    }
+
+    function playTone(frequency, startAt, duration, gainValue = 0.08, type = "sine") {
+      const ctx = audioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(frequency, startAt);
+      gain.gain.setValueAtTime(0.0001, startAt);
+      gain.gain.exponentialRampToValueAtTime(gainValue, startAt + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(startAt);
+      osc.stop(startAt + duration + 0.02);
+    }
+
+    function playPointRewardSound() {
+      const ctx = audioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      playTone(1046.5, now, 0.1, 0.08);
+      playTone(1318.5, now + 0.09, 0.13, 0.08);
+      playTone(1760, now + 0.21, 0.2, 0.07, "triangle");
+    }
+
+    function showPointRewardEffect() {
+      els.overlay.querySelectorAll(".point-burst, .point-coin").forEach(node => node.remove());
+      const burst = document.createElement("span");
+      burst.className = "point-burst";
+      burst.textContent = "+200P";
+      els.overlay.appendChild(burst);
+      [-44, -22, 20, 44].forEach((dx, index) => {
+        const coin = document.createElement("span");
+        coin.className = "point-coin";
+        coin.style.setProperty("--dx", `${dx}px`);
+        coin.style.animationDelay = `${index * 45}ms`;
+        els.overlay.appendChild(coin);
+      });
+      setTimeout(() => els.overlay.querySelectorAll(".point-burst, .point-coin").forEach(node => node.remove()), 1100);
+    }
+
+    function claimPointReward() {
+      if (pointClaimed) return;
+      pointClaimed = true;
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.claimChallengeStepReward === "function") {
+          window.parent.claimChallengeStepReward(3);
+        }
+      } catch (error) {}
+      els.pointRewardBtn.textContent = "200P 받았어요";
+      els.pointRewardBtn.classList.add("claimed");
+      els.pointRewardBtn.disabled = true;
+      playPointRewardSound();
+      showPointRewardEffect();
     }
 
     function pickCurrentImage() {
@@ -545,6 +756,7 @@
       current = pickCurrentImage();
       accepting = false;
       phase = "memory";
+      document.body.dataset.phase = phase;
       els.prompt.classList.remove("is-hidden");
       els.targetImage.src = `${imageBase}${current.file}`;
       els.buildNote.textContent = "예시를 자세히 보고, 사라지면 실제 젠가로 같은 모양을 만들어요.";
@@ -561,10 +773,9 @@
         if (left <= 0) {
           clearInterval(timer);
           phase = "build";
+          document.body.dataset.phase = phase;
           accepting = true;
           els.prompt.classList.add("is-hidden");
-          els.timerLabel.textContent = "만들기";
-          els.timerValue.textContent = "✓";
           els.buildNote.textContent = "실제 젠가로 완성한 뒤 아래 버튼을 눌러요.";
           els.startBtn.textContent = "완성했어요";
           els.startBtn.disabled = false;
@@ -575,10 +786,21 @@
     function completeBuild() {
       if (!accepting) return;
       accepting = false;
-      round += 1;
+      phase = "answer";
+      document.body.dataset.phase = phase;
+      els.prompt.classList.remove("is-hidden");
+      els.timerLabel.textContent = "정답";
+      els.timerValue.textContent = String(round + 1);
+      els.levelMeta.textContent = `레벨 ${level + 1} · ${round + 1}/${levels[level].images.length} 성공`;
+      els.buildNote.textContent = "정답 모양을 확인한 뒤 다음 버튼을 눌러요.";
+      els.startBtn.textContent = "다음";
+      els.startBtn.disabled = false;
       showFeedback("모양 완성!", true);
-      els.startBtn.disabled = true;
-      setTimeout(nextRound, 650);
+    }
+
+    function advanceAfterAnswer() {
+      round += 1;
+      nextRound();
     }
 
     function nextRound() {
@@ -589,6 +811,8 @@
         }
         level += 1;
         round = 0;
+        showLevelIntro();
+        return;
       }
       startRound();
     }
@@ -597,14 +821,20 @@
       clearInterval(timer);
       accepting = false;
       phase = "done";
+      document.body.dataset.phase = phase;
       try {
         if (window.parent && window.parent !== window && typeof window.parent.completeChallengeStep === "function") {
           window.parent.completeChallengeStep(3);
         }
       } catch (error) {}
       els.overlayTitle.textContent = "오늘의 모양 미션 완료!";
-      els.overlayText.innerHTML = `모양을 끝까지 잘 기억했어요.<br>실제 젠가로 차근차근 만들었어요.<br><strong>+200P 적립 성공</strong>`;
-      els.overlayBtn.textContent = "방학챌린지로";
+      els.overlayText.innerHTML = `모양을 끝까지 잘 기억했어요.<br>실제 젠가로 차근차근 만들었어요.`;
+      els.pointRewardBtn.classList.remove("hide");
+      els.retryBtn.classList.remove("hide");
+      els.pointRewardBtn.textContent = pointClaimed ? "200P 받았어요" : "오늘의 포인트 받기 200P";
+      els.pointRewardBtn.classList.toggle("claimed", pointClaimed);
+      els.pointRewardBtn.disabled = pointClaimed;
+      els.overlayBtn.textContent = "오늘은 여기까지";
       els.overlay.classList.remove("hide");
       els.startBtn.textContent = "시작하기";
     }
@@ -612,8 +842,10 @@
     function startGame() {
       level = 0;
       round = 0;
-      els.overlay.classList.add("hide");
-      startRound();
+      pointClaimed = false;
+      els.pointRewardBtn.classList.add("hide");
+      els.retryBtn.classList.add("hide");
+      showLevelIntro();
     }
 
     function restartRound() {
@@ -625,8 +857,17 @@
     }
 
     function primaryAction() {
+      if (phase === "level-intro") {
+        els.overlay.classList.add("hide");
+        startRound();
+        return;
+      }
       if (phase === "build") {
         completeBuild();
+        return;
+      }
+      if (phase === "answer") {
+        advanceAfterAnswer();
         return;
       }
       if (phase === "done") {
@@ -646,17 +887,35 @@
       window.location.href = "index.html?page=challenge";
     }
 
+    function goHome() {
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.prevPage === "function") {
+          window.parent.prevPage(1);
+          return;
+        }
+      } catch (error) {}
+      window.location.href = "index.html";
+    }
+
     els.overlayBtn.addEventListener("click", () => {
       if (phase === "done" && level >= levels.length - 1 && round >= levels[level].images.length) {
-        exitToChallenge();
+        goHome();
+        return;
+      }
+      if (phase === "level-intro") {
+        els.overlay.classList.add("hide");
+        startRound();
         return;
       }
       startGame();
     });
+    els.retryBtn.addEventListener("click", startGame);
+    els.pointRewardBtn.addEventListener("click", claimPointReward);
 
     current = { file: levels[0].images[0], levelIndex: 0, roundIndex: 0 };
     els.targetImage.src = `${imageBase}${current.file}`;
     updateText();
   </script>
+<script src="challenge-common.js?v=20260811-common2" data-step="3"></script>
 </body>
 </html>

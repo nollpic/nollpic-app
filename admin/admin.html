@@ -37,6 +37,20 @@
       <button type="button" class="admin-gnb-item" data-target="result-section">검사결과목록</button>
       <button type="button" class="admin-gnb-item" data-target="play-section">추천놀이 관리</button>
     </nav>
+    <div class="admin-quick-links" aria-label="바로가기">
+      <a href="https://nollpic.web.app/" target="_blank" rel="noopener" title="놀픽 앱 열기">
+        <span aria-hidden="true">📱</span>
+        <strong>놀픽 앱</strong>
+      </a>
+      <a href="https://nollpic.com/" target="_blank" rel="noopener" title="놀픽 홈페이지 열기">
+        <span aria-hidden="true">🌐</span>
+        <strong>홈페이지</strong>
+      </a>
+      <a href="https://eclogin.cafe24.com/Shop/" target="_blank" rel="noopener" title="카페24 어드민 열기">
+        <span aria-hidden="true">🛒</span>
+        <strong>카페24</strong>
+      </a>
+    </div>
   </aside>
 
   <main class="admin-main">
@@ -53,22 +67,47 @@
 
   <!-- 요약 카드 -->
   <section class="cards">
+    <div class="card accent">
+      <span>🌟 오늘 검사</span>
+      <p>오늘 완료된 검사 결과</p>
+      <strong id="today-result-count">-</strong>
+    </div>
     <div class="card">
       <span>👤 총 회원</span>
+      <p>완료 검사가 있는 로그인 회원</p>
       <strong id="user-count">-</strong>
     </div>
     <div class="card">
       <span>👧 총 아이</span>
+      <p>완료 검사 기준으로 묶인 아이</p>
       <strong id="child-count">-</strong>
     </div>
     <div class="card">
       <span>📋 총 검사</span>
+      <p>완료된 검사 결과 전체</p>
       <strong id="result-count">-</strong>
     </div>
-    <div class="card accent">
-      <span>🌟 오늘 검사</span>
-      <strong id="today-result-count">-</strong>
+    <div class="card">
+      <span>📱 앱 실행</span>
+      <p>앱 모드 실행 기록이 있는 기기</p>
+      <strong id="app-launch-count">-</strong>
     </div>
+  </section>
+
+  <section class="trend-chart-section" aria-labelledby="trend-chart-title">
+    <div class="trend-chart-head">
+      <div>
+        <h2 id="trend-chart-title">완료 검사 추이</h2>
+        <p id="trend-chart-caption">최근 7일 기준</p>
+      </div>
+      <div class="trend-chart-tabs" aria-label="검사 추이 기간 선택">
+        <button type="button" class="active" data-chart-range="daily">요일별</button>
+        <button type="button" data-chart-range="weekly">주간별</button>
+        <button type="button" data-chart-range="monthly">월별</button>
+      </div>
+      <span id="trend-chart-total">-</span>
+    </div>
+    <div id="trend-chart" class="trend-chart" aria-label="완료 검사 선 그래프"></div>
   </section>
 
   <!-- 필터 & 검색 -->
@@ -90,6 +129,25 @@
       <option value="done">완료만</option>
       <option value="undone">미완료만</option>
     </select>
+    <select id="filter-weekday">
+      <option value="">전체 요일</option>
+      <option value="1">월요일</option>
+      <option value="2">화요일</option>
+      <option value="3">수요일</option>
+      <option value="4">목요일</option>
+      <option value="5">금요일</option>
+      <option value="6">토요일</option>
+      <option value="0">일요일</option>
+    </select>
+    <select id="sort-order">
+      <option value="desc">최신순</option>
+      <option value="asc">오래된순</option>
+    </select>
+    <select id="filter-app-launch">
+      <option value="">앱실행 전체</option>
+      <option value="seen">실행</option>
+      <option value="unknown">미확인</option>
+    </select>
     <button id="export-btn">📥 CSV 다운로드</button>
     <button id="refresh-btn">🔄 새로고침</button>
     <button id="delete-btn" style="background: #e53935; color: #fff;">🗑️ 선택 삭제</button>
@@ -98,12 +156,22 @@
   <!-- 테이블 -->
   <section class="table-section" id="result-section">
     <div class="table-header-row">
-      <h2>검사 결과 목록</h2>
+      <h2>아이별 최신 검사 목록</h2>
       <span id="row-count" class="row-count"></span>
     </div>
     <div class="table-scroll">
       <table id="main-table">
         <thead>
+          <tr id="result-average-row" class="result-average-row" aria-live="polite">
+            <th colspan="8" class="average-context-cell"></th>
+            <th class="average-score-cell overall"></th>
+            <th class="average-score-cell"></th>
+            <th class="average-score-cell"></th>
+            <th class="average-score-cell"></th>
+            <th class="average-score-cell"></th>
+            <th class="average-score-cell"></th>
+            <th class="average-app-cell"></th>
+          </tr>
           <tr>
             <th style="width: 40px; text-align: center;"><input type="checkbox" id="th-check"/></th>
             <th>검사일</th>
@@ -119,7 +187,7 @@
             <th>반응 속도</th>
             <th>시각 탐색</th>
             <th>충동 억제</th>
-            <th>완료</th>
+            <th>앱 실행</th>
           </tr>
         </thead>
         <tbody id="result-table">
@@ -127,6 +195,7 @@
         </tbody>
       </table>
     </div>
+    <div id="result-pagination" class="pagination" aria-label="최신 검사 목록 페이지"></div>
   </section>
 
   <section class="table-section play-manage-section" id="play-section">

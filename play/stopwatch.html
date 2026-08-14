@@ -1,1091 +1,132 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>놀픽 (Nollpic) - 두뇌 놀이 미션</title>
-    
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://nollpic.web.app" />
-    <meta property="og:title" content="놀픽 (Nollpic) - 두뇌 놀이 미션" />
-    <meta property="og:description" content="우리 아이의 생각근육은 몇 점일까요? 지금 미션에 도전해 보세요!" />
-    <meta property="og:image" content="https://nollpic.web.app/images/kakao-banner-20260618.png" />
-    <meta property="og:image:width" content="1537" />
-    <meta property="og:image:height" content="778" />
-    <link rel="stylesheet" href="style.css?v=20260713-restore-map">
-    <link rel="manifest" href="manifest.json">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스탑워치</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;font-family:'Pretendard',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:#101820;color:#fff}
+body{display:flex;flex-direction:column;min-height:100%;overflow:hidden}
+.header{height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(0,0,0,.26);border-bottom:1px solid rgba(255,255,255,.08)}
+.back-btn{width:44px;height:44px;border:0;background:transparent;color:#fff;font-size:24px;font-weight:900;cursor:pointer}
+.header-title{font-size:17px;font-weight:900}
+.header-spacer{width:44px}
+.stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 20px 30px;background:radial-gradient(circle at 50% 18%,#1f3142 0,#111b24 48%,#0b1118 100%)}
+.stopwatch-rig{width:min(100%,360px);display:grid;gap:24px;justify-items:center}
+.display-stand{position:relative;width:100%;padding-top:18px}
+.display{position:relative;width:100%;height:132px;border-radius:22px;background:#171b1d;border:5px solid #232a2c;display:flex;align-items:center;justify-content:center;box-shadow:0 22px 44px rgba(0,0,0,.4),inset 0 0 0 2px rgba(255,255,255,.04)}
+.display:before{content:"";position:absolute;inset:9px;border-radius:12px;background:linear-gradient(180deg,rgba(91,255,109,.12),rgba(15,126,47,.06));box-shadow:inset 0 0 22px rgba(28,255,86,.14)}
+.time{position:relative;z-index:1;font-family:'Courier New',ui-monospace,monospace;font-size:50px;font-weight:900;letter-spacing:1px;color:#22ff45;text-shadow:0 0 8px rgba(34,255,69,.82),0 0 22px rgba(34,255,69,.45);font-variant-numeric:tabular-nums}
+.hint{min-height:22px;color:#a9b8c3;font-size:14px;font-weight:800;text-align:center}
+.actions{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+.action-btn{height:58px;border:0;border-radius:16px;font-size:17px;font-weight:950;cursor:pointer;transition:transform .1s ease,filter .1s ease}
+.action-btn:active{transform:scale(.97)}
+.primary{background:#ff6b35;color:#fff;box-shadow:0 12px 22px rgba(255,107,53,.28)}
+.primary.running{background:#e83e36}
+.secondary{background:#edf2f5;color:#1a2732}
+@media (max-width:360px){
+  .time{font-size:42px}
+  .display{height:118px}
+  .stage{padding-left:16px;padding-right:16px}
+}
+</style>
 </head>
 <body>
-    <div class="app-device">
-        <div id="page-1" class="page active">
-            <div class="page-body main-page-body">
+<header class="header">
+  <button type="button" class="back-btn" aria-label="뒤로가기" onclick="goBack()">‹</button>
+  <span class="header-title">스탑워치</span>
+  <div class="header-spacer"></div>
+</header>
 
-                <!-- PWA 설치 배너 — beforeinstallprompt 감지 시 자동 표시 -->
-                <div id="pwa-install-banner" class="pwa-install-banner" hidden>
-                    <div class="pwa-install-banner-left">
-                        <span class="pwa-install-icon" aria-hidden="true"></span>
-                        <div>
-                            <strong>놀픽 앱 설치</strong>
-                            <span>홈 화면에서 바로 실행!</span>
-                        </div>
-                    </div>
-                    <button class="pwa-install-banner-btn" type="button" onclick="triggerPwaInstall()">설치</button>
-                    <button class="pwa-install-banner-close" type="button" onclick="closePwaBanner()" aria-label="닫기">x</button>
-                </div>
-                <div id="pwa-install-toast" class="pwa-install-toast" role="status" aria-live="polite" hidden></div>
-
-                <div class="title-block">
-                    <img src="images/nollpic_title.png" alt="놀픽 타이틀" class="img-title">
-                    <p class="brand-sub">놀이로 자라는 우리 아이의<br>집중력과 실행기능</p>
-                </div>
-                <div class="graphic-block">
-                    <img src="images/character_welcome.png" alt="놀픽 웰컴 캐릭터" class="img-fluid-content animate-fade-in">
-                </div>
-
-                <div class="action-block">
-                    <div class="social-login-wrap">
-                        <button class="btn-google-main" onclick="googleLogin()">
-                            Google 로그인하고, 성장기록 저장
-                            <!-- <p class="login-guide">
-                            로그인하면 미션 결과와 성장 기록이 저장돼요.
-                            </p>-->
-                        </button>
-                       
-                        <button class="btn-guest" onclick="nextPage(2)">
-                            로그인 없이 체험하기
-                        </button>
-                        <p class="privacy-link-wrap">
-                            <a href="/privacy.html" target="_blank" class="privacy-link">개인정보처리방침</a>
-                        </p>
-                    </div>
-                    <!--<img src="images/logo_footer.png" alt="놀픽" class="img-footer">-->
-                </div>
-
-            </div>
-        </div>
-
-        <div id="page-2" class="page">
-            <!--<header class="page-header">
-                <button class="nav-back" id="page2-back-btn" onclick="prevPage(1)">❮</button>
-            </header>-->
-            <div class="page-body justify-center">
-                <div class="title-block">
-                    <h2 class="section-title">놀이로 배우고,<br>성장으로 이어지는 도전</h2>
-                    <p class="section-sub">5가지 활동을 통해 아이의 능력을 확인해요.</p>
-                </div>
-                <div class="info-list">
-                    <div class="info-card-clean">
-                        <div class="info-icon bg-red">🎯</div>
-                        <div class="info-text">
-                            <h3>1. 집중 유지력</h3>
-                            <p>주의를 지속하고 목표에 집중하는 능력</p>
-                        </div>
-                    </div>
-                    <div class="info-card-clean">
-                        <div class="info-icon bg-blue">🧩</div>
-                        <div class="info-text">
-                            <h3>2. 작업 기억력</h3>
-                            <p>정보를 기억하고 활용하는 능력</p>
-                        </div>
-                    </div>
-                    <div class="info-card-clean">
-                        <div class="info-icon bg-orange">⚡</div>
-                        <div class="info-text">
-                            <h3>3. 반응 속도</h3>
-                            <p>자극에 빠르게 반응하는 능력</p>
-                        </div>
-                    </div>
-                    <div class="info-card-clean">
-                        <div class="info-icon bg-teal">🔍</div>
-                        <div class="info-text">
-                            <h3>4. 시각 탐색 능력</h3>
-                            <p>시각 정보를 빠르고 정확하게 찾아내기</p>
-                        </div>
-                    </div>
-                    <div class="info-card-clean">
-                        <div class="info-icon bg-pink">✋</div>
-                        <div class="info-text">
-                            <h3>5. 충동 억제</h3>
-                            <p>감정을 조절하고 충동을 억제하는 능력</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="action-block">
-                    <button class="btn-navy" onclick="nextPage(3)">5가지 미션 시작하기</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="page-3" class="page">
-            <div class="page-body">
-                <div class="title-block child-title-block">
-                    <h2 class="section-title" id="child-page-title">우리 아이를 선택해주세요</h2>
-                    <p class="section-sub" id="child-page-sub">로그인하면 아이의 미션 결과를 따로 저장할 수 있어요.</p>
-                </div>
-
-                <div id="login-status-bar" class="login-status-bar" style="display:none;"></div>
-
-                <div id="saved-child-section" class="saved-child-section" style="display:none;">
-                    <div class="saved-child-head">
-                        <div>
-                            <strong>등록된 아이</strong>
-                            <p>미션을 진행할 아이를 선택해주세요.</p>
-                        </div>
-                        <button type="button" class="btn-add-child" onclick="showChildForm()">+ 아이 추가</button>
-                    </div>
-                    <div id="saved-child-list" class="saved-child-list"></div>
-                </div>
-
-                <div id="child-form-section" class="form-container">
-                    <div class="input-group">
-                        <label>이름</label>
-                        <input type="text" id="child-name" placeholder="이름을 입력해주세요">
-                    </div>
-                    <div class="input-group">
-                        <label>나이</label>
-                        <select id="child-grade">
-                            <option value="">나이를 선택해주세요</option>
-                            <optgroup label="어린이">
-                                <option value="0">미취학</option>
-                                <option value="1">초등 1학년</option>
-                                <option value="2">초등 2학년</option>
-                                <option value="3">초등 3학년</option>
-                                <option value="4">초등 4학년</option>
-                                <option value="5">초등 5학년</option>
-                                <option value="6">초등 6학년</option>
-                            </optgroup>
-                            <optgroup label="성인">
-                                <option value="adult">어른</option>
-                            </optgroup>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>성별</label>
-                        <div class="gender-radio-group">
-                            <label class="gender-radio-btn">
-                                <input type="radio" name="child-gender" value="male">
-                                <span class="gender-btn-text">👦 남</span>
-                            </label>
-                            <label class="gender-radio-btn">
-                                <input type="radio" name="child-gender" value="female">
-                                <span class="gender-btn-text">👧 여</span>
-                            </label>
-                        </div>
-                    </div>
-                    <label class="consent-check">
-                        <input type="checkbox" id="guardian-consent">
-                        <span>보호자 또는 법정대리인으로서 아이 정보와 미션 수행 기록 저장에 동의합니다. 본 결과는 의료적 진단이나 치료 목적이 아닙니다. <a href="/privacy.html" target="_blank" rel="noopener">개인정보처리방침</a></span>
-                    </label>
-                    <button class="btn-navy child-form-next-btn" id="child-next-btn" onclick="validateInfoPage()">다음</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="page-4" class="page">
-            <header class="page-header">
-                <button class="nav-back" onclick="prevPage(3)">❮</button>
-            </header>
-            <div class="page-body space-between">
-                <div class="title-block">
-                    <h2 class="section-title">평소 아이는 어떤가요?</h2>
-                    <p class="section-sub">해당되는 항목을 선택해주세요. (중복 가능)</p>
-                </div>
-                <div class="checklist-container">
-                    <div class="check-card" onclick="toggleCheck(this)">
-                        <span class="check-icon">⏳</span>
-                        <p>집중하는 시간이 짧아요</p>
-                        <div class="custom-circle"></div>
-                    </div>
-                    <div class="check-card" onclick="toggleCheck(this)">
-                        <span class="check-icon">⚡</span>
-                        <p>충동적인 행동이 있어요</p>
-                        <div class="custom-circle"></div>
-                    </div>
-                    <div class="check-card" onclick="toggleCheck(this)">
-                        <span class="check-icon">🧩</span>
-                        <p>기억력이 약한 것 같아요</p>
-                        <div class="custom-circle"></div>
-                    </div>
-                    <div class="check-card" onclick="toggleCheck(this)">
-                        <span class="check-icon">🔀</span>
-                        <p>쉽게 산만해져요</p>
-                        <div class="custom-circle"></div>
-                    </div>
-                    <div class="check-card" id="none-above" onclick="toggleNoneAbove(this)">
-                        <span class="check-icon">😊</span>
-                        <p>해당 사항이 없어요</p>
-                        <div class="custom-circle"></div>
-                    </div>
-                </div>
-                <div class="action-block">
-                    <button class="btn-navy" onclick="startFirstTest()">미션 시작하기</button>
-                    <div class="indicator-dots">
-                        <span></span><span class="active"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="page-5" class="page">
-            <div class="page-body" style="padding:0;">
-                <iframe
-                    id="test-frame"
-                    src=""
-                    style="
-                        width:100%;
-                        height:100%;
-                        border:none;
-                        display:block;
-                    ">
-                </iframe>
-            </div>
-        </div>
-
-        <!-- page-6: 미션 결과 (mypage-result 통합) -->
-        <div id="page-6" class="page">
-            <div class="page-body result-page-body">
-                <main class="result-app">
-
-                    <section class="complete-hero">
-                        <div class="complete-text">
-                            <h1 class="complete-title">미션 완료! 🎉</h1>
-                            <p>오늘도 뇌 탐험 성공!<br>5가지 활동 결과가 저장되었어요.</p>
-                        </div>
-                    </section>
-
-                    <section class="child-card child-select-card">
-                        <div class="result-child-title">
-                            <span>아이 선택</span>
-                        </div>
-                        <select id="result-child-selector" class="result-child-selector" aria-label="아이 선택"></select>
-                    </section>
-
-                    <section class="result-latest-card">
-                        <div class="section-head">
-                            <h2>최근 미션 결과</h2>
-                            <span id="result-latest-date">-</span>
-                        </div>
-                        <div class="score-summary">
-                            <div>
-                                <span>종합 결과</span>
-                                <strong id="result-overall-score">0</strong>
-                            </div>
-                            <p id="result-overall-comment">아직 저장된 미션 결과가 없어요.</p>
-                        </div>
-                        <div id="result-ability-list" class="ability-list"></div>
-                        <div class="share-buttons">
-                            <button class="share-main-btn" onclick="shareResultInline()">결과 공유하기</button>
-                        </div>
-                    </section>
-
-                    <section class="result-history-card">
-                        <button class="accordion-btn" onclick="toggleResultHistory()">
-                            <div>
-                                <h2>과거 데이터 보기</h2>
-                                <span>이전 미션 기록을 영역별로 확인해요</span>
-                            </div>
-                            <span class="accordion-icon" id="result-accordion-icon"></span>
-                        </button>
-                        <div id="result-history-panel" class="history-panel">
-                            <div class="growth-card">
-                                <div class="growth-head">
-                                    <div>
-                                        <h3>📈 성장 그래프</h3>
-                                        <p id="result-growth-summary">최근 기록의 변화 흐름을 확인해요</p>
-                                    </div>
-                                    <span id="result-growth-badge">성장중</span>
-                                </div>
-                                <div class="growth-chart-wrap">
-                                    <canvas id="result-growthChart"></canvas>
-                                </div>
-                            </div>
-                            <div id="result-history-list" class="history-list"></div>
-                        </div>
-                    </section>
-
-                    <section class="result-analysis-card">
-                        <h2>놀픽 분석</h2>
-                        <p id="result-analysis-text"></p>
-                    </section>
-
-                    <section id="result-recommend-card" class="result-recommend-card">
-                        <div class="recommend-head">
-                            <span id="result-recommend-area">추천 놀이</span>
-                            <h2 id="result-recommend-title">우리 아이에게 맞는 놀이</h2>
-                            <p id="result-recommend-desc">결과에 맞춰 짧게 반복할 수 있는 놀이를 추천해요.</p>
-                        </div>
-                        <div id="result-recommend-list" class="recommend-list"></div>
-                        <button type="button" class="recommend-lock-btn" onclick="openRecommendedPlayDetail()">상세 놀이방법 보기</button>
-                    </section>
-
-                    <p class="disclaimer">본 결과는 놀이형 인지 활동의 수행 기록이며, 의료적 진단 또는 치료 목적의 검사가 아닙니다.</p>
-                </main>
-            </div>
-        </div>
-
-        <!-- page-7: 플레이 -->
-        <div id="page-7" class="page">
-            <div class="page-body play-page-body">
-                <div class="play-header">
-                    <h2 class="play-title">플레이</h2>
-                    <p class="play-sub">놀이 콘텐츠를 즐겨보세요.</p>
-                </div>
-                <div class="play-content">
-                    <div class="play-card-grid">
-
-                        <!-- 주사위 -->
-                         <button type="button" class="play-card play-card-ready" onclick="openPlayItem('dice')">
-                            <div class="play-card-icon-wrap play-bg-peach">
-                                <span class="play-card-emoji">🎲</span>
-                            </div>
-                            <strong class="play-card-label">주사위</strong>
-                            <span class="play-card-sub">숫자 뽑기</span>
-                        </button>
-
-                        <!-- 화살표 룰렛 -->
-                         <button type="button" class="play-card play-card-ready" onclick="openPlayItem('arrow')">
-                            <div class="play-card-icon-wrap play-bg-blue">
-                                <span class="play-card-emoji">🏹</span>
-                            </div>
-                            <strong class="play-card-label">화살표</strong>
-                            <span class="play-card-sub">방향 정하기</span>
-                        </button>
-
-                        <!-- 랜덤컬러 -->
-                         <button type="button" class="play-card play-card-ready" onclick="openPlayItem('randomcolor')">
-                            <div class="play-card-icon-wrap play-bg-purple">
-                                <span class="play-card-emoji">🎨</span>
-                            </div>
-                            <strong class="play-card-label">랜덤컬러</strong>
-                            <span class="play-card-sub">색깔 룰렛</span>
-                        </button>
-
-                        <!-- 스탑워치 -->
-                        <button type="button" class="play-card play-card-ready" onclick="openPlayItem('stopwatch')">
-                            <div class="play-card-icon-wrap play-bg-green">
-                                <span class="play-stopwatch-icon" aria-hidden="true">
-                                    <span class="play-stopwatch-crown"></span>
-                                    <span class="play-stopwatch-bell left"></span>
-                                    <span class="play-stopwatch-bell right"></span>
-                                    <span class="play-stopwatch-face">
-                                        <span class="play-stopwatch-hand minute"></span>
-                                        <span class="play-stopwatch-hand second"></span>
-                                        <span class="play-stopwatch-dot"></span>
-                                    </span>
-                                </span>
-                            </div>
-                            <strong class="play-card-label">스탑워치</strong>
-                            <span class="play-card-sub">시간 재기</span>
-                        </button>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- page-8: 주사위 -->
-        <div id="page-8" class="page">
-            <div class="page-body" style="padding:0;">
-                <iframe id="dice-frame" src="" style="width:100%;height:100%;border:none;display:block;"></iframe>
-            </div>
-        </div>
-
-        <!-- page-9: 화살표 -->
-        <div id="page-9" class="page">
-            <div class="page-body" style="padding:0;">
-                <iframe id="arrow-frame" src="" style="width:100%;height:100%;border:none;display:block;"></iframe>
-            </div>
-        </div>
-
-        <!-- page-10: 랜덤컬러 룰렛 -->
-        <div id="page-10" class="page">
-            <div class="page-body" style="padding:0;">
-                <iframe id="roulette-frame" src="" style="width:100%;height:100%;border:none;display:block;"></iframe>
-            </div>
-        </div>
-
-        <!-- page-12: 스탑워치 -->
-        <div id="page-12" class="page">
-            <div class="page-body" style="padding:0;">
-                <iframe id="stopwatch-frame" src="" style="width:100%;height:100%;border:none;display:block;"></iframe>
-            </div>
-        </div>
-
-        <div id="page-11" class="page">
-            <div class="page-body challenge-home-body">
-                <div class="challenge-sticky-head">
-                    <section class="challenge-home-hero">
-                        <span class="challenge-home-eyebrow">생각근육 챌린지 1기</span>
-                        <h2>여름방학 챌린지</h2>
-                        <p>매일 10분! 20회 완주로 생각근육을 키워요!</p>
-                    </section>
-
-                    <section class="challenge-progress" aria-label="완주 진행률">
-                        <div class="challenge-progress-track">
-                            <span style="width:5%"></span>
-                        </div>
-                        <p>완주까지 <strong>19</strong>번 남았어요!</p>
-                    </section>
-                </div>
-
-                <div class="challenge-sticky-actions">
-                    <section class="challenge-summary" aria-label="챌린지 현황">
-                        <div class="challenge-summary-card">
-                            <span class="challenge-summary-icon">🔥</span>
-                            <strong>1</strong>
-                            <span>/ 20회</span>
-                        </div>
-                        <div class="challenge-summary-card">
-                            <span class="challenge-coin">P</span>
-                            <strong>400P</strong>
-                        </div>
-                        <div class="challenge-summary-card">
-                            <span class="challenge-summary-icon">🔥</span>
-                            <strong>2</strong>
-                            <span>일 연속</span>
-                        </div>
-                    </section>
-
-                    <button type="button" class="challenge-today-card" onclick="openMemoryKitchenGame()">
-                        <span class="challenge-mascot" aria-hidden="true">
-                            <span class="challenge-mascot-ribbon">NOLLPIC</span>
-                        </span>
-                        <span class="challenge-today-text">
-                            <strong>오늘의 놀이 시작하기</strong>
-                            <small>오늘의 미션: 순서 기억 놀이</small>
-                        </span>
-                        <span class="challenge-today-point">+200P</span>
-                        <span class="challenge-arrow" aria-hidden="true">›</span>
-                    </button>
-                </div>
-
-                <section class="challenge-roadmap" aria-label="챌린지 단계">
-                    <div class="road-line" style="--top:50px"></div>
-                    <div class="road-line" style="--top:204px"></div>
-                    <div class="road-line" style="--top:358px"></div>
-                    <div class="road-line" style="--top:512px"></div>
-                    <div class="road-line" style="--top:666px"></div>
-                    <div class="road-line" style="--top:820px"></div>
-                    <div class="road-line" style="--top:974px"></div>
-                    <div class="road-line" style="--top:1128px"></div>
-                    <div class="road-line" style="--top:1282px"></div>
-                    <div class="road-line" style="--top:1436px"></div>
-                    <div class="road-connector" style="--x:87%; --top:50px; --height:154px"></div>
-                    <div class="road-connector" style="--x:13%; --top:204px; --height:154px"></div>
-                    <div class="road-connector" style="--x:87%; --top:358px; --height:154px"></div>
-                    <div class="road-connector" style="--x:13%; --top:512px; --height:154px"></div>
-                    <div class="road-connector" style="--x:87%; --top:666px; --height:154px"></div>
-                    <div class="road-connector" style="--x:13%; --top:820px; --height:154px"></div>
-                    <div class="road-connector" style="--x:87%; --top:974px; --height:154px"></div>
-                    <div class="road-connector" style="--x:13%; --top:1128px; --height:154px"></div>
-                    <div class="road-connector" style="--x:87%; --top:1282px; --height:154px"></div>
-                    <span class="road-deco icon3" style="--x:25%; --y:126px; --size:36px;"></span>
-                    <span class="road-deco icon1" style="--x:74%; --y:244px; --size:35px;"></span>
-                    <span class="road-deco icon2" style="--x:30%; --y:420px; --size:36px;"></span>
-                    <span class="road-deco icon4" style="--x:74%; --y:558px; --size:38px;"></span>
-                    <span class="road-deco icon9" style="--x:30%; --y:736px; --size:36px;"></span>
-                    <span class="road-deco icon10" style="--x:75%; --y:936px; --size:37px;"></span>
-                    <span class="road-deco icon11" style="--x:29%; --y:1188px; --size:37px;"></span>
-
-                    <button type="button" class="road-node done" style="--x:13%; --y:8px;" onclick="openMemoryKitchenGame()" aria-label="1번 순서 기억 놀이 시작">
-                        <span>1</span>
-                        <i>✓</i>
-                    </button>
-                    <div class="road-node done" style="--x:50%; --y:8px;">
-                        <span>2</span>
-                        <i>✓</i>
-                    </div>
-                    <button type="button" class="road-chest" data-chest-id="chest-1" style="--x:87%; --y:8px;" aria-label="보물상자"></button>
-                    <button type="button" class="road-chest" data-chest-id="chest-2" style="--x:13%; --y:162px;" aria-label="보물상자"></button>
-                    <div class="road-node locked secret-number-four" style="--x:50%; --y:162px;">
-                        <span>4</span>
-                        <i></i>
-                    </div>
-                    <div class="road-node locked secret-bush-right" style="--x:87%; --y:162px;">
-                        <span>3</span>
-                        <i></i>
-                    </div>
-                    <div class="road-node locked secret-flower" style="--x:13%; --y:316px;">
-                        <span>5</span>
-                        <i></i>
-                    </div>
-                    <div class="road-node locked secret-plain" style="--x:50%; --y:316px;">
-                        <span>6</span>
-                        <i></i>
-                    </div>
-                    <button type="button" class="road-chest" data-chest-id="chest-3" style="--x:87%; --y:316px;" aria-label="보물상자"></button>
-                    <button type="button" class="road-chest" data-chest-id="chest-4" style="--x:13%; --y:470px;" aria-label="보물상자"></button>
-                    <div class="road-node locked secret-flower" style="--x:50%; --y:470px;">
-                        <span>8</span>
-                        <i></i>
-                    </div>
-                    <div class="road-node locked secret-bush-right" style="--x:87%; --y:470px;">
-                        <span>7</span>
-                        <i></i>
-                    </div>
-                    <div class="road-node locked secret-flower" style="--x:13%; --y:624px;">
-                        <span>9</span>
-                        <i></i>
-                    </div>
-                    <div class="road-node locked secret-plain" style="--x:50%; --y:624px;">
-                        <span>10</span>
-                        <i></i>
-                    </div>
-                    <button type="button" class="road-chest" data-chest-id="chest-5" style="--x:87%; --y:624px;" aria-label="보물상자"></button>
-                    <button type="button" class="road-chest" data-chest-id="chest-6" style="--x:13%; --y:778px;" aria-label="보물상자"></button>
-                    <div class="road-node locked secret-plain" style="--x:50%; --y:778px;">
-                        <span>12</span>
-                        <i></i>
-                    </div>
-                    <div class="road-node locked secret-bush-right" style="--x:87%; --y:778px;">
-                        <span>11</span>
-                        <i></i>
-                    </div>
-                    <div class="road-node locked secret-flower" style="--x:13%; --y:932px;">
-                        <span>13</span>
-                        <i></i>
-                    </div>
-                    <div class="road-node locked secret-plain" style="--x:50%; --y:932px;">
-                        <span>14</span>
-                        <i></i>
-                    </div>
-                    <button type="button" class="road-chest" data-chest-id="chest-7" style="--x:87%; --y:932px;" aria-label="보물상자"></button>
-                    <button type="button" class="road-chest" data-chest-id="chest-8" style="--x:13%; --y:1086px;" aria-label="보물상자"></button>
-                    <div class="road-node locked secret-plain" style="--x:50%; --y:1086px;">
-                        <span>16</span>
-                        <i></i>
-                    </div>
-                    <div class="road-node locked secret-bush-right" style="--x:87%; --y:1086px;">
-                        <span>15</span>
-                        <i></i>
-                    </div>
-                    <div class="road-node locked secret-flower" style="--x:13%; --y:1240px;">
-                        <span>17</span>
-                        <i></i>
-                    </div>
-                    <div class="road-node locked secret-plain" style="--x:50%; --y:1240px;">
-                        <span>18</span>
-                        <i></i>
-                    </div>
-                    <button type="button" class="road-chest" data-chest-id="chest-9" style="--x:87%; --y:1240px;" aria-label="보물상자"></button>
-                    <button type="button" class="road-chest" data-chest-id="chest-10" style="--x:13%; --y:1394px;" aria-label="보물상자"></button>
-                    <div class="road-node locked secret-plain" style="--x:50%; --y:1394px;">
-                        <span>20</span>
-                        <i></i>
-                    </div>
-                    <div class="road-node locked secret-bush-right" style="--x:87%; --y:1394px;">
-                        <span>19</span>
-                        <i></i>
-                    </div>
-                </section>
-
-                <section class="challenge-links" aria-label="챌린지 메뉴">
-                    <button type="button" onclick="openChallengePanel(13)">
-                        <span class="challenge-link-face face-yellow"></span>
-                        <strong>이번 주 랭킹</strong>
-                        <small>상위 10% 도전!</small>
-                        <i>›</i>
-                    </button>
-                    <button type="button" onclick="openChallengePanel(14)">
-                        <span class="challenge-link-face face-purple"></span>
-                        <strong>챌린지 결과</strong>
-                        <small>나의 성장 확인!</small>
-                        <i>›</i>
-                    </button>
-                    <button type="button" onclick="openChallengePanel(15)">
-                        <span class="challenge-link-face face-green"></span>
-                        <strong>선물함</strong>
-                        <small>5,000P 당첨 시 쿠폰 오픈</small>
-                        <i>›</i>
-                    </button>
-                </section>
-            </div>
-        </div>
-
-        <div id="page-13" class="page">
-            <div class="page-body challenge-sub-body">
-                <header class="challenge-sub-header">
-                    <button type="button" class="challenge-sub-back" onclick="goBottomChallenge()" aria-label="방학챌린지로 돌아가기">‹</button>
-                    <span class="challenge-sub-kicker">방학챌린지</span>
-                    <h2>이번 주 랭킹</h2>
-                    <p>이번 주 도전 기록을 모아 순위를 확인해요.</p>
-                </header>
-                <section class="challenge-sub-card">
-                    <span class="challenge-link-face face-yellow"></span>
-                    <strong>상위 10% 도전!</strong>
-                    <p>매일 놀이를 완료하면 랭킹 점수가 올라가요.</p>
-                </section>
-            </div>
-        </div>
-
-        <div id="page-14" class="page">
-            <div class="page-body challenge-sub-body">
-                <header class="challenge-sub-header">
-                    <button type="button" class="challenge-sub-back" onclick="goBottomChallenge()" aria-label="방학챌린지로 돌아가기">‹</button>
-                    <span class="challenge-sub-kicker">방학챌린지</span>
-                    <h2>챌린지 결과</h2>
-                    <p>나의 완료 횟수와 성장 기록을 확인해요.</p>
-                </header>
-                <section class="challenge-sub-card">
-                    <span class="challenge-link-face face-purple"></span>
-                    <strong>나의 성장 확인!</strong>
-                    <p>완료한 미션과 받은 포인트가 이곳에 쌓여요.</p>
-                </section>
-            </div>
-        </div>
-
-        <div id="page-15" class="page">
-            <div class="page-body challenge-sub-body">
-                <header class="challenge-sub-header">
-                    <button type="button" class="challenge-sub-back" onclick="goBottomChallenge()" aria-label="방학챌린지로 돌아가기">‹</button>
-                    <span class="challenge-sub-kicker">방학챌린지</span>
-                    <h2>선물함</h2>
-                    <p>당첨 쿠폰과 챌린지 보상을 확인해요.</p>
-                </header>
-                <section class="challenge-sub-card">
-                    <span class="challenge-link-face face-green"></span>
-                    <strong>5,000P 당첨 시 쿠폰 오픈</strong>
-                    <p>보물상자를 열어 받은 선물이 이곳에 보관돼요.</p>
-                </section>
-            </div>
-        </div>
-
-        <div id="page-16" class="page memory-kitchen-host-page">
-            <header class="memory-kitchen-host-header">
-                <button type="button" class="challenge-sub-back" onclick="prevPage(11)" aria-label="방학챌린지로 돌아가기">‹</button>
-                <div>
-                    <span class="challenge-sub-kicker">오늘의 미션</span>
-                    <h2>순서 기억 놀이</h2>
-                </div>
-            </header>
-            <iframe id="memory-kitchen-frame" class="memory-kitchen-frame" src="nollpic-memory-kitchen.html" title="놀픽 기억공방 게임"></iframe>
-        </div>
-
-    <!-- 하단 고정 메뉴 -->
-    <nav class="bottom-tab-nav" aria-label="하단 메뉴">
-        <button type="button" class="bottom-tab active" data-tab="home" onclick="goBottomHome()">
-            <svg class="bottom-tab-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M3 9.5L12 3L21 9.5V20C21 20.552 20.552 21 20 21H15V15H9V21H4C3.448 21 3 20.552 3 20V9.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-            </svg>
-            <span>홈</span>
-        </button>
-        <button type="button" class="bottom-tab" data-tab="result" onclick="goBottomResult()">
-            <svg class="bottom-tab-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.8"/>
-                <path d="M7 15V17M12 11V17M17 7V17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-            </svg>
-            <span>미션결과</span>
-        </button>
-        <button type="button" class="bottom-tab" data-tab="mypage" onclick="goBottomMypage()">
-            <svg class="bottom-tab-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/>
-                <path d="M4 20C4 17 7.582 15 12 15C16.418 15 20 17 20 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-            </svg>
-            <span>마이</span>
-        </button>
-        <button type="button" class="bottom-tab" data-tab="play" onclick="goBottomPlay()">
-            <svg class="bottom-tab-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
-                <path d="M10 8.5L16 12L10 15.5V8.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-            </svg>
-            <span>플레이</span>
-        </button>
-        <button type="button" class="bottom-tab" data-tab="challenge" onclick="goBottomChallenge()">
-            <svg class="bottom-tab-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M4 6.5C4 5.12 5.12 4 6.5 4H17.5C18.88 4 20 5.12 20 6.5V18C20 19.1 19.1 20 18 20H6C4.9 20 4 19.1 4 18V6.5Z" stroke="currentColor" stroke-width="1.8"/>
-                <path d="M8 3V7M16 3V7M4.5 9H19.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                <path d="M9 14L11.2 16.2L15.5 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span>방학챌린지</span>
-        </button>
-    </nav>
+<main class="stage">
+  <section class="stopwatch-rig" aria-label="스탑워치">
+    <div class="display-stand">
+      <div class="display">
+        <div class="time" id="timeText">00:00:00</div>
+      </div>
     </div>
+    <div class="hint" id="hintText">시작 버튼을 누르면 시간이 올라가요.</div>
+    <div class="actions">
+      <button type="button" class="action-btn primary" id="toggleBtn">시작</button>
+      <button type="button" class="action-btn secondary" id="resetBtn">초기화</button>
+    </div>
+  </section>
+</main>
 
+<script>
+let startTime = 0;
+let elapsedBeforeStart = 0;
+let rafId = null;
+let isRunning = false;
 
+const timeText = document.getElementById('timeText');
+const hintText = document.getElementById('hintText');
+const toggleBtn = document.getElementById('toggleBtn');
+const resetBtn = document.getElementById('resetBtn');
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="app.js?v=20260713-restore-map"></script>
-    <script>
-        function openMemoryKitchenGame() {
-            const frame = document.getElementById('memory-kitchen-frame');
-            if (frame && !frame.getAttribute('src')) {
-                frame.setAttribute('src', 'nollpic-memory-kitchen.html');
-            }
-            nextPage(16);
-        }
+function formatTime(ms) {
+  const totalSeconds = Math.floor(ms / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  const centiseconds = Math.floor((ms % 1000) / 10);
+  return `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}:${String(centiseconds).padStart(2,'0')}`;
+}
 
-        window.googleLogin = window.googleLogin || function () {
-            alert("구글 로그인 모듈을 불러오지 못했어요. index.html을 더블클릭한 file:// 화면이라면 GitHub Pages/Firebase Hosting 또는 로컬 서버에서 확인해주세요.");
-        };
-    </script>
-    <script type="module" src="firebase-auth.js"></script>
-    <script>
-    // ── PWA 설치 프롬프트 ──────────────────────────────────
-    let _pwaInstallPrompt = null;
-    let _pwaInstallToastTimer = null;
+function currentElapsed() {
+  return isRunning ? elapsedBeforeStart + performance.now() - startTime : elapsedBeforeStart;
+}
 
-    function showPwaBanner() {
-        const banner = document.getElementById('pwa-install-banner');
-        if (banner) banner.hidden = false;
-    }
+function render() {
+  timeText.textContent = formatTime(currentElapsed());
+  if (isRunning) rafId = requestAnimationFrame(render);
+}
 
-    function hidePwaBanner() {
-        const banner = document.getElementById('pwa-install-banner');
-        if (banner) banner.hidden = true;
-    }
+function startStopwatch() {
+  if (isRunning) return;
+  isRunning = true;
+  startTime = performance.now();
+  toggleBtn.textContent = '멈춰';
+  toggleBtn.classList.add('running');
+  hintText.textContent = '멈춰 버튼을 누르면 시간이 정지돼요.';
+  render();
+}
 
-    function showPwaInstallToast(message, options = {}) {
-        const toast = document.getElementById('pwa-install-toast');
-        if (!toast) return;
+function stopStopwatch() {
+  if (!isRunning) return;
+  elapsedBeforeStart = currentElapsed();
+  isRunning = false;
+  if (rafId) cancelAnimationFrame(rafId);
+  rafId = null;
+  toggleBtn.textContent = '시작';
+  toggleBtn.classList.remove('running');
+  hintText.textContent = '정지했어요. 다시 시작하면 이어서 재요.';
+  render();
+}
 
-        window.clearTimeout(_pwaInstallToastTimer);
-        toast.textContent = message;
-        toast.classList.toggle('complete', options.complete === true);
-        toast.classList.toggle('login', options.type === 'login');
-        toast.classList.toggle('below-banner', options.belowBanner === true);
-        toast.hidden = false;
+function resetStopwatch() {
+  if (rafId) cancelAnimationFrame(rafId);
+  isRunning = false;
+  rafId = null;
+  startTime = 0;
+  elapsedBeforeStart = 0;
+  toggleBtn.textContent = '시작';
+  toggleBtn.classList.remove('running');
+  hintText.textContent = '시작 버튼을 누르면 시간이 올라가요.';
+  render();
+}
 
-        const duration = options.duration || 0;
-        if (duration > 0) {
-            _pwaInstallToastTimer = window.setTimeout(() => {
-                toast.hidden = true;
-                toast.classList.remove('complete');
-                toast.classList.remove('login');
-                toast.classList.remove('below-banner');
-            }, duration);
-        }
-    }
+function goBack() {
+  if (window.parent) window.parent.postMessage({ type: 'exitPlay' }, '*');
+}
 
-    function hidePwaInstallToast() {
-        const toast = document.getElementById('pwa-install-toast');
-        if (!toast) return;
+toggleBtn.addEventListener('click', () => {
+  if (isRunning) stopStopwatch();
+  else startStopwatch();
+});
+resetBtn.addEventListener('click', resetStopwatch);
 
-        window.clearTimeout(_pwaInstallToastTimer);
-        toast.hidden = true;
-        toast.classList.remove('complete');
-        toast.classList.remove('login');
-        toast.classList.remove('below-banner');
-    }
-
-    window.showPwaInstallToast = showPwaInstallToast;
-    window.hidePwaInstallToast = hidePwaInstallToast;
-
-    function closePwaBanner() {
-        hidePwaBanner();
-        // 이번 세션에서는 다시 표시 안 함
-        sessionStorage.setItem('pwa_banner_closed', '1');
-    }
-
-    window.closePwaBanner = closePwaBanner;
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        _pwaInstallPrompt = e;
-        if (shouldShowPwaBanner()) {
-            showPwaBanner();
-        }
-    });
-
-    window.addEventListener('appinstalled', () => {
-        _pwaInstallPrompt = null;
-        hidePwaBanner();
-        showPwaInstallToast('설치 완료', { complete: true, duration: 2400 });
-        // 설치 완료 후 영구적으로 숨김
-        localStorage.setItem('pwa_installed', '1');
-    });
-
-    // 이미 설치된 경우 배너 비활성화
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-        sessionStorage.setItem('pwa_banner_closed', '1');
-    }
-
-    function isNollpicStandalone() {
-        return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-    }
-
-    function isKakaoInAppBrowser() {
-        return /KAKAOTALK|KakaoTalk/i.test(navigator.userAgent || '');
-    }
-
-    function shouldShowPwaBanner() {
-        return !!_pwaInstallPrompt && !isKakaoInAppBrowser() && !isNollpicStandalone() && !sessionStorage.getItem('pwa_banner_closed');
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        hidePwaBanner();
-    });
-
-    function triggerPwaInstall() {
-        if (_pwaInstallPrompt) {
-            showPwaInstallToast('설치 중');
-            _pwaInstallPrompt.prompt();
-            _pwaInstallPrompt.userChoice.then((choice) => {
-                if (choice.outcome === 'accepted') {
-                    hidePwaBanner();
-                } else {
-                    hidePwaInstallToast();
-                }
-                _pwaInstallPrompt = null;
-            });
-        } else {
-            hidePwaInstallToast();
-            alert('홈 화면에 추가하려면\n우측 상단 (⋮) 에서\n"홈 화면에 추가"를 눌러주세요.');
-        }
-    }
-
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js');
-    }
-
-    /* ── 플레이 탭 ── */
-    function goBottomPlay() {
-        if (typeof nextPage === 'function') nextPage(7);
-    }
-    window.goBottomPlay = goBottomPlay;
-
-    /* ── iframe에서 뒤로가기 메시지 수신 ── */
-    window.addEventListener('message', function(e) {
-        if (e.data && e.data.type === 'exitTest') {
-            if (typeof exitTestPage === 'function') exitTestPage();
-        }
-        if (e.data && e.data.type === 'exitTestToSurvey') {
-            if (typeof goBackFromTestToSurvey === 'function') goBackFromTestToSurvey();
-        }
-        if (e.data && e.data.type === 'exitPlay') {
-            if (typeof nextPage === 'function') nextPage(7);
-        }
-    });
-
-    /* ── 플레이 카드 클릭 ── */
-    function openPlayItem(type) {
-        const map = {
-            dice:        { page: 8,  frame: 'dice-frame',     src: 'play/dice.html' },
-            arrow:       { page: 9,  frame: 'arrow-frame',    src: 'play/arrow.html' },
-            randomcolor: { page: 10, frame: 'roulette-frame', src: 'play/roulette.html' },
-            stopwatch:   { page: 12, frame: 'stopwatch-frame', src: 'play/stopwatch.html' }
-        };
-        const cfg = map[type];
-        if (!cfg) return;
-        if (typeof resetPlayFrames === 'function') resetPlayFrames(cfg.frame);
-        const frame = document.getElementById(cfg.frame);
-        if (frame) frame.src = cfg.src;
-        if (typeof nextPage === 'function') nextPage(cfg.page);
-    }
-    window.openPlayItem = openPlayItem;
-
-    (function setupChallengePreview() {
-        const shapes = ['circle', 'triangle', 'square'];
-        const shapeLabels = {
-            circle: '동그라미',
-            triangle: '세모',
-            square: '네모'
-        };
-        let challengeAnswer = [];
-        let challengeInput = [];
-        let challengeLevel = 1;
-        let challengeReady = false;
-        let challengeTimer = null;
-
-        function shuffle(values) {
-            return [...values].sort(() => Math.random() - 0.5);
-        }
-
-        function shapeEl(shape) {
-            return `<span class="challenge-shape ${shape}" aria-label="${shapeLabels[shape]}"></span>`;
-        }
-
-        function renderSlots() {
-            const slots = document.getElementById('challenge-answer-slots');
-            if (!slots) return;
-            slots.innerHTML = Array.from({ length: challengeAnswer.length || 3 }).map((_, index) => (
-                `<div class="challenge-slot">${challengeInput[index] || ''}</div>`
-            )).join('');
-        }
-
-        function setFeedback(text, type = '') {
-            const feedback = document.getElementById('challenge-feedback');
-            if (!feedback) return;
-            feedback.textContent = text;
-            feedback.className = `challenge-feedback ${type}`.trim();
-        }
-
-        function checkChallengeAnswer() {
-            if (challengeInput.length < challengeAnswer.length) return;
-            const ok = challengeInput.join('') === challengeAnswer.join('');
-            challengeReady = false;
-            if (!ok) {
-                setFeedback(`아쉬워요. 정답은 ${challengeAnswer.join(' ')} 입니다.`, 'bad');
-                return;
-            }
-
-            if (challengeLevel >= 3) {
-                setFeedback('3단계까지 성공! 번호와 순서를 정말 잘 기억했어요.', 'good');
-                return;
-            }
-
-            setFeedback(`${challengeLevel}단계 성공! 다음 단계로 넘어갑니다.`, 'good');
-            challengeLevel += 1;
-            challengeTimer = setTimeout(() => initChallengePreview({ keepLevel: true }), 900);
-        }
-
-        function initChallengePreview(options = {}) {
-            const board = document.getElementById('challenge-number-board');
-            const row = document.getElementById('challenge-sequence-row');
-            const instruction = document.getElementById('challenge-instruction');
-            if (!board || !row || !instruction) return;
-
-            clearTimeout(challengeTimer);
-            challengeInput = [];
-            challengeReady = false;
-            if (!options.keepLevel) challengeLevel = 1;
-            const sequenceLength = Math.min(5, challengeLevel + 2);
-
-            const numbers = shuffle(['1', '2', '3']);
-            const map = shapes.reduce((acc, shape, index) => {
-                acc[shape] = numbers[index];
-                return acc;
-            }, {});
-            const sequence = Array.from({ length: sequenceLength }, () => shapes[Math.floor(Math.random() * shapes.length)]);
-            challengeAnswer = sequence.map(shape => map[shape]);
-
-            board.classList.remove('hide-numbers');
-            board.style.display = 'grid';
-            row.classList.remove('show');
-            row.innerHTML = '';
-            instruction.textContent = `${challengeLevel}단계: 도형의 번호를 기억하세요.`;
-            setFeedback(`${sequenceLength}개의 도형 순서대로 번호를 입력해요.`);
-            renderSlots();
-
-            board.innerHTML = shapes.map(shape => `
-                <div class="challenge-map-card">
-                    ${shapeEl(shape)}
-                    <strong class="challenge-map-number">${map[shape]}</strong>
-                </div>
-            `).join('');
-
-            challengeTimer = setTimeout(() => {
-                board.classList.add('hide-numbers');
-                instruction.textContent = '이제 아래 도형 순서대로 번호를 입력해요.';
-                setTimeout(() => {
-                    board.style.display = 'none';
-                }, 360);
-                row.innerHTML = sequence.map((shape, index) => `
-                    <div class="challenge-sequence-item" style="animation-delay:${index * 0.06}s">
-                        ${shapeEl(shape)}
-                    </div>
-                `).join('');
-                row.classList.add('show');
-                challengeReady = true;
-                setFeedback(`휴대폰 키패드로 정답 번호 ${sequenceLength}개를 눌러주세요.`);
-            }, 2600);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('challenge-replay-btn')?.addEventListener('click', initChallengePreview);
-            document.querySelectorAll('.challenge-phone button').forEach(button => {
-                button.addEventListener('click', () => {
-                    if (!challengeReady) return;
-                    const key = button.dataset.key;
-                    const action = button.dataset.action;
-                    if (action === 'back') challengeInput.pop();
-                    if (action === 'clear') challengeInput = [];
-                    if (key && challengeInput.length < challengeAnswer.length) challengeInput.push(key);
-                    renderSlots();
-                    checkChallengeAnswer();
-                });
-            });
-        });
-
-        window.initChallengePreview = initChallengePreview;
-    })();
-
-    (function setupChallengeStickyActions() {
-        function updateStickyState() {
-            const page = document.getElementById('page-11');
-            const actions = page?.querySelector('.challenge-sticky-actions');
-            if (!page || !actions) return;
-
-            const appDevice = document.querySelector('.app-device');
-            const pageBody = page.querySelector('.page-body');
-            const scrollTop = Math.max(
-                pageBody?.scrollTop || 0,
-                appDevice?.scrollTop || 0,
-                window.scrollY || 0,
-                document.documentElement.scrollTop || 0,
-                document.body.scrollTop || 0
-            );
-            const container = pageBody || appDevice || document.documentElement;
-            const containerTop = container.getBoundingClientRect ? container.getBoundingClientRect().top : 0;
-            const actionTop = actions.getBoundingClientRect().top;
-            actions.classList.toggle('is-stuck', scrollTop > 4 || actionTop <= containerTop + 1);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const page = document.getElementById('page-11');
-            const scrollers = [
-                page?.querySelector('.page-body'),
-                document.querySelector('.app-device'),
-                window
-            ].filter(Boolean);
-
-            scrollers.forEach(scroller => {
-                scroller.addEventListener('scroll', updateStickyState, { passive: true });
-            });
-            document.addEventListener('scroll', updateStickyState, { passive: true, capture: true });
-            window.addEventListener('resize', updateStickyState);
-            requestAnimationFrame(updateStickyState);
-        });
-    })();
-
-    (function setupChallengeChests() {
-        const storageKey = 'nollpic_challenge_opened_chests';
-
-        function readOpenedChests() {
-            try {
-                return JSON.parse(localStorage.getItem(storageKey) || '[]');
-            } catch (error) {
-                return [];
-            }
-        }
-
-        function saveOpenedChests(opened) {
-            localStorage.setItem(storageKey, JSON.stringify([...new Set(opened)]));
-        }
-
-        function applyOpenedChests() {
-            const opened = readOpenedChests();
-            document.querySelectorAll('.road-chest[data-chest-id]').forEach(chest => {
-                const isOpen = opened.includes(chest.dataset.chestId);
-                chest.classList.toggle('opened', isOpen);
-                chest.setAttribute('aria-label', isOpen ? '열린 보물상자' : '보물상자');
-                chest.setAttribute('aria-pressed', isOpen ? 'true' : 'false');
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            applyOpenedChests();
-            document.querySelectorAll('.road-chest[data-chest-id]').forEach(chest => {
-                chest.addEventListener('click', () => {
-                    const opened = readOpenedChests();
-                    if (!opened.includes(chest.dataset.chestId)) {
-                        opened.push(chest.dataset.chestId);
-                        saveOpenedChests(opened);
-                    }
-                    applyOpenedChests();
-                });
-            });
-        });
-
-        window.openChallengeChest = function openChallengeChest(chestId) {
-            const opened = readOpenedChests();
-            if (!opened.includes(chestId)) {
-                opened.push(chestId);
-                saveOpenedChests(opened);
-            }
-            applyOpenedChests();
-        };
-    })();
-    </script>
-    
+render();
+</script>
 </body>
-</html><!-- privacy link style은 style.css에 추가 필요 -->
+</html>

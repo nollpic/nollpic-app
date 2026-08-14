@@ -8,6 +8,13 @@ import {
   getRedirectResult,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  serverTimestamp,
+  increment
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyClcGJEbev-OvfBu0sssIorQF-9uFsEvn8",
@@ -21,8 +28,86 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 let googleLoginInProgress = false;
+
+function isNollpicStandaloneMode() {
+  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+}
+
+function getNollpicGuestId() {
+  const storageKey = "nollpic_guest_id";
+  let guestId = localStorage.getItem(storageKey);
+
+  if (!guestId) {
+    guestId = `guest_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    localStorage.setItem(storageKey, guestId);
+  }
+
+  return guestId;
+}
+
+async function recordStandaloneAppLaunch(user = null) {
+  if (!isNollpicStandaloneMode()) return;
+
+  const uid = user?.uid || getStoredUser()?.uid || "";
+  const today = new Date().toISOString().slice(0, 10);
+  const storageKey = uid
+    ? `nollpic_app_launch_recorded_${uid}_${today}`
+    : `nollpic_app_launch_recorded_${getNollpicGuestId()}_${today}`;
+
+  if (sessionStorage.getItem(storageKey) === "true") return;
+
+  try {
+    if (uid) {
+      await setDoc(doc(db, "users", uid), {
+        uid,
+        email: user?.email || getStoredUser()?.email || "",
+        userEmail: user?.email || getStoredUser()?.email || "",
+        appInstalledModeSeen: true,
+        appLaunchCount: increment(1),
+        lastAppLaunchAt: serverTimestamp(),
+        lastAppLaunchUserAgent: navigator.userAgent || ""
+      }, { merge: true });
+    } else {
+      const guestId = getNollpicGuestId();
+      await setDoc(doc(db, "guestUsers", guestId), {
+        uid: guestId,
+        guestId,
+        isGuest: true,
+        memberType: "guest",
+        userEmail: "비회원",
+        userName: "비회원 사용자",
+        appInstalledModeSeen: true,
+        appLaunchCount: increment(1),
+        lastAppLaunchAt: serverTimestamp(),
+        lastAppLaunchUserAgent: navigator.userAgent || ""
+      }, { merge: true });
+    }
+
+    sessionStorage.setItem(storageKey, "true");
+  } catch (error) {
+    console.error("Standalone app launch record failed", error);
+  }
+}
+
+function showLoginProgress() {
+  if (typeof window.showPwaInstallToast === "function") {
+    const installBanner = document.getElementById("pwa-install-banner");
+    const isInstallBannerVisible = !!installBanner && installBanner.hidden === false;
+    window.showPwaInstallToast("로그인 중", {
+      type: "login",
+      belowBanner: isInstallBannerVisible
+    });
+  }
+}
+
+function hideLoginProgress() {
+  if (typeof window.hidePwaInstallToast === "function") {
+    window.hidePwaInstallToast();
+  }
+}
 
 function getStoredUser() {
   try {
@@ -109,10 +194,12 @@ async function moveAfterLogin(user, showWelcome = false) {
   }
 
   if (showWelcome) {
+    hideLoginProgress();
     alert(`${user.displayName || "사용자"}님 환영합니다.`);
   }
 
   goAfterLogin();
+  setTimeout(hideLoginProgress, 600);
 }
 
 function isInBlockedAppBrowser() {
@@ -155,12 +242,14 @@ window.googleLogin = async function () {
   }
 
   if (auth.currentUser) {
+    showLoginProgress();
     await moveAfterLogin(auth.currentUser, false);
     return;
   }
 
   googleLoginInProgress = true;
   markLoginPending();
+  showLoginProgress();
 
   try {
     // 모바일 Chrome에서도 우선 popup 방식으로 처리합니다.
@@ -178,6 +267,7 @@ window.googleLogin = async function () {
       } catch (redirectError) {
         clearLoginPending();
         googleLoginInProgress = false;
+        hideLoginProgress();
         showFirebaseLoginError(redirectError);
         return;
       }
@@ -186,11 +276,13 @@ window.googleLogin = async function () {
     if (code.includes("popup-closed-by-user") || code.includes("cancelled-popup-request")) {
       clearLoginPending();
       googleLoginInProgress = false;
+      hideLoginProgress();
       return;
     }
 
     clearLoginPending();
     googleLoginInProgress = false;
+    hideLoginProgress();
     showFirebaseLoginError(error);
   }
 };
@@ -199,18 +291,24 @@ window.googleLogin = async function () {
 getRedirectResult(auth)
   .then((result) => {
     if (result && result.user) {
+      showLoginProgress();
       moveAfterLogin(result.user, true);
     }
   })
   .catch((error) => {
     clearLoginPending();
+    hideLoginProgress();
     showFirebaseLoginError(error);
   });
 
 onAuthStateChanged(auth, async (user) => {
-  if (!user) return;  // 로그아웃 상태면 아무것도 하지 않음
+  if (!user) {
+    recordStandaloneAppLaunch(null);
+    return;
+  }
 
   saveUser(user);
+  recordStandaloneAppLaunch(user);
 
   if (typeof window.nollpicSyncFromFirebase === "function") {
     try {
@@ -227,6 +325,8 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 window.addEventListener("DOMContentLoaded", () => {
+  recordStandaloneAppLaunch(auth.currentUser || null);
+
   // 새로고침 후에도 localStorage에 로그인 사용자가 있으면 로그인 화면에 머물지 않게 보정합니다.
   const storedUser = getStoredUser();
   if (storedUser && storedUser.uid && isOnLoginPage()) {

@@ -1,0 +1,123 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>컬러 드롭</title><style>
+:root{--navy:#0e1d3e;--orange:#ff6818;--red:#ef3654;--blue:#2778e8;--yellow:#f5c81f;--green:#28ad58}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Pretendard,"Malgun Gothic",sans-serif;color:var(--navy);background:#edf3f9}button{font:inherit}.app{position:relative;height:100%;display:flex;flex-direction:column;background:radial-gradient(circle at 15% 20%,#ffe7d9 0 10%,transparent 11%),radial-gradient(circle at 90% 72%,#dceeff 0 14%,transparent 15%),linear-gradient(180deg,#fff8f5,#edf8ff)}header{height:77px;padding:14px 18px 8px;display:flex;align-items:center;gap:12px}.back{width:42px;height:42px;border:0;border-radius:15px;background:#fff0e8;color:var(--orange);font-size:28px;font-weight:950}.heading{flex:1}.heading small{color:var(--orange);font-size:11px;font-weight:900}.heading h1{margin:2px 0 0;font-size:21px}.badge{padding:8px 9px;border:1px solid #ffb78c;border-radius:99px;background:#fff8f3;color:#ed6413;font-size:10px;font-weight:900}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 18px 8px;padding:6px;border-radius:18px;background:#fff;box-shadow:0 8px 20px #0e1d3e0c}.tab{height:40px;border:0;border-radius:13px;background:#f0f3f7;color:#7c8595;font-size:13px;font-weight:900}.tab.active{background:var(--orange);color:#fff;box-shadow:0 5px 12px #ff681844}.mission{margin:0 18px 8px;padding:10px 14px;border:2px solid #edf0f4;border-radius:19px;background:#fff;display:flex;align-items:center;justify-content:space-between}.mission strong{color:var(--orange);font-size:13px}.mission span{color:#677286;font-size:12px;font-weight:900}.play{flex:1;min-height:0;margin:0 18px 12px;padding:11px;border-radius:28px;background:#ffffffed;display:flex;flex-direction:column;box-shadow:0 14px 32px #1c395818}.stats{height:38px;display:flex;justify-content:space-around;align-items:center;border-radius:14px;background:#f4f7fb;color:#667286;font-size:12px;font-weight:850}.stats b{color:var(--navy);font-size:15px}.track{position:relative;flex:1;min-height:0;margin-top:8px;border-radius:24px;overflow:hidden;background:linear-gradient(180deg,#e8f5ff 0%,#f9fcff 70%,#fff0e5 100%);box-shadow:inset 0 0 0 2px #fff,inset 0 -8px 0 #ffd2b5}.track::before{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:3px dashed #b9d5ea;opacity:.58}.track::after{content:"버튼을 눌러 잡아요!";position:absolute;left:50%;bottom:12px;transform:translateX(-50%);color:#d2753d;font-size:11px;font-weight:900;white-space:nowrap}.drop{position:absolute;z-index:2;left:50%;top:8px;width:68px;height:68px;border-radius:50%;transform:translateX(-50%);background:var(--drop-color);border:7px solid #ffffffaa;box-shadow:0 9px 0 color-mix(in srgb,var(--drop-color),#000 25%),0 14px 24px #0e1d3e2b}.drop::after{content:"";position:absolute;width:18px;height:10px;left:13px;top:9px;border-radius:50%;background:#ffffff99;transform:rotate(-28deg)}.drop.caught{animation:caught .3s ease both}.drop.missed{animation:missed .35s ease both}.feedback{height:29px;display:flex;align-items:center;justify-content:center;color:#68758a;font-size:12px;font-weight:950}.color-buttons{display:flex;justify-content:center;gap:10px}.color-btn{width:68px;height:68px;border:6px solid #fff;border-radius:22px;background:var(--btn-color);box-shadow:0 7px 0 color-mix(in srgb,var(--btn-color),#000 28%),0 10px 18px #0e1d3e22;transition:.1s}.color-btn:active{transform:translateY(5px);box-shadow:0 2px 0 color-mix(in srgb,var(--btn-color),#000 28%)}.color-btn.wrong{animation:shake .3s ease}.red{--btn-color:var(--red)}.blue{--btn-color:var(--blue)}.yellow{--btn-color:var(--yellow)}.green{--btn-color:var(--green)}
+.overlay{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:22px;background:#0e1d3e5e;backdrop-filter:blur(5px)}.overlay.hide{display:none}.panel{width:min(100%,340px);padding:27px 22px 22px;border-radius:28px;background:#fff;text-align:center;box-shadow:0 24px 60px #0e1d3e35}.hero{font-size:54px}.panel h2{margin:8px 0;font-size:23px}.panel p{margin:0 0 20px;color:#657188;font-size:14px;line-height:1.6;font-weight:750}.panel button{width:100%;height:52px;border:0;border-radius:18px;background:var(--orange);color:#fff;font-weight:950;box-shadow:0 5px 0 #d7520d}.reward{display:none!important;margin-bottom:10px;background:#fff1bd!important;color:#996000!important;box-shadow:none!important}.reward.show{display:block!important}@keyframes caught{50%{transform:translateX(-50%) scale(1.3)}100%{transform:translateX(-50%) scale(0);opacity:0}}@keyframes missed{100%{transform:translateX(-50%) scale(.6);opacity:0}}@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}@media(max-width:370px){.color-buttons{gap:7px}.color-btn{width:61px;height:61px}}@media(max-height:720px){header{height:65px;padding-top:8px}.tabs,.mission{margin-bottom:6px}.mission{padding:8px 12px}.play{padding:8px}.stats{height:32px}.drop{width:58px;height:58px}.color-btn{width:57px;height:57px;border-radius:18px}.feedback{height:24px}}
+</style></head><body><main class="app"><header><button class="back" onclick="exitToChallenge()">‹</button><div class="heading"><small>오늘의 미션</small><h1>컬러 드롭</h1></div><span class="badge">반응속도 · 집중</span></header><nav class="tabs"><button class="tab active" data-level="1">난이도 1</button><button class="tab" data-level="2">난이도 2</button><button class="tab" data-level="3">난이도 3</button></nav><section class="mission"><strong id="levelTitle">컬러 2개</strong><span id="progress">1/20</span></section><section class="play"><div class="stats"><span>잡았어요 <b id="score">0</b></span><span>남았어요 <b id="remaining">20</b></span></div><div class="track" id="track"><div class="drop" id="drop"></div></div><div class="feedback" id="feedback">떨어지는 색과 같은 버튼을 눌러요!</div><div class="color-buttons" id="colorButtons"></div></section><section class="overlay" id="overlay"><div class="panel"><div class="hero" id="overlayHero">🎯</div><h2 id="overlayTitle">떨어지는 컬러를 잡아요!</h2><p id="overlayText">위에서 떨어지는 색을 보고<br>같은 색 버튼을 빠르게 눌러주세요.<br>뒤로 갈수록 점점 빨라져요!</p><button class="reward" id="rewardBtn">🎁 200P 받기</button><button id="overlayBtn">놀이 시작</button></div></section></main><script>
+const colorInfo={red:{name:"빨강",hex:"#ef3654"},blue:{name:"파랑",hex:"#2778e8"},yellow:{name:"노랑",hex:"#f5c81f"},green:{name:"초록",hex:"#28ad58"}},levelColors={1:["red","blue"],2:["red","blue","yellow"],3:["red","blue","yellow","green"]},speed={1:[2600,1450],2:[2250,1100],3:[1950,820]};const track=document.getElementById("track"),drop=document.getElementById("drop"),colorButtons=document.getElementById("colorButtons"),levelTitle=document.getElementById("levelTitle"),progress=document.getElementById("progress"),scoreEl=document.getElementById("score"),remaining=document.getElementById("remaining"),feedback=document.getElementById("feedback"),overlay=document.getElementById("overlay"),overlayHero=document.getElementById("overlayHero"),overlayTitle=document.getElementById("overlayTitle"),overlayText=document.getElementById("overlayText"),overlayBtn=document.getElementById("overlayBtn"),rewardBtn=document.getElementById("rewardBtn"),tabs=[...document.querySelectorAll(".tab")];let level=1,dropIndex=0,score=0,sequence=[],activeColor="red",dropStarted=0,dropDuration=2500,raf=0,locked=true,completed=new Set(),pointClaimed=false,nextTimer=0;
+function makeSequence(){const colors=levelColors[level],result=[];while(result.length<20){const next=colors[Math.floor(Math.random()*colors.length)];if(result.length>=2&&result.at(-1)===next&&result.at(-2)===next)continue;result.push(next)}return result}function durationFor(){const [start,end]=speed[level];return Math.round(start+(end-start)*(dropIndex/19))}function renderButtons(){colorButtons.innerHTML=levelColors[level].map(color=>`<button class="color-btn ${color}" data-color="${color}" aria-label="${colorInfo[color].name}"></button>`).join("");colorButtons.querySelectorAll(".color-btn").forEach(button=>button.addEventListener("click",()=>chooseColor(button)))}function updateStats(){levelTitle.textContent=`컬러 ${levelColors[level].length}개`;progress.textContent=`${Math.min(dropIndex+1,20)}/20`;scoreEl.textContent=score;remaining.textContent=Math.max(0,20-dropIndex);tabs.forEach(t=>t.classList.toggle("active",Number(t.dataset.level)===level))}function startDrop(){window.cancelAnimationFrame(raf);window.clearTimeout(nextTimer);if(dropIndex>=20){finishLevel();return}activeColor=sequence[dropIndex];dropDuration=durationFor();drop.style.setProperty("--drop-color",colorInfo[activeColor].hex);drop.className="drop";drop.style.top="8px";locked=false;dropStarted=performance.now();updateStats();animateDrop(dropStarted)}function animateDrop(now){if(locked)return;const available=Math.max(40,track.clientHeight-drop.offsetHeight-20),ratio=Math.min(1,(now-dropStarted)/dropDuration);drop.style.top=`${8+available*ratio}px`;if(ratio>=1){missDrop();return}raf=window.requestAnimationFrame(animateDrop)}function chooseColor(button){if(locked)return;if(button.dataset.color!==activeColor){button.classList.remove("wrong");void button.offsetWidth;button.classList.add("wrong");feedback.textContent="다른 색이에요! 떨어지는 색을 다시 봐요.";return}locked=true;window.cancelAnimationFrame(raf);score+=1;drop.classList.add("caught");feedback.textContent="잡았어요! 🎉";advanceDrop()}function missDrop(){if(locked)return;locked=true;window.cancelAnimationFrame(raf);drop.classList.add("missed");feedback.textContent="놓쳤어요! 다음 컬러를 준비해요.";advanceDrop()}function advanceDrop(){dropIndex+=1;updateStats();nextTimer=window.setTimeout(startDrop,360)}function startLevel(nextLevel){level=Number(nextLevel);dropIndex=0;score=0;sequence=makeSequence();renderButtons();feedback.textContent="떨어지는 색과 같은 버튼을 눌러요!";overlay.classList.add("hide");startDrop()}function finishLevel(){locked=true;window.cancelAnimationFrame(raf);completed.add(level);if(completed.size===3){finishGame();return}const nextLevel=[1,2,3].find(n=>!completed.has(n));overlayHero.textContent=score>=16?"⚡":"👏";overlayTitle.textContent=`난이도 ${level} 완료!`;overlayText.innerHTML=`20개 중 <b>${score}개</b>를 잡았어요.<br>다음 난이도는 컬러가 늘고 더 빨라져요!`;overlayBtn.textContent=`난이도 ${nextLevel} 시작`;overlayBtn.onclick=()=>startLevel(nextLevel);overlay.classList.remove("hide")}function startGame(){completed=new Set();startLevel(1)}function finishGame(){try{if(parent&&parent!==window&&typeof parent.completeChallengeStep==="function")parent.completeChallengeStep(12)}catch(e){}overlayHero.textContent="🎉";overlayTitle.textContent="컬러 드롭 완료!";overlayText.innerHTML=`빠르게 떨어지는 네 가지 컬러에<br>집중해서 끝까지 도전했어요.`;rewardBtn.classList.add("show");overlayBtn.textContent="챌린지로 돌아가기";overlayBtn.onclick=exitToChallenge;overlay.classList.remove("hide")}function claimReward(){if(pointClaimed)return;pointClaimed=true;try{if(parent&&parent!==window&&typeof parent.claimChallengeStepReward==="function")parent.claimChallengeStepReward(12)}catch(e){}rewardBtn.textContent="200P 받았어요";rewardBtn.disabled=true}function exitToChallenge(){locked=true;window.cancelAnimationFrame(raf);window.clearTimeout(nextTimer);try{if(parent&&parent!==window&&typeof parent.prevPage==="function"){parent.prevPage(11);return}}catch(e){}history.back()}tabs.forEach(tab=>tab.addEventListener("click",()=>{locked=true;window.cancelAnimationFrame(raf);startLevel(tab.dataset.level)}));overlayBtn.onclick=startGame;rewardBtn.addEventListener("click",claimReward);renderButtons();updateStats();
+</script>
+<script>
+const bubbleStyle=document.createElement("style");
+bubbleStyle.textContent=`
+  .drop{width:72px;height:72px;border:2px solid rgba(255,255,255,.92);background:radial-gradient(circle at 31% 27%,rgba(255,255,255,.98) 0 7%,rgba(255,255,255,.42) 8% 18%,transparent 19%),radial-gradient(circle at 58% 62%,color-mix(in srgb,var(--drop-color),transparent 70%),var(--drop-color) 67%,color-mix(in srgb,var(--drop-color),#fff 42%) 100%);box-shadow:inset -9px -12px 18px rgba(14,29,62,.16),inset 8px 8px 14px rgba(255,255,255,.52),0 8px 18px rgba(14,29,62,.18);opacity:.92}
+  .drop::before{content:"";position:absolute;inset:6px;border:1px solid rgba(255,255,255,.52);border-radius:50%}
+  .drop::after{width:19px;height:10px;left:14px;top:11px;background:rgba(255,255,255,.82)}
+  .drop.bubble-two{display:block}
+`;
+document.head.appendChild(bubbleStyle);
+document.querySelector(".heading h1").textContent="컬러 비눗방울";
+overlayTitle.textContent="떨어지는 컬러 비눗방울을 잡아요!";
+
+let bubbleDrops=[],launchedCount=0,resolvedCount=0,batchTimer=0;
+speed[3]=[3200,1900];
+const totalForLevel=()=>level===3?20:15;
+function clearBubbleDrops(){
+  window.clearTimeout(batchTimer);
+  window.clearTimeout(nextTimer);
+  bubbleDrops.forEach(item=>{window.cancelAnimationFrame(item.raf);item.el.remove()});
+  bubbleDrops=[];
+  drop.style.display="none";
+}
+function updateStats(){
+  const total=totalForLevel();
+  levelTitle.textContent=`컬러 ${levelColors[level].length}개`;
+  progress.textContent=`${Math.min(resolvedCount+1,total)}/${total}`;
+  scoreEl.textContent=score;
+  remaining.textContent=Math.max(0,total-resolvedCount);
+  tabs.forEach(t=>t.classList.toggle("active",Number(t.dataset.level)===level));
+}
+function makeSequence(){
+  const colors=levelColors[level],result=[],total=totalForLevel();
+  while(result.length<total){
+    const next=colors[Math.floor(Math.random()*colors.length)];
+    if(result.length>=2&&result.at(-1)===next&&result.at(-2)===next)continue;
+    if(level===3&&result.length%2===1&&result.at(-1)===next)continue;
+    result.push(next);
+  }
+  return result;
+}
+function bubbleDuration(position){
+  const [start,end]=speed[level];
+  return Math.round(start+(end-start)*(position/Math.max(1,totalForLevel()-1)));
+}
+function launchBubble(position,slot,totalInBatch){
+  const el=document.createElement("div");
+  const color=sequence[position];
+  el.className="drop bubble-two";
+  el.style.setProperty("--drop-color",colorInfo[color].hex);
+  el.style.left=totalInBatch===2?(slot===0?"38%":"62%"):"50%";
+  el.style.top="8px";
+  track.appendChild(el);
+  const item={el,color,start:performance.now(),duration:bubbleDuration(position),resolved:false,raf:0};
+  bubbleDrops.push(item);
+  const animate=now=>{
+    if(item.resolved)return;
+    const available=Math.max(40,track.clientHeight-el.offsetHeight-20);
+    const ratio=Math.min(1,(now-item.start)/item.duration);
+    el.style.top=`${8+available*ratio}px`;
+    if(ratio>=1){resolveBubble(item,false);return}
+    item.raf=requestAnimationFrame(animate);
+  };
+  item.raf=requestAnimationFrame(animate);
+}
+function startDrop(){
+  window.clearTimeout(batchTimer);
+  const total=totalForLevel();
+  if(resolvedCount>=total){finishLevel();return}
+  const batchSize=level===3?Math.min(2,total-launchedCount):1;
+  const first=launchedCount;
+  launchedCount+=batchSize;
+  launchBubble(first,0,batchSize);
+  if(batchSize===2)batchTimer=window.setTimeout(()=>launchBubble(first+1,1,2),120);
+  locked=false;
+  updateStats();
+}
+function resolveBubble(item,caught){
+  if(item.resolved)return;
+  item.resolved=true;
+  cancelAnimationFrame(item.raf);
+  if(caught){score+=1;item.el.classList.add("caught");feedback.textContent="잡았어요! 🫧"}
+  else{item.el.classList.add("missed");feedback.textContent="놓쳤어요! 다음 비눗방울을 준비해요."}
+  resolvedCount+=1;
+  updateStats();
+  window.setTimeout(()=>item.el.remove(),340);
+  const batchDone=bubbleDrops.filter(x=>!x.resolved).length===0&&launchedCount===resolvedCount;
+  if(batchDone){bubbleDrops=[];batchTimer=window.setTimeout(startDrop,level===3?240:360)}
+}
+function chooseColor(button){
+  if(locked)return;
+  const item=bubbleDrops.find(x=>!x.resolved&&x.color===button.dataset.color);
+  if(!item){button.classList.remove("wrong");void button.offsetWidth;button.classList.add("wrong");feedback.textContent="다른 색이에요! 떨어지는 비눗방울을 다시 봐요.";return}
+  resolveBubble(item,true);
+}
+function startLevel(nextLevel){
+  clearBubbleDrops();
+  level=Number(nextLevel);dropIndex=0;launchedCount=0;resolvedCount=0;score=0;sequence=makeSequence();
+  renderButtons();feedback.textContent=level===3?"두 비눗방울의 색을 빠르게 눌러요!":"떨어지는 비눗방울과 같은 색 버튼을 눌러요!";
+  overlay.classList.add("hide");updateStats();locked=false;startDrop();
+}
+function finishLevel(){
+  locked=true;clearBubbleDrops();completed.add(level);
+  if(level===3){finishGame();return}
+  const nextLevel=level+1;
+  overlayHero.textContent=score>=16?"🫧":"👏";overlayTitle.textContent=`난이도 ${level} 완료!`;
+  overlayText.innerHTML=`${totalForLevel()}개 중 <b>${score}개</b>를 잡았어요.<br>${nextLevel===3?"다음에는 두 비눗방울이 거의 함께 떨어져요!":"다음 난이도는 컬러가 늘고 더 빨라져요!"}`;
+  overlayBtn.textContent=`난이도 ${nextLevel} 시작`;overlayBtn.onclick=()=>startLevel(nextLevel);overlay.classList.remove("hide");
+}
+finishGame=function(){
+  clearBubbleDrops();
+  try{if(parent&&parent!==window&&typeof parent.completeChallengeStep==="function")parent.completeChallengeStep(12)}catch(e){}
+  overlayHero.textContent="🫧";overlayTitle.textContent="컬러 비눗방울 완료!";
+  overlayText.innerHTML="빠르게 떨어지는 컬러 비눗방울에<br>집중해서 끝까지 도전했어요.";
+  rewardBtn.classList.add("show");overlayBtn.textContent="챌린지로 돌아가기";overlayBtn.onclick=exitToChallenge;overlay.classList.remove("hide");
+};
+</script><script src="challenge-common.js?v=20260811-common2" data-step="12"></script></body></html>

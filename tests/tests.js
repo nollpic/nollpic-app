@@ -90,6 +90,57 @@ function getActiveChildProfileForResult() {
     }
 }
 
+function getNollpicLoggedInUserForTests() {
+    try {
+        const user = JSON.parse(localStorage.getItem('nollpic_user') || 'null');
+        return user && user.uid ? user : null;
+    } catch (e) {
+        return null;
+    }
+}
+
+function shouldPersistNollpicTestRecords() {
+    return true;
+}
+
+function clearGuestNollpicResultStorage() {
+    // Guest records intentionally stay in this browser so non-members can see
+    // their results until the device/site cache is cleared.
+}
+
+function saveCompletedNollpicResultToLocal(result) {
+    if (!result || result.isComplete !== true) return;
+
+    localStorage.setItem('nollpic_latest_result', JSON.stringify(result));
+    sessionStorage.setItem('nollpic_guest_latest_result', JSON.stringify(result));
+
+    let history = [];
+    try {
+        history = JSON.parse(localStorage.getItem('nollpic_result_history')) || [];
+    } catch (e) {
+        history = [];
+    }
+
+    history = history.filter(item => item && item.isComplete === true);
+
+    const isDuplicate = history.some(item => {
+        const sameChild = item.child?.id
+            ? item.child.id === result.child.id
+            : item.child?.name === result.child.name;
+        const sameDate = item.date === result.date;
+        const sameScore = item.overall === result.overall &&
+            item.scores?.attention === result.scores.attention &&
+            item.scores?.memory === result.scores.memory &&
+            item.scores?.reaction === result.scores.reaction;
+        return sameChild && sameDate && sameScore;
+    });
+
+    if (!isDuplicate) {
+        history.unshift(result);
+        localStorage.setItem('nollpic_result_history', JSON.stringify(history.slice(0, 10)));
+    }
+}
+
 // ==========================================================================
 // 놀픽 효과음 / 결과 팝업
 // - 별도 mp3 파일 없이 브라우저 Web Audio로 짧은 효과음을 재생합니다.
@@ -212,8 +263,9 @@ const testIntroAudioSrc = {
 let nollpicIntroVoice = null;
 let nollpicIntroAudio = null;
 let nollpicCompleteAudio = null;
-let nollpicIntroVoiceTimer = null;
 let hasUserInteractedForIntro = false;
+let nollpicIntroTimer = null;
+let nollpicIntroPlayToken = 0;
 
 function getNollpicKidVoice() {
     if (!window.speechSynthesis) return null;
@@ -227,9 +279,11 @@ function getNollpicKidVoice() {
 }
 
 function stopTestIntroVoice() {
-    if (nollpicIntroVoiceTimer) {
-        clearTimeout(nollpicIntroVoiceTimer);
-        nollpicIntroVoiceTimer = null;
+    nollpicIntroPlayToken += 1;
+
+    if (nollpicIntroTimer) {
+        clearTimeout(nollpicIntroTimer);
+        nollpicIntroTimer = null;
     }
 
     if (nollpicIntroAudio) {
@@ -238,9 +292,9 @@ function stopTestIntroVoice() {
         nollpicIntroAudio = null;
     }
 
+    nollpicIntroVoice = null;
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
-    nollpicIntroVoice = null;
 }
 
 function stopTestCompleteVoice() {
@@ -267,21 +321,25 @@ function playTestIntroVoice(type) {
     if (isPageReload() && !hasUserInteractedForIntro) return;
 
     stopTestIntroVoice();
+    const playToken = ++nollpicIntroPlayToken;
 
     const audioSrc = testIntroAudioSrc[type];
     if (audioSrc) {
-        nollpicIntroAudio = new Audio(audioSrc);
+        const audio = new Audio(audioSrc);
+        nollpicIntroAudio = audio;
         nollpicIntroAudio.volume = 1;
         nollpicIntroAudio.play().catch(() => {
-            playTestIntroFallbackVoice(type);
+            if (playToken !== nollpicIntroPlayToken || nollpicIntroAudio !== audio) return;
+            playTestIntroFallbackVoice(type, playToken);
         });
         return;
     }
 
-    playTestIntroFallbackVoice(type);
+    playTestIntroFallbackVoice(type, playToken);
 }
 
-function playTestIntroFallbackVoice(type) {
+function playTestIntroFallbackVoice(type, playToken = nollpicIntroPlayToken) {
+    if (playToken !== nollpicIntroPlayToken) return;
     if (!window.speechSynthesis) return;
 
     const text = testIntroVoiceText[type];
@@ -303,9 +361,12 @@ function showTestIntroPopup(popupId, voiceType) {
     resetIntroCountdownControls(popupId);
     const popup = document.getElementById(popupId);
     if (popup) popup.classList.add("active");
-    stopTestIntroVoice();
-    nollpicIntroVoiceTimer = setTimeout(() => {
-        nollpicIntroVoiceTimer = null;
+
+    if (nollpicIntroTimer) clearTimeout(nollpicIntroTimer);
+    const playToken = ++nollpicIntroPlayToken;
+    nollpicIntroTimer = setTimeout(() => {
+        nollpicIntroTimer = null;
+        if (playToken !== nollpicIntroPlayToken) return;
         playTestIntroVoice(voiceType);
     }, 120);
 }
@@ -446,6 +507,7 @@ function retryFromGameResultPopup() {
 // ==========================================================================
 window.addEventListener("DOMContentLoaded", () => {
     parseUrlParameters();
+    clearGuestNollpicResultStorage();
     loadRecords();
     renderSchulteLeaderboard();
     renderMemoryLeaderboard();
@@ -619,7 +681,9 @@ if (!Array.isArray(flankerRecords)) {
     }
 
     schulteRecords = removeSeedRecords(schulteRecords);
-    localStorage.setItem("nollpic_schulte_records", JSON.stringify(schulteRecords));
+    if (shouldPersistNollpicTestRecords()) {
+        localStorage.setItem("nollpic_schulte_records", JSON.stringify(schulteRecords));
+    }
 
     if (savedMemory) {
         try {
@@ -916,7 +980,9 @@ function makeNollpicAnalysis(scores) {
 }
 
 function saveNollpicResult(scores) {
+    const completedAtMs = Date.now();
     const result = {
+        resultId: `result_${completedAtMs}_${Math.random().toString(36).slice(2, 8)}`,
         child: {
             id: getActiveChildProfileForResult()?.id || testState.child.id || '',
             name: getActiveChildProfileForResult()?.name || testState.child.name,
@@ -925,6 +991,7 @@ function saveNollpicResult(scores) {
             gender: getActiveChildProfileForResult()?.gender || testState.child.gender || ''
         },
         date: getTodayString(),
+        completedAtMs,
         overall: scores.overall,
         finishedTests: 5,
         isComplete: true,
@@ -956,7 +1023,12 @@ function saveNollpicResult(scores) {
         analysis: makeNollpicAnalysis(scores)
     };
 
-    localStorage.setItem('nollpic_latest_result', JSON.stringify(result));
+    if (!shouldPersistNollpicTestRecords()) {
+        saveCompletedNollpicResultToLocal(result);
+        return result;
+    }
+
+    saveCompletedNollpicResultToLocal(result);
 
     let history = [];
     try {
@@ -1222,8 +1294,10 @@ function endSchulteGame() {
         isCurrentPlayer: true
     });
 
-    localStorage.setItem("nollpic_schulte_records", JSON.stringify(schulteRecords));
-    publishTestResult("schulte", schulteRecords[0]);
+    if (shouldPersistNollpicTestRecords()) {
+        localStorage.setItem("nollpic_schulte_records", JSON.stringify(schulteRecords));
+        publishTestResult("schulte", schulteRecords[0]);
+    }
     renderSchulteLeaderboard();
 
     showGameResultPopup(
@@ -1277,6 +1351,12 @@ function renderSchulteLeaderboard() {
 // ==========================================================================
 // 02. 작업 기억력
 // ==========================================================================
+function isHighGradeMemoryPlayer() {
+    if (String(testState.child.gradeValue) === "adult") return true;
+    const gradeNum = parseInt(testState.child.gradeValue, 10);
+    return gradeNum >= 5 && gradeNum <= 6;
+}
+
 function getMemoryLevelConfig(level) {
     const configs = [
         { show: 3, total: 8, time: 3 },
@@ -1290,6 +1370,10 @@ function getMemoryLevelConfig(level) {
         { show: 10, total: 16, time: 3 },
         { show: 12, total: 20, time: 3 }
     ];
+
+    if (isHighGradeMemoryPlayer() && level >= 15) {
+        return { show: 12, total: 25, time: 3 };
+    }
 
     return configs[level - 1] || { show: 12, total: 20, time: 3 };
 }
@@ -1425,8 +1509,10 @@ function endMemoryGame() {
         isCurrentPlayer: true
     });
 
-    localStorage.setItem("nollpic_memory_records", JSON.stringify(memoryRecords));
-    publishTestResult("memory", memoryRecords[0]);
+    if (shouldPersistNollpicTestRecords()) {
+        localStorage.setItem("nollpic_memory_records", JSON.stringify(memoryRecords));
+        publishTestResult("memory", memoryRecords[0]);
+    }
 
     renderMemoryLeaderboard();
 
@@ -1531,8 +1617,8 @@ function finishAllTests() {
     const flankerAvg = testState.flanker.averageSec || "0.00";
     const scores = calculateNollpicScores();
 
-    saveNollpicResult(scores);
-    window.dispatchEvent(new Event("nollpic-result-saved"));
+    const result = saveNollpicResult(scores);
+    window.dispatchEvent(new CustomEvent("nollpic-result-saved", { detail: result }));
 
     const summary = document.getElementById("result-summary");
     if (summary) {
@@ -1705,11 +1791,18 @@ function startReactionGame() {
 
 function getReactionSpeed() {
     const level = testState.reaction.level;
+    const extraHighLevelSpeedUp = level >= 30 ? (level - 29) * 12 : 0;
 
     return Math.max(
-        700,
-        2200 - ((level - 1) * 120)
+        level >= 30 ? 560 : 700,
+        2200 - ((level - 1) * 120) - extraHighLevelSpeedUp
     );
+}
+
+function getReactionCircleSize(level) {
+    if (level > 30) return 56;
+    if (level > 20) return 64;
+    return 74;
 }
 
 function spawnReactionCircle() {
@@ -1742,9 +1835,11 @@ function spawnReactionCircle() {
     circle.dataset.clicked = "false";
 
     const stageRect = stage.getBoundingClientRect();
-    const size = 74;
+    const size = getReactionCircleSize(state.level);
     const pos = getRandomCirclePosition(stageRect.width, stageRect.height, size);
 
+    circle.style.width = `${size}px`;
+    circle.style.height = `${size}px`;
     circle.style.left = `${pos.x}px`;
     circle.style.top = `${pos.y}px`;
 
@@ -1881,8 +1976,10 @@ function endReactionGame() {
         isCurrentPlayer: true
     });
 
-    localStorage.setItem("nollpic_reaction_records", JSON.stringify(reactionRecords));
-    publishTestResult("reaction", reactionRecords[0]);
+    if (shouldPersistNollpicTestRecords()) {
+        localStorage.setItem("nollpic_reaction_records", JSON.stringify(reactionRecords));
+        publishTestResult("reaction", reactionRecords[0]);
+    }
     renderReactionLeaderboard();
 
     const ready = document.getElementById("reaction-ready");
@@ -2234,8 +2331,10 @@ function endVisualSearchGame(message) {
         isCurrentPlayer: true
     });
 
-    localStorage.setItem("nollpic_visual_search_records", JSON.stringify(visualSearchRecords));
-    publishTestResult("visual", visualSearchRecords[0]);
+    if (shouldPersistNollpicTestRecords()) {
+        localStorage.setItem("nollpic_visual_search_records", JSON.stringify(visualSearchRecords));
+        publishTestResult("visual", visualSearchRecords[0]);
+    }
     renderVisualSearchLeaderboard();
 
     const nextBtn = document.getElementById("visual-next-btn");
@@ -2570,8 +2669,10 @@ function endFlankerGame(message) {
         isCurrentPlayer: true
     });
 
-    localStorage.setItem("nollpic_flanker_records", JSON.stringify(flankerRecords));
-    publishTestResult("flanker", flankerRecords[0]);
+    if (shouldPersistNollpicTestRecords()) {
+        localStorage.setItem("nollpic_flanker_records", JSON.stringify(flankerRecords));
+        publishTestResult("flanker", flankerRecords[0]);
+    }
     renderFlankerLeaderboard();
 
     const nextBtn = document.getElementById("flanker-next-btn");
@@ -2875,14 +2976,17 @@ function normalizePublicResult(type, record = {}) {
     const createdAtMs = Number(record.createdAtMs)
         || parsePublicResultTime(record.createdAt, date)
         || Date.now();
+    const user = getNollpicLoggedInUserForTests();
 
     return {
         type,
         grade: record.grade || testState.child.gradeText || "-",
-        name: record.name || testState.child.name || "익명",
+        name: "익명",
         time: record.time || record.record || "-",
         date,
-        createdAtMs
+        createdAtMs,
+        memberType: user ? "member" : "guest",
+        isGuest: !user
     };
 }
 
@@ -2932,7 +3036,7 @@ async function fetchPublicResults(type) {
         .filter(data => !isSeedResultRecord(data))
         .map(data => ({
             grade: data.grade || "-",
-            name: data.name || "익명",
+            name: "익명",
             time: data.time || "-",
             date: getDateLabelFromValue(data.createdAt) || data.date || "",
             createdAtMs: Number(data.createdAtMs) || parsePublicResultTime(data.createdAt, data.date)
@@ -2955,12 +3059,12 @@ const POPUP_RESULT_GUIDES = {
 function renderPopupResultBoard(type) {
     const guideEl = document.getElementById("game-result-guide-text");
     if (guideEl) guideEl.textContent = POPUP_RESULT_GUIDES[type] || POPUP_RESULT_GUIDES.memory;
-    renderPublicResults(type, "game-result-live-list", 3);
+    renderPublicResults(type, "game-result-live-list", 8);
 }
 
 function formatShortResultDate(value) {
     const text = String(value || "");
-    return text.replace(/^(\d{2})\d{2}([.-]\d{2}[.-]\d{2})$/, "$1$2");
+    return text.replace(/^\d{2}(\d{2})([.-]\d{2}[.-]\d{2})$/, "$1$2");
 }
 
 function formatPopupResultRecord(value) {

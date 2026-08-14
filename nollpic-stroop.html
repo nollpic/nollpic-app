@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>색깔대로 말해요</title>
+  <style>
+    :root{--navy:#0e1d3e;--orange:#ff6818;--green:#169b62;--red:#e63c49}
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Pretendard,"Malgun Gothic",sans-serif;color:var(--navy);background:#edf3f9}button{font:inherit}
+    .app{height:100%;display:flex;flex-direction:column;background:linear-gradient(180deg,#fff8f4 0 30%,#f1f8ff 67%,#e9f6ff)}
+    header{height:78px;padding:15px 18px 8px;display:flex;align-items:center;gap:12px}.back{width:42px;height:42px;border:0;border-radius:15px;background:#fff0e8;color:var(--orange);font-size:28px;font-weight:950}.heading{flex:1}.eyebrow{color:var(--orange);font-size:11px;font-weight:900}.heading h1{margin:2px 0 0;font-size:21px}.badge{padding:8px 10px;border:1px solid #ffb78c;border-radius:99px;background:#fff8f3;color:#ed6413;font-size:11px;font-weight:900}
+    .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 18px 10px;padding:6px;border-radius:18px;background:#fff;box-shadow:0 8px 20px #0e1d3e0c}.tab{height:40px;border:0;border-radius:13px;background:#f0f3f7;color:#7c8595;font-size:13px;font-weight:900}.tab.active{background:var(--orange);color:#fff;box-shadow:0 5px 12px #ff681844}
+    .mission{margin:0 18px 10px;padding:12px 15px;border:2px solid #edf0f4;border-radius:19px;background:#fff;display:flex;justify-content:space-between;align-items:center}.mission strong{color:var(--orange);font-size:13px}.mission span{font-size:12px;font-weight:900;color:#5e6b80}
+    main{position:relative;flex:1;min-height:0;margin:0 18px 12px;padding:14px;border-radius:28px;background:#ffffffdf;display:flex;flex-direction:column;box-shadow:inset 0 0 0 1px #0e1d3e0a}.rule{padding:11px 12px;border-radius:17px;background:#fff2eb;text-align:center;font-size:13px;line-height:1.45;font-weight:850}.rule b{color:var(--orange)}
+    .card-wrap{flex:1;min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center}.prompt{margin-bottom:12px;color:#78859a;font-size:13px;font-weight:850}.word-card{width:88%;height:150px;border-radius:28px;background:#fff;display:grid;place-items:center;border:3px solid #edf0f4;box-shadow:0 14px 32px #2739571c}.word{font-size:60px;font-weight:950;letter-spacing:-3px}.heard{height:47px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:13px;font-weight:950}.heard.listening{color:#2f70d0}.heard.good{color:var(--green)}.heard.bad{color:var(--red)}
+    .actions{display:grid;grid-template-columns:1.18fr .82fr;gap:10px}.btn{height:60px;border:0;border-radius:19px;font-size:14px;font-weight:950}.mic{background:var(--orange);color:#fff;box-shadow:0 5px 0 #d7520d}.parent{background:#fff;color:var(--navy);border:2px solid #e5eaf0;box-shadow:0 5px 0 #dce2e9}.btn:disabled{opacity:.55}.next{display:none;width:100%;height:58px;border:0;border-radius:19px;background:var(--orange);color:#fff;font-weight:950;box-shadow:0 5px 0 #d7520d}.next.show{display:block}.actions.hide{display:none}
+    .overlay{position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;padding:22px;background:#0e1d3e5e;backdrop-filter:blur(5px)}.overlay.hide{display:none}.panel{width:min(100%,340px);padding:27px 22px 22px;border-radius:28px;background:#fff;text-align:center;box-shadow:0 24px 60px #0e1d3e35}.hero{font-size:50px}.panel h2{margin:10px 0 9px;font-size:23px}.panel p{margin:0 0 20px;color:#657188;font-size:14px;line-height:1.55;font-weight:750}.panel button{width:100%;height:52px;border:0;border-radius:18px;background:var(--orange);color:#fff;font-weight:950;box-shadow:0 5px 0 #d7520d}.reward{display:none!important;margin-bottom:10px;background:#fff1bd!important;color:#996000!important;box-shadow:none!important}.reward.show{display:block!important}
+    @media(max-height:720px){header{height:67px;padding-top:8px}.tabs,.mission{margin-bottom:7px}.mission{padding:9px 13px}main{padding:10px}.rule{padding:8px}.word-card{height:115px}.word{font-size:49px}.card-wrap{min-height:130px}.heard{height:38px}.btn{height:53px}}
+  </style>
+</head>
+<body><div class="app">
+  <header><button class="back" onclick="exitToChallenge()" aria-label="뒤로">‹</button><div class="heading"><div class="eyebrow">오늘의 미션</div><h1>색깔대로 말해요</h1></div><span class="badge">충동억제 · 보통</span></header>
+  <div class="tabs"><button class="tab active" data-level="1">난이도 1</button><button class="tab" data-level="2">난이도 2</button><button class="tab" data-level="3">난이도 3</button></div>
+  <div class="mission"><strong id="levelTitle">같은 색 연습</strong><span id="progress">1/3 문제</span></div>
+  <main>
+    <div class="rule">글자를 읽지 말고 <b>글자에 칠해진 색깔</b>을 말해요.</div>
+    <div class="card-wrap"><div class="prompt">마이크를 누르고 색깔을 말해요</div><div class="word-card"><span class="word" id="word">빨강</span></div></div>
+    <div class="heard" id="heard">예: 글자가 파란색이면 “파랑!”</div>
+    <div class="actions" id="actions"><button class="btn mic" id="micBtn">🎤 말하기 시작</button><button class="btn parent" id="parentBtn">맞게 말했어요</button></div>
+    <button class="next" id="nextBtn">다음 문제</button>
+    <div class="overlay" id="overlay"><div class="panel"><div class="hero" id="overlayHero">🎨</div><h2 id="overlayTitle">색깔대로 말해요</h2><p id="overlayText">글자의 뜻에 속지 말고 실제로 보이는 색을 말해요.<br>마이크 사용을 허용해주세요.</p><button class="reward" id="rewardBtn">🎁 200P 받기</button><button id="overlayBtn">놀이 시작</button></div></div>
+  </main>
+</div>
+<script>
+  const colors={red:{name:"빨강",hex:"#d9252a"},blue:{name:"파랑",hex:"#236db1"},yellow:{name:"노랑",hex:"#f2b514"},green:{name:"초록",hex:"#2da64a"},purple:{name:"보라",hex:"#8750a5"},black:{name:"검정",hex:"#111111"}};
+  const keys=Object.keys(colors),titles={1:"같은 색 연습",2:"다른 색 도전",3:"섞어서 집중"},questionCounts={1:3,2:10,3:10};
+  function buildPrepared(level){
+    if(level===1)return keys.map(key=>({word:key,ink:key}));
+    const different=[];
+    keys.forEach(word=>keys.forEach(ink=>{if(word!==ink)different.push({word,ink})}));
+    if(level===2)return different.slice(0,10);
+    return [...keys.map(key=>({word:key,ink:key})),...different.slice(0,4)];
+  }
+  const prepared={1:buildPrepared(1),2:buildPrepared(2),3:buildPrepared(3)};
+  const wordEl=document.getElementById("word"),heard=document.getElementById("heard"),actions=document.getElementById("actions"),micBtn=document.getElementById("micBtn"),parentBtn=document.getElementById("parentBtn"),nextBtn=document.getElementById("nextBtn"),progress=document.getElementById("progress"),levelTitle=document.getElementById("levelTitle"),overlay=document.getElementById("overlay"),overlayHero=document.getElementById("overlayHero"),overlayTitle=document.getElementById("overlayTitle"),overlayText=document.getElementById("overlayText"),overlayBtn=document.getElementById("overlayBtn"),rewardBtn=document.getElementById("rewardBtn"),tabs=[...document.querySelectorAll(".tab")];
+  let level=1,index=0,questions={},completed=new Set(),recognition=null,listening=false,pointClaimed=false;
+  const shuffle=list=>{const copy=[...list];for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]]}return copy};
+  const aliases={red:["빨강","빨간색","빨간","빨간 색"],blue:["파랑","파란색","파란","파란 색"],yellow:["노랑","노란색","노란","노란 색"],green:["초록","초록색","녹색"],purple:["보라","보라색","보라 색"],black:["검정","검정색","검은색","검은 색","까망"]};
+  function normalize(text){return String(text).replace(/[\s.,!?]/g,"").toLowerCase()}
+  function recognizedColor(text){const clean=normalize(text);return keys.find(key=>aliases[key].some(value=>clean.includes(normalize(value))))||null}
+  function chooseQuestions(levelNumber){return shuffle(prepared[levelNumber]).slice(0,questionCounts[levelNumber])}
+  function showProblem(){const q=questions[level][index];wordEl.textContent=colors[q.word].name;wordEl.style.color=colors[q.ink].hex;progress.textContent=`${index+1}/${questions[level].length} 문제`;levelTitle.textContent=titles[level];heard.textContent="색깔을 소리 내어 말해보세요.";heard.className="heard";actions.classList.remove("hide");nextBtn.classList.remove("show");micBtn.disabled=false;parentBtn.disabled=false;listening=false}
+  function markCorrect(source){const q=questions[level][index];heard.textContent=source==="parent"?`보호자가 확인했어요. 정답은 ${colors[q.ink].name}!`:`정답이에요! ${colors[q.ink].name}으로 들었어요.`;heard.className="heard good";actions.classList.add("hide");nextBtn.textContent=index<questions[level].length-1?"다음 문제":"다음 단계";nextBtn.classList.add("show")}
+  function setupRecognition(){const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SpeechRecognition)return null;const rec=new SpeechRecognition();rec.lang="ko-KR";rec.continuous=false;rec.interimResults=false;rec.maxAlternatives=3;rec.onstart=()=>{listening=true;heard.textContent="듣고 있어요… 색깔을 말해주세요.";heard.className="heard listening";micBtn.disabled=true};rec.onresult=e=>{const q=questions[level][index],texts=Array.from(e.results[0]).map(r=>r.transcript),found=texts.map(recognizedColor).find(Boolean);if(found===q.ink){markCorrect("voice");return}heard.textContent=found?`${colors[found].name}으로 들었어요. 다시 말해볼까요?`: `“${texts[0]}”으로 들었어요. 다시 말해볼까요?`;heard.className="heard bad"};rec.onerror=e=>{heard.textContent=e.error==="not-allowed"?"마이크 권한이 필요해요. 허용하거나 보호자 확인을 눌러주세요.":"음성을 듣지 못했어요. 다시 말하거나 보호자가 확인해주세요.";heard.className="heard bad"};rec.onend=()=>{listening=false;micBtn.disabled=false};return rec}
+  function listen(){if(listening)return;if(!recognition)recognition=setupRecognition();if(!recognition){heard.textContent="이 브라우저는 음성 인식을 지원하지 않아요. 보호자가 확인해주세요.";heard.className="heard bad";return}try{recognition.start()}catch(e){heard.textContent="잠시 후 다시 눌러주세요.";heard.className="heard bad"}}
+  function next(){if(index<questions[level].length-1){index++;showProblem();return}completed.add(level);if(completed.size===3){finish();return}const nextLevel=[1,2,3].find(n=>!completed.has(n));overlayHero.textContent="🌈";overlayTitle.textContent=`난이도 ${level} 완료!`;overlayText.innerHTML=`글자의 뜻에 속지 않고 실제 색깔을 말하며<br>${questions[level].length}문제를 모두 해결했어요.`;overlayBtn.textContent=`난이도 ${nextLevel} 시작`;overlayBtn.onclick=()=>{overlay.classList.add("hide");selectLevel(nextLevel)};overlay.classList.remove("hide")}
+  function selectLevel(nextLevel){level=Number(nextLevel);index=0;if(!questions[level])questions[level]=chooseQuestions(level);tabs.forEach(t=>t.classList.toggle("active",Number(t.dataset.level)===level));showProblem()}
+  function start(){questions={1:chooseQuestions(1),2:chooseQuestions(2),3:chooseQuestions(3)};completed=new Set();overlay.classList.add("hide");selectLevel(1)}
+  function finish(){try{if(window.parent&&window.parent!==window&&typeof window.parent.completeChallengeStep==="function")window.parent.completeChallengeStep(8)}catch(e){}overlayHero.textContent="🎉";overlayTitle.textContent="색깔 말하기 완료!";overlayText.innerHTML="글자에 속지 않고 실제 색깔을 말하며<br>모든 집중력 문제를 해결했어요.";rewardBtn.classList.add("show");overlayBtn.textContent="챌린지로 돌아가기";overlayBtn.onclick=exitToChallenge;overlay.classList.remove("hide")}
+  function claimReward(){if(pointClaimed)return;pointClaimed=true;try{if(window.parent&&window.parent!==window&&typeof window.parent.claimChallengeStepReward==="function")window.parent.claimChallengeStepReward(8)}catch(e){}rewardBtn.textContent="200P 받았어요";rewardBtn.disabled=true}
+  function exitToChallenge(){if(recognition&&listening)try{recognition.abort()}catch(e){}try{if(window.parent&&window.parent!==window&&typeof window.parent.prevPage==="function"){window.parent.prevPage(11);return}}catch(e){}window.history.back()}
+  micBtn.addEventListener("click",listen);parentBtn.addEventListener("click",()=>markCorrect("parent"));nextBtn.addEventListener("click",next);tabs.forEach(t=>t.addEventListener("click",()=>selectLevel(t.dataset.level)));overlayBtn.onclick=start;rewardBtn.addEventListener("click",claimReward);
+</script><script src="challenge-common.js?v=20260811-common2" data-step="8"></script></body></html>

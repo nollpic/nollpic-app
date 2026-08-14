@@ -34,6 +34,8 @@ const db = getFirestore(app);
 const APP_VERSION = "v1";
 const TEST_VERSION = "v1";
 const CHALLENGE_START_DATE = "2026-06-01";
+const GUEST_LABEL = "\ube44\ud68c\uc6d0";
+const GUEST_USER_LABEL = "\ube44\ud68c\uc6d0 \uc0ac\uc6a9\uc790";
 
 function safeJsonParse(value, fallback = null) {
   try {
@@ -82,6 +84,7 @@ function getLocalResultData() {
   const scores = latest.scores || {};
 
   return {
+    resultId: latest.resultId || `result_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
     child,
     childId: child?.id || "",
     childName: child?.name || "",
@@ -92,6 +95,7 @@ function getLocalResultData() {
     date: getTodayString(),
     localDate: getTodayString(),
     originalDate: latest.date || "",
+    completedAtMs: latest.completedAtMs || Date.now(),
     overall: Number(latest.overall || 0),
     scores,
     analysis: latest.analysis || "",
@@ -194,8 +198,9 @@ async function saveGuestProfileToFirestore(guestId, resultData) {
       uid: guestId,
       guestId,
       isGuest: true,
-      userEmail: "비로그인",
-      userName: "비로그인 사용자",
+      memberType: "guest",
+      userEmail: GUEST_LABEL,
+      userName: GUEST_USER_LABEL,
       updatedAt: serverTimestamp()
     },
     { merge: true }
@@ -215,8 +220,9 @@ async function saveGuestProfileToFirestore(guestId, resultData) {
       uid: guestId,
       guestId,
       isGuest: true,
-      userEmail: "비로그인",
-      userName: "비로그인 사용자",
+      memberType: "guest",
+      userEmail: GUEST_LABEL,
+      userName: GUEST_USER_LABEL,
       updatedAt: serverTimestamp()
     },
     { merge: true }
@@ -238,6 +244,7 @@ async function saveUserProfileToFirestore(uid, user) {
 }
 
 function makeSaveKey(uid, resultData) {
+  if (resultData.resultId) return `firebase_saved_${uid}_${resultData.resultId}`;
   const childKey = resultData.childId || resultData.childName || "child";
   return `firebase_saved_${uid}_${childKey}_${resultData.date}_${resultData.overall}`;
 }
@@ -325,8 +332,9 @@ async function uploadGuestProcess(resultData, triggerSource) {
       uid: guestId,
       guestId,
       isGuest: true,
-      userEmail: "비로그인",
-      userName: "비로그인 사용자",
+      memberType: "guest",
+      userEmail: GUEST_LABEL,
+      userName: GUEST_USER_LABEL,
       sessionNumber,
       ...resultData,
       savedAt: serverTimestamp()

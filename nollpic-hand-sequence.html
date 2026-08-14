@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>놀픽 손가락 순서 놀이</title>
+  <style>
+    :root { --navy:#0e1d3e; --orange:#ff6b16; --cream:#fff8f4; --blue:#eef7ff; }
+    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html, body { margin:0; width:100%; height:100%; overflow:hidden; font-family:Pretendard,"Malgun Gothic",sans-serif; color:var(--navy); background:#edf3f9; }
+    button { font:inherit; }
+    .phone { width:100%; height:100%; display:flex; flex-direction:column; background:linear-gradient(180deg,#fff8f5 0 25%,#f3f9ff 58%,#edf8ff 100%); overflow:hidden; }
+    header { min-height:82px; display:flex; align-items:center; gap:12px; padding:18px 18px 12px; }
+    .back { width:42px; height:42px; border:0; border-radius:15px; background:#fff0e8; color:var(--orange); font-size:29px; font-weight:900; cursor:pointer; }
+    .title { min-width:0; flex:1; }
+    .title small { color:var(--orange); font-size:12px; font-weight:900; }
+    .title h1 { margin:2px 0 0; font-size:22px; line-height:1.1; font-weight:950; }
+    .badge { padding:8px 10px; border:1px solid #ffbd91; border-radius:999px; color:#ed6413; background:#fff8f3; font-size:11px; font-weight:900; white-space:nowrap; }
+    .mission { margin:0 18px 12px; padding:13px 14px; border:2px solid #eef0f3; border-radius:24px; background:#fff; box-shadow:0 10px 22px rgba(14,29,62,.06); }
+    .mission-top { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .round { color:var(--orange); font-size:13px; font-weight:950; }
+    .progress { color:#6d7788; font-size:12px; font-weight:850; }
+    .sequence { display:flex; justify-content:center; gap:7px; margin-top:10px; }
+    .sequence span { width:34px; height:34px; display:grid; place-items:center; border-radius:50%; background:#eef1f5; color:#667085; border:3px solid #fff; box-shadow:0 3px 8px rgba(14,29,62,.13); font-size:17px; font-weight:950; transition:.18s ease; }
+    .sequence span.done { background:#bfe8cd; color:#147446; }
+    .sequence span.active { color:#fff; background:var(--orange); transform:scale(1.14); box-shadow:0 0 0 4px #ffe0ca,0 5px 12px rgba(255,107,22,.24); }
+    .play { flex:1; min-height:0; margin:0 18px 12px; padding:14px; border-radius:28px; background:rgba(255,255,255,.78); display:flex; flex-direction:column; box-shadow:inset 0 0 0 1px rgba(14,29,62,.04); }
+    .turn { min-height:66px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; border-radius:20px; background:#fff5ee; padding:9px 12px; }
+    .turn strong { color:var(--orange); font-size:18px; font-weight:950; }
+    .turn span { margin-top:4px; color:#6b7280; font-size:12px; font-weight:800; }
+    .grid { flex:1; min-height:0; display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+    .gesture { position:relative; min-height:120px; border:2px solid #e8edf3; border-radius:23px; background:#fff; cursor:default; box-shadow:0 6px 0 #dfe6ed,0 10px 18px rgba(14,29,62,.06); transition:transform .12s ease,box-shadow .12s ease; }
+    .gesture .num { position:absolute; left:12px; top:9px; color:#8792a4; font-size:23px; font-weight:950; }
+    .gesture .hand { display:block; font-size:65px; line-height:1; filter:saturate(.88); }
+    .gesture .label { display:block; margin-top:7px; color:#64748b; font-size:11px; font-weight:850; }
+    .gesture.correct { border-color:#58c989; background:#effcf4; animation:pop .35s ease; }
+    .gesture.current { border-color:#ff9b55; background:#fff5ee; box-shadow:0 6px 0 #f0b48d,0 0 0 4px #ffe5d2; transform:scale(1.02); }
+    .confirm { width:100%; height:50px; margin-top:12px; border:0; border-radius:17px; color:#fff; background:var(--orange); font-size:15px; font-weight:950; cursor:pointer; box-shadow:0 5px 0 #d9520b; }
+    .guide { text-align:center; color:#68758a; font-size:12px; line-height:1.4; font-weight:800; padding:0 10px 2px; }
+    .feedback { height:22px; text-align:center; color:#157347; font-size:13px; font-weight:950; }
+    .overlay { position:absolute; inset:0; z-index:10; display:flex; align-items:center; justify-content:center; padding:24px; background:rgba(14,29,62,.34); backdrop-filter:blur(5px); }
+    .overlay.hide { display:none; }
+    .panel { width:min(100%,340px); padding:28px 22px 22px; border-radius:28px; background:#fff; text-align:center; box-shadow:0 22px 60px rgba(14,29,62,.24); }
+    .panel .hero { font-size:58px; }
+    .panel h2 { margin:7px 0 10px; font-size:24px; font-weight:950; }
+    .panel p { margin:0 0 18px; color:#667085; font-size:14px; line-height:1.65; font-weight:750; }
+    .panel button { width:100%; height:52px; border:0; border-radius:18px; background:var(--orange); color:#fff; font-weight:950; cursor:pointer; box-shadow:0 6px 0 #d95109; }
+    .reward { display:none; width:100%; margin:0 0 10px; height:46px!important; background:#fff3c8!important; color:#9b6500!important; box-shadow:none!important; }
+    .reward.show { display:block; }
+    @keyframes pop { 50% { transform:scale(1.05); } }
+    @keyframes shake { 25% { transform:translateX(-4px); } 75% { transform:translateX(4px); } }
+    @media (max-height:720px) { header{min-height:70px;padding-top:11px}.mission{margin-bottom:8px;padding:9px 12px}.sequence span{width:29px;height:29px}.play{padding:10px}.gesture{min-height:102px}.gesture .hand{font-size:53px}.turn{min-height:55px} }
+  </style>
+</head>
+<body>
+  <main class="phone">
+    <header>
+      <button class="back" type="button" onclick="exitToChallenge()" aria-label="방학챌린지로 돌아가기">‹</button>
+      <div class="title"><small>부모님과 함께</small><h1>손가락 순서 놀이</h1></div>
+      <span class="badge">순서기억 · 협동</span>
+    </header>
+    <section class="mission">
+      <div class="mission-top"><span class="round" id="roundText">라운드 1/3</span><span class="progress" id="progressText">3개 동작</span></div>
+      <div class="sequence" id="sequence"></div>
+    </section>
+    <section class="play">
+      <div class="turn"><strong id="turnTitle">따라서 만들어 보세요!</strong><span id="turnText">위 숫자 불빛 순서대로 오른손 모양을 만들어요.</span></div>
+      <div class="grid" id="gestureGrid">
+        <button class="gesture" type="button" data-value="1"><span class="num">1</span><span class="hand">☝️</span><span class="label">한 손가락</span></button>
+        <button class="gesture" type="button" data-value="2"><span class="num">2</span><span class="hand">✌️</span><span class="label">두 손가락</span></button>
+        <button class="gesture" type="button" data-value="3"><span class="num">3</span><span class="hand">👌</span><span class="label">동그라미 손</span></button>
+        <button class="gesture" type="button" data-value="4"><span class="num">4</span><span class="hand">👍</span><span class="label">엄지 척</span></button>
+      </div>
+      <button class="confirm" type="button" id="confirmBtn" disabled>부모님 확인</button>
+      <p class="guide">불빛 순서는 천천히 계속 반복돼요. 아이가 전체 순서를 따라 하면 부모님이 확인해주세요.</p>
+      <div class="feedback" id="feedback"></div>
+    </section>
+    <section class="overlay" id="overlay">
+      <div class="panel">
+        <div class="hero" id="overlayHero">👨‍👩‍👧‍👦</div>
+        <h2 id="overlayTitle">함께 손모양을 만들어요!</h2>
+        <p id="overlayText">상단 숫자 불빛이 천천히 계속 반복돼요.<br>아이가 전체 순서를 오른손으로 따라 하면<br>부모님이 마지막에 한 번 확인해주세요.</p>
+        <button class="reward" type="button" id="rewardBtn">오늘의 포인트 받기 200P</button>
+        <button type="button" id="overlayBtn">놀이 시작</button>
+      </div>
+    </section>
+  </main>
+  <script>
+    const rounds = [[1, 2, 4], [1, 2, 4, 3], [1, 2, 4, 3, 1]];
+    const colors = ["#d81932", "#f3a000", "#3c7c35", "#397ee8"];
+    const sequenceEl = document.getElementById("sequence");
+    const roundText = document.getElementById("roundText");
+    const progressText = document.getElementById("progressText");
+    const turnTitle = document.getElementById("turnTitle");
+    const turnText = document.getElementById("turnText");
+    const confirmBtn = document.getElementById("confirmBtn");
+    const feedback = document.getElementById("feedback");
+    const overlay = document.getElementById("overlay");
+    const overlayHero = document.getElementById("overlayHero");
+    const overlayTitle = document.getElementById("overlayTitle");
+    const overlayText = document.getElementById("overlayText");
+    const overlayBtn = document.getElementById("overlayBtn");
+    const rewardBtn = document.getElementById("rewardBtn");
+    let roundIndex = 0;
+    let activeIndex = -1;
+    let cycleCount = 0;
+    let playToken = 0;
+    let pointClaimed = false;
+
+    function render() {
+      const items = rounds[roundIndex];
+      roundText.textContent = `라운드 ${roundIndex + 1}/${rounds.length}`;
+      progressText.textContent = `${items.length}개 동작`;
+      sequenceEl.innerHTML = items.map((value, index) => {
+        const state = index === activeIndex ? "active" : "";
+        const style = index === activeIndex ? `style="background:${colors[value - 1]}"` : "";
+        return `<span class="${state}" ${style}>${value}</span>`;
+      }).join("");
+      const currentValue = activeIndex >= 0 ? items[activeIndex] : null;
+      document.querySelectorAll(".gesture").forEach(button => {
+        button.classList.toggle("current", Number(button.dataset.value) === currentValue);
+      });
+    }
+
+    const wait = ms => new Promise(resolve => window.setTimeout(resolve, ms));
+
+    async function playSequence() {
+      const token = ++playToken;
+      const items = rounds[roundIndex];
+      cycleCount = 0;
+      confirmBtn.disabled = true;
+      while (token === playToken) {
+        for (let index = 0; index < items.length && token === playToken; index += 1) {
+          activeIndex = index;
+          turnTitle.textContent = `${items[index]}번 · 오른손`;
+          turnText.textContent = `${items[index]}번 불빛을 보고 같은 손모양을 만들어요.`;
+          render();
+          await wait(900);
+          activeIndex = -1;
+          render();
+          await wait(260);
+        }
+        if (token !== playToken) return;
+        cycleCount += 1;
+        confirmBtn.disabled = false;
+        if (cycleCount === 1) {
+          turnTitle.textContent = "잘 따라 했나요?";
+          turnText.textContent = "조금 어렵죠? 다시 한 번 천천히 보여줄게요!";
+        } else {
+          turnTitle.textContent = "한 번 더!";
+          turnText.textContent = "완성했다면 부모님이 확인 버튼을 눌러주세요.";
+        }
+        await wait(750);
+      }
+    }
+
+    function confirmGesture() {
+      if (confirmBtn.disabled) return;
+      playToken += 1;
+      activeIndex = -1;
+      confirmBtn.disabled = true;
+      render();
+      feedback.textContent = "부모님 확인 완료!";
+      window.setTimeout(finishRound, 350);
+    }
+
+    function finishRound() {
+      if (roundIndex >= rounds.length - 1) {
+        finishGame();
+        return;
+      }
+      overlayHero.textContent = "🙌";
+      overlayTitle.textContent = `라운드 ${roundIndex + 1} 성공!`;
+      overlayText.innerHTML = `잘 따라 했어요!<br>이번엔 ${rounds[roundIndex + 1].length}개 동작으로 조금 더 어렵게 해볼게요.`;
+      overlayBtn.textContent = "다음 라운드";
+      overlayBtn.onclick = () => {
+        roundIndex += 1;
+        feedback.textContent = "";
+        overlay.classList.add("hide");
+        render();
+        playSequence();
+      };
+      overlay.classList.remove("hide");
+    }
+
+    function finishGame() {
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.completeChallengeStep === "function") {
+          window.parent.completeChallengeStep(5);
+        }
+      } catch (error) {}
+      overlayHero.textContent = "🎉";
+      overlayTitle.textContent = "함께해서 더 즐거웠어요!";
+      overlayText.innerHTML = "부모님과 아이가 모든 손모양 순서를 완성했어요.<br>서로 하이파이브 해주세요!";
+      rewardBtn.classList.add("show");
+      overlayBtn.textContent = "챌린지로 돌아가기";
+      overlayBtn.onclick = exitToChallenge;
+      overlay.classList.remove("hide");
+    }
+
+    function claimReward() {
+      if (pointClaimed) return;
+      pointClaimed = true;
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.claimChallengeStepReward === "function") {
+          window.parent.claimChallengeStepReward(5);
+        }
+      } catch (error) {}
+      rewardBtn.textContent = "200P 받았어요";
+      rewardBtn.disabled = true;
+    }
+
+    function startGame() {
+      roundIndex = 0;
+      activeIndex = -1;
+      feedback.textContent = "";
+      overlay.classList.add("hide");
+      render();
+      playSequence();
+    }
+
+    function exitToChallenge() {
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.prevPage === "function") {
+          window.parent.prevPage(11);
+          return;
+        }
+      } catch (error) {}
+      window.history.back();
+    }
+
+    confirmBtn.addEventListener("click", confirmGesture);
+    overlayBtn.onclick = startGame;
+    rewardBtn.addEventListener("click", claimReward);
+    render();
+  </script>
+<script src="challenge-common.js?v=20260811-common2" data-step="5"></script>
+</body>
+</html>

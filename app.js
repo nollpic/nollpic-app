@@ -1233,8 +1233,8 @@ function updateBottomNav(pageNumber) {
         return;
     }
 
-    // page-5(미션), page-16~19(챌린지 미션)은 하단 탭 숨김 + nav-visible 제거 → iframe 전체화면
-    if (pageNumber === 5 || pageNumber === 16 || pageNumber === 17 || pageNumber === 18 || pageNumber === 19) {
+    // 검사 미션 화면만 하단 탭을 숨깁니다. 챌린지 놀이는 하단 메뉴를 유지합니다.
+    if (pageNumber === 5) {
         if (nav) nav.style.display = 'none';
         if (device) device.classList.remove('nav-visible');
         return;
@@ -1251,7 +1251,7 @@ function updateBottomNav(pageNumber) {
     if (pageNumber === 5) activeTab = 'home';
     if (pageNumber === 6) activeTab = 'result';
     if ([7, 8, 9, 10, 12].includes(pageNumber)) activeTab = 'play';
-    if ([11, 13, 14, 15, 16, 17, 18, 19].includes(pageNumber)) activeTab = 'challenge';
+    if ([11, 13, 14, 15,16,17,18,19,20,21,22,23,24,25,26,27,28,29].includes(pageNumber)) activeTab = 'challenge';
 
     const target = document.querySelector(`.bottom-tab[data-tab="${activeTab}"]`);
     if (target) target.classList.add('active');
@@ -1329,28 +1329,42 @@ const CHALLENGE_START_POINTS = 200;
 const CHALLENGE_PLAY_POINTS = 200;
 const CHALLENGE_CHEST_REWARDS = [30, 40, 40, 50, 50, 60, 70, 80, 80, 100];
 const CHALLENGE_CHEST_RANDOM_REWARDS = [30, 40, 50, 60, 70, 80, 100];
-const CHALLENGE_DEFAULT_COMPLETED = 1;
-const CHALLENGE_DEFAULT_STREAK = 2;
-const CHALLENGE_STATE_KEY = 'nollpic_summer_challenge_state_original_v1';
-const CHALLENGE_STREAK_KEY = 'nollpic_summer_challenge_streak_original_v1';
+const CHALLENGE_DEFAULT_COMPLETED = 0;
+const CHALLENGE_DEFAULT_STREAK = 1;
+const CHALLENGE_STATE_KEY = 'nollpic_summer_challenge_state_original_v2';
+const CHALLENGE_STREAK_KEY = 'nollpic_summer_challenge_streak_original_v2';
 let challengeAudioContext = null;
 
 function readChallengeState() {
     try {
         const saved = JSON.parse(localStorage.getItem(CHALLENGE_STATE_KEY) || 'null');
+        const completed = Math.max(0, Math.min(CHALLENGE_TOTAL_COUNT, Number(saved?.completed ?? CHALLENGE_DEFAULT_COMPLETED)));
+        const migratedCompletedSteps = [
+            ...Array.from({ length: completed }, (_, index) => index + 1),
+            ...(Array.isArray(saved?.completedSteps) ? saved.completedSteps : []),
+            ...(Array.isArray(saved?.claimedSteps) ? saved.claimedSteps : []),
+        ];
         return {
-            completed: Math.max(0, Math.min(CHALLENGE_TOTAL_COUNT, Number(saved?.completed) || CHALLENGE_DEFAULT_COMPLETED)),
+            completed,
+            completedSteps: [...new Set(migratedCompletedSteps)].map(Number).filter(step => step > 0 && step <= CHALLENGE_TOTAL_COUNT),
+            claimedSteps: Array.isArray(saved?.claimedSteps) ? saved.claimedSteps : [],
             openedChests: Array.isArray(saved?.openedChests) ? saved.openedChests : [],
             chestRewards: saved?.chestRewards && typeof saved.chestRewards === 'object' ? saved.chestRewards : {},
         };
     } catch (error) {
-        return { completed: CHALLENGE_DEFAULT_COMPLETED, openedChests: [], chestRewards: {} };
+        return { completed: CHALLENGE_DEFAULT_COMPLETED, completedSteps: [], claimedSteps: [], openedChests: [], chestRewards: {} };
     }
 }
 
 function saveChallengeState(state) {
     localStorage.setItem(CHALLENGE_STATE_KEY, JSON.stringify({
         completed: Math.max(0, Math.min(CHALLENGE_TOTAL_COUNT, Number(state.completed) || 0)),
+        completedSteps: [...new Set(state.completedSteps || [])]
+            .map(Number)
+            .filter(step => step > 0 && step <= CHALLENGE_TOTAL_COUNT),
+        claimedSteps: [...new Set(state.claimedSteps || [])]
+            .map(Number)
+            .filter(step => step > 0 && step <= CHALLENGE_TOTAL_COUNT),
         openedChests: [...new Set(state.openedChests || [])],
         chestRewards: state.chestRewards || {},
     }));
@@ -1359,10 +1373,16 @@ function saveChallengeState(state) {
 function getChallengePoints(state) {
     const chestPoints = (state.openedChests || []).reduce((sum, chestId) => {
         const chestIndex = Number(String(chestId).replace('chest-', '')) - 1;
+        if (state.completed < getChallengeChestRequiredCount(chestIndex)) return sum;
         return sum + (Number(state.chestRewards?.[chestId]) || CHALLENGE_CHEST_REWARDS[chestIndex] || 0);
     }, 0);
 
-    return CHALLENGE_START_POINTS + (state.completed * CHALLENGE_PLAY_POINTS) + chestPoints;
+    const claimedPlayPoints = (state.claimedSteps || []).length * CHALLENGE_PLAY_POINTS;
+    return CHALLENGE_START_POINTS + claimedPlayPoints + chestPoints;
+}
+
+function getChallengeChestRequiredCount(chestIndex) {
+    return (Number(chestIndex) + 1) * 2;
 }
 
 function formatChallengePoints(points) {
@@ -1405,11 +1425,21 @@ function showChallengeChestReward(chest, reward) {
     if (!chest) return;
     chest.classList.add('opening');
     chest.querySelectorAll('.chest-reward-pop, .chest-coin').forEach((node) => node.remove());
+    document.querySelectorAll('.challenge-chest-fx-layer').forEach((node) => node.remove());
+
+    const rect = chest.getBoundingClientRect();
+    const fxLayer = document.createElement('div');
+    fxLayer.className = 'challenge-chest-fx-layer';
+    fxLayer.style.left = `${rect.left}px`;
+    fxLayer.style.top = `${rect.top}px`;
+    fxLayer.style.width = `${rect.width}px`;
+    fxLayer.style.height = `${rect.height}px`;
+    document.body.appendChild(fxLayer);
 
     const pop = document.createElement('span');
     pop.className = 'chest-reward-pop';
     pop.textContent = `+${reward}P`;
-    chest.appendChild(pop);
+    fxLayer.appendChild(pop);
 
     for (let i = 0; i < 8; i += 1) {
         const coin = document.createElement('span');
@@ -1420,12 +1450,13 @@ function showChallengeChestReward(chest, reward) {
         coin.style.setProperty('--coin-y', `${Math.sin(angle) * distance - 18}px`);
         coin.style.setProperty('--coin-r', `${80 + i * 32}deg`);
         coin.style.animationDelay = `${i * .025}s`;
-        chest.appendChild(coin);
+        fxLayer.appendChild(coin);
     }
 
     window.setTimeout(() => {
         chest.classList.remove('opening');
         chest.querySelectorAll('.chest-reward-pop, .chest-coin').forEach((node) => node.remove());
+        fxLayer.remove();
     }, 1300);
 }
 
@@ -1448,7 +1479,7 @@ function readChallengeStreak() {
         const saved = JSON.parse(localStorage.getItem(CHALLENGE_STREAK_KEY) || 'null');
         return {
             lastVisitDate: saved?.lastVisitDate || getChallengeDateKey(),
-            streak: Math.max(0, Number(saved?.streak) || CHALLENGE_DEFAULT_STREAK),
+            streak: Math.max(0, Number(saved?.streak ?? CHALLENGE_DEFAULT_STREAK)),
         };
     } catch (error) {
         return { lastVisitDate: getChallengeDateKey(), streak: CHALLENGE_DEFAULT_STREAK };
@@ -1493,7 +1524,8 @@ function renderChallengeState() {
 
     const state = readChallengeState();
     const points = getChallengePoints(state);
-    const remaining = Math.max(0, CHALLENGE_TOTAL_COUNT - state.completed);
+    const completedCount = new Set(state.completedSteps || []).size;
+    const remaining = Math.max(0, CHALLENGE_TOTAL_COUNT - completedCount);
 
     const summaryCards = page.querySelectorAll('.challenge-summary-card');
     if (summaryCards[0]) {
@@ -1510,36 +1542,34 @@ function renderChallengeState() {
     }
 
     const progressFill = page.querySelector('.challenge-progress-track span');
-    if (progressFill) progressFill.style.width = `${(state.completed / CHALLENGE_TOTAL_COUNT) * 100}%`;
+    if (progressFill) progressFill.style.width = `${(completedCount / CHALLENGE_TOTAL_COUNT) * 100}%`;
 
     const progressText = page.querySelector('.challenge-progress p');
     if (progressText) progressText.innerHTML = `완주까지 <strong>${remaining}</strong>번 남았어요!`;
 
     page.querySelectorAll('.road-node').forEach((node) => {
         const number = getRoadNodeNumber(node);
-        const isJengaNode = number === 3 && node.classList.contains('jenga-node');
-        const isColorNode = number === 4 && node.classList.contains('color-node');
-        const isPlayablePreview = isJengaNode || isColorNode;
-        const isDone = number > 0 && number <= state.completed;
+        const isDone = number > 0 && (number <= state.completed || (state.completedSteps || []).includes(number));
         const isNext = number === state.completed + 1;
+        const hasPlayableGame = node.matches('button[onclick]');
 
         node.classList.toggle('done', isDone);
-        node.classList.toggle('locked', !isDone && !isPlayablePreview);
-        node.classList.toggle('is-next', isNext || isPlayablePreview);
+        node.classList.toggle('locked', !isDone && !hasPlayableGame);
+        node.classList.toggle('is-next', isNext);
         node.setAttribute('role', 'button');
-        node.setAttribute('tabindex', isDone || isNext || isPlayablePreview ? '0' : '-1');
+        node.setAttribute('tabindex', isDone || isNext || hasPlayableGame ? '0' : '-1');
         node.setAttribute('aria-label', isDone ? `${number}번 완료` : `${number}번 도전`);
 
         const icon = node.querySelector('i');
-        if (icon) icon.textContent = isDone || isPlayablePreview ? '✓' : '';
+        if (icon) icon.textContent = isDone ? '✓' : '';
     });
 
     page.querySelectorAll('.road-chest[data-chest-id]').forEach((chest) => {
         const chestIndex = Number(String(chest.dataset.chestId).replace('chest-', '')) - 1;
         const reward = Number(state.chestRewards?.[chest.dataset.chestId]) || CHALLENGE_CHEST_REWARDS[chestIndex] || 0;
-        const requiredCount = chestIndex + 2;
+        const requiredCount = getChallengeChestRequiredCount(chestIndex);
         const isUnlocked = state.completed >= requiredCount;
-        const isOpen = state.openedChests.includes(chest.dataset.chestId);
+        const isOpen = isUnlocked && state.openedChests.includes(chest.dataset.chestId);
 
         chest.classList.toggle('opened', isOpen);
         chest.classList.toggle('is-locked', !isUnlocked);
@@ -1550,12 +1580,34 @@ function renderChallengeState() {
 }
 
 function completeChallengeStep(stepNumber) {
+    const step = Number(stepNumber);
+    if (!Number.isFinite(step) || step < 1 || step > CHALLENGE_TOTAL_COUNT) return;
     const state = readChallengeState();
-    if (stepNumber !== state.completed + 1 || stepNumber > CHALLENGE_TOTAL_COUNT) return;
-
-    state.completed = stepNumber;
+    state.completedSteps = [...new Set([...(state.completedSteps || []), step])];
+    while (state.completedSteps.includes(state.completed + 1)) state.completed += 1;
     saveChallengeState(state);
     renderChallengeState();
+}
+
+function claimChallengeStepReward(stepNumber) {
+    const step = Number(stepNumber);
+    if (!Number.isFinite(step) || step < 1 || step > CHALLENGE_TOTAL_COUNT) return false;
+
+    const state = readChallengeState();
+    state.completedSteps = [...new Set([...(state.completedSteps || []), step])];
+    while (state.completedSteps.includes(state.completed + 1)) state.completed += 1;
+
+    state.claimedSteps = [...new Set(state.claimedSteps || [])];
+    if (!state.claimedSteps.includes(step)) {
+        state.claimedSteps.push(step);
+        saveChallengeState(state);
+        renderChallengeState();
+        return true;
+    }
+
+    saveChallengeState(state);
+    renderChallengeState();
+    return false;
 }
 
 function openChallengeRewardChest(chestId) {
@@ -1563,7 +1615,7 @@ function openChallengeRewardChest(chestId) {
     const chestIndex = Number(String(chestId).replace('chest-', '')) - 1;
     if (chestIndex < 0 || chestIndex >= CHALLENGE_CHEST_REWARDS.length) return;
 
-    const requiredCount = chestIndex + 2;
+    const requiredCount = getChallengeChestRequiredCount(chestIndex);
     if (state.completed < requiredCount || state.openedChests.includes(chestId)) {
         renderChallengeState();
         return;
@@ -1590,6 +1642,7 @@ function initChallengeProgress() {
     page.dataset.challengeProgressReady = 'true';
 
     page.querySelectorAll('.road-node').forEach((node) => {
+        if (node.matches('button[onclick]')) return;
         node.addEventListener('click', () => completeChallengeStep(getRoadNodeNumber(node)));
         node.addEventListener('keydown', (event) => {
             if (event.key !== 'Enter' && event.key !== ' ') return;
@@ -1607,6 +1660,7 @@ function initChallengeProgress() {
     });
 
     window.openChallengeChest = openChallengeRewardChest;
+    window.claimChallengeStepReward = claimChallengeStepReward;
     window.initChallengePreview = renderChallengeState;
     renderChallengeState();
     requestAnimationFrame(renderChallengeState);

@@ -3,9 +3,17 @@
     "rules": "firestore.rules"
   },
   "hosting": {
+    "site": "nollpic-challenge",
     "public": ".",
     "ignore": [
       "firebase.json",
+      "firestore.rules",
+      "firebase",
+      "firebase deploy/**",
+      "**/*복사본*",
+      "**/*.bak",
+      "**/*.map",
+      "**/package*.json",
       "**/.*",
       "**/node_modules/**"
     ],
@@ -21,6 +29,24 @@
       },
       {
         "source": "**/*.html",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, must-revalidate"
+          }
+        ]
+      },
+      {
+        "source": "/manifest.json",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, must-revalidate"
+          }
+        ]
+      },
+      {
+        "source": "/images/icon-*.png",
         "headers": [
           {
             "key": "Cache-Control",

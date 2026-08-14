@@ -1,4 +1,4 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+﻿import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getAuth, signInWithEmailAndPassword,
   onAuthStateChanged, signOut
@@ -23,6 +23,7 @@ const auth = getAuth(app);
 const db   = getFirestore(app);
 
 const ADMIN_EMAILS = ["monojjin@gmail.com", "nollpic.official@gmail.com"];
+const GUEST_LABEL = "\ube44\ud68c\uc6d0";
 
 // ── DOM ─────────────────────────────────────────────
 const loginScreen   = document.getElementById("login-screen");
@@ -32,9 +33,18 @@ const resultTable   = document.getElementById("result-table");
 const searchInput   = document.getElementById("search-input");
 const filterGrade   = document.getElementById("filter-grade");
 const filterComplete= document.getElementById("filter-complete");
+const filterWeekday = document.getElementById("filter-weekday");
+const sortOrder     = document.getElementById("sort-order");
+const filterAppLaunch = document.getElementById("filter-app-launch");
 const rowCountEl    = document.getElementById("row-count");
 const thCheck       = document.getElementById("th-check");
 const deleteBtn     = document.getElementById("delete-btn");
+const resultPagination = document.getElementById("result-pagination");
+const trendChart       = document.getElementById("trend-chart");
+const trendChartTotal  = document.getElementById("trend-chart-total");
+const trendChartCaption = document.getElementById("trend-chart-caption");
+const trendChartTabs   = document.querySelectorAll("[data-chart-range]");
+const resultAverageRow = document.getElementById("result-average-row");
 const childDetailModal   = document.getElementById("child-detail-modal");
 const childDetailTitle   = document.getElementById("child-detail-title");
 const childDetailSummary = document.getElementById("child-detail-summary");
@@ -57,7 +67,12 @@ const gnbItems           = document.querySelectorAll(".admin-gnb-item");
 
 let allRows = [];
 let currentFilteredRows = [];
+let currentPageRows = [];
 let recommendedPlays = [];
+let completedRowsForTrend = [];
+let trendChartRange = "daily";
+let resultCurrentPage = 1;
+const RESULT_PAGE_SIZE = 30;
 
 function isCompleteResult(row = {}) {
   if (!row || row.isComplete === false) return false;
@@ -102,6 +117,13 @@ gnbItems.forEach(item => {
     });
   });
 });
+trendChartTabs.forEach(button => {
+  button.addEventListener("click", () => {
+    trendChartRange = button.dataset.chartRange || "daily";
+    trendChartTabs.forEach(item => item.classList.toggle("active", item === button));
+    renderTrendChart(completedRowsForTrend, trendChartRange);
+  });
+});
 childDetailClose?.addEventListener("click", closeChildDetail);
 childDetailModal?.addEventListener("click", (e) => {
   if (e.target === childDetailModal) closeChildDetail();
@@ -110,6 +132,9 @@ childDetailModal?.addEventListener("click", (e) => {
 searchInput.addEventListener("input", applyFilter);
 filterGrade.addEventListener("change", applyFilter);
 filterComplete.addEventListener("change", applyFilter);
+filterWeekday?.addEventListener("change", applyFilter);
+sortOrder?.addEventListener("change", applyFilter);
+filterAppLaunch?.addEventListener("change", applyFilter);
 
 function setActiveGnb(targetId) {
   gnbItems.forEach(item => {
@@ -147,18 +172,62 @@ function showAdmin() {
   adminScreen.classList.remove("hidden");
 }
 
+function buildAppLaunchMap(usersSnap, guestUsersSnap) {
+  const map = new Map();
+  const addProfile = (id, data = {}) => {
+    if (!id) return;
+    if (!data.appInstalledModeSeen && !data.lastAppLaunchAt) return;
+    map.set(id, {
+      seen: data.appInstalledModeSeen === true || !!data.lastAppLaunchAt,
+      lastAt: data.lastAppLaunchAt || null,
+      count: Number(data.appLaunchCount) || 0
+    });
+  };
+
+  usersSnap.forEach(docSnap => addProfile(docSnap.id, docSnap.data()));
+  guestUsersSnap.forEach(docSnap => addProfile(docSnap.id, docSnap.data()));
+  return map;
+}
+
+function formatAppLaunchStatus(info) {
+  if (!info || !info.seen) return "미확인";
+  const date = formatFirestoreDateTime(info.lastAt) || "-";
+  const count = info.count ? `${info.count}회` : "기록 있음";
+  return `앱 실행됨 ${date} (${count})`;
+}
+
+function buildScoreLevelMeta(raw = {}) {
+  const schulteTime = raw.schulteTime || raw.attentionTime || "";
+  const levelText = value => {
+    const level = Number(value) || 0;
+    return level > 0 ? `Lv.${level}` : "";
+  };
+
+  return {
+    attention: schulteTime ? `${schulteTime}초` : "",
+    memory: levelText(raw.memoryLevel),
+    reaction: levelText(raw.reactionLevel),
+    visual: levelText(raw.visualLevel),
+    inhibition: levelText(raw.flankerLevel)
+  };
+}
+
 // ── 데이터 로딩 (수정본) ──────────────────
 async function loadAdminData() {
-  resultTable.innerHTML = `<tr><td colspan="15" class="loading-msg">⏳ 데이터를 불러오는 중...</td></tr>`;
+  resultTable.innerHTML = `<tr><td colspan="16" class="loading-msg">⏳ 데이터를 불러오는 중...</td></tr>`;
   allRows = [];
   if(thCheck) thCheck.checked = false;
 
   let todayCount = 0;
-  const today = getTodayText();
 
   try {
     // [확인] 모든 유저의 'results' 서브 컬렉션을 통째로 가져옵니다.
-    const resultsSnap = await getDocs(collectionGroup(db, "results"));
+    const [resultsSnap, usersSnap, guestUsersSnap] = await Promise.all([
+      getDocs(collectionGroup(db, "results")),
+      getDocs(collection(db, "users")),
+      getDocs(collection(db, "guestUsers"))
+    ]);
+    const appLaunchMap = buildAppLaunchMap(usersSnap, guestUsersSnap);
     
     // 디버깅용: 실제로 DB에서 몇 건의 검사결과를 가져왔는지 콘솔에 출력합니다.
     console.log(`[어드민] DB에서 총 ${resultsSnap.size}개의 검사 결과를 가져왔습니다.`);
@@ -173,33 +242,42 @@ async function loadAdminData() {
       console.log("가져온 문서 데이터:", r);
 
       const uid = r.uid || resultDoc.ref.parent.parent?.id || "";
+      const isGuest = r.isGuest === true || r.memberType === "guest" || String(uid).startsWith("guest_");
+      const appLaunchInfo = appLaunchMap.get(uid) || null;
       const userEmail = r.userEmail || r.email || (r.isGuest ? "비로그인" : "-");
+      const displayUserEmail = isGuest ? GUEST_LABEL : userEmail;
       const userKey = uid || userEmail;
-      if (userKey && userKey !== "-") userSet.add(userKey);
+      if (!isGuest && userKey && userKey !== "-") userSet.add(userKey);
 
-      const date = r.date || r.testDate || formatFirestoreDate(r.createdAt) || formatFirestoreDate(r.savedAt) || "-";
+      const date = formatFirestoreDateTime(r.savedAt) || formatFirestoreDateTime(r.createdAt) || r.date || r.testDate || "-";
+      const sortMs = getResultSortMs(r, date);
       const isComplete = isCompleteResult(r);
 
-      if (isComplete && String(date).startsWith(today)) todayCount++;
+      if (isComplete && isTodayResult(sortMs, date)) todayCount++;
 
       const childName = r.childName || r.child?.name || "-";
+      const displayChildName = childName === "-" && isGuest ? GUEST_LABEL : childName;
       const gradeText = normalizeGradeText(r.gradeText || r.child?.gradeText || r.child?.gradeValue || "-");
       const gender = r.gender || r.child?.gender || "-";
 
       const childId = r.childId || r.child?.id || "";
-      const childKey = childId || `${userKey}_${childName}_${gradeText}`;
-      if (isComplete && childKey && childName !== "-") childSet.add(childKey);
+      const guestChildKey = `${userKey}_${displayChildName}_${gradeText}_${gender}`;
+      const childKey = isGuest ? guestChildKey : (childId || `${userKey}_${displayChildName}_${gradeText}`);
+      if (isComplete && childKey && displayChildName !== "-") childSet.add(childKey);
 
       const s = r.scores || {};
+      const raw = r.raw || {};
+      const levelMeta = buildScoreLevelMeta(r.raw || {});
 
       allRows.push({
         id: resultDoc.id,
         refPath: resultDoc.ref.path,
         date,
-        userEmail,
+        sortMs,
+        userEmail: displayUserEmail,
         childId,
         childKey,
-        childName,
+        childName: displayChildName,
         gradeText,
         gender,
         overall: r.overall ?? "-",
@@ -208,12 +286,16 @@ async function loadAdminData() {
         reaction: s.reaction ?? "-",
         visual: s.visual ?? "-",
         inhibition: s.inhibition ?? "-",
+        raw,
+        levelMeta,
+        appLaunchInfo,
         testCount: 1,
         isComplete
       });
     });
 
     const completedRows = allRows.filter(row => row.isComplete);
+    completedRowsForTrend = completedRows;
     const childCounts = new Map();
     completedRows.forEach(row => {
       childCounts.set(row.childKey, (childCounts.get(row.childKey) || 0) + 1);
@@ -226,13 +308,14 @@ async function loadAdminData() {
     document.getElementById("child-count").textContent = childSet.size;
     document.getElementById("result-count").textContent = completedRows.length;
     document.getElementById("today-result-count").textContent = todayCount;
-
-    allRows.sort((a, b) => String(b.date).localeCompare(String(a.date)));
+    document.getElementById("app-launch-count").textContent = appLaunchMap.size;
+    renderTrendChart(completedRowsForTrend, trendChartRange);
+    allRows.sort((a, b) => (b.sortMs || 0) - (a.sortMs || 0));
     applyFilter();
 
   } catch (err) {
     console.error("어드민 데이터 취합 중 오류 발생:", err);
-    resultTable.innerHTML = `<tr><td colspan="15" class="error-msg">❌ 데이터 로드 실패: ${err.message}</td></tr>`;
+    resultTable.innerHTML = `<tr><td colspan="16" class="error-msg">❌ 데이터 로드 실패: ${err.message}</td></tr>`;
   }
 }
 
@@ -391,14 +474,42 @@ function resetPlayForm() {
   if (playSaveBtn) playSaveBtn.textContent = "저장";
 }
 
+function groupRowsByChild(rows, order = "desc") {
+  const map = new Map();
+
+  rows.forEach(row => {
+    if (!row || !row.childKey) return;
+
+    const existing = map.get(row.childKey);
+    if (!existing) {
+      map.set(row.childKey, row);
+      return;
+    }
+
+    if ((row.sortMs || 0) > (existing.sortMs || 0)) {
+      map.set(row.childKey, row);
+    }
+  });
+
+  return Array.from(map.values())
+    .sort((a, b) => {
+      const diff = (a.sortMs || 0) - (b.sortMs || 0);
+      return order === "asc" ? diff : -diff;
+    });
+}
+
 function applyFilter() {
   const q       = searchInput.value.trim().toLowerCase();
   const grade   = filterGrade.value;
   const complete= filterComplete.value;
+  const weekday = filterWeekday?.value || "";
+  const order = sortOrder?.value || "desc";
+  const appLaunch = filterAppLaunch?.value || "";
   
   if(thCheck) thCheck.checked = false;
 
-  currentFilteredRows = allRows.filter(row => {
+  const matchedRows = allRows.filter(row => {
+    const rowDate = row.sortMs ? new Date(row.sortMs) : null;
     const matchSearch = !q ||
       row.childName.toLowerCase().includes(q) ||
       row.childId.toLowerCase().includes(q) ||
@@ -408,16 +519,35 @@ function applyFilter() {
     const matchDone   = complete === ""
       ? true
       : complete === "done" ? row.isComplete : !row.isComplete;
-    return matchSearch && matchGrade && matchDone;
+    const matchWeekday = !weekday || (rowDate && String(rowDate.getDay()) === weekday);
+    const hasAppLaunch = !!(row.appLaunchInfo && row.appLaunchInfo.seen);
+    const matchAppLaunch = appLaunch === ""
+      ? true
+      : appLaunch === "seen" ? hasAppLaunch : !hasAppLaunch;
+    return matchSearch && matchGrade && matchDone && matchWeekday && matchAppLaunch;
   });
 
-  rowCountEl.textContent = `총 ${currentFilteredRows.length}건`;
-  renderTable(currentFilteredRows);
+  currentFilteredRows = groupRowsByChild(matchedRows, order);
+  resultCurrentPage = 1;
+
+  rowCountEl.textContent = `총 ${currentFilteredRows.length}명`;
+  renderResultAverageSummary(currentFilteredRows, grade);
+  renderPagedTable();
 }
 
-function renderTable(rows) {
+function renderPagedTable() {
+  const totalPages = Math.max(1, Math.ceil(currentFilteredRows.length / RESULT_PAGE_SIZE));
+  resultCurrentPage = Math.min(Math.max(1, resultCurrentPage), totalPages);
+  const start = (resultCurrentPage - 1) * RESULT_PAGE_SIZE;
+  currentPageRows = currentFilteredRows.slice(start, start + RESULT_PAGE_SIZE);
+  renderTable(currentPageRows, start);
+  renderPagination(totalPages);
+}
+
+function renderTable(rows, startIndex = 0) {
   if (!rows.length) {
-    resultTable.innerHTML = `<tr><td colspan="15" class="loading-msg">검색 결과가 없습니다.</td></tr>`;
+    resultTable.innerHTML = `<tr><td colspan="16" class="loading-msg">검색 결과가 없습니다.</td></tr>`;
+    currentPageRows = [];
     return;
   }
 
@@ -427,12 +557,15 @@ function renderTable(rows) {
       : `<span class="badge badge-undone">미완료</span>`;
     const genderText = row.gender === "male" ? "남" : row.gender === "female" ? "여" : row.gender;
     const childIdLabel = row.childId || row.childKey || "-";
+    const appLaunchText = formatAppLaunchStatus(row.appLaunchInfo);
     const overallCell = v => v === "-" ? `<td class="score-empty score-overall-col">-</td>` : `<td class="score score-overall score-overall-col">${escapeHtml(v)}</td>`;
-    const scoreCell  = v => v === "-" ? `<td class="score-empty">-</td>` : `<td class="score score-detail">${escapeHtml(v)}</td>`;
+    const scoreCell  = (v, meta = "") => v === "-"
+      ? `<td class="score-empty">-</td>`
+      : `<td class="score score-detail"><span class="score-value">${escapeHtml(v)}</span>${meta ? `<span class="score-level">${escapeHtml(meta)}</span>` : ""}</td>`;
 
     return `<tr>
       <td class="td-check-cell">
-        <input type="checkbox" class="td-check" data-index="${index}"/>
+        <input type="checkbox" class="td-check" data-index="${startIndex + index}" data-page-index="${index}"/>
       </td>
       <td class="date-cell">${escapeHtml(row.date)}</td>
       <td class="email-cell">${escapeHtml(row.userEmail)}</td>
@@ -446,11 +579,12 @@ function renderTable(rows) {
       <td>${escapeHtml(row.gradeText)}</td>
       <td>${escapeHtml(genderText)}</td>
       ${overallCell(row.overall)}
-      ${scoreCell(row.attention)}
-      ${scoreCell(row.memory)}
-      ${scoreCell(row.reaction)}
-      ${scoreCell(row.visual)}
-      ${scoreCell(row.inhibition)}
+      ${scoreCell(row.attention, row.levelMeta?.attention)}
+      ${scoreCell(row.memory, row.levelMeta?.memory)}
+      ${scoreCell(row.reaction, row.levelMeta?.reaction)}
+      ${scoreCell(row.visual, row.levelMeta?.visual)}
+      ${scoreCell(row.inhibition, row.levelMeta?.inhibition)}
+      <td class="app-launch-cell">${escapeHtml(appLaunchText)}</td>
       <td>${doneBadge}</td>
     </tr>`;
   }).join("");
@@ -466,15 +600,171 @@ function renderTable(rows) {
   });
 }
 
+function renderPagination(totalPages) {
+  if (!resultPagination) return;
+
+  if (totalPages <= 1) {
+    resultPagination.innerHTML = "";
+    return;
+  }
+
+  resultPagination.innerHTML = Array.from({ length: totalPages }, (_, index) => {
+    const page = index + 1;
+    return `<button type="button" class="${page === resultCurrentPage ? "active" : ""}" data-page="${page}">${page}</button>`;
+  }).join("");
+
+  resultPagination.querySelectorAll("button").forEach(button => {
+    button.addEventListener("click", () => {
+      resultCurrentPage = Number(button.dataset.page) || 1;
+      if (thCheck) thCheck.checked = false;
+      renderPagedTable();
+    });
+  });
+}
+
+function toAverageNumber(value) {
+  const num = Number(value);
+  return Number.isFinite(num) ? num : null;
+}
+
+function addAverageValue(bucket, key, value) {
+  const num = toAverageNumber(value);
+  if (num === null) return;
+  bucket[key] = (bucket[key] || 0) + num;
+  bucket[`${key}Count`] = (bucket[`${key}Count`] || 0) + 1;
+}
+
+function getAverage(bucket, key, digits = 0) {
+  const count = bucket[`${key}Count`] || 0;
+  if (!count) return "-";
+  const value = bucket[key] / count;
+  return digits > 0 ? value.toFixed(digits) : String(Math.round(value));
+}
+
+function buildAverageBucket(rows = []) {
+  const bucket = { count: 0 };
+  rows.filter(row => row.isComplete).forEach(row => {
+    bucket.count++;
+    addAverageValue(bucket, "overall", row.overall);
+    addAverageValue(bucket, "attention", row.attention);
+    addAverageValue(bucket, "memory", row.memory);
+    addAverageValue(bucket, "reaction", row.reaction);
+    addAverageValue(bucket, "visual", row.visual);
+    addAverageValue(bucket, "inhibition", row.inhibition);
+  });
+  return bucket;
+}
+
+function renderResultAverageSummary(rows = [], grade = "") {
+  if (!resultAverageRow) return;
+
+  const bucket = buildAverageBucket(rows);
+  const title = grade ? `${grade} 평균` : "전체 평균";
+  const items = [
+    ["종합", getAverage(bucket, "overall")],
+    ["집중 유지력", getAverage(bucket, "attention")],
+    ["작업 기억력", getAverage(bucket, "memory")],
+    ["반응 속도", getAverage(bucket, "reaction")],
+    ["시각 탐색", getAverage(bucket, "visual")],
+    ["충동 억제", getAverage(bucket, "inhibition")]
+  ];
+  const countText = bucket.count ? `완료 ${bucket.count}건 기준` : "평균을 계산할 완료 검사 데이터가 없습니다.";
+
+  resultAverageRow.innerHTML = `
+    <th colspan="8" class="average-context-cell">
+      <strong>${escapeHtml(title)}</strong>
+      <span>${escapeHtml(countText)}</span>
+    </th>
+    ${items.map(([label, value], index) => `
+      <th class="average-score-cell ${index === 0 ? "overall" : ""}">
+        <span>${escapeHtml(label)}</span>
+        <strong>${escapeHtml(bucket.count ? value : "-")}</strong>
+      </th>
+    `).join("")}
+    <th class="average-app-cell"></th>
+  `;
+}
+function getGradeSortValue(gradeText = "") {
+  const text = String(gradeText || "");
+  if (text.includes("미취") || text.includes("誘몄")) return 0;
+  const match = text.match(/[1-6]/);
+  if (match) return Number(match[0]);
+  if (text.includes("어른") || text.includes("?대") || text.toLowerCase().includes("adult")) return 7;
+  return 99;
+}
+
+function renderGradeStats(rows = []) {
+  if (!gradeStatsTable) return;
+
+  const completed = rows.filter(row => isCompleteResult(row));
+  if (gradeStatsTotal) gradeStatsTotal.textContent = `완료 검사 ${completed.length}건 기준`;
+
+  if (!completed.length) {
+    gradeStatsTable.innerHTML = `<tr><td colspan="9" class="loading-msg">표시할 완료 검사 데이터가 없습니다.</td></tr>`;
+    return;
+  }
+
+  const buckets = new Map();
+  completed.forEach(row => {
+    const grade = row.gradeText || "-";
+    if (!buckets.has(grade)) {
+      buckets.set(grade, { grade, count: 0 });
+    }
+
+    const bucket = buckets.get(grade);
+    bucket.count++;
+    addAverageValue(bucket, "overall", row.overall);
+    addAverageValue(bucket, "attention", row.attention);
+    addAverageValue(bucket, "memory", row.memory);
+    addAverageValue(bucket, "reaction", row.reaction);
+    addAverageValue(bucket, "visual", row.visual);
+    addAverageValue(bucket, "inhibition", row.inhibition);
+
+    const raw = row.raw || {};
+    addAverageValue(bucket, "attentionSec", parseFloat(raw.schulteTime || raw.attentionTime));
+    addAverageValue(bucket, "memoryLevel", raw.memoryLevel);
+    addAverageValue(bucket, "reactionLevel", raw.reactionLevel);
+    addAverageValue(bucket, "visualLevel", raw.visualLevel);
+    addAverageValue(bucket, "flankerLevel", raw.flankerLevel);
+  });
+
+  const stats = Array.from(buckets.values()).sort((a, b) => {
+    const order = getGradeSortValue(a.grade) - getGradeSortValue(b.grade);
+    return order || String(a.grade).localeCompare(String(b.grade), "ko");
+  });
+
+  gradeStatsTable.innerHTML = stats.map(bucket => {
+    const rawSummary = [
+      `집중 ${getAverage(bucket, "attentionSec", 1)}초`,
+      `기억 Lv.${getAverage(bucket, "memoryLevel", 1)}`,
+      `반응 Lv.${getAverage(bucket, "reactionLevel", 1)}`,
+      `탐색 Lv.${getAverage(bucket, "visualLevel", 1)}`,
+      `억제 Lv.${getAverage(bucket, "flankerLevel", 1)}`
+    ].join("<br>");
+
+    return `<tr>
+      <td><strong>${escapeHtml(bucket.grade)}</strong></td>
+      <td>${bucket.count}</td>
+      <td class="grade-stat-overall">${getAverage(bucket, "overall")}</td>
+      <td>${getAverage(bucket, "attention")}</td>
+      <td>${getAverage(bucket, "memory")}</td>
+      <td>${getAverage(bucket, "reaction")}</td>
+      <td>${getAverage(bucket, "visual")}</td>
+      <td>${getAverage(bucket, "inhibition")}</td>
+      <td class="grade-stat-raw">${rawSummary}</td>
+    </tr>`;
+  }).join("");
+}
+
 function openChildDetail(childKey) {
   const history = allRows
     .filter(row => row.childKey === childKey && row.isComplete)
-    .sort((a, b) => String(a.date).localeCompare(String(b.date)));
+    .sort((a, b) => (a.sortMs || 0) - (b.sortMs || 0));
 
   if (!history.length) return;
 
   const child = history[history.length - 1];
-  childDetailTitle.textContent = `${child.childName} 성장 그래프`;
+  childDetailTitle.textContent = `${child.childName} 상세 점수`;
   childDetailSummary.textContent = `${child.gradeText} · ${formatGender(child.gender)} · 검사 ${history.length}회 · ID ${child.childId || shortId(child.childKey)}`;
   childDetailModal.classList.remove("hidden");
 
@@ -564,12 +854,31 @@ function renderGrowthList(history) {
   if (!childGrowthList) return;
 
   childGrowthList.innerHTML = history.map((row, index) => `
-    <div class="growth-item">
-      <span>${index + 1}회차</span>
-      <strong>${escapeHtml(row.overall)}점</strong>
-      <em>${escapeHtml(row.date)}</em>
+    <div class="growth-item growth-detail-item">
+      <div class="growth-item-head">
+        <span>${index + 1}회차</span>
+        <strong>${escapeHtml(row.overall)}점</strong>
+        <em>${escapeHtml(row.date)}</em>
+      </div>
+      <div class="growth-score-grid">
+        ${detailScoreLine("집중", row.attention, row.levelMeta?.attention)}
+        ${detailScoreLine("기억", row.memory, row.levelMeta?.memory)}
+        ${detailScoreLine("반응", row.reaction, row.levelMeta?.reaction)}
+        ${detailScoreLine("탐색", row.visual, row.levelMeta?.visual)}
+        ${detailScoreLine("억제", row.inhibition, row.levelMeta?.inhibition)}
+      </div>
     </div>
   `).join("");
+}
+
+function detailScoreLine(label, score, meta = "") {
+  return `
+    <div class="growth-score-line">
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(score)}</strong>
+      <em>${escapeHtml(meta || "-")}</em>
+    </div>
+  `;
 }
 
 function formatGender(gender) {
@@ -603,11 +912,19 @@ async function deleteSelectedRows() {
   const checkedInputs = resultTable.querySelectorAll(".td-check:checked");
   
   if (checkedInputs.length === 0) {
-    alert("삭제할 항목을 먼저 선택해주세요.");
+    alert("삭제할 최신 검사 기록을 먼저 선택해주세요.");
     return;
   }
 
-  if (!confirm(`정말로 선택한 ${checkedInputs.length}개의 검사 결과를 삭제하시겠습니까?\n삭제된 데이터는 복구할 수 없습니다.`)) {
+  const targetRows = Array.from(checkedInputs)
+    .map(input => {
+      const filteredIndex = parseInt(input.getAttribute("data-index"), 10);
+      return currentFilteredRows[filteredIndex];
+    })
+    .filter(row => row && row.refPath);
+  const targetPaths = new Set(targetRows.map(row => row.refPath));
+
+  if (!confirm(`정말로 선택한 최신 검사 기록 ${targetPaths.size}건을 삭제하시겠습니까?\n삭제된 데이터는 복구할 수 없습니다.`)) {
     return;
   }
 
@@ -617,14 +934,8 @@ async function deleteSelectedRows() {
 
     const batch = writeBatch(db);
 
-    checkedInputs.forEach(input => {
-      const filteredIndex = parseInt(input.getAttribute("data-index"), 10);
-      const targetRow = currentFilteredRows[filteredIndex];
-      
-      if (targetRow && targetRow.refPath) {
-        const docRef = doc(db, targetRow.refPath);
-        batch.delete(docRef);
-      }
+    targetPaths.forEach(refPath => {
+      batch.delete(doc(db, refPath));
     });
 
     await batch.commit();
@@ -650,11 +961,17 @@ function exportCSV() {
     return;
   }
 
-  const headers = ["검사일","이메일","아이ID","아이이름","검사횟수","학년","성별","종합","집중유지력","작업기억력","반응속도","시각탐색","충동억제","완료여부"];
+  const headers = ["검사일","이메일","아이ID","아이이름","검사횟수","학년","성별","종합","집중유지력","집중기록","작업기억력","작업기억레벨","반응속도","반응레벨","시각탐색","시각탐색레벨","충동억제","충동억제레벨","앱실행","완료여부"];
   const rows = targetRows.map(r => [
     r.date, r.userEmail, r.childId || r.childKey, r.childName, r.testCount, r.gradeText,
     formatGender(r.gender),
-    r.overall, r.attention, r.memory, r.reaction, r.visual, r.inhibition,
+    r.overall,
+    r.attention, r.levelMeta?.attention || "",
+    r.memory, r.levelMeta?.memory || "",
+    r.reaction, r.levelMeta?.reaction || "",
+    r.visual, r.levelMeta?.visual || "",
+    r.inhibition, r.levelMeta?.inhibition || "",
+    formatAppLaunchStatus(r.appLaunchInfo),
     r.isComplete ? "완료" : "미완료"
   ]);
 
@@ -680,6 +997,170 @@ function getTodayText() {
   return `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")}`;
 }
 
+function startOfLocalDay(date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function getWeekStart(date) {
+  const day = date.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  const start = startOfLocalDay(date);
+  start.setDate(start.getDate() + diff);
+  return start;
+}
+
+function getMonthStart(date) {
+  return new Date(date.getFullYear(), date.getMonth(), 1);
+}
+
+function formatShortMonthDay(date) {
+  return `${date.getMonth() + 1}/${date.getDate()}`;
+}
+
+function getTrendBuckets(range = "daily") {
+  if (range === "weekly") {
+    const thisWeek = getWeekStart(new Date());
+    return Array.from({ length: 8 }, (_, index) => {
+      const date = new Date(thisWeek);
+      date.setDate(thisWeek.getDate() - ((7 - index) * 7));
+      const end = new Date(date);
+      end.setDate(date.getDate() + 6);
+      return {
+        key: getLocalDateKey(date),
+        label: `${formatShortMonthDay(date)}~${formatShortMonthDay(end)}`,
+        count: 0
+      };
+    });
+  }
+
+  if (range === "monthly") {
+    const thisMonth = getMonthStart(new Date());
+    return Array.from({ length: 6 }, (_, index) => {
+      const date = new Date(thisMonth.getFullYear(), thisMonth.getMonth() - (5 - index), 1);
+      return {
+        key: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`,
+        label: `${date.getMonth() + 1}월`,
+        count: 0
+      };
+    });
+  }
+
+  const today = startOfLocalDay(new Date());
+  return Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(today);
+    date.setDate(today.getDate() - (6 - index));
+    return {
+      key: getLocalDateKey(date),
+      label: `${["일", "월", "화", "수", "목", "금", "토"][date.getDay()]}\n${formatShortMonthDay(date)}`,
+      count: 0
+    };
+  });
+}
+
+function getTrendKeyForRow(row, range) {
+  const date = row.sortMs ? new Date(row.sortMs) : new Date(getDisplayDateKey(row.date));
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return "";
+
+  if (range === "weekly") return getLocalDateKey(getWeekStart(date));
+  if (range === "monthly") return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+  return getLocalDateKey(date);
+}
+
+function getTrendCaption(range) {
+  if (range === "weekly") return "최근 8주 기준";
+  if (range === "monthly") return "최근 6개월 기준";
+  return "최근 7일 기준";
+}
+
+function getTrendTotalLabel(range, total) {
+  if (range === "weekly") return `최근 8주 ${total}건`;
+  if (range === "monthly") return `최근 6개월 ${total}건`;
+  return `최근 7일 ${total}건`;
+}
+
+function renderTrendChart(rows = [], range = "daily") {
+  if (!trendChart) return;
+
+  const buckets = getTrendBuckets(range);
+  const bucketMap = new Map(buckets.map(bucket => [bucket.key, bucket]));
+
+  rows.forEach(row => {
+    const bucket = bucketMap.get(getTrendKeyForRow(row, range));
+    if (bucket) bucket.count += 1;
+  });
+
+  const maxCount = Math.max(1, ...buckets.map(bucket => bucket.count));
+  const total = buckets.reduce((sum, bucket) => sum + bucket.count, 0);
+
+  if (trendChartCaption) trendChartCaption.textContent = getTrendCaption(range);
+  if (trendChartTotal) trendChartTotal.textContent = getTrendTotalLabel(range, total);
+
+  if (!buckets.length) {
+    trendChart.innerHTML = `<div class="trend-empty">표시할 검사 데이터가 없습니다.</div>`;
+    return;
+  }
+
+  const width = 760;
+  const height = 230;
+  const padding = { top: 28, right: 26, bottom: 48, left: 28 };
+  const plotWidth = width - padding.left - padding.right;
+  const plotHeight = height - padding.top - padding.bottom;
+  const xStep = buckets.length > 1 ? plotWidth / (buckets.length - 1) : plotWidth;
+  const points = buckets.map((bucket, index) => {
+    const x = padding.left + (index * xStep);
+    const y = padding.top + plotHeight - ((bucket.count / maxCount) * plotHeight);
+    return { ...bucket, x, y };
+  });
+  const linePath = points.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(" ");
+  const areaPath = `${linePath} L ${points[points.length - 1].x.toFixed(1)} ${padding.top + plotHeight} L ${points[0].x.toFixed(1)} ${padding.top + plotHeight} Z`;
+  const gridLines = [0, 0.5, 1].map(ratio => {
+    const y = padding.top + (plotHeight * ratio);
+    return `<line class="trend-grid-line" x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}"></line>`;
+  }).join("");
+
+  trendChart.innerHTML = `
+    <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${getTrendCaption(range)} 완료 검사 추이">
+      ${gridLines}
+      <path class="trend-fill" d="${areaPath}"></path>
+      <path class="trend-line" d="${linePath}"></path>
+      ${points.map(point => `
+        <g>
+          <circle class="trend-point" cx="${point.x}" cy="${point.y}" r="5"></circle>
+          <text class="trend-point-count" x="${point.x}" y="${Math.max(15, point.y - 12)}">${point.count}</text>
+          ${String(point.label).split("\n").map((line, lineIndex) => `
+            <text class="trend-axis-label" x="${point.x}" y="${height - 24 + (lineIndex * 14)}">${line}</text>
+          `).join("")}
+        </g>
+      `).join("")}
+    </svg>
+  `;
+}
+
+function getLocalDateKey(date) {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return "";
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0")
+  ].join("-");
+}
+
+function getDisplayDateKey(value) {
+  const match = String(value || "").match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);
+  if (!match) return "";
+  return [
+    match[1],
+    String(Number(match[2])).padStart(2, "0"),
+    String(Number(match[3])).padStart(2, "0")
+  ].join("-");
+}
+
+function isTodayResult(sortMs, displayDate = "") {
+  const todayKey = getLocalDateKey(new Date());
+  const sortDateKey = sortMs ? getLocalDateKey(new Date(sortMs)) : "";
+  return sortDateKey === todayKey || getDisplayDateKey(displayDate) === todayKey;
+}
+
 function normalizeGradeText(value) {
   const text = String(value || "").trim();
   if (!text || text === "-") return "-";
@@ -697,4 +1178,30 @@ function formatFirestoreDate(timestamp) {
     return `${d.getFullYear()}. ${String(d.getMonth() + 1).padStart(2, '0')}. ${String(d.getDate()).padStart(2, '0')}`;
   }
   return String(timestamp);
+}
+
+function formatFirestoreDateTime(timestamp) {
+  if (!timestamp) return null;
+  const d = timestamp.seconds
+    ? new Date(timestamp.seconds * 1000)
+    : new Date(timestamp);
+  if (Number.isNaN(d.getTime())) return String(timestamp);
+  return `${d.getFullYear()}. ${String(d.getMonth() + 1).padStart(2, '0')}. ${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+
+function getTimestampMs(value) {
+  if (!value) return 0;
+  if (value.seconds) return value.seconds * 1000;
+  if (typeof value === "number") return value;
+  const parsed = Date.parse(String(value).replace(/\./g, "-"));
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function getResultSortMs(result = {}, displayDate = "") {
+  return getTimestampMs(result.savedAt)
+    || getTimestampMs(result.createdAt)
+    || Number(result.completedAtMs)
+    || getTimestampMs(result.date)
+    || getTimestampMs(result.testDate)
+    || getTimestampMs(displayDate);
 }

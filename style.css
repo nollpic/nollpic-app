@@ -3686,7 +3686,7 @@ a.recommend-item:hover {
         inset 0 7px 12px rgba(255,255,255,.24);
 }
 
-#page-11 .road-node.jenga-node::before {
+#page-11 .road-node.jenga-node:not(.locked)::before {
     background: linear-gradient(145deg, #ffb32c 0%, #ff8515 56%, #ff5a13 100%);
     border: 6px solid #ffd08a;
     box-shadow:
@@ -3695,7 +3695,7 @@ a.recommend-item:hover {
         inset 0 7px 12px rgba(255,255,255,.24);
 }
 
-#page-11 .road-node.color-node::before {
+#page-11 .road-node.color-node:not(.locked)::before {
     background: linear-gradient(145deg, #ffb32c 0%, #ff8515 56%, #ff5a13 100%);
     border: 6px solid #ffd08a;
     box-shadow:
@@ -3704,16 +3704,16 @@ a.recommend-item:hover {
         inset 0 7px 12px rgba(255,255,255,.24);
 }
 
-#page-11 .road-node.jenga-node span,
-#page-11 .road-node.color-node span {
+#page-11 .road-node.jenga-node:not(.locked) span,
+#page-11 .road-node.color-node:not(.locked) span {
     color: #ffffff;
     font-size: 35px;
     font-weight: 950;
     text-shadow: 0 2px 0 rgba(191, 55, 0, .28);
 }
 
-#page-11 .road-node.jenga-node i,
-#page-11 .road-node.color-node i {
+#page-11 .road-node.jenga-node:not(.locked) i,
+#page-11 .road-node.color-node:not(.locked) i {
     display: flex;
     left: auto;
     right: -4px;
@@ -3882,7 +3882,15 @@ a.recommend-item:hover {
     animation: chestOpenBounce .62s cubic-bezier(.18, .88, .22, 1.2);
 }
 
-#page-11 .chest-reward-pop {
+.challenge-chest-fx-layer {
+    position: fixed;
+    z-index: 10020;
+    pointer-events: none;
+    overflow: visible;
+}
+
+#page-11 .chest-reward-pop,
+.challenge-chest-fx-layer .chest-reward-pop {
     position: absolute;
     left: 50%;
     top: -18px;
@@ -3903,7 +3911,8 @@ a.recommend-item:hover {
     animation: rewardPop 1.15s ease both;
 }
 
-#page-11 .chest-coin {
+#page-11 .chest-coin,
+.challenge-chest-fx-layer .chest-coin {
     position: absolute;
     left: 50%;
     top: 28px;
