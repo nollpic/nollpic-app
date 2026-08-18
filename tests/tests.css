@@ -1011,6 +1011,11 @@ body {
 
 .popup-result-list {
     margin-top: 0.35rem;
+    max-height: 18.8rem;
+    overflow-y: auto;
+    padding-right: 0.15rem;
+    scrollbar-gutter: stable;
+    scrollbar-color: rgba(107, 114, 128, 0.72) transparent;
 }
 
 .popup-result-list .leaderboard-row {
@@ -1022,6 +1027,21 @@ body {
     background: #FFF8E8;
     color: #EA6A00;
     font-weight: 900;
+}
+
+.popup-result-list::-webkit-scrollbar {
+    width: 12px;
+}
+
+.popup-result-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.popup-result-list::-webkit-scrollbar-thumb {
+    background-color: rgba(107, 114, 128, 0.72);
+    background-clip: content-box;
+    border: 4px solid transparent;
+    border-radius: 999px;
 }
 
 .popup-result-list .review-empty {
@@ -1478,9 +1498,9 @@ body {
 }
 
 .section-title {
-    font-size: 1.24rem !important;
+    font-size: 1.5rem !important;
     line-height: 1.18 !important;
-    margin: 1rem 0 0.18rem 0 !important;
+    margin: 1rem 0 0.4rem 0 !important;
 }
 
 .section-sub {
@@ -1489,14 +1509,14 @@ body {
 }
 
 .badge-center {
-    margin-bottom: 0.28rem !important;
+    margin: 0.4rem 0 0.5rem!important;
 }
 
 .badge-orange,
 .badge-blue,
 .badge-green,
 .badge-purple {
-    font-size: 0.72rem !important;
+    font-size: 0.9rem !important;
     padding: 0.25rem 0.65rem !important;
 }
 
@@ -1545,6 +1565,7 @@ body {
 .schulte-dashboard {
     padding: 0.55rem 0 !important;
     margin-bottom: 0.55rem !important;
+    margin-top: 4px;
 }
 
 .dash-label {

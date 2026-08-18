@@ -1,4 +1,4 @@
-// 전역 제어 함수: 이전/다음 변환 처리
+﻿// 전역 제어 함수: 이전/다음 변환 처리
 function resetAppScrollTop(targetPage = null) {
     const deviceContainer = document.querySelector('.app-device');
     if (deviceContainer) deviceContainer.scrollTop = 0;
@@ -7,10 +7,27 @@ function resetAppScrollTop(targetPage = null) {
     document.body.scrollTop = 0;
 }
 
+const PLAY_PAGE_NUMBERS = [8, 14, 9, 10, 12, 13];
+const PLAY_FRAME_IDS = ['dice-frame', 'shape-dice-frame', 'arrow-frame', 'roulette-frame', 'stopwatch-frame', 'number-frame'];
+
+function resetPlayFrames(exceptFrameId = '') {
+    PLAY_FRAME_IDS.forEach(frameId => {
+        if (frameId === exceptFrameId) return;
+        const frame = document.getElementById(frameId);
+        if (frame && frame.src && !frame.src.endsWith('about:blank')) {
+            frame.src = 'about:blank';
+        }
+    });
+}
+
 function nextPage(pageNumber) {
     const activePage = document.querySelector('.page.active');
     if (activePage?.id === 'page-5' && pageNumber !== 5) {
         stopAndUnloadTestFrame();
+    }
+    const activePageNumber = getActivePageNumber();
+    if (PLAY_PAGE_NUMBERS.includes(activePageNumber) && !PLAY_PAGE_NUMBERS.includes(pageNumber)) {
+        resetPlayFrames();
     }
     if (activePage) activePage.classList.remove('active');
     
@@ -91,19 +108,19 @@ function validateInfoPage() {
     const guardianConsent = document.getElementById('guardian-consent');
 
     if (!nameInput.value.trim()) {
-        alert('아이 이름을 입력해주세요.');
+        alert('이름을 입력해주세요.');
         nameInput.focus();
         return;
     }
 
     if (!gradeSelect.value) {
-        alert('학년을 선택해주세요.');
+        alert('나이를 선택해주세요.');
         gradeSelect.focus();
         return;
     }
 
     if (!genderRadio) {
-        alert('아이의 성별을 선택해주세요.');
+        alert('성별을 선택해주세요.');
         return;
     }
 
@@ -170,7 +187,7 @@ function startFirstTest() {
     let genderVal = selectedProfile?.gender || (genderRadio ? genderRadio.value : "");
 
     const childProfile = selectedProfile || {
-        id: makeChildId(),
+        id: makeChildIdForProfile(rawName, gradeVal, genderVal),
         name: rawName,
         gradeValue: gradeVal,
         gradeText: getGradeTextForProfile(gradeVal),
@@ -213,6 +230,32 @@ function getGradeTextForProfile(gradeValue) {
     if (gradeNum === 0) return '미취학';
     if (gradeNum >= 1 && gradeNum <= 6) return `초등 ${gradeNum}학년`;
     return '학년 미선택';
+}
+
+function getGradeSelectMarkup() {
+    return [
+        '<option value="">\uB098\uC774\uB97C \uC120\uD0DD\uD574\uC8FC\uC138\uC694</option>',
+        '<optgroup label="\uC5B4\uB9B0\uC774">',
+        '<option value="0">\uBBF8\uCDE8\uD559</option>',
+        '<option value="1">\uCD08\uB4F1 1\uD559\uB144</option>',
+        '<option value="2">\uCD08\uB4F1 2\uD559\uB144</option>',
+        '<option value="3">\uCD08\uB4F1 3\uD559\uB144</option>',
+        '<option value="4">\uCD08\uB4F1 4\uD559\uB144</option>',
+        '<option value="5">\uCD08\uB4F1 5\uD559\uB144</option>',
+        '<option value="6">\uCD08\uB4F1 6\uD559\uB144</option>',
+        '</optgroup>',
+        '<optgroup label="\uC131\uC778">',
+        '<option value="adult">\uC5B4\uB978</option>',
+        '</optgroup>'
+    ].join('');
+}
+
+function setupGradeSelectOptions(select, selectedValue = '') {
+    if (!select) return;
+
+    const value = selectedValue || select.value;
+    select.innerHTML = getGradeSelectMarkup();
+    if (value) select.value = value;
 }
 
 function getTodayStringForProfile() {
@@ -269,12 +312,29 @@ function getNollpicUser() {
     }
 }
 
+function isNollpicLoggedIn() {
+    const user = getNollpicUser();
+    return !!(user && user.uid);
+}
+
+function clearGuestNollpicHistory() {
+    if (isNollpicLoggedIn()) return;
+
+    localStorage.removeItem('nollpic_schulte_records');
+    localStorage.removeItem('nollpic_memory_records');
+    localStorage.removeItem('nollpic_reaction_records');
+    localStorage.removeItem('nollpic_visual_search_records');
+    localStorage.removeItem('nollpic_flanker_records');
+}
+
 function getChildrenStorageKey() {
     const user = getNollpicUser();
     return user && user.uid ? `nollpic_children_${user.uid}` : 'nollpic_children_guest';
 }
 
 function getSavedChildren() {
+    if (!isNollpicLoggedIn()) return [];
+
     try {
         return JSON.parse(localStorage.getItem(getChildrenStorageKey())) || [];
     } catch (e) {
@@ -283,6 +343,8 @@ function getSavedChildren() {
 }
 
 function setSavedChildren(children) {
+    if (!isNollpicLoggedIn()) return;
+
     localStorage.setItem(getChildrenStorageKey(), JSON.stringify(children));
 }
 
@@ -339,6 +401,48 @@ function recoverChildrenFromLocalResults() {
 
 function makeChildId() {
     return `child_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function getGuestId() {
+    const storageKey = 'nollpic_guest_id';
+    let guestId = localStorage.getItem(storageKey);
+
+    if (!guestId) {
+        guestId = `guest_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+        localStorage.setItem(storageKey, guestId);
+    }
+
+    return guestId;
+}
+
+function normalizeChildIdentityValue(value) {
+    return String(value || '').trim().toLowerCase().replace(/\s+/g, '');
+}
+
+function hashChildIdentity(value) {
+    let hash = 0;
+    for (let i = 0; i < value.length; i += 1) {
+        hash = ((hash << 5) - hash) + value.charCodeAt(i);
+        hash |= 0;
+    }
+    return Math.abs(hash).toString(36);
+}
+
+function makeGuestChildId(name, gradeValue, gender) {
+    const guestId = getGuestId();
+    const identity = [
+        guestId,
+        normalizeChildIdentityValue(name),
+        normalizeChildIdentityValue(gradeValue),
+        normalizeChildIdentityValue(gender)
+    ].join('|');
+
+    return `child_${hashChildIdentity(guestId)}_${hashChildIdentity(identity)}`;
+}
+
+function makeChildIdForProfile(name, gradeValue, gender) {
+    if (isNollpicLoggedIn()) return makeChildId();
+    return makeGuestChildId(name, gradeValue, gender);
 }
 
 function getSelectedChildProfile() {
@@ -684,19 +788,19 @@ function editChild(childId) {
                 box-shadow:0 8px 40px rgba(0,0,0,0.18);
             ">
                 <h2 style="font-size:1.15rem;font-weight:800;color:#0E1D3E;margin-bottom:0.25rem;">아이 정보 수정</h2>
-                <p style="font-size:0.82rem;color:#6B7280;margin-bottom:1.25rem;">이름, 학년, 성별을 수정할 수 있어요.</p>
+                <p style="font-size:0.82rem;color:#6B7280;margin-bottom:1.25rem;">이름과 성별을 수정할 수 있어요. 나이는 검사 기록 보호를 위해 고정됩니다.</p>
 
                 <div style="margin-bottom:1rem;">
-                    <label style="font-size:0.83rem;font-weight:700;color:#374151;display:block;margin-bottom:0.4rem;">아이 이름</label>
+                    <label style="font-size:0.83rem;font-weight:700;color:#374151;display:block;margin-bottom:0.4rem;">이름</label>
                     <input id="modal-child-name" type="text" placeholder="이름을 입력해주세요"
                         style="width:100%;padding:0.7rem 1rem;border:1.5px solid #E5E7EB;border-radius:0.75rem;font-size:0.95rem;outline:none;"/>
                 </div>
 
                 <div style="margin-bottom:1rem;">
-                    <label style="font-size:0.83rem;font-weight:700;color:#374151;display:block;margin-bottom:0.4rem;">학년</label>
+                    <label style="font-size:0.83rem;font-weight:700;color:#374151;display:block;margin-bottom:0.4rem;">나이</label>
                     <select id="modal-child-grade"
                         style="width:100%;padding:0.7rem 1rem;border:1.5px solid #E5E7EB;border-radius:0.75rem;font-size:0.95rem;background:#fff;outline:none;">
-                        <option value="">학년을 선택해주세요</option>
+                        <option value="">나이를 선택해주세요</option>
                         <option value="0">미취학</option>
                         <option value="1">초등 1학년</option>
                         <option value="2">초등 2학년</option>
@@ -713,10 +817,10 @@ function editChild(childId) {
                     <label style="font-size:0.83rem;font-weight:700;color:#374151;display:block;margin-bottom:0.4rem;">성별</label>
                     <div style="display:flex;gap:0.75rem;">
                         <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:0.4rem;padding:0.65rem;border:1.5px solid #E5E7EB;border-radius:0.75rem;cursor:pointer;font-size:0.9rem;font-weight:600;">
-                            <input type="radio" name="modal-child-gender" value="male" style="accent-color:#FF6B00;"> 👦 남자아이
+                            <input type="radio" name="modal-child-gender" value="male" style="accent-color:#FF6B00;"> 👦 남
                         </label>
                         <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:0.4rem;padding:0.65rem;border:1.5px solid #E5E7EB;border-radius:0.75rem;cursor:pointer;font-size:0.9rem;font-weight:600;">
-                            <input type="radio" name="modal-child-gender" value="female" style="accent-color:#FF6B00;"> 👧 여자아이
+                            <input type="radio" name="modal-child-gender" value="female" style="accent-color:#FF6B00;"> 👧 여
                         </label>
                     </div>
                 </div>
@@ -747,8 +851,15 @@ function editChild(childId) {
     const nameInput = modal.querySelector('#modal-child-name');
     const gradeSelect = modal.querySelector('#modal-child-grade');
     const genderRadios = modal.querySelectorAll('input[name="modal-child-gender"]');
+    setupGradeSelectOptions(gradeSelect, child.gradeValue || '');
     if (nameInput) nameInput.value = child.name || '';
-    if (gradeSelect) gradeSelect.value = child.gradeValue || '';
+    if (gradeSelect) {
+        gradeSelect.value = child.gradeValue || '';
+        gradeSelect.disabled = true;
+        gradeSelect.style.background = '#F3F4F6';
+        gradeSelect.style.color = '#6B7280';
+        gradeSelect.style.cursor = 'not-allowed';
+    }
     genderRadios.forEach(r => { r.checked = r.value === child.gender; });
 
     modal.style.display = 'flex';
@@ -759,7 +870,7 @@ function closeEditChildModal() {
     if (modal) modal.style.display = 'none';
 }
 
-function saveEditChildModal() {
+async function saveEditChildModal() {
     const modal = document.getElementById('edit-child-modal');
     if (!modal) return;
     const childId = modal.dataset.editingId;
@@ -771,12 +882,8 @@ function saveEditChildModal() {
     const genderRadio = modal.querySelector('input[name="modal-child-gender"]:checked');
 
     if (!nameInput || !nameInput.value.trim()) {
-        alert('아이 이름을 입력해주세요.');
+        alert('이름을 입력해주세요.');
         nameInput && nameInput.focus();
-        return;
-    }
-    if (!gradeSelect || !gradeSelect.value) {
-        alert('학년을 선택해주세요.');
         return;
     }
     if (!genderRadio) {
@@ -785,8 +892,6 @@ function saveEditChildModal() {
     }
 
     child.name = nameInput.value.trim();
-    child.gradeValue = gradeSelect.value;
-    child.gradeText = getGradeTextForProfile(gradeSelect.value);
     child.gender = genderRadio.value;
 
     // 저장
@@ -794,8 +899,18 @@ function saveEditChildModal() {
     const idx = children.findIndex(c => c.id === childId);
     if (idx !== -1) {
         children[idx] = child;
-        saveChildrenList(children);
+        setSavedChildren(children);
     }
+
+    const selectedChild = getActiveChildProfile();
+    if (selectedChild?.id === child.id) {
+        localStorage.setItem('nollpic_selected_child', JSON.stringify(child));
+        localStorage.setItem('nollpic_child_profile', JSON.stringify(child));
+        localStorage.setItem('nollpic_child_name', child.name || '우리 아이');
+        localStorage.setItem('nollpic_child_grade', child.gradeText || '');
+    }
+
+    await saveChildToFirestore(child);
 
     closeEditChildModal();
     alert('아이 정보가 수정되었어요.');
@@ -823,7 +938,7 @@ function saveCurrentChildProfile() {
     const originalChild = editId ? findChildById(editId) : null;
 
     const childProfile = {
-        id: editId || makeChildId(),
+        id: editId || makeChildIdForProfile(nameInput.value.trim(), gradeSelect.value, genderRadio ? genderRadio.value : ''),
         name: nameInput.value.trim(),
         gradeValue: gradeSelect.value,
         gradeText: getGradeTextForProfile(gradeSelect.value),
@@ -1110,7 +1225,7 @@ function updateBottomNav(pageNumber) {
         return;
     }
 
-    // page-5(테스트)는 하단 탭 숨김 + nav-visible 제거 → iframe 전체화면
+    // page-5(미션)는 하단 탭 숨김 + nav-visible 제거 → iframe 전체화면
     if (pageNumber === 5) {
         if (nav) nav.style.display = 'none';
         if (device) device.classList.remove('nav-visible');
@@ -1127,7 +1242,8 @@ function updateBottomNav(pageNumber) {
     if (pageNumber === 3 || pageNumber === 4) activeTab = 'mypage';
     if (pageNumber === 5) activeTab = 'home';
     if (pageNumber === 6) activeTab = 'result';
-    if (pageNumber === 7 || pageNumber === 8 || pageNumber === 9 || pageNumber === 10) activeTab = 'play';
+    if ([7, 8, 9, 10, 12, 13, 14].includes(pageNumber)) activeTab = 'play';
+    if (pageNumber === 11) activeTab = 'challenge';
 
     const target = document.querySelector(`.bottom-tab[data-tab="${activeTab}"]`);
     if (target) target.classList.add('active');
@@ -1170,7 +1286,17 @@ async function goBottomMypage() {
     nextPage(3);
 }
 
+function goBottomChallenge() {
+    nextPage(11);
+    if (typeof window.initChallengePreview === 'function') {
+        window.initChallengePreview();
+    }
+}
+
 window.addEventListener('DOMContentLoaded', () => {
+    clearGuestNollpicHistory();
+    setupGradeSelectOptions(document.getElementById('child-grade'));
+
     const params = new URLSearchParams(window.location.search);
     const page = params.get('page');
     if (page === 'mypage') {
@@ -1201,6 +1327,7 @@ window.editChild = editChild;
 window.deleteChild = deleteChild;
 window.startTestForChild = startTestForChild;
 window.logoutNollpic = logoutNollpic;
+window.goBottomChallenge = goBottomChallenge;
 
 /* ================================================================
    검사결과 page-6 — mypage-result.js 통합
@@ -1224,6 +1351,23 @@ let _resultGrowthChart = null;
 function _resultSafeJSON(key, fallback) {
     try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
     catch(e) { return fallback; }
+}
+
+function _resultSafeSessionJSON(key, fallback) {
+    try { const v = sessionStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+    catch(e) { return fallback; }
+}
+
+function _resultGetLatestResult() {
+    if (isNollpicLoggedIn()) {
+        return _resultSafeJSON('nollpic_latest_result', null);
+    }
+
+    return _resultSafeJSON('nollpic_latest_result', null) || _resultSafeSessionJSON('nollpic_guest_latest_result', null);
+}
+
+function _resultGetHistoryResults() {
+    return _resultSafeJSON('nollpic_result_history', []);
 }
 
 function _resultGetScoreLevel(score) {
@@ -1448,12 +1592,12 @@ function _resultIsCompleteResult(item) {
 
 function _resultGetAllChildren() {
     const children = _resultSafeJSON(getChildrenStorageKey(), []);
-    const history  = _resultSafeJSON('nollpic_result_history', []);
-    const latest   = _resultSafeJSON('nollpic_latest_result', null);
+    const history  = _resultGetHistoryResults();
+    const latest   = _resultGetLatestResult();
     const profile  = _resultSafeJSON('nollpic_child_profile', null);
     const selected = _resultSafeJSON('nollpic_selected_child', null);
     const user = getNollpicUser();
-    const canUseResultHistory = !!(user && user.uid) || children.length > 0 || !!(profile && profile.name) || !!(selected && selected.name);
+    const canUseResultHistory = !!(user && user.uid);
     const map = new Map();
     [...children, selected, profile].forEach(c => {
         if (!c || !c.name) return;
@@ -1473,8 +1617,10 @@ function _resultGetAllChildren() {
 }
 
 function _resultGetChildCount(child) {
-    const history = _resultSafeJSON('nollpic_result_history', []);
-    const latest  = _resultSafeJSON('nollpic_latest_result', null);
+    if (!isNollpicLoggedIn()) return 0;
+
+    const history = _resultGetHistoryResults();
+    const latest  = _resultGetLatestResult();
     const matched = [latest, ...history].filter(i => _resultIsCompleteResult(i) && _resultIsSameChild(i, child));
     const keys = new Set(matched.map(i => `${i?.date||''}_${i?.overall||''}_${JSON.stringify(i?.scores||{})}`));
     return keys.size;
@@ -1534,15 +1680,15 @@ function _resultBuildDisplayHistory(items, latest) {
 
 /* ── 데이터 조립 ── */
 function _resultGetData(selectedChildId) {
-    let latest  = _resultSafeJSON('nollpic_latest_result', null);
-    let history = _resultSafeJSON('nollpic_result_history', []);
+    let latest  = _resultGetLatestResult();
+    let history = _resultGetHistoryResults();
     const profile = _resultSafeJSON('nollpic_child_profile', null);
     const selected = _resultSafeJSON('nollpic_selected_child', null);
     const user = getNollpicUser();
     const activeChild = selected || profile;
     const childId = selectedChildId || activeChild?.id || '';
 
-    if ((!user || !user.uid) && !activeChild) {
+    if ((!user || !user.uid) && !activeChild && !latest) {
         latest = null;
         history = [];
     }

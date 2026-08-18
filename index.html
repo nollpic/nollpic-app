@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -21,17 +21,18 @@
             <div class="page-body main-page-body">
 
                 <!-- PWA 설치 배너 — beforeinstallprompt 감지 시 자동 표시 -->
-                <div id="pwa-install-banner" class="pwa-install-banner" style="display:none;">
+                <div id="pwa-install-banner" class="pwa-install-banner" hidden>
                     <div class="pwa-install-banner-left">
-                        <span class="pwa-install-icon"></span>
+                        <span class="pwa-install-icon" aria-hidden="true"></span>
                         <div>
                             <strong>놀픽 앱 설치</strong>
                             <span>홈 화면에서 바로 실행!</span>
                         </div>
                     </div>
-                    <button class="pwa-install-banner-btn" onclick="triggerPwaInstall()">설치</button>
-                    <button class="pwa-install-banner-close" onclick="closePwaBanner()" aria-label="닫기">✕</button>
+                    <button class="pwa-install-banner-btn" type="button" onclick="triggerPwaInstall()">설치</button>
+                    <button class="pwa-install-banner-close" type="button" onclick="closePwaBanner()" aria-label="닫기">x</button>
                 </div>
+                <div id="pwa-install-toast" class="pwa-install-toast" role="status" aria-live="polite" hidden></div>
 
                 <div class="title-block">
                     <img src="images/nollpic_title.png" alt="놀픽 타이틀" class="img-title">
@@ -137,22 +138,25 @@
 
                 <div id="child-form-section" class="form-container">
                     <div class="input-group">
-                        <label>아이 이름</label>
+                        <label>이름</label>
                         <input type="text" id="child-name" placeholder="이름을 입력해주세요">
                     </div>
                     <div class="input-group">
-                        <label>학년</label>
+                        <label>나이</label>
                         <select id="child-grade">
-                            <option value="">학년을 선택해주세요</option>
-                            <option value="0">미취학</option>
-                            <option value="1">초등 1학년</option>
-                            <option value="2">초등 2학년</option>
-                            <option value="3">초등 3학년</option>
-                            <option value="4">초등 4학년</option>
-                            <option value="5">초등 5학년</option>
-                            <option value="6">초등 6학년</option>
-                            <option value="" disabled>────────────</option>
-                            <option value="adult">어른</option>
+                            <option value="">나이를 선택해주세요</option>
+                            <optgroup label="어린이">
+                                <option value="0">미취학</option>
+                                <option value="1">초등 1학년</option>
+                                <option value="2">초등 2학년</option>
+                                <option value="3">초등 3학년</option>
+                                <option value="4">초등 4학년</option>
+                                <option value="5">초등 5학년</option>
+                                <option value="6">초등 6학년</option>
+                            </optgroup>
+                            <optgroup label="성인">
+                                <option value="adult">어른</option>
+                            </optgroup>
                         </select>
                     </div>
                     <div class="input-group">
@@ -160,11 +164,11 @@
                         <div class="gender-radio-group">
                             <label class="gender-radio-btn">
                                 <input type="radio" name="child-gender" value="male">
-                                <span class="gender-btn-text">👦 남자아이</span>
+                                <span class="gender-btn-text">👦 남</span>
                             </label>
                             <label class="gender-radio-btn">
                                 <input type="radio" name="child-gender" value="female">
-                                <span class="gender-btn-text">👧 여자아이</span>
+                                <span class="gender-btn-text">👧 여</span>
                             </label>
                         </div>
                     </div>
@@ -338,6 +342,19 @@
                             <span class="play-card-sub">숫자 뽑기</span>
                         </button>
 
+                        <!-- 도형주사위 -->
+                        <button type="button" class="play-card play-card-ready" onclick="openPlayItem('shapeDice')">
+                            <div class="play-card-icon-wrap play-bg-shape">
+                                <svg class="play-shape-cluster" viewBox="0 0 64 56" aria-hidden="true" focusable="false">
+                                    <rect class="play-shape-svg diamond" x="22" y="3" width="24" height="24" rx="7" fill="#2EC4B6" transform="rotate(45 34 15)"/>
+                                    <circle class="play-shape-svg circle" cx="20" cy="36" r="13" fill="#FFC43D"/>
+                                    <path class="play-shape-svg triangle" d="M45 23 L59 48 H31 Z" fill="#EF5264"/>
+                                </svg>
+                            </div>
+                            <strong class="play-card-label">도형주사위</strong>
+                            <span class="play-card-sub">도형 기억하기</span>
+                        </button>
+
                         <!-- 화살표 룰렛 -->
                          <button type="button" class="play-card play-card-ready" onclick="openPlayItem('arrow')">
                             <div class="play-card-icon-wrap play-bg-blue">
@@ -356,13 +373,31 @@
                             <span class="play-card-sub">색깔 룰렛</span>
                         </button>
 
-                        <!-- 빈 슬롯 (예정) -->
-                        <button type="button" class="play-card play-card-soon" disabled>
-                            <div class="play-card-icon-wrap play-bg-soon">
-                                <span class="play-card-emoji">＋</span>
+                        <!-- 스탑워치 -->
+                        <button type="button" class="play-card play-card-ready" onclick="openPlayItem('stopwatch')">
+                            <div class="play-card-icon-wrap play-bg-green">
+                                <span class="play-stopwatch-icon" aria-hidden="true">
+                                    <span class="play-stopwatch-crown"></span>
+                                    <span class="play-stopwatch-bell left"></span>
+                                    <span class="play-stopwatch-bell right"></span>
+                                    <span class="play-stopwatch-face">
+                                        <span class="play-stopwatch-hand minute"></span>
+                                        <span class="play-stopwatch-hand second"></span>
+                                        <span class="play-stopwatch-dot"></span>
+                                    </span>
+                                </span>
                             </div>
-                            <strong class="play-card-label">준비중</strong>
-                            <span class="play-card-sub">곧 추가됩니다</span>
+                            <strong class="play-card-label">스탑워치</strong>
+                            <span class="play-card-sub">시간 재기</span>
+                        </button>
+
+                        <!-- 숫자플레이 -->
+                        <button type="button" class="play-card play-card-ready" onclick="openPlayItem('number')">
+                            <div class="play-card-icon-wrap play-bg-number">
+                                <span class="play-card-emoji">🔢</span>
+                            </div>
+                            <strong class="play-card-label">숫자플레이</strong>
+                            <span class="play-card-sub">1부터 N까지</span>
                         </button>
 
                     </div>
@@ -377,6 +412,13 @@
             </div>
         </div>
 
+        <!-- page-14: 도형주사위 -->
+        <div id="page-14" class="page">
+            <div class="page-body" style="padding:0;">
+                <iframe id="shape-dice-frame" src="" style="width:100%;height:100%;border:none;display:block;"></iframe>
+            </div>
+        </div>
+
         <!-- page-9: 화살표 -->
         <div id="page-9" class="page">
             <div class="page-body" style="padding:0;">
@@ -388,6 +430,62 @@
         <div id="page-10" class="page">
             <div class="page-body" style="padding:0;">
                 <iframe id="roulette-frame" src="" style="width:100%;height:100%;border:none;display:block;"></iframe>
+            </div>
+        </div>
+
+        <!-- page-12: 스탑워치 -->
+        <div id="page-12" class="page">
+            <div class="page-body" style="padding:0;">
+                <iframe id="stopwatch-frame" src="" style="width:100%;height:100%;border:none;display:block;"></iframe>
+            </div>
+        </div>
+
+        <!-- page-13: 숫자플레이 -->
+        <div id="page-13" class="page">
+            <div class="page-body" style="padding:0;">
+                <iframe id="number-frame" src="" style="width:100%;height:100%;border:none;display:block;"></iframe>
+            </div>
+        </div>
+
+        <div id="page-11" class="page">
+            <div class="page-body challenge-ready-body">
+                <section class="challenge-hero">
+                    <span class="challenge-eyebrow">생각근육 원정대 1기</span>
+                    <h2>방학챌린지 맛보기</h2>
+                    <p>여름방학 30일 동안,<br>매일 단 10분! 30가지의 특별한 놀이를 함께합니다.</p>
+                </section>
+
+                <section class="challenge-game-card">
+                    <div class="challenge-game-head">
+                        <span>맛보기 놀이</span>
+                        <button type="button" id="challenge-replay-btn">다시 보기</button>
+                    </div>
+
+                    <div class="challenge-memory-stage" id="challenge-memory-stage">
+                        <p class="challenge-instruction" id="challenge-instruction">도형의 번호를 기억하세요.</p>
+                        <div class="challenge-number-board" id="challenge-number-board"></div>
+                        <div class="challenge-sequence-row" id="challenge-sequence-row" aria-label="문제 도형"></div>
+                    </div>
+
+                    <div class="challenge-answer-panel">
+                        <div class="challenge-answer-slots" id="challenge-answer-slots" aria-label="입력한 번호"></div>
+                        <div class="challenge-phone">
+                            <button type="button" data-key="1">1</button>
+                            <button type="button" data-key="2">2</button>
+                            <button type="button" data-key="3">3</button>
+                            <button type="button" data-action="back">⌫</button>
+                            <button type="button" data-key="0">0</button>
+                            <button type="button" data-action="clear">C</button>
+                        </div>
+                        <p class="challenge-feedback" id="challenge-feedback">번호가 사라지면 아래 도형 순서대로 입력해요.</p>
+                    </div>
+                </section>
+
+                <section class="challenge-note">
+                    <strong>30일 챌린지 예고</strong>
+                    <p>하루 10분의 작은 습관이 모여 30일 후 우리 아이들의 생각하는 힘과 창의력은 얼마나 자라 있을까요?</p>
+                    <p>생각근육 원정대 1기, 곧 오픈합니다!<br>많은 관심과 기대 부탁드립니다. 😊</p>
+                </section>
             </div>
         </div>
 
@@ -420,6 +518,14 @@
             </svg>
             <span>플레이</span>
         </button>
+        <button type="button" class="bottom-tab" data-tab="challenge" onclick="goBottomChallenge()">
+            <svg class="bottom-tab-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M4 6.5C4 5.12 5.12 4 6.5 4H17.5C18.88 4 20 5.12 20 6.5V18C20 19.1 19.1 20 18 20H6C4.9 20 4 19.1 4 18V6.5Z" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M8 3V7M16 3V7M4.5 9H19.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M9 14L11.2 16.2L15.5 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>방학챌린지</span>
+        </button>
     </nav>
     </div>
 
@@ -436,16 +542,53 @@
     <script>
     // ── PWA 설치 프롬프트 ──────────────────────────────────
     let _pwaInstallPrompt = null;
+    let _pwaInstallToastTimer = null;
 
     function showPwaBanner() {
         const banner = document.getElementById('pwa-install-banner');
-        if (banner) banner.style.display = 'flex';
+        if (banner) banner.hidden = false;
     }
 
     function hidePwaBanner() {
         const banner = document.getElementById('pwa-install-banner');
-        if (banner) banner.style.display = 'none';
+        if (banner) banner.hidden = true;
     }
+
+    function showPwaInstallToast(message, options = {}) {
+        const toast = document.getElementById('pwa-install-toast');
+        if (!toast) return;
+
+        window.clearTimeout(_pwaInstallToastTimer);
+        toast.textContent = message;
+        toast.classList.toggle('complete', options.complete === true);
+        toast.classList.toggle('login', options.type === 'login');
+        toast.classList.toggle('below-banner', options.belowBanner === true);
+        toast.hidden = false;
+
+        const duration = options.duration || 0;
+        if (duration > 0) {
+            _pwaInstallToastTimer = window.setTimeout(() => {
+                toast.hidden = true;
+                toast.classList.remove('complete');
+                toast.classList.remove('login');
+                toast.classList.remove('below-banner');
+            }, duration);
+        }
+    }
+
+    function hidePwaInstallToast() {
+        const toast = document.getElementById('pwa-install-toast');
+        if (!toast) return;
+
+        window.clearTimeout(_pwaInstallToastTimer);
+        toast.hidden = true;
+        toast.classList.remove('complete');
+        toast.classList.remove('login');
+        toast.classList.remove('below-banner');
+    }
+
+    window.showPwaInstallToast = showPwaInstallToast;
+    window.hidePwaInstallToast = hidePwaInstallToast;
 
     function closePwaBanner() {
         hidePwaBanner();
@@ -458,7 +601,7 @@
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         _pwaInstallPrompt = e;
-        if (!sessionStorage.getItem('pwa_banner_closed')) {
+        if (shouldShowPwaBanner()) {
             showPwaBanner();
         }
     });
@@ -466,31 +609,54 @@
     window.addEventListener('appinstalled', () => {
         _pwaInstallPrompt = null;
         hidePwaBanner();
+        showPwaInstallToast('설치 완료', { complete: true, duration: 2400 });
         // 설치 완료 후 영구적으로 숨김
         localStorage.setItem('pwa_installed', '1');
     });
 
     // 이미 설치된 경우 배너 비활성화
-    if (window.matchMedia('(display-mode: standalone)').matches || localStorage.getItem('pwa_installed')) {
+    if (window.matchMedia('(display-mode: standalone)').matches) {
         sessionStorage.setItem('pwa_banner_closed', '1');
     }
 
+    function isNollpicStandalone() {
+        return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    }
+
+    function isKakaoInAppBrowser() {
+        return /KAKAOTALK|KakaoTalk/i.test(navigator.userAgent || '');
+    }
+
+    function shouldShowPwaBanner() {
+        return !!_pwaInstallPrompt && !isKakaoInAppBrowser() && !isNollpicStandalone() && !sessionStorage.getItem('pwa_banner_closed');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        hidePwaBanner();
+    });
+
     function triggerPwaInstall() {
         if (_pwaInstallPrompt) {
+            showPwaInstallToast('설치 중');
             _pwaInstallPrompt.prompt();
             _pwaInstallPrompt.userChoice.then((choice) => {
                 if (choice.outcome === 'accepted') {
                     hidePwaBanner();
+                } else {
+                    hidePwaInstallToast();
                 }
                 _pwaInstallPrompt = null;
             });
         } else {
-            alert('홈 화면에 추가하려면\n브라우저 메뉴(⋮) → "홈 화면에 추가"를 눌러주세요.');
+            hidePwaInstallToast();
+            alert('홈 화면에 추가하려면\n우측 상단 (⋮) 에서\n"홈 화면에 추가"를 눌러주세요.');
         }
     }
 
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js');
+        navigator.serviceWorker.register('/service-worker.js').then((registration) => {
+            registration.update().catch(() => {});
+        });
     }
 
     /* ── 플레이 탭 ── */
@@ -516,16 +682,146 @@
     function openPlayItem(type) {
         const map = {
             dice:        { page: 8,  frame: 'dice-frame',     src: 'play/dice.html' },
+            shapeDice:   { page: 14, frame: 'shape-dice-frame', src: 'play/shape-dice.html' },
             arrow:       { page: 9,  frame: 'arrow-frame',    src: 'play/arrow.html' },
-            randomcolor: { page: 10, frame: 'roulette-frame', src: 'play/roulette.html' }
+            randomcolor: { page: 10, frame: 'roulette-frame', src: 'play/roulette.html' },
+            stopwatch:   { page: 12, frame: 'stopwatch-frame', src: 'play/stopwatch.html' },
+            number:      { page: 13, frame: 'number-frame', src: 'play/number.html' }
         };
         const cfg = map[type];
         if (!cfg) return;
-        const frame = document.getElementById(cfg.frame);
-        if (frame && !frame.src.includes(cfg.src)) frame.src = cfg.src;
+        if (typeof resetPlayFrames === 'function') resetPlayFrames(cfg.frame);
+        const frame = cfg.frame ? document.getElementById(cfg.frame) : null;
+        if (frame && cfg.src) frame.src = cfg.src;
         if (typeof nextPage === 'function') nextPage(cfg.page);
     }
     window.openPlayItem = openPlayItem;
+
+    (function setupChallengePreview() {
+        const shapes = ['circle', 'triangle', 'square'];
+        const shapeLabels = {
+            circle: '동그라미',
+            triangle: '세모',
+            square: '네모'
+        };
+        let challengeAnswer = [];
+        let challengeInput = [];
+        let challengeLevel = 1;
+        let challengeReady = false;
+        let challengeTimer = null;
+
+        function shuffle(values) {
+            return [...values].sort(() => Math.random() - 0.5);
+        }
+
+        function shapeEl(shape) {
+            return `<span class="challenge-shape ${shape}" aria-label="${shapeLabels[shape]}"></span>`;
+        }
+
+        function renderSlots() {
+            const slots = document.getElementById('challenge-answer-slots');
+            if (!slots) return;
+            slots.innerHTML = Array.from({ length: challengeAnswer.length || 3 }).map((_, index) => (
+                `<div class="challenge-slot">${challengeInput[index] || ''}</div>`
+            )).join('');
+        }
+
+        function setFeedback(text, type = '') {
+            const feedback = document.getElementById('challenge-feedback');
+            if (!feedback) return;
+            feedback.textContent = text;
+            feedback.className = `challenge-feedback ${type}`.trim();
+        }
+
+        function checkChallengeAnswer() {
+            if (challengeInput.length < challengeAnswer.length) return;
+            const ok = challengeInput.join('') === challengeAnswer.join('');
+            challengeReady = false;
+            if (!ok) {
+                setFeedback(`아쉬워요. 정답은 ${challengeAnswer.join(' ')} 입니다.`, 'bad');
+                return;
+            }
+
+            if (challengeLevel >= 3) {
+                setFeedback('3단계까지 성공! 번호와 순서를 정말 잘 기억했어요.', 'good');
+                return;
+            }
+
+            setFeedback(`${challengeLevel}단계 성공! 다음 단계로 넘어갑니다.`, 'good');
+            challengeLevel += 1;
+            challengeTimer = setTimeout(() => initChallengePreview({ keepLevel: true }), 900);
+        }
+
+        function initChallengePreview(options = {}) {
+            const board = document.getElementById('challenge-number-board');
+            const row = document.getElementById('challenge-sequence-row');
+            const instruction = document.getElementById('challenge-instruction');
+            if (!board || !row || !instruction) return;
+
+            clearTimeout(challengeTimer);
+            challengeInput = [];
+            challengeReady = false;
+            if (!options.keepLevel) challengeLevel = 1;
+            const sequenceLength = Math.min(5, challengeLevel + 2);
+
+            const numbers = shuffle(['1', '2', '3']);
+            const map = shapes.reduce((acc, shape, index) => {
+                acc[shape] = numbers[index];
+                return acc;
+            }, {});
+            const sequence = Array.from({ length: sequenceLength }, () => shapes[Math.floor(Math.random() * shapes.length)]);
+            challengeAnswer = sequence.map(shape => map[shape]);
+
+            board.classList.remove('hide-numbers');
+            board.style.display = 'grid';
+            row.classList.remove('show');
+            row.innerHTML = '';
+            instruction.textContent = `${challengeLevel}단계: 도형의 번호를 기억하세요.`;
+            setFeedback(`${sequenceLength}개의 도형 순서대로 번호를 입력해요.`);
+            renderSlots();
+
+            board.innerHTML = shapes.map(shape => `
+                <div class="challenge-map-card">
+                    ${shapeEl(shape)}
+                    <strong class="challenge-map-number">${map[shape]}</strong>
+                </div>
+            `).join('');
+
+            challengeTimer = setTimeout(() => {
+                board.classList.add('hide-numbers');
+                instruction.textContent = '이제 아래 도형 순서대로 번호를 입력해요.';
+                setTimeout(() => {
+                    board.style.display = 'none';
+                }, 360);
+                row.innerHTML = sequence.map((shape, index) => `
+                    <div class="challenge-sequence-item" style="animation-delay:${index * 0.06}s">
+                        ${shapeEl(shape)}
+                    </div>
+                `).join('');
+                row.classList.add('show');
+                challengeReady = true;
+                setFeedback(`휴대폰 키패드로 정답 번호 ${sequenceLength}개를 눌러주세요.`);
+            }, 2600);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('challenge-replay-btn')?.addEventListener('click', initChallengePreview);
+            document.querySelectorAll('.challenge-phone button').forEach(button => {
+                button.addEventListener('click', () => {
+                    if (!challengeReady) return;
+                    const key = button.dataset.key;
+                    const action = button.dataset.action;
+                    if (action === 'back') challengeInput.pop();
+                    if (action === 'clear') challengeInput = [];
+                    if (key && challengeInput.length < challengeAnswer.length) challengeInput.push(key);
+                    renderSlots();
+                    checkChallengeAnswer();
+                });
+            });
+        });
+
+        window.initChallengePreview = initChallengePreview;
+    })();
     </script>
     
 </body>
