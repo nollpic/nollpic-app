@@ -24,7 +24,7 @@
   flex: none;
   margin: 0;
   position: relative;
-  top: clamp(24px, 8dvh, 68px);
+  top: clamp(24px, 8dvh, 55px);
 }
 #page-1 .title-block .img-title {
   width: 240px;
@@ -51,7 +51,7 @@
 #page-1 .login-welcome {
   flex: none;
   align-self: flex-start;
-  margin-left: 16%;
+  margin-left: 13%;
   padding: 8px 18px;
   border: 2px solid var(--login-ink);
   border-radius: 18px 18px 18px 4px;
@@ -61,7 +61,7 @@
   font-size: 16px;
   font-weight: 800;
   line-height: 1.3;
-  transform: translateY(clamp(48px, 8.5dvh, 72px)) rotate(-22deg);
+  transform: translateY(clamp(48px, 8.5dvh, 72px)) rotate(352deg);
 }
 #page-1 .graphic-block .img-fluid-content {
   width: calc(100% + 24px);
@@ -107,7 +107,7 @@
   #page-1 .brand-sub { font-size: 14px; line-height: 1.5; }
   #page-1 .graphic-block { min-height: 180px; gap: 10px; }
   #page-1 .graphic-block .img-fluid-content { max-height: 31dvh; }
-  #page-1 .login-welcome { padding: 6px 14px; font-size: 14px; transform: translateY(52px) rotate(-22deg); }
+  #page-1 .login-welcome { padding: 6px 14px; font-size: 14px; transform: translateY(52px) rotate(352deg); }
   #page-1 .btn-google-main { font-size: 15px; }
   #page-1 .privacy-link-wrap { margin-top: 16px; }
 }
