@@ -1,5 +1,5 @@
 ﻿const CACHE_NAME = "nollpic-v20";
-const CACHE_NAME_CURRENT = "nollpic-v21";
+const CACHE_NAME_CURRENT = "nollpic-v22-login-20261008";
 const CACHE_URLS = [
   "/",
   "/index.html",
