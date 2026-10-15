@@ -462,11 +462,10 @@ window.NollpicGameIntroConfig={
     "file": "minigames/crystal-mine/index.html",
     "modern": true,
     "difficultyLabels": {
-      "1": "쉬움",
-      "2": "보통",
-      "3": "어려움"
+      "1": "저학년",
+      "2": "고학년"
     },
-    "verifiedDuration": null,
+    "verifiedDuration": "약 1분 30초",
     "theme": "crystal-mine",
     "artwork": {
       "src": "/minigames/intro-backgrounds/crystal-mine.png",

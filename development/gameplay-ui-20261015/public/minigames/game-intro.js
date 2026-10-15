@@ -14,7 +14,7 @@
  function mount({root,settings,config,stage=1}){
   const content=root.querySelector('[data-intro-content]'),banner=element('section','np-banner'),heading=element('div','np-banner-heading'),title=element('h1','np-title',config.title);
   banner.dataset.theme=config.theme;title.id='np-title';heading.append(title,element('p','np-mission',config.mission));
-  const scene=element('div','np-scene'),art=element('img','np-scene-object');art.src=config.artwork.src;art.alt=config.artwork.alt;scene.append(art);
+  const scene=element('div','np-scene'),art=element('img','np-scene-object'),artPath=config.artwork.src.replace(/^\/minigames\//,config.modern?'../':'minigames/');art.src=new URL(artPath,document.baseURI).href;art.alt=config.artwork.alt;scene.append(art);
   if(config.character==='equipped'){const avatar=element('div','gm-avatar np-scene-avatar');avatar.dataset.avatar='';scene.append(avatar);}
   banner.append(heading,scene);
   const cards=element('dl','np-info');

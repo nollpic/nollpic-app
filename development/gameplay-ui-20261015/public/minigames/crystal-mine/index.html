@@ -16,16 +16,16 @@
    <h1>크리스탈 광산</h1><div class="gm-tag">집중 · 주의</div>
    <p class="gm-description">같은 보석을 찾아 보물상자를 열어요!</p>
    <fieldset class="gm-difficulties"><legend class="gm-visually-hidden">탐험 단계 선택</legend>
-    <label><input type="radio" name="difficulty" value="1" checked><span>1단계</span></label>
-    <label><input type="radio" name="difficulty" value="2"><span>2단계</span></label>
-    <label><input type="radio" name="difficulty" value="3"><span>3단계</span></label>
+    <label><input type="radio" name="difficulty" value="1" checked><span>저학년 탐험</span></label>
+    <label><input type="radio" name="difficulty" value="2"><span>고학년 탐험</span></label>
    </fieldset>
    <button id="gm-start" class="gm-primary" type="button" disabled>캐릭터 불러오는 중…</button>
   </section>
   <section id="gm-play" class="gm-screen" hidden>
-   <div class="gm-play-top"><button id="gm-pause-btn" type="button" aria-label="일시정지">Ⅱ</button><strong id="gm-round">탐험 1/5</strong><span id="gm-time" role="timer">전체 남은 90초</span></div>
-   <div class="gm-target"><div id="gm-target-gem"></div><div class="gm-target-copy"><p id="gm-rule"></p><strong id="gm-found" aria-live="polite">찾은 보석 0 / 0</strong></div></div>
-   <div class="gm-board-wrap"><div id="gm-board" class="gm-board" role="group" aria-label="보석 찾기 게임판"></div><div id="gm-countdown" class="gm-countdown" hidden><strong>3</strong><span>목표 보석을 모두 찾아요!</span></div></div>
+   <div class="gm-play-top"><button id="gm-pause-btn" type="button" aria-label="일시정지">Ⅱ</button><strong id="gm-round">탐험 1/5</strong><span id="gm-time" role="timer" aria-label="남은 시간"><i aria-hidden="true">⏱</i><b id="gm-time-num">90</b><small>초</small></span></div>
+   <div class="gm-timebar" aria-hidden="true"><i id="gm-timebar-fill"></i></div>
+   <div class="gm-target"><div id="gm-target-gem"></div><div class="gm-target-copy"><p id="gm-rule"></p><strong id="gm-found" aria-live="polite">찾은 보석 0 / 0</strong><span id="gm-why" class="gm-why" role="status" hidden></span></div></div>
+   <div class="gm-board-wrap"><div id="gm-board" class="gm-board" role="group" aria-label="보석 찾기 게임판"></div><div id="gm-oops" class="gm-oops" aria-hidden="true"><b>땡!</b><small></small></div><div id="gm-countdown" class="gm-countdown" hidden><strong>3</strong><span>목표 보석을 모두 찾아요!</span></div></div>
    <div class="gm-route" aria-label="5구간 광산 진행"><div id="gm-route-steps"></div><div id="gm-traveller" class="gm-avatar" data-avatar></div><img id="gm-chest" class="gm-chest" src="chest.svg" alt="마지막 보물상자"></div>
    <div class="gm-play-bottom"><span id="gm-score">놀이 점수 0점</span></div><p id="gm-feedback" class="gm-feedback" role="status" aria-live="polite"></p>
   </section>
@@ -43,8 +43,8 @@
  <dialog id="gm-rules" aria-labelledby="gm-rules-title">
   <div><button id="gm-rules-back" class="gm-back" type="button">← 돌아가기</button>
    <h2 id="gm-rules-title">목표 보석을 찾아요!</h2>
-   <p>위에 보이는 보석과<br>색과 모양이 같은 보석을 눌러요.</p>
-   <p id="gm-difficulty-description">1단계 · 보석 9개 중에서 찾아요.</p>
+   <p>구간마다 찾을 보석이 바뀌어요.<br>색과 모양이 똑같은 보석만 눌러요.</p>
+   <p id="gm-difficulty-description"></p>
    <button id="gm-rules-start" class="gm-primary" type="button">알겠어요 · 시작하기</button>
    <button id="gm-practice" class="gm-text-button" type="button" disabled>천천히 연습하기 · 시간 제한 없음</button>
   </div>

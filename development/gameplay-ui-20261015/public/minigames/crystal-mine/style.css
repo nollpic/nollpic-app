@@ -113,3 +113,76 @@
 .gm-crystal #gm-rules #gm-difficulty-description { font-size:18px;color:#36556e;margin:18px 0 24px; }
 .gm-crystal #gm-rules .gm-primary { font-size:22px;min-height:60px; }
 @media (max-height:700px) { .gm-crystal #gm-intro .gm-hero { height:160px; } .gm-crystal #gm-intro h1 { margin-top:12px; } .gm-crystal #gm-intro .gm-description { margin:12px 0 16px; } }
+
+/* ===== 2026-10-15 크리스탈 개편: 목표 보석 2개 · 목표 바뀜 알림 · 캐는 효과 ===== */
+.gm-crystal #gm-target-gem { display:flex;gap:4px;width:auto;min-width:52px; }
+.gm-crystal #gm-target-gem .gm-gem { width:52px;height:54px;flex:none; }
+.gm-crystal #gm-target-gem[data-count="2"] .gm-gem { width:44px;height:46px; }
+.gm-crystal .gm-cell .gm-gem { filter:drop-shadow(0 3px 0 rgba(4,30,46,.45)); }
+.gm-crystal .gm-target.is-switch { animation:gm-switch .9s ease-out; }
+@keyframes gm-switch { 0%,40% { background:#fff1b8;border-color:#f5b400;transform:scale(1.04); } 100% { background:#f0fcff;border-color:#8ed9ed;transform:none; } }
+.gm-crystal .gm-cell.is-collected .gm-gem { opacity:.18;transform:translateY(-6px) scale(.8);transition:transform .25s,opacity .25s; }
+.gm-crystal .gm-cell.is-collected::before { content:'';position:absolute;inset:6px;border-radius:50%;background:radial-gradient(circle,#fffbd0 0 18%,rgba(255,240,160,.6) 30%,transparent 62%);animation:gm-sparkle .45s ease-out forwards;pointer-events:none; }
+@keyframes gm-sparkle { 0% { transform:scale(.3);opacity:1; } 100% { transform:scale(1.5);opacity:0; } }
+.gm-reduced-motion .gm-crystal .gm-target.is-switch, .gm-reduced-motion .gm-crystal .gm-cell.is-collected::before { animation:none; }
+
+/* ===== 2026-10-15 남은 시간 크게 + 시간 막대 · 결과 카드 글씨 대비 ===== */
+.gm-crystal #gm-time { display:inline-flex;align-items:baseline;gap:3px;padding:4px 12px 4px 10px;border-radius:999px;background:#fff;color:#0e1d3e;font-size:15px;line-height:1; }
+.gm-crystal #gm-time i { font-style:normal;font-size:17px;align-self:center; }
+.gm-crystal #gm-time b { font-size:26px;font-weight:400;font-variant-numeric:tabular-nums;min-width:1.3em;text-align:right; }
+.gm-crystal #gm-time small { font-size:14px; }
+.gm-crystal #gm-time[data-level="warn"] { background:#ffb547;color:#4a2a00; }
+.gm-crystal #gm-time[data-level="danger"] { background:#ff5a4f;color:#fff;animation:gm-time-beat 1s ease-in-out infinite; }
+@keyframes gm-time-beat { 0%,100% { transform:scale(1); } 50% { transform:scale(1.12); } }
+.gm-crystal .gm-timebar { height:10px;margin:8px 2px 0;border-radius:999px;background:rgba(255,255,255,.18);overflow:hidden; }
+.gm-crystal .gm-timebar i { display:block;height:100%;width:100%;border-radius:inherit;background:linear-gradient(90deg,#5fe0b0,#8ee9ff);transition:width .1s linear; }
+.gm-crystal .gm-timebar i[data-level="warn"] { background:#ffb547; }
+.gm-crystal .gm-timebar i[data-level="danger"] { background:#ff5a4f; }
+.gm-reduced-motion .gm-crystal #gm-time[data-level="danger"] { animation:none; }
+.gm-crystal .gm-result-card dt { color:#5b6b85; }
+.gm-crystal .gm-result-card dd { color:#0e1d3e; }
+.gm-crystal .gm-details, .gm-crystal .gm-details summary { color:#0e1d3e; }
+.gm-crystal .gm-details p, .gm-crystal .gm-details li, .gm-crystal .gm-details small { color:#3d4a63; }
+
+/* Result screen: strong contrast on the light cards against the navy frame. */
+.np-play-ui[data-play-game="crystal-mine"] #gm-result { padding-top:8px; }
+.np-play-ui[data-play-game="crystal-mine"] #gm-result-title { margin:16px 0 8px;color:#fffbed;font-size:clamp(26px,7vw,32px);line-height:1.2; }
+.np-play-ui[data-play-game="crystal-mine"] #gm-result-message { margin:0 0 12px;color:#f3f0ff;font-size:17px;font-weight:700; }
+.np-play-ui[data-play-game="crystal-mine"] #gm-result .gm-result-hero { min-height:124px;border:2px solid #d3e8bd;background:#e8f6d7; }
+.np-play-ui[data-play-game="crystal-mine"] #gm-result .gm-result-card { padding:14px 16px;background:#fffbed;border:2px solid #b8c9e7;color:#17213b; }
+.np-play-ui[data-play-game="crystal-mine"] #gm-result .gm-result-card dl > div { border-bottom:1px solid #e2e7f0;font-size:16px; }
+.np-play-ui[data-play-game="crystal-mine"] #gm-result .gm-result-card dl > div:last-child { border-bottom:0; }
+.np-play-ui[data-play-game="crystal-mine"] #gm-result .gm-result-card dt { color:#52617a; }
+.np-play-ui[data-play-game="crystal-mine"] #gm-result .gm-result-card dd { color:#17213b;font-weight:700; }
+.np-play-ui[data-play-game="crystal-mine"] #gm-result .gm-result-card > strong { padding-top:10px;border-top:1px solid #e2e7f0;color:#17486b;font-weight:700; }
+.np-play-ui[data-play-game="crystal-mine"] #gm-result .gm-details { background:#fffbed;border:1px solid #b8c9e7;color:#17213b; }
+.np-play-ui[data-play-game="crystal-mine"] #gm-result .gm-details summary { color:#17213b;font-weight:700; }
+.np-play-ui[data-play-game="crystal-mine"] #gm-result .gm-details p,
+.np-play-ui[data-play-game="crystal-mine"] #gm-result .gm-details li,
+.np-play-ui[data-play-game="crystal-mine"] #gm-result .gm-details small { color:#46536a; }
+.np-play-ui[data-play-game="crystal-mine"] #gm-result .gm-reward-note { width:fit-content;max-width:100%;margin:10px auto 4px;padding:8px 14px;border-radius:999px;background:#e8f6d7;color:#285c34;font-size:14px;font-weight:700; }
+.np-play-ui[data-play-game="crystal-mine"] #gm-result .gm-save-status { color:#dbe3f7;font-size:13px; }
+
+/* 목표 달성으로 열린 보물상자를 눈에 띄게 */
+.gm-crystal .gm-chest.is-open { transform:scale(1.25);filter:drop-shadow(0 0 8px #ffe680);transition:transform .3s; }
+
+/* ===== 2026-10-15 틀렸을 때 "땡!" 팝업 ===== */
+.gm-crystal .gm-oops { position:absolute;left:50%;top:50%;z-index:3;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 22px 10px;border-radius:22px;background:#fff;border:4px solid #ff5a4f;box-shadow:0 6px 0 #b8262a,0 10px 24px rgba(0,0,0,.3);transform:translate(-50%,-50%) scale(0);opacity:0;pointer-events:none;white-space:nowrap; }
+.gm-crystal .gm-oops b { font-size:46px;line-height:1;font-weight:400;color:#ff5a4f;-webkit-text-stroke:1.5px #8a1f1b;paint-order:stroke fill; }
+.gm-crystal .gm-oops small { font-size:14px;color:#5e1012; }
+.gm-crystal .gm-oops.is-on { animation:gm-oops .7s ease-out forwards; }
+@keyframes gm-oops { 0% { transform:translate(-50%,-50%) scale(.3) rotate(-8deg);opacity:0; } 18% { transform:translate(-50%,-50%) scale(1.12) rotate(4deg);opacity:1; } 30% { transform:translate(-50%,-50%) scale(1) rotate(-3deg); } 75% { transform:translate(-50%,-50%) scale(1) rotate(0);opacity:1; } 100% { transform:translate(-50%,-50%) scale(.9);opacity:0; } }
+.gm-crystal .gm-cell.is-wrong { animation:gm-shake .35s ease-in-out; }
+@keyframes gm-shake { 0%,100% { transform:translateX(0); } 20% { transform:translateX(-6px); } 40% { transform:translateX(6px); } 60% { transform:translateX(-4px); } 80% { transform:translateX(3px); } }
+.gm-reduced-motion .gm-crystal .gm-oops.is-on { animation:gm-oops-fade .7s linear forwards;transform:translate(-50%,-50%); }
+@keyframes gm-oops-fade { 0%,75% { opacity:1; } 100% { opacity:0; } }
+.gm-reduced-motion .gm-crystal .gm-cell.is-wrong { animation:none; }
+
+/* ===== 2026-10-15 틀린 이유: 목표 카드 안 빨간 알약(최대 3초), 처음 보는 이유면 "땡!" 팝업을 조금 길게 ===== */
+.gm-crystal .gm-why { display:inline-block;margin-top:6px;padding:3px 10px;border-radius:999px;background:#ff5a4f;color:#fff;font-size:15px;line-height:1.3; }
+.gm-crystal .gm-why[hidden] { display:none; }
+.gm-crystal .gm-why.is-on { animation:gm-why-pop .3s ease-out; }
+@keyframes gm-why-pop { 0% { transform:scale(.6);opacity:0; } 70% { transform:scale(1.08);opacity:1; } 100% { transform:scale(1); } }
+.gm-crystal .gm-oops.is-on.is-long { animation-duration:1.4s; }
+.gm-reduced-motion .gm-crystal .gm-oops.is-on.is-long { animation-duration:1.4s; }
+.gm-reduced-motion .gm-crystal .gm-why.is-on { animation:none; }

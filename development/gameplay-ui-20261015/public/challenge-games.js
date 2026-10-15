@@ -27,7 +27,7 @@
     { id: 16, title: '숫자로 찾기',       emoji: '🔎', open: 'openNumberSearchGame',   desc: '숫자를 순서대로 찾아요',       weights: { visual: 3, attention: 2 } },
     { id: 17, title: '블록 합치기',       emoji: '🟦', open: 'openBlockMergeGame',     desc: '같은 블록을 합쳐요',           weights: { attention: 3, visual: 1 } },
     { id: 18, title: '꼬인 길 작전',      emoji: '🧵', open: 'openTangledPathGame',    desc: '선이 안 겹치게 3단계 풀기',    weights: { attention: 3, visual: 1 } },
-    { id: 19, title: '크리스탈 광산', emoji: '💎', img: 'minigames/crystal-mine/thumbnail.svg', open: 'openCrystalMineGame', desc: '목표 보석을 찾아 5구간 탐험해요', weights: { attention: 3 } },
+    { id: 19, title: '크리스탈 광산', emoji: '💎', img: 'minigames/crystal-mine/thumbnail.svg', open: 'openCrystalMineGame', desc: '구간마다 바뀌는 보석을 찾아요', weights: { attention: 3 } },
     { id: 20, title: '마법 회로 복구', emoji: '✦', open: 'openMagicCircuitGame', desc: '에너지 수정을 연결해요', weights: { visual: 3, attention: 1 } },
     { id: 21, title: '반전 마법사의 함정', emoji: '↔', open: 'openDirectionWizardGame', desc: '바뀐 규칙을 찾아요', weights: { inhibition: 3, attention: 1 } },
     { id: 22, title: '컬러 마법사의 시험', emoji: '▲', open: 'openColorWizardGame', desc: '색깔 규칙을 판단해요', weights: { inhibition: 3, visual: 1 } },

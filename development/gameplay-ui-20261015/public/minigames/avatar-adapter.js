@@ -50,3 +50,37 @@
   }
   window.NollpicGameAvatar = {owner,capture,valid,mount};
 })();
+/* 2026-10-15 챌린지 도장·포인트 연결 (새 놀이 7개 공통)
+   예전 놀이처럼 앱(부모 창)의 claimChallengeStepReward(놀이 번호)를 불러 그날 칸 도장 + 200P.
+   놀이 번호 = challenge-games.js의 id. 지도·오늘 카드에서 연 놀이만 그날 칸으로 연결됨(mapChallengeStep) */
+(function () {
+  'use strict';
+  const CATALOG={'ATT-001':19,'MAGIC-CIRCUIT':20,'REVERSAL-DIRECTION':21,'COLOR-WIZARD':22,'CIPHER-369':23,'SECRET-ARCHITECTURE':24,'SECRET-DOOR':25,'REVERSAL-WIZARD':21};
+  const owner=window.NollpicGameAvatar?.owner||(window.parent!==window?window.parent:window);
+  // record.endReason이 completed이고 연습이 아니면 도장·포인트. 같은 칸은 한 번만 포인트
+  function claim(gameId,{completed=true,practice=false}={}){
+    const id=CATALOG[gameId];
+    if(!completed)return {kind:'incomplete'};
+    if(practice)return {kind:'practice'};
+    if(!id||owner===window||typeof owner.claimChallengeStepReward!=='function')return {kind:'offline'};
+    let day=-1,before=0,after=0,awarded=false;
+    try{day=Number(owner.mapChallengeStep?.(id));}catch(_){}
+    if(!(day>0))return {kind:'free-play'};
+    try{if(owner.isChallengeStepBehindPaywall?.(day))return {kind:'locked',day};}catch(_){}
+    try{before=owner.getChallengePoints(owner.readChallengeState());}catch(_){}
+    try{awarded=!!owner.claimChallengeStepReward(id);}catch(e){console.error(e);return {kind:'error',day};}
+    try{after=owner.getChallengePoints(owner.readChallengeState());}catch(_){}
+    return {kind:awarded?'awarded':'already',day,points:Math.max(0,after-before)};
+  }
+  function text(r){
+    if(!r)return '';
+    return r.kind==='awarded'?`+${r.points||200}P 받았어요 · ${r.day}일차 도장 완료!`
+      :r.kind==='already'?`${r.day}일차 도장은 이미 받았어요`
+      :r.kind==='practice'?'연습 모드는 도장·포인트가 없어요'
+      :r.kind==='incomplete'?'끝까지 하면 도장과 포인트를 받아요'
+      :r.kind==='locked'?'이 칸은 아직 열리지 않았어요'
+      :r.kind==='error'?'도장을 찍지 못했어요. 다시 시도해 주세요'
+      :'놀이 기록을 저장했어요';
+  }
+  window.NollpicChallengeLink={claim,text,catalogId:g=>CATALOG[g]};
+})();

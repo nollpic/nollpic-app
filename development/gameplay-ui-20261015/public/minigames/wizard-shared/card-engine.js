@@ -21,7 +21,7 @@
   return Array.from({length:c.total},(_,i)=>{
    const type=GAME==='COLOR-WIZARD'?'color':'number',block=band==='lower'?3:2;
    const rule=type==='color'?(stage===3&&Math.floor(i/block)%2?'word':'ink'):(stage===1?'direct':stage===2?'reverse':Math.floor(i/block)%2?'reverse':'direct');
-   const ink=colors[(i+Math.floor(random()*3))%3],word=stage===1?ink:colors[(colors.indexOf(ink)+1+Math.floor(random()*2))%3],compound=type==='number'&&stage===3;
+   const ink=colors[(i+Math.floor(random()*3))%3],word=(stage===1&&(i<2||i%2===0))?ink:colors[(colors.indexOf(ink)+1+Math.floor(random()*2))%3],compound=type==='number'&&stage===3;
    const pool=Array.from({length:band==='lower'?49:999},(_,n)=>n+1).filter(n=>(contains369(n)&&(!compound||n%2===0))===(i%2===0));
    const t={id:i,type,rule,ink,word,compound,number:pool[Math.floor(random()*pool.length)],options:type==='color'?[...colors]:['seal','pass']};t.switched=previous!==null&&previous!==ruleKey(t);previous=ruleKey(t);return t;
   });
