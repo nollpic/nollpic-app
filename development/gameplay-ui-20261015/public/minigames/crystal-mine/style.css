@@ -186,3 +186,11 @@
 .gm-crystal .gm-oops.is-on.is-long { animation-duration:1.4s; }
 .gm-reduced-motion .gm-crystal .gm-oops.is-on.is-long { animation-duration:1.4s; }
 .gm-reduced-motion .gm-crystal .gm-why.is-on { animation:none; }
+
+/* ===== 2026-10-15 하트 3개 · 구간 시간 초과 ✕ ===== */
+.gm-crystal .gm-hearts { display:inline-flex;gap:1px;font-size:20px;line-height:1; }
+.gm-crystal .gm-hearts i { font-style:normal;color:#ff5a6e;text-shadow:0 2px 0 #8a1f2b; }
+.gm-crystal .gm-hearts i.off { color:rgba(255,255,255,.22);text-shadow:none; }
+.gm-crystal .gm-hearts.is-hit { animation:gm-shake .4s ease-in-out; }
+.gm-crystal .gm-route-step.miss { background:#ff5a4f;color:#fff;border-color:#8a1f1b; }
+.gm-reduced-motion .gm-crystal .gm-hearts.is-hit { animation:none; }

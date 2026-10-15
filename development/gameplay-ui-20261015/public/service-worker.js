@@ -1,4 +1,4 @@
-const CACHE_NAME = "nollpic-v60-crystal-link-20261015";
+const CACHE_NAME = "nollpic-v61-crystal-hearts-20261015";
 const CACHE_URLS = [
   "/manifest.json",
   "/images/icon-192.png",

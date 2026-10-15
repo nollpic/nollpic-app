@@ -36,7 +36,10 @@
  const rules=document.getElementById('c-rules');if(rules)document.querySelector('.c-layout').before(rules);
  if(config.slug==='direction-wizard'){const lives=document.getElementById('w-lives');lives.classList.add('np-lives');document.getElementById('gm-pause-btn').before(lives);}
  // Keep optional measurements accessible after play, without cluttering the action surface.
- const result=document.getElementById('gm-result');if(result){const detailNodes=[...result.querySelectorAll('#w-outcomes,#sd-analysis,#gm-first-time,#gm-active-time')];if(detailNodes.length){const d=document.createElement('details');d.className='np-play-details';const s=document.createElement('summary');s.textContent='자세한 기록';d.append(s,...detailNodes);result.append(d);}}
+ const result=document.getElementById('gm-result');if(result){const detailNodes=[...result.querySelectorAll('#w-outcomes,#sd-analysis,#gm-first-time,#gm-active-time')];if(detailNodes.length){const d=document.createElement('details');d.className='np-play-details';const s=document.createElement('summary');s.textContent='자세한 기록';d.append(s,...detailNodes);result.append(d);
+  /* 2026-10-15 상세 기록은 관리자만 (아이들 화면에서는 숨김). 관리자 = admin/admin.js의 ADMIN_EMAILS로 로그인한 경우 */
+  const ADMIN_EMAILS=['monojjin@gmail.com','nollpic.official@gmail.com'];let email='';try{const o=parent!==window?parent:window;email=String((o.getNollpicUser&&o.getNollpicUser())?.email||'').toLowerCase();}catch(_){}
+  const isAdmin=ADMIN_EMAILS.includes(email);d.hidden=!isAdmin;result.querySelectorAll('.gm-details').forEach(x=>{x.hidden=!isAdmin;});}}
  if(!config.modern){
   const choice=document.querySelector('.tabs,.mode-row,.level-strip');if(choice){const d=document.createElement('details');d.className='np-play-details';const s=document.createElement('summary');s.textContent='단계 바꾸기';choice.before(d);d.append(s,choice);}
   const quiet={

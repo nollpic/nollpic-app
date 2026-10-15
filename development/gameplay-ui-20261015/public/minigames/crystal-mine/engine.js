@@ -63,8 +63,11 @@
   function create({ band = 'lower', difficulty, mode = 'challenge', seed = 1, sessionId, childId = 'dev-child-a', now = () => performance.now(), wallNow = () => new Date().toISOString() } = {}) {
     band = bandOf(difficulty !== undefined ? difficulty : band);
     if (!['challenge','practice'].includes(mode)) throw Error('Invalid game configuration');
-    const B = config.bands[band], plan = B.rounds, timeAttack = !!B.timeAttack, totalRounds = timeAttack ? null : plan.length, durationMs = B.durationMs || config.durationMs, random = randomFrom(seed);
-    let phase = 'ready', resumePhase = null, activeMs = 0, activeStart = null, round = 0, board = [], targets = [], active = [], switched = false, correct = 0, wrong = 0, completedRounds = 0, startedAt = wallNow(), finalResult = null;
+    const B = config.bands[band], plan = B.rounds, timeAttack = !!B.timeAttack, totalRounds = timeAttack ? null : plan.length, random = randomFrom(seed);
+    /* 2026-10-15 3차: 구간마다 제한 시간이 새로 시작(config.roundTime), 시간 안에 못 찾으면 하트 -1 하고 다음 구간. 하트 0이면 끝. 틀리면 시간 깎기 */
+    const maxHearts = mode === 'challenge' ? (B.hearts || 3) : null, penaltyMs = B.wrongPenaltyMs || 0;
+    const limitAt = r => { const t = B.roundTime || {}; if (r <= (t.list || []).length) return t.list[r - 1]; return Math.max(t.min || 12000, (t.after || 20000) - (r - (t.list || []).length - 1) * (t.step || 0)); };
+    let hearts = maxHearts, roundPenalty = 0, timedOutRounds = 0, lastTimeout = 0, phase = 'ready', resumePhase = null, activeMs = 0, activeStart = null, round = 0, board = [], targets = [], active = [], switched = false, correct = 0, wrong = 0, completedRounds = 0, startedAt = wallNow(), finalResult = null;
     const roundRecords = [], wrongUntil = new Map();
     // 타임어택은 정해진 구간 뒤로 loop를 돌며 계속
     const specAt = r => r <= plan.length ? plan[r - 1] : B.loop[(r - plan.length - 1) % B.loop.length];
@@ -74,20 +77,30 @@
     function stopClock() { activeMs = elapsed(); activeStart = null; }
     function end(reason) {
       if (finalResult) return copy(finalResult);
-      stopClock(); if (mode === 'challenge') activeMs = Math.min(activeMs, durationMs);
+      stopClock();
       phase = 'ended';
       const accuracy = correct + wrong ? correct / (correct + wrong) : null;
       finalResult = { sessionId, gameId: config.gameId, gameVersion: config.gameVersion, rulesVersion: config.rulesVersion, childId, band, difficulty: band, mode, boardSeed: seed >>> 0, startedAt, endedAt: wallNow(), endReason: reason,
-        correctCount: correct, wrongCount: wrong, accuracy, completedRounds, totalRounds, timeAttack, goal: B.goal || null, collectedCount: correct, score: score(correct, wrong), stars: timeAttack ? attackStars(completedRounds, accuracy, B.goal, mode) : stars(accuracy, reason === 'completed', mode), activePlayMs: activeMs,
+        correctCount: correct, wrongCount: wrong, accuracy, completedRounds, attemptedRounds: round, timedOutRounds, heartsLeft: hearts, maxHearts, totalRounds, timeAttack, goal: B.goal || null, collectedCount: correct, score: score(correct, wrong), stars: timeAttack ? attackStars(completedRounds, accuracy, B.goal, mode) : reason === 'completed' && mode === 'challenge' ? Math.max(1, Math.min(stars(accuracy, true, mode), hearts)) : 0, activePlayMs: activeMs,
         firstGemMedianMs: median(roundRecords.map(x => x.firstCorrectMs).filter(x => x !== null)), roundRecords: copy(roundRecords), rewardMode: 'simulation', simulatedReward: reason === 'completed' && mode === 'challenge' ? config.simulatedReward : 0, verification: 'client_reported' };
       return copy(finalResult);
     }
-    function tick() { if (phase === 'playing' && mode === 'challenge' && elapsed() >= durationMs) end(timeAttack ? 'completed' : 'timeout'); return finalResult && copy(finalResult); }
+    const roundLimit = () => limitAt(Math.max(1, round));
+    const roundUsed = () => round ? elapsed() - roundRecords[round - 1].activeStartMs + roundPenalty : 0;
+    const roundLeft = () => mode === 'challenge' ? Math.max(0, roundLimit() - roundUsed()) : null;
+    // 구간 시간이 다 되면: 하트 -1, 이 구간은 실패로 넘어감. 하트 0 → 끝 (저학년은 마지막 구간이었어도 끝)
+    function timeoutRound() {
+      stopClock(); const record = roundRecords[round - 1]; record.timedOut = true; timedOutRounds++; hearts--; lastTimeout = round; phase = 'transition';
+      if (hearts <= 0) end(timeAttack ? 'completed' : 'out-of-hearts');
+      else if (!timeAttack && round >= totalRounds) end('completed');
+      else if (timeAttack && round >= (B.maxRounds || 30)) end('completed');
+    }
+    function tick() { if (phase === 'playing' && mode === 'challenge' && roundLeft() <= 0) timeoutRound(); return finalResult && copy(finalResult); }
     function beginRound() {
-      if (!['ready','transition'].includes(phase) || finalResult || (!timeAttack && completedRounds >= totalRounds)) return false;
-      round++; const made = generateBoard(spec(), random, targets); board = made.board; targets = made.targets; wrongUntil.clear(); switched = false;
+      if (!['ready','transition'].includes(phase) || finalResult || (!timeAttack && round >= totalRounds)) return false;
+      round++; roundPenalty = 0; const made = generateBoard(spec(), random, targets); board = made.board; targets = made.targets; wrongUntil.clear(); switched = false;
       active = spec().type === 'pair' ? [...targets] : [targets[0]];
-      roundRecords.push({ round, type: spec().type, activeStartMs: activeMs, firstCorrectMs: null, correctCount: 0, wrongCount: 0, completed: false, selections: [] });
+      roundRecords.push({ round, type: spec().type, limitMs: mode === 'challenge' ? roundLimit() : null, activeStartMs: activeMs, firstCorrectMs: null, correctCount: 0, wrongCount: 0, completed: false, selections: [] });
       phase = 'playing'; activeStart = now(); return true;
     }
     // 틀린 이유: 금 · 거꾸로 · 목표가 바뀜 · 그 밖
@@ -108,7 +121,7 @@
       if (ok) gem.selected = true; else wrongUntil.set(id, at + config.wrongFeedbackMs);
       record.selections.push({ tileId: id, correct: ok, reason, activePlayMs: at });
       if (ok) { correct++; record.correctCount++; if (record.firstCorrectMs === null) record.firstCorrectMs = at - record.activeStartMs; }
-      else { wrong++; record.wrongCount++; }
+      else { wrong++; record.wrongCount++; if (mode === 'challenge') roundPenalty += penaltyMs; }
       // 바뀌는 구간: 처음 목표를 하나 남기고 다 찾으면 목표가 바뀜 → 남은 처음 목표는 이제 누르면 안 됨
       let didSwitch = false;
       if (ok && spec().type === 'switch' && !switched && board.filter(x => matches(x, targets[0]) && x.selected).length === spec().count - 1) {
@@ -117,19 +130,22 @@
       const remaining = board.filter(x => isActiveTarget(x) && !x.selected).length;
       if (!remaining) {
         stopClock(); record.completed = true; completedRounds++; phase = 'transition';
-        if (!timeAttack && completedRounds === totalRounds) end('completed');
+        if (!timeAttack && round >= totalRounds) end('completed');
+        else if (timeAttack && mode === 'challenge' && round >= (B.maxRounds || 30)) end('completed');
         else if (timeAttack && mode === 'practice' && completedRounds >= (B.goal || 10)) end('completed');
       }
-      return { correct: ok, reason, switched: didSwitch, remaining, roundComplete: !remaining, ended: !!finalResult };
+      if (ok || phase !== 'playing') return { correct: ok, reason, switched: didSwitch, remaining, roundComplete: !remaining, ended: !!finalResult };
+      tick();   // 틀림 벌점으로 시간이 다 됐을 수 있음
+      return { correct: ok, reason, switched: didSwitch, remaining, roundComplete: false, timedOut: phase !== 'playing', penaltyMs: mode === 'challenge' ? penaltyMs : 0, ended: !!finalResult };
     }
     function pause() { if (!['playing','transition','ready'].includes(phase)) return false; if (tick()) return false; resumePhase = phase; stopClock(); phase = 'paused'; return true; }
     function resume() { if (phase !== 'paused') return false; phase = resumePhase; if (phase === 'playing') activeStart = now(); return true; }
     function view() {
-      const played = mode === 'challenge' ? Math.min(elapsed(), durationMs) : elapsed(), s = round ? spec() : plan[0];
+      const played = elapsed(), s = round ? spec() : plan[0];
       return { phase, band, difficulty: band, mode, round, totalRounds, timeAttack, goal: B.goal || null, size: s.size, roundType: s.type, switched,
         targets: copy(active), allTargets: copy(targets), board: copy(board),
         targetCount: board.filter(isActiveTarget).length, foundCount: board.filter(x => isActiveTarget(x) && x.selected).length,
-        completedRounds, correctCount: correct, wrongCount: wrong, score: score(correct, wrong), activePlayMs: played, remainingMs: mode === 'challenge' ? Math.max(0, durationMs - played) : null };
+        completedRounds, correctCount: correct, wrongCount: wrong, score: score(correct, wrong), activePlayMs: played, results: roundRecords.map(r => r.completed ? 'ok' : r.timedOut ? 'miss' : ''), remainingMs: roundLeft(), roundLimitMs: mode === 'challenge' ? roundLimit() : null, hearts, maxHearts, lastTimeout, timedOutRounds };
     }
     return { beginRound, pick, pause, resume, tick, abandon: () => end('abandoned'), view, result: () => finalResult && copy(finalResult) };
   }

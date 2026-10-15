@@ -15,14 +15,15 @@
     shapes: ['diamond', 'hexagon', 'octagon', 'drop', 'heart', 'star'],
     similarColor: { blue: 'purple', purple: 'blue', red: 'pink', pink: 'red' },
     similarCut: { hexagon: 'octagon', octagon: 'hexagon' },
-    /* 갈수록 확실히 어렵게 (2026-10-15 2차: "거의 같은 레벨로 이어지는 느낌" 의견)
+    /* 시간(2026-10-15 3차): 구간마다 roundTime이 새로 시작, 못 찾으면 하트 -1, 하트 3개 다 쓰면 끝. 틀리면 wrongPenaltyMs만큼 시간 깎임
+       갈수록 확실히 어렵게 (2026-10-15 2차: "거의 같은 레벨로 이어지는 느낌" 의견)
        저학년: 8구간(제한 150초). 3×3 몸풀기 → 4×4 → 6구간 새 규칙(금 간 보석) → 5×5
        고학년: 90초 타임어택, 목표 10구간
          1~5  규칙 배우기: 한 판에 헷갈림 한 가지
          6~10 규칙 겹치기: 한 판에 헷갈림 두 가지 (예: 금 + 비슷한 색)
          11~  깊은 광산(loop를 반복): 6×6, 찾을 개수·헷갈리는 보석 더 많이, 헷갈림 세 가지 */
     bands: {
-      lower: { label: '저학년 탐험', description: '1~3학년 · 8구간, 뒤로 갈수록 판이 커지고 새 규칙이 나와요!', durationMs: 150000, rounds: [
+      lower: { label: '저학년 탐험', description: '1~3학년 · 구간마다 30초! 하트 3개로 8구간 끝까지 가요.', hearts: 3, wrongPenaltyMs: 1000, roundTime: { list: [30000, 30000, 30000, 30000, 30000, 30000, 30000, 30000] }, rounds: [
         { size: 3, type: 'basic', count: 2, filler: 'far' },
         { size: 3, type: 'basic', count: 2, confuse: { sameColor: 2 }, filler: 'far' },
         { size: 3, type: 'basic', count: 3, confuse: { sameShape: 2 }, filler: 'any' },
@@ -32,7 +33,7 @@
         { size: 5, type: 'basic', count: 4, confuse: { sameColor: 3, sameShape: 3 }, filler: 'any' },
         { size: 5, type: 'pair', count: 3, confuse: { sameColor: 2, sameShape: 2 }, filler: 'any' }
       ] },
-      upper: { label: '고학년 타임어택', description: '4~6학년 · 90초, 갈수록 깊고 어려운 광산! 목표는 10구간!', durationMs: 90000, timeAttack: true, goal: 10, rounds: [
+      upper: { label: '고학년 타임어택', description: '4~6학년 · 구간마다 시간이 점점 짧아져요! 하트 3개로 몇 구간까지 갈까? 목표 10구간', timeAttack: true, goal: 10, maxRounds: 30, hearts: 3, wrongPenaltyMs: 2000, roundTime: { list: [30000, 30000, 30000, 30000, 30000, 25000, 25000, 25000, 25000, 25000], after: 20000, step: 1000, min: 12000 }, rounds: [
         { size: 4, type: 'basic', count: 3, confuse: { similarCut: 3, sameColor: 2 }, filler: 'any' },
         { size: 5, type: 'basic', count: 4, confuse: { similarColor: 4, sameShape: 2 }, filler: 'any' },
         { size: 5, type: 'crack', count: 4, confuse: { crack: 4, sameColor: 2 }, filler: 'any' },

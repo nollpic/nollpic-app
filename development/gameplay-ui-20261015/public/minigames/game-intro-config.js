@@ -465,7 +465,7 @@ window.NollpicGameIntroConfig={
       "1": "저학년",
       "2": "고학년"
     },
-    "verifiedDuration": "약 1분 30초",
+    "verifiedDuration": "1~3분",
     "theme": "crystal-mine",
     "artwork": {
       "src": "/minigames/intro-backgrounds/crystal-mine.png",
