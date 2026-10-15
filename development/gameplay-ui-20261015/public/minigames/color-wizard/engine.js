@@ -1,0 +1,1 @@
+(function(root){const factory=typeof module==='object'&&module.exports?require('../wizard-shared/card-engine.js'):root.NollpicCardGames;const api=factory.make('COLOR-WIZARD');if(typeof module==='object'&&module.exports)module.exports=api;else root.NollpicWizardCards=api;})(typeof window==='object'?window:globalThis);

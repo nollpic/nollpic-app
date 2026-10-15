@@ -1,0 +1,171 @@
+/* ==========================================================
+   스시공방(기억 공방) 리뉴얼 (2026-10-11) — 사용자 시안
+   nollpic-memory-kitchen.html 다음에 불러옴. 원래 스타일은 그대로 두고 덮어씀
+   (되돌리려면 html의 link 두 줄 + script 한 줄 삭제)
+   ========================================================== */
+:root {
+  --mk-ink: #262A40;
+  --mk-orange: #FF7A12;
+  --mk-line: #EADFD3;
+  --mk-cream: #FFF8F0;
+  --mk-font: 'Jua', 'Pretendard', sans-serif;
+}
+
+/* 바탕: 크림색 + 점 무늬 */
+.app-device { background: var(--mk-cream); }
+.game {
+  background:
+    radial-gradient(circle, rgba(232, 196, 160, .35) 1.3px, transparent 1.8px) 0 0 / 22px 22px,
+    var(--mk-cream) !important;
+}
+
+/* ── 위: 뒤로 · 제목 · 소리 ── */
+.topbar { grid-template-columns: 48px minmax(0, 1fr) 48px; align-items: center; gap: 12px; padding: 18px 16px 10px; }
+.icon-btn {
+  width: 46px; height: 46px; border-radius: 15px;
+  background: #fff; color: var(--mk-ink);
+  border: 1.5px solid var(--mk-line); box-shadow: none;
+  font-size: 28px; font-weight: 700;
+}
+.sound-btn svg { width: 24px; height: 24px; }
+.sound-btn .mute { display: none; }
+.sound-btn.is-muted { color: #9AA3B5; }
+.sound-btn.is-muted .wave { display: none; }
+.sound-btn.is-muted .mute { display: inline; }
+.title-area { gap: 2px; }
+.title-kicker { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.today-label { font-family: var(--mk-font); font-weight: 400; font-size: 13.5px; color: var(--mk-orange); white-space: nowrap; }
+.skill-pill {
+  min-height: 0; padding: 2px 9px 1px; border: 0; box-shadow: none;
+  background: #E4F0FF; color: #3A74D8;
+  font-family: var(--mk-font); font-weight: 400; font-size: 12.5px; line-height: 1.3;
+}
+.workshop-prefix { display: none !important; }
+h1 {
+  overflow: visible;
+  font-family: var(--mk-font); font-weight: 400; font-size: 31px; line-height: 1.15;
+  color: var(--mk-orange);
+  -webkit-text-stroke: 6px var(--mk-ink); paint-order: stroke fill;
+  text-shadow: 0 3px 0 var(--mk-ink);
+  padding: 2px 0 4px;
+}
+
+/* ── 레벨 탭: 그림 + 레벨N + 음식 ── */
+.level-strip { gap: 8px; padding: 6px 16px 14px; }
+.level-chip {
+  min-height: 0; padding: 10px 4px 8px;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  background: #fff; color: #8B93A5;
+  border: 1.5px solid var(--mk-line); border-radius: 16px; box-shadow: none;
+  font-family: var(--mk-font); font-weight: 400;
+}
+.level-chip img { height: 30px; width: auto; margin-bottom: 2px; }
+.level-chip b { font-weight: 400; font-size: 16px; line-height: 1.1; }
+.level-chip small { font-family: var(--mk-font); font-size: 12.5px; line-height: 1.1; color: inherit; opacity: .9; }
+.level-chip.active { background: #FFF1E4; color: var(--mk-orange); border: 2px solid var(--mk-orange); padding: 9.5px 3.5px 7.5px; }
+
+/* ── 진행: 1단계 ▬▬▬▬▬ 1/5 ── */
+.progress-wrap { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 0 16px 16px; }
+.progress-meta { display: contents; }
+#stepName { order: 1; font-family: var(--mk-font); font-weight: 400; font-size: 14px; color: #8B93A5; }
+.progress {
+  order: 2; height: 8px; border-radius: 0; overflow: hidden;
+  background: #EDE5DB;
+  /* 5칸으로 자르기 (바탕·채움 둘 다) */
+  -webkit-mask: repeating-linear-gradient(90deg, #000 0 calc(20% - 6px), transparent calc(20% - 6px) 20%);
+          mask: repeating-linear-gradient(90deg, #000 0 calc(20% - 6px), transparent calc(20% - 6px) 20%);
+  width: calc(100% + 6px); margin-right: -6px;
+}
+.progress span { border-radius: 0; background: var(--mk-orange); }
+#roundInfo { order: 3; font-family: var(--mk-font); font-weight: 400; font-size: 14px; color: #8B93A5; }
+
+/* ── 미션 문장 ── */
+.screen { gap: 16px; padding: 0 16px 16px; }
+.mission-card { background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 2px 4px 0 !important; border-radius: 0 !important; }
+.mission-line { margin-bottom: 4px; }
+.stage-label { font-family: var(--mk-font); font-weight: 400; font-size: 14px; color: var(--mk-orange); }
+.mission-text { font-family: var(--mk-font); font-weight: 400; font-size: 24px; line-height: 1.3; color: var(--mk-ink); }
+.mission-sub.tutorial-copy { display: none; }
+.mission-card .timer-chip, .stage-timer, #timerChip { display: none !important; }
+
+/* ── 놀이판: 흰 카드 + 굵은 남색 테두리 + "예시" ── */
+.stage-card { background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 14px 0 0 !important; overflow: visible !important; justify-content: flex-start; gap: 12px; }
+.board {
+  overflow: visible;
+  background: #fff !important;
+  border: 3px solid var(--mk-ink) !important;
+  border-radius: 26px !important;
+  box-shadow: 0 7px 0 var(--mk-ink) !important;
+}
+.example-label {
+  top: 0; transform: translate(-50%, -55%);
+  min-height: 0; padding: 5px 16px 4px;
+  background: var(--mk-orange); color: #fff;
+  border: 2.5px solid var(--mk-ink); box-shadow: none;
+  font-family: var(--mk-font); font-weight: 400; font-size: 15px;
+}
+.board.show-example { display: flex !important; flex-direction: column; justify-content: center; min-height: 0; padding: 34px 14px 18px; }
+body[data-theme="sushi"] .board.show-example .plate { display: none !important; }   /* 동그라미 예시는 스시(레벨1)만, 김밥·햄버거는 원래 접시 예시 */
+
+/* 예시 칸: 동그라미 + 번호 + 이름 */
+.ex-row { display: none; }
+body[data-theme="sushi"] .board.show-example .ex-row { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 10px; width: 100%; }
+.ex-item { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 0; }
+.ex-circle {
+  position: relative; width: 100%; max-width: 104px; aspect-ratio: 1;
+  display: grid; place-items: center;
+  border-radius: 50%; background: #FFF4EA; border: 1.5px solid #F6E5D4;
+}
+.ex-circle img { width: 92%; height: auto; transition: transform .25s; }
+.ex-circle .ingredient { position: static !important; transform: none !important; }
+.ex-num {
+  position: absolute; left: -2px; top: -4px;
+  width: 26px; height: 26px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--mk-orange); color: #fff;
+  font-family: var(--mk-font); font-size: 15px; line-height: 1;
+}
+.ex-item b { font-family: var(--mk-font); font-weight: 400; font-size: 16px; color: var(--mk-ink); white-space: nowrap; }
+.ex-item.pop .ex-circle { animation: exPop .7s cubic-bezier(.2, .9, .25, 1.1); }
+.ex-item.pop .ex-circle { border-color: var(--mk-orange); }
+@keyframes exPop { 0% { transform: scale(1); } 40% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+/* 기억 시간 막대 */
+.mem-time { display: none; align-items: center; gap: 10px; padding: 0 14px; font-family: var(--mk-font); font-size: 14px; color: #8B93A5; }
+.mem-time.show { display: flex; }
+.mem-time i { flex: 1; height: 8px; border-radius: 99px; background: #EDE5DB; overflow: hidden; }
+.mem-time i b { display: block; height: 100%; width: 100%; border-radius: 99px; background: #78CBA2; transition: width .9s linear; }
+.mem-time.demo i b { animation: memDemo var(--mk-sec, 3s) linear infinite; }
+@keyframes memDemo { from { width: 100%; } to { width: 0; } }
+.mem-time em { font-style: normal; color: #8B93A5; min-width: 28px; text-align: right; }
+/* 막대를 카드 안 아래쪽에 붙여 보이게: 예시일 때는 보드 안으로 */
+.board.show-example ~ .mem-time { margin-top: -66px; position: relative; z-index: 2; padding: 0 30px 0; }
+.board.show-example { padding-bottom: 58px; }
+
+/* ── 버튼 ── */
+.action-row { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 12px; }
+.btn-secondary, #resetBtn {
+  min-height: 58px; border-radius: 20px;
+  background: #fff !important; color: #4B5563 !important;
+  border: 1.5px solid var(--mk-line) !important; box-shadow: none !important;
+  font-family: var(--mk-font); font-weight: 400; font-size: 22px;
+}
+#nextBtn {
+  min-height: 58px; border-radius: 20px;
+  background: var(--mk-orange) !important; color: #fff !important;
+  border: 2.5px solid var(--mk-ink) !important; box-shadow: 0 6px 0 var(--mk-ink) !important;
+  font-family: var(--mk-font); font-weight: 400; font-size: 23px;
+}
+#nextBtn:disabled { background: #C9CED8 !important; box-shadow: 0 6px 0 #9AA3B5 !important; border-color: #9AA3B5 !important; }
+#nextBtn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 3px 0 var(--mk-ink) !important; }
+
+/* 작은 화면 */
+@media (max-width: 360px) {
+  h1 { font-size: 27px; }
+  .mission-text { font-size: 21px; }
+  .ex-item b { font-size: 14px; }
+}
+/* 글꼴 고정(버튼 기본 글꼴 덮어쓰기) + 예시 칸 여백 */
+.level-chip, .level-chip b, .level-chip small, #nextBtn, #resetBtn, .ex-item b, .mem-time { font-family: var(--mk-font) !important; font-weight: 400 !important; }
+.board.show-example { padding: 40px 14px 74px; }
+.board.show-example ~ .mem-time { margin-top: -68px; }

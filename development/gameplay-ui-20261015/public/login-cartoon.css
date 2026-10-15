@@ -1,0 +1,232 @@
+/* 로그인 화면 전용: 다른 앱 화면과 게임에는 영향을 주지 않습니다. */
+@font-face {
+  font-family: 'Nollpic Apple Gothic';
+  src: local('AppleSDGothicNeoB00');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+#page-1 { --login-ink: #293344; }
+#page-1,
+#page-1 .main-page-body {
+  background: #fffbed !important;
+}
+
+#page-1 .main-page-body {
+  padding: clamp(26px, 4dvh, 36px) 24px max(22px, env(safe-area-inset-bottom)) !important;
+  margin-top: 0;
+  min-height: 0;
+  gap: 14px;
+}
+
+#page-1 .title-block {
+  flex: none;
+  margin: 0;
+  position: relative;
+  top: clamp(24px, 8dvh, 55px);
+}
+#page-1 .title-block .img-title {
+  width: 240px;
+  height: auto;
+  max-width: 100%;
+  max-height: none;
+  margin-bottom: 0;
+}
+#page-1 .brand-sub {
+  color: #4d443b;
+  font-family: 'Apple SD Gothic Neo', 'Nollpic Apple Gothic', AppleGothic, -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.55;
+  letter-spacing: -0.04em;
+  margin-top: 0;
+}
+
+#page-1 .graphic-block {
+  flex-direction: column;
+  gap: 18px;
+  min-height: 210px;
+}
+#page-1 .login-welcome {
+  flex: none;
+  align-self: flex-start;
+  margin-left: 13%;
+  padding: 8px 18px;
+  border: 2px solid var(--login-ink);
+  border-radius: 18px 18px 18px 4px;
+  background: #fff;
+  color: var(--login-ink);
+  box-shadow: 2px 3px 0 var(--login-ink);
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.3;
+  transform: translateY(clamp(48px, 8.5dvh, 72px)) rotate(352deg);
+}
+#page-1 .graphic-block .img-fluid-content {
+  width: 100%;
+  max-width: none;
+  max-height: min(40dvh, 350px);
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+#page-1 .action-block { margin: 0; padding: 6px 0 0; background: transparent; top: -20px; }
+#page-1 .social-login-wrap { width: 100%; gap: 0; align-items: center; }
+#page-1 .btn-google-main,
+#page-1 .btn-guest {
+  border: 2.5px solid var(--login-ink);
+  border-radius: 14px;
+  box-shadow: 0 4px 0 var(--login-ink);
+  color: var(--login-ink);
+  font-weight: 800;
+  min-height: 54px;
+  padding: 14px 10px;
+  transition: transform 120ms, box-shadow 120ms;
+}
+#page-1 .btn-google-main { background: var(--orange-point); color: #fff; font-size: 16px; }
+#page-1 .btn-guest { background: #fffef9; margin-top: 14px; font-size: 15px; }
+#page-1 .btn-google-main:hover,
+#page-1 .btn-guest:hover { transform: translateY(-1px); }
+#page-1 .btn-google-main:active,
+#page-1 .btn-guest:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--login-ink); }
+#page-1 button:focus-visible { outline: 3px solid #587cb1; outline-offset: 6px; }
+#page-1 .privacy-link-wrap { margin-top: 20px; }
+#page-1 .privacy-link { color: #716454; font-size: 12px; }
+#page-1 .pwa-install-banner {
+  border: 2px solid var(--login-ink);
+  border-radius: 14px;
+  box-shadow: 0 3px 0 var(--login-ink);
+  margin-bottom: 0;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  #page-1 button { transition: none; }
+}
+
+/* Size the first screen against the actual app height, including browser chrome. */
+#page-1 { container-type: size; }
+#page-1 .main-page-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: max(12px, min(3cqh, 26px), env(safe-area-inset-top)) 24px max(12px, env(safe-area-inset-bottom)) !important;
+  gap: clamp(4px, 1.5cqh, 16px);
+  min-height: 0;
+  overflow: hidden;
+}
+#page-1 .title-block {
+  position: static;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+}
+#page-1 .title-block .img-title {
+  width: auto;
+  height: min(18cqh, 160px);
+  max-width: 100%;
+  margin-bottom: 0;
+}
+#page-1 .brand-sub {
+  font-size: clamp(13px, 2.1cqh, 16px);
+  line-height: 1.5;
+  margin: 0;
+}
+#page-1 .graphic-block {
+  container-type: size;
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: 1 1 0;
+  min-height: 0;
+  margin: 0;
+  gap: 0;
+  width: 100%;
+}
+#page-1 .login-art {
+  position: relative;
+  width: min(100cqw, 150cqh);
+  aspect-ratio: 3 / 2;
+  container-type: inline-size;
+}
+#page-1 .login-welcome {
+  position: absolute;
+  top: 7%;
+  left: 13%;
+  margin: 0;
+  padding: 2cqw 4cqw;
+  font-size: clamp(10px, 4.4cqw, 16px);
+  white-space: nowrap;
+  transform: rotate(352deg);
+  translate: none;
+  z-index: 1;
+}
+#page-1 .graphic-block .img-fluid-content {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: none;
+  max-width: none;
+}
+#page-1 .action-block {
+  position: static;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+}
+#page-1 .btn-google-main,
+#page-1 .btn-guest {
+  min-height: 44px;
+  padding: clamp(10px, 1.7cqh, 14px) 8px;
+  font-size: clamp(13px, 2cqh, 16px);
+}
+#page-1 .btn-guest { margin-top: clamp(8px, 1.6cqh, 14px); }
+#page-1 .privacy-link-wrap { margin: clamp(8px, 1.6cqh, 16px) 0 0; line-height: 18px; }
+#page-1 .pwa-install-banner { flex: 0 0 auto; }
+
+/* Landscape phones: keep the controls full-sized alongside the artwork. */
+@media (max-height: 480px) and (min-width: 500px) {
+  .app-device:has(#page-1.active) { max-width: 760px; }
+  #page-1 .main-page-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    column-gap: 24px;
+  }
+  #page-1 .title-block { grid-column: 1; grid-row: 1; }
+  #page-1 .graphic-block { grid-column: 1; grid-row: 2; width: 100%; height: 100%; }
+  #page-1 .action-block { grid-column: 2; grid-row: 1 / 3; }
+  #page-1 .pwa-install-banner:not([hidden]) { grid-column: 1 / -1; grid-row: 1; }
+  #page-1 .main-page-body:has(.pwa-install-banner:not([hidden])) { grid-template-rows: auto auto minmax(0, 1fr); }
+  #page-1 .main-page-body:has(.pwa-install-banner:not([hidden])) .title-block { grid-row: 2; }
+  #page-1 .main-page-body:has(.pwa-install-banner:not([hidden])) .graphic-block { grid-row: 3; }
+  #page-1 .main-page-body:has(.pwa-install-banner:not([hidden])) .action-block { grid-row: 2 / 4; }
+}
+/* Login owns a single viewport; artwork gives space back before controls do. */
+html:has(#page-1.active),
+body:has(#page-1.active) { overflow: hidden; overscroll-behavior: none; }
+#page-1 .main-page-body { max-height: 100%; }
+#page-1 .graphic-block { min-width: 0; }
+#page-1 .login-art { max-width: 100%; }
+@container (max-height: 540px) {
+  #page-1 .main-page-body {
+    padding-top: max(8px, env(safe-area-inset-top)) !important;
+    padding-bottom: max(8px, env(safe-area-inset-bottom)) !important;
+    gap: 4px;
+  }
+  #page-1 .title-block .img-title { height: 16cqh; }
+  #page-1 .brand-sub { font-size: 12px; line-height: 1.4; }
+  #page-1 .btn-google-main, #page-1 .btn-guest { padding: 8px; }
+  #page-1 .privacy-link-wrap { margin-top: 6px; }
+}
+/* 2026-10-09: 로고를 위쪽 끝에서 조금 내림 · "오늘도 같이 놀자!" 말풍선을 캐릭터 가까이 */
+#page-1 .title-block { margin-top: clamp(14px, 4.5cqh, 52px); }
+#page-1 .login-welcome { top: 11%; }
+#page-1 .title-block .img-title { height: min(21cqh, 186px); }
+@container (max-height: 540px) { #page-1 .title-block .img-title { height: 18cqh; } }
+#page-1 .login-welcome { box-shadow: none; }   /* 말풍선은 그림자 없음 (전체 규칙) */
+
+/* The install prompt takes priority over the floating sound control. */
+#page-1.active:has(.pwa-install-banner:not([hidden])) { position:relative; z-index:901; }
+#page-1 .pwa-install-banner { position:relative; z-index:902; }

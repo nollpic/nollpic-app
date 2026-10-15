@@ -1,0 +1,465 @@
+/* Mission introduction: scoped to page 2 so the approved login stays intact. */
+#page-2 { background: #fffbed; color: #293344; container-type: size; }
+#page-2 .page-body { padding: 18px 20px 16px !important; margin: 0; justify-content: flex-start; gap: 0; min-height: 0; overflow-y: auto; }
+#page-2 .mission-topbar { display: flex; align-items: center; justify-content: space-between; flex: none; margin-bottom: 16px; }
+#page-2 .mission-topbar img { width: 74px; height: 32px; object-fit: contain; transform: translateX(-2px); }
+#page-2 .mission-help { width: 29px; height: 29px; border: 2px solid #293344; border-radius: 50%; background: transparent; font-size: 20px; font-weight: 800; line-height: 1; color: #293344; }
+#page-2 .title-block { margin: 0; text-align: left; }
+#page-2 .section-title { padding: 0; margin: 0; font-size: clamp(21px, 6.2cqw, 26px); line-height: 1.35; letter-spacing: -.055em; font-weight: 850; color: #202837; word-break: keep-all; }
+#page-2 .section-sub { font-size: 13px; font-weight: 500; line-height: 1.5; margin: 10px 0 0; color: #505666; letter-spacing: -.04em; }
+#page-2 .mission-board { position: relative; margin-top: 65px; flex: 1 0 auto; display: flex; }
+#page-2 .mission-tiger { position: absolute; z-index: 1; width: 102px; height: 102px; object-fit: contain; right: 2px; top: -76px; pointer-events: none; }
+#page-2 .info-list { width: 100%; padding: 7px 14px; gap: 0; border: 2px solid #293344; border-radius: 18px; background: #fffef9; justify-content: space-around; }
+#page-2 .info-card-clean { padding: 12px 0; min-height: 62px; gap: 12px; }
+#page-2 .info-card-clean + .info-card-clean { border-top: 1px solid #e8e7df; }
+#page-2 .info-icon { width: 44px; height: 44px; border-radius: 12px; margin: 0; font-size: 25px; }
+#page-2 .bg-red { background: #ffe3df; } #page-2 .bg-blue { background: #ece1ff; } #page-2 .bg-orange { background: #fff0be; } #page-2 .bg-teal { background: #d8f5e6; } #page-2 .bg-pink { background: #ffe1e7; }
+#page-2 .info-text { gap: 4px; min-width: 0; }
+#page-2 .info-text h3 { font-size: 17px; line-height: 1.25; color: #293344; margin: 0; letter-spacing: -.04em; }
+#page-2 .info-text .area-pro { display: inline; font-size: calc(11px + 1pt); font-weight: 500; color: #777c87; margin-left: 6px; white-space: nowrap; }
+#page-2 .info-text p { font-size: calc(11px + 1pt); line-height: 1.45; color: #4b5360; margin: 0; word-break: keep-all; letter-spacing: -.04em; }
+#page-2 .action-block { margin: 16px 0 0; padding: 0; flex: none; }
+#page-2 .btn-navy { width: 100%; min-height: 48px; padding: 12px 8px; border: 2px solid #293344; border-radius: 14px; background: #ff6b00; color: white; font-size: 17px; font-weight: 800; box-shadow: 0 3px 0 #293344; }
+#page-2 .btn-navy span { margin-left: 8px; }
+.app-device:has(#page-2.active) .bottom-tab-nav { background: #fffdf5; box-shadow: none; border-color: #ebe6d9; }
+#mission-help-dialog { width: min(340px, 88vw); padding: 24px; margin: auto; border: 2px solid #293344; border-radius: 18px; color: #293344; background: #fffbed; }
+#mission-help-dialog::backdrop { background: #29334466; }
+#mission-help-dialog h2 { font-size: 20px; margin: 0 0 14px; }
+#mission-help-dialog p { font-size: 14px; line-height: 1.7; margin: 12px 0; }
+#mission-help-dialog button { width: 100%; padding: 12px; background: #ff6b00; color: white; border: 2px solid #293344; border-radius: 10px; font-weight: 700; }
+@container (max-height: 600px) {
+ #page-2 .page-body { padding: 10px 18px 12px !important; }
+ #page-2 .mission-topbar { margin-bottom: 8px; }
+ #page-2 .mission-topbar img { height: 24px; width: 65px; }
+ #page-2 .section-title { font-size: 22px; }
+ #page-2 .section-sub { margin-top: 6px; font-size: 12px; }
+ #page-2 .mission-board { margin-top: 48px; }
+ #page-2 .mission-tiger { width: 78px; height: 78px; top: -58px; }
+ #page-2 .info-card-clean { min-height: 52px; padding: 7px 0; gap: 10px; }
+ #page-2 .info-icon { width: 36px; height: 36px; font-size: 22px; }
+ #page-2 .info-text h3 { font-size: 16px; }
+ #page-2 .info-text .area-pro { font-size: calc(10px + 1pt); }
+ #page-2 .action-block { margin-top: 12px; }
+}
+@container (max-height: 540px) {
+ #page-2 .mission-board { margin-top: 40px; }
+ #page-2 .mission-tiger { width: 70px; height: 70px; top: -52px; }
+ #page-2 .info-list { padding: 4px 12px; }
+ #page-2 .info-card-clean { padding: 4px 0; min-height: 44px; }
+ #page-2 .info-text { gap: 2px; }
+ #page-2 .info-text p { font-size: calc(10.5px + 1pt); }
+ #page-2 .info-icon { width: 32px; height: 32px; font-size: 20px; }
+ #page-2 .action-block { margin-top: 10px; }
+}
+#page-2 .info-icon { background-image: none; box-shadow: none; }
+#page-2 .info-icon svg { width: 76%; height: 76%; display: block; }
+/* Child profile: the same quiet, flat palette as the mission home. */
+#page-3 { background: #fffbed; color: #293344; container-type: size; }
+#page-3 .page-body { padding: 18px 20px 20px !important; background: #fffbed !important; justify-content: flex-start; gap: 18px; overflow-y: auto; min-height: 0; }
+#page-3 .child-brand-row { display: flex; align-items: center; justify-content: space-between; width: 100%; flex: none; }
+#page-3 .child-brand-row img { width: 74px; height: 32px; object-fit: contain; transform: translateX(-2px); }
+#page-3 .child-brand-row span { font-size: 12px; font-weight: 700; color: #77736b; }
+#page-3 .child-title-block { text-align: left; margin: 0; flex: none; }
+#page-3 .section-title { margin: 0; padding: 0; font-size: 25px; line-height: 1.35; letter-spacing: -.055em; color: #202837; }
+#page-3 .section-sub { margin: 8px 0 0; font-size: 13px; line-height: 1.6; color: #62656b; word-break: keep-all; }
+#page-3 .form-container { gap: 16px; padding: 20px; border: 2px solid #293344; border-radius: 18px; background: #fffef9; text-align: left; box-sizing: border-box; flex: none; }
+#page-3 .input-group { gap: 7px; }
+#page-3 .input-group > label { color: #293344; padding: 0; font-size: 14px; }
+#page-3 .input-group input[type="text"], #page-3 .input-group select { min-height: 46px; padding: 11px 12px; border: 1.5px solid #bdbbb3; border-radius: 11px; background: #fff; font-size: 16px; color: #293344; box-sizing: border-box; }
+#page-3 .input-group select { appearance: auto; }
+#page-3 .input-group input[type="text"]:focus, #page-3 .input-group select:focus { border-color: #ff6b00; box-shadow: 0 0 0 2px #ff6b0026; }
+#page-3 .gender-radio-btn { position: relative; padding: 0; }
+#page-3 .gender-radio-btn input { display: block; position: absolute; width: 1px; height: 1px; opacity: 0; }
+#page-3 .gender-radio-btn .gender-btn-text { min-height: 44px; padding: 10px 0; box-sizing: border-box; border: 1.5px solid #bdbbb3; border-radius: 11px; font-size: 15px; background: #fff; color: #293344; }
+#page-3 .gender-radio-btn input:checked + .gender-btn-text { background: #fff0de; border-color: #ff6b00; color: #a84400; box-shadow: none; }
+#page-3 .gender-radio-btn input:focus-visible + .gender-btn-text { outline: 2px solid #293344; outline-offset: 3px; }
+#page-3 .consent-check { margin: 0; padding: 12px 0 0; border: 0; border-top: 1px solid #e8e4da; border-radius: 0; background: transparent; color: #666971; font-size: 11px; font-weight: 500; line-height: 1.6; }
+#page-3 .btn-navy, #page-3 .btn-add-child { background: #ff6b00; border: 2px solid #293344; border-radius: 13px; color: #fff; box-shadow: 0 3px 0 #293344; }
+#page-3 .child-form-next-btn { min-height: 46px; padding: 11px; font-size: 17px; margin: 0; width: 100%; }
+#page-3 .saved-child-head, #page-3 .saved-child-card { background: #fffef9; border: 2px solid #293344; border-radius: 16px; box-shadow: none; }
+#page-3 .saved-child-avatar { background: #fff0de; }
+#page-3 .child-test-btn { background: #fff0de; color: #a84400; }
+#page-3 .login-status-bar { margin: 0; width: 100%; }
+.app-device:has(#page-3.active) .bottom-tab-nav { background: #fffdf5; box-shadow: none; border-color: #ebe6d9; }
+@container (max-height: 600px) {
+ #page-3 .page-body { padding: 10px 18px 14px !important; gap: 12px; }
+ #page-3 .child-brand-row img { width: 65px; height: 24px; }
+ #page-3 .section-title { font-size: 22px; }
+ #page-3 .section-sub { margin-top: 5px; font-size: 12px; }
+ #page-3 .form-container { padding: 14px; gap: 12px; }
+ #page-3 .input-group { gap: 5px; }
+}
+/* Match the login button's subtle lift and pressed feedback. */
+#page-2 .action-block .btn-navy { transition: transform 120ms, box-shadow 120ms; }
+#page-2 .action-block .btn-navy:hover { transform: translateY(-1px); }
+#page-2 .action-block .btn-navy:active { transform: translateY(3px); box-shadow: 0 1px 0 #293344; }
+@media (prefers-reduced-motion: reduce) {
+ #page-2 .action-block .btn-navy { transition: none; }
+}
+/* 호랑이 말풍선 (2026-10-08): 소개 문장을 호랑이가 말하듯. 손글씨 = 미션 준비 화면과 같은 푸어스토리 */
+@font-face { font-family: 'Nollpic Wavy'; src: url('fonts/PoorStory-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+/* 남는 여백은 목록 상자 위·아래로 똑같이 (가운데 정렬). 제목 아래 84px은 말풍선·호랑이 자리 */
+#page-2 .title-block { margin-bottom: 84px; }
+#page-2 .mission-board { flex: 0 0 auto; margin-top: auto; margin-bottom: auto; }
+#page-2 .action-block { margin-top: 16px; }
+/* 오른쪽 세로 스크롤 막대 숨김 (넘칠 때 스크롤은 그대로) */
+#page-2 .page-body { scrollbar-width: none; }
+#page-2 .page-body::-webkit-scrollbar { display: none; }
+#page-2 .mission-tiger-bubble { position: absolute; z-index: 2; right: 112px; top: -78px; margin: 0; padding: 8px 13px; background: #fffef9; border: 2.5px solid #293344; border-radius: 16px 16px 4px 16px; box-shadow: 0 3px 0 #293344; font-family: 'Nollpic Wavy', cursive; font-size: 17px; line-height: 1.2; color: #293344; text-align: left; white-space: nowrap; transform: rotate(-2deg); pointer-events: none; }
+#page-2 .mission-tiger-bubble::after { content: ''; position: absolute; right: -9px; bottom: 12px; width: 12px; height: 12px; background: #fffef9; border-right: 2.5px solid #293344; border-bottom: 2.5px solid #293344; transform: rotate(-45deg); }
+@container (max-height: 600px) {
+ #page-2 .title-block { margin-bottom: 62px; }
+ #page-2 .mission-tiger-bubble { right: 86px; top: -60px; font-size: 15px; padding: 6px 11px; }
+}
+@container (max-height: 540px) {
+ #page-2 .title-block { margin-bottom: 54px; }
+ #page-2 .mission-tiger-bubble { right: 78px; top: -54px; font-size: 14px; }
+}
+
+/* 미션 안내 창: 본문은 손글씨, 줄은 문장 단위로 끊음 (단어 중간에서 끊기지 않게) */
+#mission-help-dialog h2 { margin-bottom: 10px; }
+#mission-help-dialog p { font-family: 'Nollpic Wavy', cursive; font-size: 18px; line-height: 1.5; margin: 10px 0; color: #293344; word-break: keep-all; }
+#mission-help-dialog p.help-note { font-size: 15px; color: #6b6f78; margin-top: 16px; padding-top: 12px; border-top: 1.5px dashed #d9d4c6; }
+#mission-help-dialog button { margin-top: 8px; font-size: 16px; box-shadow: 0 3px 0 #293344; }
+
+/* ── 마이(page-3) 리뉴얼 (2026-10-08): 굵은 윤곽선 + 단단한 그림자, 거북이 말풍선, 나이 칩 ── */
+#page-3 { --my-ink: #293344; --my-card: #fffef9; --my-orange: #ff6b00; --my-soft: #fff0de; --my-line: #d9d4c6; }
+#page-3 .page-body { gap: 0; scrollbar-width: none; }
+#page-3 .page-body::-webkit-scrollbar { display: none; }
+#page-3 .child-brand-row { margin-bottom: 14px; }
+#page-3 .child-brand-row span { padding: 3px 10px; border: 2px solid var(--my-ink); border-radius: 99px; background: var(--my-card); color: var(--my-ink); font-size: 12px; font-weight: 800; }
+#page-3 .section-title { font-size: clamp(22px, 6.6cqw, 26px); font-weight: 850; }
+
+/* 거북이 말풍선: 다음 카드 위로 고개를 내밈 */
+#page-3 .my-peek { position: relative; z-index: 2; display: flex; align-items: flex-end; justify-content: flex-end; gap: 4px; margin: 8px 0 -16px; flex: none; pointer-events: none; }
+#page-3 .my-peek img { width: 86px; height: 86px; object-fit: contain; flex: none; }
+#page-3 .my-peek .section-sub { position: relative; margin: 0 0 30px; max-width: calc(100% - 96px); padding: 8px 13px; background: var(--my-card); border: 2.5px solid var(--my-ink); border-radius: 16px 16px 4px 16px; box-shadow: 0 3px 0 var(--my-ink); font-family: 'Nollpic Wavy', cursive; font-size: 16px; line-height: 1.35; color: var(--my-ink); text-align: left; word-break: keep-all; transform: rotate(-2deg); }
+#page-3 .my-peek .section-sub::after { content: ''; position: absolute; right: -9px; bottom: 12px; width: 12px; height: 12px; background: var(--my-card); border-right: 2.5px solid var(--my-ink); border-bottom: 2.5px solid var(--my-ink); transform: rotate(-45deg); }
+
+/* 카드 공통 */
+#page-3 .form-container, #page-3 .saved-child-head, #page-3 .saved-child-card { position: relative; z-index: 1; border: 2.5px solid var(--my-ink); border-radius: 20px; background: var(--my-card); box-shadow: 0 4px 0 var(--my-ink); }
+#page-3 .form-container { padding: 22px 18px 18px; gap: 18px; }
+#page-3 .input-group > label { font-size: 15px; font-weight: 850; }
+#page-3 .input-group input[type="text"] { min-height: 50px; border: 2px solid var(--my-line); border-radius: 14px; font-size: 16px; font-weight: 600; background: #fff; }
+#page-3 .input-group input[type="text"]:focus { border-color: var(--my-orange); box-shadow: 0 0 0 3px #ff6b0022; outline: none; }
+
+/* 나이 칩 (원래 select는 숨기고 값만 사용) */
+#page-3 .grade-select-hidden { position: absolute !important; width: 1px !important; height: 1px !important; min-height: 0 !important; padding: 0 !important; border: 0 !important; opacity: 0; pointer-events: none; }
+#page-3 .grade-chips { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+#page-3 .grade-chip { min-height: 44px; padding: 6px 2px; border: 2px solid var(--my-ink); border-radius: 13px; background: #fff; color: var(--my-ink); font: inherit; font-size: 14px; font-weight: 800; box-shadow: 0 3px 0 var(--my-ink); cursor: pointer; word-break: keep-all; transition: transform .08s ease; }
+#page-3 .grade-chip.is-on { background: var(--my-orange); color: #fff; }
+#page-3 .grade-chip:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--my-ink); }
+#page-3 .grade-chip:focus-visible { outline: 3px solid var(--my-orange); outline-offset: 2px; }
+
+/* 성별: 큰 타일 */
+#page-3 .gender-radio-group { gap: 10px; }
+#page-3 .gender-radio-btn .gender-btn-text { min-height: 54px; border: 2px solid var(--my-ink); border-radius: 14px; background: #fff; font-size: 17px; font-weight: 850; box-shadow: 0 3px 0 var(--my-ink); }
+#page-3 .gender-radio-btn input:checked + .gender-btn-text { background: var(--my-orange); border-color: var(--my-ink); color: #fff; box-shadow: 0 3px 0 var(--my-ink); }
+
+/* 동의 체크 */
+#page-3 .consent-check { padding-top: 14px; border-top: 1.5px dashed var(--my-line); gap: 10px; }
+#page-3 .consent-check input[type="checkbox"] { appearance: none; -webkit-appearance: none; flex: none; width: 24px; height: 24px; margin: 1px 0 0; border: 2px solid var(--my-ink); border-radius: 7px; background: #fff; display: grid; place-items: center; cursor: pointer; }
+#page-3 .consent-check input[type="checkbox"]:checked { background: var(--my-orange) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-6.5' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat; }
+
+/* 버튼 */
+#page-3 .btn-navy, #page-3 .btn-add-child { border-width: 2.5px; border-radius: 16px; box-shadow: 0 4px 0 var(--my-ink); font-weight: 900; }
+#page-3 .child-form-next-btn { min-height: 56px; font-size: 18px; }
+#page-3 .btn-navy:active, #page-3 .btn-add-child:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--my-ink); }
+
+/* 등록된 아이 목록 */
+#page-3 .saved-child-section { display: grid; gap: 14px; }
+#page-3 .saved-child-head { padding: 18px 16px 16px; }
+#page-3 .saved-child-head strong { font-size: 17px; font-weight: 900; color: var(--my-ink); }
+#page-3 .btn-add-child { padding: 9px 14px; font-size: 14px; }
+#page-3 .saved-child-list { display: grid; gap: 14px; }
+#page-3 .saved-child-card { padding: 16px; }
+#page-3 .saved-child-avatar { width: 52px; height: 52px; border: 2px solid var(--my-ink); border-radius: 50%; background: var(--my-soft); font-size: 28px; }
+#page-3 .saved-child-info strong { font-size: 18px; font-weight: 900; color: var(--my-ink); }
+#page-3 .saved-child-info span { display: inline-block; margin-top: 3px; padding: 1px 9px; border-radius: 99px; background: #eef0f3; color: #59606c; font-size: 12px; font-weight: 800; }
+#page-3 .saved-child-actions { gap: 8px; }
+#page-3 .saved-child-actions button { min-height: 42px; border: 2px solid var(--my-ink); border-radius: 12px; font-weight: 850; box-shadow: 0 3px 0 var(--my-ink); }
+#page-3 .child-test-btn { background: var(--my-orange) !important; color: #fff !important; }
+#page-3 .child-edit-btn, #page-3 .child-delete-btn { background: #fff !important; color: var(--my-ink) !important; }
+
+@container (max-height: 600px) {
+  #page-3 .my-peek img { width: 68px; height: 68px; }
+  #page-3 .my-peek .section-sub { font-size: 14px; margin-bottom: 22px; max-width: calc(100% - 76px); }
+  #page-3 .form-container { padding: 16px 14px 14px; gap: 12px; }
+  #page-3 .grade-chip { min-height: 38px; font-size: 13px; }
+  #page-3 .gender-radio-btn .gender-btn-text { min-height: 44px; font-size: 15px; }
+  #page-3 .child-form-next-btn { min-height: 48px; }
+}
+
+/* ── 평소 아이는 어떤가요?(page-4) 리뉴얼 (2026-10-08) ── */
+#page-4.rn4 { background: #fffbed; color: #293344; container-type: size; --i: #293344; --c: #fffef9; --o: #ff6b00; }
+#page-4.rn4 .page-body { padding: 16px 20px 18px !important; display: flex; flex-direction: column; justify-content: flex-start; gap: 0; min-height: 0; overflow-y: auto; scrollbar-width: none; background: #fffbed !important; }
+#page-4.rn4 .page-body::-webkit-scrollbar { display: none; }
+#page-4 .rn4-top { display: flex; align-items: center; justify-content: space-between; flex: none; }
+#page-4 .rn4-back { width: 42px; height: 42px; padding: 0; display: grid; place-items: center; border: 2.5px solid var(--i); border-radius: 13px; background: var(--c); color: var(--i); box-shadow: 0 3px 0 var(--i); cursor: pointer; }
+#page-4 .rn4-step { font-size: 13px; font-weight: 700; color: #6b6f78; }
+#page-4 .rn4-step b { color: var(--o); font-weight: 900; }
+#page-4 .rn4-title { margin: 18px 0 0; font-size: clamp(23px, 7cqw, 28px); font-weight: 900; letter-spacing: -.045em; color: #202837; text-align: left; flex: none; }
+#page-4 .rn4-peek { position: relative; z-index: 0; display: flex; align-items: flex-end; justify-content: flex-end; gap: 4px; margin: auto 0 -26px; padding-top: 0; flex: none; pointer-events: none; }
+#page-4 .rn4-peek img { width: 84px; height: 84px; object-fit: contain; object-position: center top; flex: none; }
+#page-4 .rn4-peek p { position: relative; z-index: 2; margin: 0 0 38px; padding: 8px 13px; background: var(--c); border: 2.5px solid var(--i); border-radius: 16px 16px 4px 16px; box-shadow: 0 3px 0 var(--i); font-family: 'Nollpic Wavy', cursive; font-size: 17px; line-height: 1.3; color: var(--i); text-align: left; transform: rotate(-2deg); word-break: keep-all; }
+#page-4 .rn4-peek p::after { content: ''; position: absolute; right: -9px; bottom: 12px; width: 12px; height: 12px; background: var(--c); border-right: 2.5px solid var(--i); border-bottom: 2.5px solid var(--i); transform: rotate(-45deg); }
+#page-4 .rn4-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: none; }
+#page-4 .check-card.rn4-tile { position: relative; margin: 0; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; gap: 8px; min-height: clamp(84px, 13cqh, 112px); padding: 12px 14px; background: var(--c); color: var(--i); border: 2.5px solid var(--i); border-radius: 18px; box-shadow: 0 4px 0 var(--i); cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; transition: transform .08s ease; text-align: left; }
+#page-4 .check-card.rn4-tile:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--i); }
+#page-4 .check-card.rn4-tile:focus-visible { outline: 3px solid var(--o); outline-offset: 2px; }
+#page-4 .rn4-tile .check-icon { font-size: 24px; line-height: 1; margin: 0; }
+#page-4 .rn4-tile p { margin: 0; font-size: 15px; font-weight: 850; line-height: 1.3; color: inherit; letter-spacing: -.03em; word-break: keep-all; }
+#page-4 .rn4-tile .custom-circle { position: absolute; top: 12px; right: 12px; width: 24px; height: 24px; margin: 0; border: 2.5px solid var(--i); border-radius: 50%; background: #fff; }
+#page-4 .check-card.rn4-wide { grid-column: 1 / -1; min-height: 0; flex-direction: row; align-items: center; justify-content: flex-start; gap: 10px; padding: 14px 52px 14px 14px; }
+#page-4 .rn4-wide .custom-circle { top: 50%; transform: translateY(-50%); }
+#page-4 .check-card.rn4-tile.active { background: var(--o); color: #fff; border-color: var(--i); }
+#page-4 .rn4-tile.active .custom-circle { background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-6.5' fill='none' stroke='%23ff6b00' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/15px no-repeat; }
+#page-4 .rn4-action { margin: auto 0 0; padding-top: 18px; flex: none; }
+/* 하마는 타일 뒤에서 고개만 내밈 (몸은 타일에 가려짐), 남는 여백은 위·아래로 나눔 */
+#page-4 .rn4-grid { z-index: 1; }
+#page-4 .rn4-cta { width: 100%; min-height: 56px; margin: 0; border: 2.5px solid var(--i); border-radius: 16px; background: var(--o); color: #fff; font-size: 18px; font-weight: 900; box-shadow: 0 4px 0 var(--i); }
+#page-4 .rn4-cta:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--i); }
+.app-device:has(#page-4.active) .bottom-tab-nav { background: #fffdf5; box-shadow: none; border-color: #ebe6d9; }
+@container (max-height: 560px) {
+  #page-4 .rn4-title { margin-top: 10px; font-size: 22px; }
+  #page-4 .rn4-peek img { width: 66px; height: 66px; }
+  #page-4 .rn4-peek p { font-size: 15px; margin-bottom: 22px; }
+  #page-4 .check-card.rn4-tile { min-height: 70px; padding: 10px 12px; }
+  #page-4 .rn4-tile p { font-size: 14px; }
+  #page-4 .rn4-cta { min-height: 48px; }
+}
+
+
+/* 하단 메뉴 아이콘: 놀픽 2D 스타일 (굵은 윤곽 + 평면 색). 꺼진 메뉴는 연한 색, 켜진 메뉴는 놀픽 색 */
+.bottom-tab .nt-icon { width: 26px; height: 26px; overflow: visible; }
+.bottom-tab .nt-line { fill: none; stroke: #9aa0aa; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.bottom-tab .nt-fill { fill: #f1eee6; }
+.bottom-tab .nt-accent, .bottom-tab .nt-accent2, .bottom-tab .nt-accent3 { fill: #d7d3c9; }
+.bottom-tab .nt-skin { fill: #f1eee6; }
+.bottom-tab .nt-hair { fill: #d7d3c9; }
+.bottom-tab .nt-dot, .bottom-tab .nt-pips circle { fill: #9aa0aa; }
+.bottom-tab.active .nt-line { stroke: #293344; }
+.bottom-tab.active .nt-dot, .bottom-tab.active .nt-pips circle { fill: #293344; }
+.bottom-tab.active[data-tab="home"] .nt-fill { fill: #ffb27a; }
+.bottom-tab.active[data-tab="home"] .nt-accent { fill: #fffef9; }
+.bottom-tab.active[data-tab="result"] .nt-fill { fill: #fffef9; }
+.bottom-tab.active[data-tab="result"] .nt-accent { fill: #b692ee; }
+.bottom-tab.active[data-tab="result"] .nt-accent2 { fill: #ff8c88; }
+.bottom-tab.active[data-tab="result"] .nt-accent3 { fill: #74cda6; }
+.bottom-tab.active[data-tab="mypage"] .nt-fill { fill: #ffb27a; }
+.bottom-tab.active[data-tab="mypage"] .nt-skin { fill: #ffd9bd; }
+.bottom-tab.active[data-tab="mypage"] .nt-hair { fill: #7a5233; }
+.bottom-tab.active[data-tab="play"] .nt-fill { fill: #ffd24e; }
+.bottom-tab.active[data-tab="challenge"] .nt-fill { fill: #ff8c88; }
+.bottom-tab.active[data-tab="challenge"] .nt-accent { fill: #ffd24e; }
+.bottom-tab:hover .nt-line { stroke: #293344; }
+
+/* 2026-10-09: 마이(page-3) 안쪽 요소 그림자 없앰 (말풍선·나이 칩·성별·다음 버튼) — 바깥 카드는 그대로 */
+#page-3 .my-peek .section-sub,
+#page-3 .grade-chip, #page-3 .grade-chip:active,
+#page-3 .gender-radio-btn .gender-btn-text,
+#page-3 .gender-radio-btn input:checked + .gender-btn-text,
+#page-3 .btn-navy, #page-3 .btn-add-child,
+#page-3 .btn-navy:active, #page-3 .btn-add-child:active,
+#page-3 .saved-child-actions button { box-shadow: none !important; }
+
+/* 2026-10-09: 거북이 말풍선 테두리 얇게 · 나이/성별 선택 칸을 이름 입력칸과 같은 모양으로 */
+#page-3 .my-peek .section-sub { border-width: 1.5px; }
+#page-3 .my-peek .section-sub::after { border-right-width: 1.5px; border-bottom-width: 1.5px; right: -7px; }
+#page-3 .grade-chip,
+#page-3 .gender-radio-btn .gender-btn-text { border: 2px solid var(--my-line); border-radius: 14px; background: #fff; color: var(--my-ink); font-weight: 600; }
+#page-3 .grade-chip:active { transform: none; }
+#page-3 .grade-chip.is-on,
+#page-3 .gender-radio-btn input:checked + .gender-btn-text { border-color: var(--my-orange); background: var(--my-soft); color: #a84400; font-weight: 800; }
+
+/* 2026-10-09: 거북이 말풍선 — 점선 테두리, 글자 길이에 맞춰 폭 줄임(my-renewal.js가 폭 계산) */
+#page-3 .my-peek .section-sub { border: 1.5px dashed var(--my-ink); padding: 8px 12px; }
+#page-3 .my-peek .section-sub::after { border-right: 1.5px dashed var(--my-ink); border-bottom: 1.5px dashed var(--my-ink); }
+
+/* 성별 2D 얼굴 아이콘 (2026-10-09 다시 적용) */
+#page-3 .gender-btn-text { display: flex; align-items: center; justify-content: center; gap: 8px; }
+#page-3 .gender-ico { width: 30px; height: 30px; flex: none; display: block; }
+#page-3 .saved-child-avatar { display: grid; place-items: center; overflow: hidden; }
+#page-3 .saved-child-avatar .gender-ico { width: 40px; height: 40px; }
+#page-3 .my-peek .section-sub { text-wrap: balance; }
+
+/* 2026-10-09: Restore only page-4 from the 2026-10-08 backup. */
+/* Parent observation step matches the child profile and mission introduction. */
+#page-4 { background: #fffbed; color: #293344; container-type: size; }
+#page-4 .page-header { justify-content: space-between; }
+#page-4 .page-header::after { content: '마이 · 아이 알아보기'; font-size: 12px; font-weight: 700; color: #77736b; }
+#page-4 .nav-back { width: 36px; height: 36px; padding: 0; justify-content: center; border: 2px solid #293344; border-radius: 12px; background: #fffef9; font-size: 18px; }
+#page-4 .page-body { background: #fffbed; justify-content: flex-start; gap: 18px; }
+#page-4 .title-block { text-align: left; margin: 0; flex: none; }
+#page-4 .section-title { margin: 0; padding: 0; font-size: 25px; line-height: 1.35; letter-spacing: -.055em; color: #202837; }
+#page-4 .section-sub { margin: 8px 0 0; font-size: 13px; line-height: 1.55; color: #62656b; font-weight: 500; word-break: keep-all; }
+#page-4 .checklist-container { gap: 10px; margin: auto 0; }
+#page-4 .check-card { min-height: 60px; padding: 12px; gap: 12px; border: 1.5px solid #d9d8cf; border-radius: 14px; background: #fffef9; box-shadow: none; box-sizing: border-box; }
+#page-4 .check-card p { flex: 1; text-align: left; margin: 0; font-size: 14px; color: #293344; }
+#page-4 .check-icon { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex: none; border-radius: 10px; background: #ffe3df; font-size: 21px; }
+#page-4 .check-card:nth-child(2) .check-icon { background: #fff0be; }
+#page-4 .check-card:nth-child(3) .check-icon { background: #ece1ff; }
+#page-4 .check-card:nth-child(4) .check-icon { background: #d8f5e6; }
+#page-4 .check-card:nth-child(5) .check-icon { background: #ffe1e7; }
+#page-4 .check-icon svg { width: 24px; height: 24px; }
+#page-4 .check-card.active { border-color: #ff6b00; background: #fff1df; }
+#page-4 .check-card.active p { color: #914000; }
+#page-4 .custom-circle { width: 20px; height: 20px; border-color: #c9cdc3; }
+#page-4 .check-card.active .custom-circle { border-color: #ff6b00; background: #ff6b00; }
+#page-4 .check-card.active .custom-circle::after { content: ''; position: absolute; width: 5px; height: 9px; border-right: 2px solid white; border-bottom: 2px solid white; transform: rotate(45deg); left: 5px; top: 2px; }
+#page-4 .action-block { margin: 0; padding: 0; }
+#page-4 .btn-navy { max-width: none; min-height: 48px; padding: 12px 8px; border: 2px solid #293344; border-radius: 14px; background: #ff6b00; color: #fff; font-size: 17px; box-shadow: 0 3px 0 #293344; transition: transform 120ms, box-shadow 120ms; }
+#page-4 .btn-navy:hover { transform: translateY(-1px); }
+#page-4 .btn-navy:active { transform: translateY(3px); box-shadow: 0 1px 0 #293344; }
+#page-4 .indicator-dots { display: none; }
+.app-device:has(#page-4.active) .bottom-tab-nav { background: #fffdf5; box-shadow: none; border-color: #ebe6d9; }
+@container (max-height: 600px) {
+ #page-4 .page-body { gap: 12px; }
+ #page-4 .section-title { font-size: 22px; }
+ #page-4 .section-sub { margin-top: 5px; font-size: 12px; }
+ #page-4 .checklist-container { gap: 8px; }
+ #page-4 .check-card { min-height: 49px; padding: 8px 10px; gap: 10px; }
+ #page-4 .check-icon { width: 30px; height: 30px; }
+}
+#page-4 .title-block { position: relative; padding-right: 108px; min-height: 112px; box-sizing: border-box; }
+#page-4 .observation-brain { position: absolute; right: 0; top: -4px; width: 100px; height: 120px; object-fit: contain; pointer-events: none; }
+@container (max-width: 380px) {
+ #page-4 .title-block { padding-right: 82px; min-height: 102px; }
+ #page-4 .observation-brain { width: 78px; height: 106px; top: 0; }
+}@container (max-height: 700px) {
+ #page-4 .page-body { gap: 12px; }
+ #page-4 .checklist-container { gap: 8px; }
+ #page-4 .check-card { min-height: 49px; padding: 13px 10px; }
+ #page-4 .check-icon { width: 30px; height: 30px; }
+}
+/* Anchor the resting hands to the first card, instead of floating by the title. */
+#page-4 .title-block { min-height: 88px; padding-right: 108px; }
+#page-4 .checklist-container { position: relative; margin: 0; flex: none; }
+#page-4 .checklist-container > .observation-brain { top: auto; bottom: calc(100% - 15px); right: 8px; width: 108px; height: 108px; object-fit: contain; z-index: 1; }
+#page-4 .action-block { margin-top: auto; }
+#page-4 .check-card:nth-of-type(1) .check-icon { background: #ffe3df; }
+#page-4 .check-card:nth-of-type(2) .check-icon { background: #fff0be; }
+#page-4 .check-card:nth-of-type(3) .check-icon { background: #ece1ff; }
+#page-4 .check-card:nth-of-type(4) .check-icon { background: #d8f5e6; }
+#page-4 .check-card:nth-of-type(5) .check-icon { background: #ffe1e7; }
+@container (max-width: 380px) {
+ #page-4 .title-block { min-height: 92px; padding-right: 80px; }
+ #page-4 .checklist-container > .observation-brain { width: 82px; height: 92px; right: 4px; bottom: calc(100% - 17px); }
+}
+/* Only the head tilts; the foreground hands stay anchored to the card. */
+#page-4 .observation-brain { overflow: visible; }
+#page-4 .observation-brain-head { transform-origin: 50% 86%; }
+#page-4.active .observation-brain-head { animation: brain-head-tilt 3.8s ease-in-out infinite; }
+@keyframes brain-head-tilt {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #page-4.active .observation-brain-head { animation: none; }
+}
+
+/* Tiger speech bubble follows the turtle bubble. */
+#page-2 .mission-tiger-bubble { border: 1.5px dashed #293344; box-shadow: none; font-family: 'Nollpic Wavy', cursive; font-size: 16px; line-height: 1.35; padding: 8px 12px; }
+#page-2 .mission-tiger-bubble::after { border-right: 1.5px dashed #293344; border-bottom: 1.5px dashed #293344; right: -7px; }
+
+/* Lift the tiger bubble above the mascot. */
+#page-2 .mission-tiger-bubble { top: -96px; }
+@container (max-width: 380px) { #page-2 .mission-tiger-bubble { top: -78px; } }
+@container (max-height: 600px) { #page-2 .mission-tiger-bubble { top: -72px; } }
+
+/* Reserve space above the board for the bubble, including its rotated outline. */
+#page-2 .title-block { margin-bottom: 120px; }
+@container (max-width: 380px) { #page-2 .title-block { margin-bottom: 102px; } }
+@container (max-height: 600px) { #page-2 .title-block { margin-bottom: 96px; } }
+
+/* Home speech bubble matches the My turtle bubble typography and border. */
+#page-2 .mission-tiger-bubble { border: 1.5px dashed #293344; font-family: 'Nollpic Wavy', cursive; font-size: 16px; font-weight: 700; line-height: 1.35; letter-spacing: normal; }
+#page-2 .mission-tiger-bubble::after { border-right: 1.5px dashed #293344; border-bottom: 1.5px dashed #293344; }
+@container (max-height: 600px) { #page-2 .mission-tiger-bubble { font-size: 14px; } }
+
+/* Slightly larger observation checklist labels. */
+#page-4 .check-card p { font-size: 15px; }
+
+#page-4 .check-card:nth-of-type(5) .check-icon { background: #dceefa; }
+#page-4 .check-card:nth-of-type(6) .check-icon { background: #ffe1e7; }
+
+/* Match the mission start button to the game start button. */
+#page-4 .btn-navy { min-height: 56px; padding: 13px 8px; border-width: 2.5px; border-radius: 16px; font-size: 18px; font-weight: 900; box-shadow: 0 4px 0 #293344; }
+
+/* Restore five checklist choices and lift the action slightly. */
+#page-4 .check-card:nth-of-type(5) .check-icon { background: #ffe1e7; }
+#page-4 .action-block { margin-top: auto; transform: translateY(-20px); }
+/* Shared My page header and plain-text character guidance. */
+#page-4 .page-header::after { padding: 3px 10px; border: 2px solid #293344; border-radius: 99px; background: #fffef9; color: #293344; font-size: 12px; font-weight: 800; }
+#page-3 .my-peek { height: 90px; margin: 8px 0 -10px; justify-content: space-between; align-items: flex-start; z-index: 0; overflow: hidden; }
+#page-3 .my-peek .section-sub { margin: 8px 0 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none !important; transform: none; font-family: 'Nollpic Wavy', cursive; font-size: 16px; font-weight: 700; line-height: 1.35; color: #293344; max-width: calc(100% - 116px); }
+#page-3 .my-peek .section-sub::after { display: none; }
+#page-3 .my-peek img { width: 116px; height: 116px; object-fit: contain; }
+#page-3 .form-container { position: relative; z-index: 1; }
+#page-4 .section-sub { font-family: 'Nollpic Wavy', cursive; font-size: 16px; font-weight: 700; line-height: 1.35; color: #293344; }
+#page-4 .title-block { padding-right: 116px; min-height: 98px; }
+#page-4 .checklist-container > .observation-brain { width: 116px; height: 116px; right: 0; }
+@container (max-height: 600px) {
+ #page-3 .my-peek .section-sub, #page-4 .section-sub { font-size: 14px; }
+}
+
+#page-3 .my-peek .section-sub, #page-4 .section-sub { font-family: 'Pretendard', sans-serif; }
+
+/* Raise the guidance, turtle and form together beneath the My title. */
+#page-3 .my-peek { margin-top: -4px; }
+/* Match both My guidance captions to the original checklist caption. */
+#page-3 .my-peek .section-sub, #page-4 .section-sub { font-family: 'Pretendard', sans-serif; font-size: 13px; font-weight: 500; line-height: 1.55; color: #62656b; }
+#page-4 .title-block { padding-right: 0; }
+#page-4 .section-sub { max-width: calc(100% - 108px); }
+
+/* My page: clear header spacing and flat child cards. */
+#page-3 .child-brand-row { width:calc(100% - 48px); justify-content:flex-start; gap:16px; margin-right:48px; box-sizing:border-box; }
+#page-3 .child-brand-row span { flex:none; white-space:nowrap; }
+#page-3 .my-peek { height:auto; min-height:0; margin:8px 0 18px; justify-content:flex-start; overflow:visible; }
+#page-3 .my-peek img { display:none; }
+#page-3 .my-peek .section-sub { max-width:100%; margin:0; }
+#page-3 .login-status-bar { flex:none; margin:0 0 18px; }
+#page-3 .saved-child-section { flex:none; margin-top:0; gap:16px; }
+#page-3 * { box-shadow:none!important; }
+#page-3 :is(.form-container,.saved-child-head,.saved-child-card) { border-width:1.5px!important; }
+
+/* Registered child cards match the result chart card outline. */
+#page-3 .saved-child-card { border:1.5px solid #8b8b8b!important; }
+
+/* Five Nollpic friends appear as head-only portraits in child cards. */
+#page-3 .saved-child-avatar { overflow:hidden; border:0; }
+#page-3 .saved-child-avatar .nollpic-child-face { display:block; width:46px; height:46px; overflow:hidden; flex:none; }
+
+/* Only the registered-children heading banner is raised on My. */
+#page-3 .saved-child-head { box-shadow:0 4px 0 #293344!important; }
+
+/* 마이: 놀픽 친구 전신이 보이게 (2026-10-10) — 동그라미 대신 둥근 네모, 안쪽 여백 조금 */
+#page-3 .saved-child-avatar:has(.nollpic-child-face) { width:58px; height:58px; border-radius:16px; padding:3px; box-sizing:border-box; }
+#page-3 .saved-child-avatar .nollpic-child-face { width:100%; height:100%; }
+
+/* 마이·아이 알아보기(page-4): 소리 버튼을 맨 오른쪽으로 (2026-10-10) — 뒤로 · · · [마이·아이 알아보기] [소리] */
+#page-4 .scrolling-sound-header { justify-content:flex-start; gap:8px; }
+#page-4 .scrolling-sound-header::after { order:2; margin-left:auto; }
+#page-4 .scrolling-sound-header .app-sound-control { order:3; }
+
+/* 미션결과: "현재 결과 / 성장기록" 탭 숨김 (2026-10-10) — 30일 챌린지를 열 때 다시 켜기 (이 세 줄만 지우면 됨) */
+#page-6 .result-view-tabs, #page-6 .result-sound-toolbar { display:none !important; }
+#page-6 #result-growth-view { display:none !important; }
+
+/* 홈: 연구 근거 표시 (2026-10-11) — 제목 아래 근거 한 줄, 영역별 "○○ 과제 기반" 꼬리표, 카드 아래 안내, 물음표 안내에 연구 목록 */
+#page-2 .home-evidence { display: inline-flex; align-items: center; gap: 5px; margin: 8px 0 0; padding: 4px 10px 4px 7px; border: 1.5px solid #293344; border-radius: 99px; background: #fffef9; color: #293344; font-size: 11.5px; font-weight: 800; line-height: 1.3; word-break: keep-all; }
+#page-2 .home-evidence svg { width: 15px; height: 15px; flex: none; }
+#page-2 .info-text { position: relative; }
+#page-2 .info-card-clean .info-text { flex: 1 1 auto; min-width: 0; }
+#page-2 .info-text .area-basis { position: absolute; top: 1px; right: 0; display: inline-block; width: auto !important; max-width: none; margin: 0; padding: 1px 7px; border: 1px solid #e3ddcf; border-radius: 99px; background: #f6f2ea; color: #6b6f78; font-size: 10px; font-weight: 700; line-height: 1.5; white-space: nowrap; }
+@media (max-width: 340px) { #page-2 .info-text .area-pro { display: none; } }
+#page-2 .home-evidence-note { margin: 6px 4px 0; color: #77736b; font-size: 11px; line-height: 1.5; text-align: center; word-break: keep-all; }
+#mission-help-dialog { max-height: 86vh; overflow-y: auto; }
+#mission-help-dialog .help-basis { margin: 14px 0 4px; padding: 12px 12px 10px; border: 1.5px solid #293344; border-radius: 12px; background: #fffef9; }
+#mission-help-dialog .help-basis h3 { margin: 0 0 6px; font-size: 14px; font-weight: 800; color: #293344; }
+#mission-help-dialog .help-basis p.help-basis-lead { font-family: inherit; font-size: 12.5px; line-height: 1.6; margin: 0 0 8px; color: #4b4f58; }
+#mission-help-dialog .help-basis ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+#mission-help-dialog .help-basis li { font-size: 12.5px; line-height: 1.45; color: #293344; }
+#mission-help-dialog .help-basis li b { display: inline-block; min-width: 52px; color: #ff6b00; }
+#mission-help-dialog .help-basis li span { display: block; padding-left: 52px; color: #8a8f99; font-size: 11px; }
+#mission-help-dialog .help-basis p.help-basis-ref { font-family: inherit; font-size: 10.5px; line-height: 1.5; color: #8a8f99; margin: 8px 0 0; }

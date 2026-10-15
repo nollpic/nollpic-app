@@ -1,0 +1,87 @@
+
+/* Mission results follow the shared Nollpic cream, ink and orange theme. */
+#page-6, #page-6 .result-page-body { background:#fffbed; color:#293344; }
+/* The shared page body supplies the 20px gutter; do not add a second one. */
+#page-6 .result-app { padding:0 0 28px; font-family:'Pretendard',sans-serif; scrollbar-width:none; }
+#page-6 .result-app::-webkit-scrollbar { display:none; }
+#page-6 .result-view-tabs { margin:0 0 18px; padding:4px; border:1.5px solid #293344; border-radius:14px; background:#fffef9; }
+#page-6 .result-view-tabs button { min-height:40px; font-size:14px; border-radius:10px; color:#62656b; }
+#page-6 .result-view-tabs button.active { background:#ff6b00; color:#fff; box-shadow:none; }
+#page-6 .complete-text h1 { padding-top:0; margin:0 0 8px; color:#202837; font-size:25px; font-weight:800; }
+#page-6 .complete-text p { padding-bottom:0; margin:0 0 20px; color:#62656b; font-size:14px; font-weight:500; line-height:1.6; }
+#page-6 :is(.child-card,.rv2-card,.result-history-card,.result-analysis-card,.result-recommend-card,.growth-start-card) { border:2px solid #293344; border-radius:18px; background:#fffef9; box-shadow:none; padding:16px; margin-bottom:16px; }
+#page-6 .result-child-selector { background:#fff0dc; border:1.5px solid #e7b48a; border-radius:12px; color:#293344; font-size:15px; font-weight:700; }
+#page-6 .rv2-hero { background:#fff0dc; border:2px solid #293344; border-radius:18px; box-shadow:none; color:#293344; padding:18px 16px; margin-bottom:16px; }
+#page-6 .rv2-hero-meta { color:#914000; font-size:12px; opacity:1; }
+#page-6 .rv2-hero h2 { color:#202837; font-size:23px; font-weight:800; }
+#page-6 .rv2-hero-sub { color:#4b5360; font-size:14px; opacity:1; }
+#page-6 .rv2-hero-badge { font-size:32px; }
+#page-6 .rv2-tile { background:#fffef9; border:1px solid #e7b48a; border-radius:12px; color:#293344; }
+#page-6 .rv2-tile strong { color:#ff6b00; font-size:18px; }
+#page-6 :is(.rv2-card-head h3,.result-analysis-card h2,.accordion-btn h2) { font-size:17px; color:#293344; font-weight:800; }
+#page-6 .rv2-note, #page-6 .rv2-pill { background:#fff0dc; color:#71401e; border:1px solid #e7b48a; border-radius:12px; }
+#page-6 .rv2-area-name strong, #page-6 .rv2-score b { color:#293344; }
+#page-6 :is(.rv2-btn,.recommend-lock-btn) { background:#ff6b00; border:2px solid #293344; border-radius:14px; min-height:48px; color:#fff; box-shadow:0 3px 0 #293344; font-size:15px; font-weight:800; }
+#page-6 .rv2-btn-ghost { background:#fffef9; color:#293344; }
+#page-6 .growth-summary-grid div { background:#fff0dc; border:1px solid #e7b48a; border-radius:12px; }
+
+/* Only the highlighted summary card retains an ink outline. */
+#page-6 :is(.result-view-tabs,.child-card,.rv2-card,.result-history-card,.result-analysis-card,.result-recommend-card,.growth-start-card,.rv2-btn,.recommend-lock-btn) { border:0; box-shadow:none; }
+#page-6 .rv2-hero { border:2px solid #293344; }
+
+#page-6 :is(.result-view-tabs,.child-card,.rv2-card,.result-history-card,.result-analysis-card,.result-recommend-card,.growth-start-card,.rv2-btn,.recommend-lock-btn) {
+ border:1.5px solid #8b8b8b;
+ box-shadow:none;
+}
+
+#page-6 .rv2-note, #page-6 .rv2-pill {
+ background:#ffffff;
+ color:#71401e;
+ border:1px solid #e7b48a;
+ border-radius:12px;
+}
+#page-6 .result-child-selector {
+ background:#fff0dc;
+ border:1.5px solid rgba(255,107,0,.15);
+ border-radius:12px;
+ color:#293344;
+ font-size:15px;
+ font-weight:700;
+}
+
+.history-row {
+ background:#fff7ed;
+ border-radius:18px;
+ padding:14px;
+ box-shadow:0 2px 8px rgba(238,116,83,.06);
+}
+
+.analysis-guide {
+ margin-top:14px;
+ padding:13px 14px;
+ border-radius:16px;
+ background:#fff7ed;
+ color:#7c2d12;
+ line-height:1.55;
+ font-size:13px;
+ font-weight:700;
+ border:1px solid rgba(234,88,12,.15);
+}
+
+/* A separate yellow action follows the recommendation card. */
+#page-6 .result-share-action { margin:0 0 20px; }
+#page-6 .result-share-btn { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; min-height:56px; padding:14px 16px; border:1.5px solid #e7be42; border-radius:16px; background:#ffe16b; color:#293344; font-size:16px; font-weight:900; box-shadow:none; }
+#page-6 .result-share-btn svg { display:block; width:23px; height:23px; flex:none; }
+#page-6 .result-share-btn:hover { background:#ffda4f; }
+#page-6 .result-share-btn:active { background:#ffd13b; transform:translateY(1px); }
+#page-6 .result-share-btn:focus-visible { outline:3px solid #ff6b00; outline-offset:3px; }
+
+/* A single-line growth headline and accented tiles identify actual improvements. */
+#page-6 .rv2-hero { box-shadow:0 4px 0 #293344; }
+#page-6 .rv2-hero h2 { padding-right:0; font-size:clamp(16px,5vw,20px); white-space:nowrap; letter-spacing:-.04em; }
+#page-6 .rv2-growth-count { color:#ff6b00; font-weight:900; }
+#page-6 .rv2-tile.is-improved { border:2px solid #ff6b00; background:#fff5e8; padding:7px 1px; }
+#page-6 .rv2-tile.is-improved b { color:#914000; }
+
+/* Analysis scores use the Nollpic orange accent. */
+#page-6 .analysis-row .analysis-score { color:#ff6b00; font-weight:900; }

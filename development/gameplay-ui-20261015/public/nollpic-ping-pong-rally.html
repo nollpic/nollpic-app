@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>탁구 랠리</title>
+<style>
+:root{--ink:#14213d;--blue:#39b9f2;--pink:#ff6773;--court:#69c838}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;font-family:Pretendard,"Malgun Gothic",sans-serif;background:#ffd04b;color:var(--ink)}
+button{font:inherit}
+.app{height:100%;display:flex;flex-direction:column;padding:12px 17px 18px;background:radial-gradient(circle at 50% -10%,#ffeaa1 0,#ffd04b 48%,#ffc03d 100%)}
+header{height:55px;display:flex;align-items:center;gap:10px}
+.back{width:40px;height:40px;border:0;border-radius:14px;background:#fff4ce;color:#c86d12;font-size:27px;font-weight:900}
+.heading{flex:1}
+.heading small{display:block;font-size:10px;font-weight:900;color:#b76c18;letter-spacing:.04em}
+.heading h1{margin:1px 0 0;font-size:20px;line-height:1.1}
+.score{min-width:120px;padding:6px 9px;border-radius:13px;background:#b88a29;color:#fff7d7;text-align:center;font-size:10px;font-weight:900}.timer{display:block;margin-top:2px;color:#fff;font-size:12px;font-weight:950}
+.score b{display:block;color:#fff;font-size:17px;line-height:1.15}.lives{color:#ff6674;font-size:15px;letter-spacing:1px;white-space:nowrap}
+.guide{margin:3px 2px 10px;text-align:center;font-size:13px;font-weight:800;color:#76531a}
+.court-wrap{position:relative;flex:1;min-height:300px;display:flex;align-items:center;justify-content:center}
+.court{position:relative;width:min(100%,330px);height:min(100%,500px);min-height:300px;border:10px solid #14213d;border-radius:10px;background:linear-gradient(90deg,#67c936 0 49.2%,#55bd2e 49.2% 100%);overflow:hidden;box-shadow:0 9px 0 #d99022}
+.court:before{content:"";position:absolute;left:50%;top:0;bottom:0;width:4px;background:#efffe1;transform:translateX(-50%)}
+.court:after{content:"";position:absolute;left:0;right:0;top:50%;height:4px;background:#efffe1;transform:translateY(-50%)}
+.ai-label,.you-label{position:absolute;z-index:2;left:13px;padding:5px 8px;border-radius:9px;background:#14213dcc;color:#fff;font-size:10px;font-weight:900}
+.ai-label{top:12px}
+.you-label{bottom:12px}
+.paddle{position:absolute;z-index:3;width:78px;height:15px;border:4px solid #14213d;border-radius:999px;transform:translateX(-50%);box-shadow:0 3px 0 rgba(0,0,0,.12)}
+#ai{top:24px;background:var(--blue)}
+#you{bottom:24px;background:var(--pink);touch-action:none}
+.ball{position:absolute;z-index:4;width:28px;height:28px;border:4px solid #fff;border-radius:50%;background:#ffef89;box-shadow:0 3px 0 #cf9d27}
+.trail{position:absolute;z-index:1;width:7px;height:7px;border-radius:50%;background:#fff8c8;opacity:.5;pointer-events:none}
+.toast{height:30px;margin-top:10px;text-align:center;font-size:13px;font-weight:900;color:#76531a}
+.overlay{position:absolute;inset:0;z-index:10;display:grid;place-items:center;padding:18px;background:#14213d70;backdrop-filter:blur(3px)}
+.overlay.hide{display:none}
+.panel{width:min(100%,330px);padding:25px 21px;border-radius:26px;background:#fffdf6;text-align:center;box-shadow:0 20px 45px #704b1552}
+.hero{font-size:48px}
+.panel h2{margin:7px 0;font-size:22px}
+.panel p{margin:0 0 18px;color:#617087;font-size:14px;font-weight:700;line-height:1.55}
+.panel button{width:100%;height:51px;border:0;border-radius:16px;background:#f05e67;color:#fff;font-weight:950;box-shadow:0 4px 0 #c94753}
+.panel button:active{transform:translateY(3px);box-shadow:none}
+.reward{display:none;margin-bottom:10px!important;background:#39a96b!important;box-shadow:0 4px 0 #237947!important}
+.reward.show{display:block}
+@media(max-height:620px){.app{padding-top:6px}
+.court{min-height:260px}
+.guide{margin-bottom:4px}
+.toast{margin-top:5px}
+}
+
+</style>
+    <link rel="stylesheet" href="button-motion.css?v=20261008-1">
+<link rel="stylesheet" href="fonts/jua/jua.css"><script src="minigames/avatar-adapter.js" defer></script><link rel="stylesheet" href="minigames/game-intro.css"><script src="minigames/game-intro-config.js" defer></script><script src="minigames/game-intro.js" defer></script><script src="minigames/game-intro-boot.js" defer></script><link rel="stylesheet" href="minigames/play-ui.css"><script src="minigames/play-ui.js" defer></script></head>
+<body>
+<main class="app"><header><button class="back" onclick="exitToChallenge()" aria-label="챌린지로 돌아가기">‹</button><div class="heading"><small>15번 오늘의 미션</small><h1>탁구 랠리</h1></div><div class="score"><span id="match-label">AI VS 나</span><b><span id="ai-score">0</span> : <span id="you-score">0</span></b><span class="lives" id="lives">♥ ♥ ♥</span><span class="timer" id="timer">0초</span></div></header><p class="guide">아래 분홍 라켓을 움직여 공을 다시 쳐 주세요!</p><section class="court-wrap"><div class="court" id="court"><span class="ai-label">AI</span><span class="you-label" id="you-label">YOU</span><div class="paddle" id="ai"></div><div class="paddle" id="you"></div><div class="ball" id="ball"></div></div></section><p class="toast" id="toast">공이 내려오면 라켓으로 받아요.</p></main><section class="overlay" id="overlay"><div class="panel"><div class="hero" id="hero">🏓</div><h2 id="title">공을 주고받아 볼까요?</h2><p id="text">공이 내 쪽으로 오면 분홍 라켓을<br>공 아래로 움직여 받아쳐요.</p><button class="reward" id="reward">🎁 200P 받기</button><button id="start">랠리 시작</button></div></section>
+<script>
+const court=document.getElementById('court'),ai=document.getElementById('ai'),you=document.getElementById('you'),ball=document.getElementById('ball'),toast=document.getElementById('toast'),overlay=document.getElementById('overlay'),start=document.getElementById('start'),reward=document.getElementById('reward'),aiScoreEl=document.getElementById('ai-score'),youScoreEl=document.getElementById('you-score'),livesEl=document.getElementById('lives'),timerEl=document.getElementById('timer');
+let raf=0,playing=false,claimed=false,paddleX=50,aiX=50,bx=50,by=56,vx=.45,vy=-.57,last=0,aiScore=0,youScore=0,lives=3,rally=0,startTime=0;
+function applyPlayerName(){let name='나';try{name=parent.document.getElementById('child-name')?.value?.trim()||name}catch(e){}document.getElementById('match-label').textContent=`AI VS ${name}`;document.getElementById('you-label').textContent=name}
+function place(){you.style.left=paddleX+'%';ai.style.left=aiX+'%';ball.style.left=`calc(${bx}% - 14px)`;ball.style.top=`calc(${by}% - 14px)`}
+function renderScore(){aiScoreEl.textContent=aiScore;youScoreEl.textContent=youScore;livesEl.textContent='♥ '.repeat(lives).trim()+' ♡ '.repeat(3-lives).trim()}
+function setPaddle(clientX){const r=court.getBoundingClientRect();paddleX=Math.max(13,Math.min(87,(clientX-r.left)/r.width*100));place()}
+function resetBall(up=true){bx=up?paddleX:aiX;by=up?76:18;vx=(Math.random()-.5)*.46;vy=up?-.57:.57}
+function speed(){return 1+Math.min(.8,rally*.07)}
+function loseLife(){lives--;aiScore++;renderScore();if(lives<=0){gameOver();return}toast.textContent=`아쉬워요! 하트가 ${lives}개 남았어요.`;resetBall(true)}
+function aiMiss(){youScore++;renderScore();toast.textContent='AI가 공을 놓쳤어요! 점수를 얻었어요.';resetBall(false)}
+function loop(t){if(!playing)return;const dt=Math.min(2,(t-last)/16.67||1),rate=speed();last=t;timerEl.textContent=`${Math.floor((t-startTime)/1000)}초`;bx+=vx*dt*rate;by+=vy*dt*rate;aiX+=Math.max(-.22*rate,Math.min(.22*rate,bx-aiX))*dt;if(bx<4||bx>96){vx*=-1;bx=Math.max(4,Math.min(96,bx))}
+if(vy<0&&by<=10){const mistake=Math.random()<Math.min(.28,.09+rally*.012);if(!mistake&&Math.abs(bx-aiX)<20){by=10;vy=Math.abs(vy)*1.035;vx+=(bx-aiX)*.014;toast.textContent='AI가 받아쳤어요! 공이 점점 빨라져요.'}else{aiMiss()}}
+if(vy>0&&by>=87){if(Math.abs(bx-paddleX)<20){by=87;vy=-Math.abs(vy)*1.04;vx+=(bx-paddleX)*.018;rally++;toast.textContent=`랠리 ${rally}번! 속도가 조금 더 빨라졌어요.`}else loseLife()}place();raf=requestAnimationFrame(loop)}
+function begin(){cancelAnimationFrame(raf);aiScore=0;youScore=0;lives=3;rally=0;paddleX=50;aiX=50;timerEl.textContent='0초';renderScore();resetBall(true);playing=true;overlay.classList.add('hide');last=performance.now();startTime=last;place();raf=requestAnimationFrame(loop)}
+function gameOver(){playing=false;cancelAnimationFrame(raf);const seconds=Math.floor((performance.now()-startTime)/1000);document.getElementById('hero').textContent='💛';document.getElementById('title').textContent=`${seconds}초 성공!`;document.getElementById('text').innerHTML=`최종 점수는 AI ${aiScore} : 나 ${youScore}예요.<br>다시 도전해서 더 긴 랠리를 만들어 봐요!`;start.textContent='다시 하기';start.onclick=begin;overlay.classList.remove('hide')}
+function exitToChallenge(){playing=false;cancelAnimationFrame(raf);try{parent.prevPage&&parent.prevPage(11);return}catch(e){}history.back()}
+court.addEventListener('pointerdown',e=>{if(playing){court.setPointerCapture?.(e.pointerId);setPaddle(e.clientX)}});court.addEventListener('pointermove',e=>{if(playing)setPaddle(e.clientX)});
+reward.onclick=()=>{if(claimed)return;claimed=true;try{parent.claimChallengeStepReward&&parent.claimChallengeStepReward(15)}catch(e){}reward.textContent='200P 받았어요';reward.disabled=true};start.onclick=begin;applyPlayerName();renderScore();place();
+
+</script>
+<script>/* 마지막 화면의 결과를 30일 챌린지 홈 "오늘의 평가" 카드로 보냄 */(function(){var step=15,o=document.getElementById("overlay"),r=document.getElementById("reward"),sent="";if(!o||!r)return;new MutationObserver(function(){if(o.classList.contains("hide")||r.offsetParent===null)return;var g=function(id){var e=document.getElementById(id);return e?(e.innerText||e.textContent).replace(/\s+/g," ").trim():""};var summary=(g("title")+" "+g("text")).trim();if(!summary||summary===sent)return;sent=summary;try{parent.reportChallengeResult&&parent.reportChallengeResult(step,{summary:summary.slice(0,80),source:"auto"})}catch(e){}}).observe(o,{attributes:true,attributeFilter:["class"],subtree:true,childList:true})})();</script>
+<script src="game-level.js"></script>
+</body>
+</html>

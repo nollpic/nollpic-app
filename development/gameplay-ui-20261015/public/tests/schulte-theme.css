@@ -1,0 +1,46 @@
+body:has(#schulte-screen.active) { background: #fffbed; color: #293344; }
+body:has(#schulte-screen.active) .tests-sticky-header { box-sizing: border-box; max-width: 460px; height: 76px !important; padding: 20px !important; margin: 0 auto !important; background: #fffbed; border: 0; box-shadow: none; }
+body:has(#schulte-screen.active) .tests-back-btn { width: 36px; height: 36px; padding: 0 !important; border: 2px solid #293344; border-radius: 12px; background: #fffef9; color: #293344; font-size: 18px !important; }
+body:has(#schulte-screen.active) .tests-mission-progress { color: #77736b; font-size: 12px; font-weight: 700; }
+body:has(#schulte-screen.active) .test-body { box-sizing: border-box; width: 100%; max-width: 460px; margin: 0 auto; padding: 0 20px 20px !important; height: calc(100dvh - 76px) !important; min-height: 0 !important; scrollbar-gutter: auto; background: #fffbed; }
+#schulte-screen { min-height: 0 !important; }
+#schulte-screen .section-title { margin: 12px 0 8px !important; font-size: 25px !important; line-height: 1.35 !important; letter-spacing: -.055em; font-weight: 800; color: #202837; }
+#schulte-screen .badge-orange { background: #fff0dc; color: #914000; font-size: 12px !important; border-radius: 10px; }
+#schulte-screen .section-sub { color: #62656b; font-size: 13px !important; line-height: 1.55 !important; margin: 10px 0 18px; }
+#schulte-screen .schulte-dashboard { border: 2px solid #293344; border-radius: 16px; background: #fffef9; padding: 12px 6px !important; margin: 12px 0 22px !important; box-shadow: none; }
+#schulte-screen .dash-label { font-size: 12px !important; color: #62656b; }
+#schulte-screen .dash-value { font-size: 20px !important; font-weight: 800; color: #293344; font-variant-numeric: tabular-nums; }
+#schulte-screen #schulte-next { color: #ff6b00; }
+#schulte-screen .schulte-grid-container { width: min(100%, calc(100dvh - 370px)); margin: 0 auto !important; }
+#schulte-screen .schulte-grid { gap: 8px !important; }
+#schulte-screen .schulte-cell { border: 2.5px solid #293344; border-radius: 14px !important; color: #293344; background: #fffef9; box-shadow: 0 3px 0 #293344; font-size: 24px !important; font-weight: 900; }
+#schulte-screen .schulte-cell.bg-tint { background: #fffef9; color: #293344; }
+#schulte-screen .schulte-cell.completed { background: #ff6b00 !important; color: white !important; box-shadow: none; }
+#schulte-screen .schulte-cell:disabled { opacity: 1; cursor: default; }
+#schulte-countdown-overlay.board-countdown { background: transparent; backdrop-filter: none; }
+#schulte-countdown-overlay.board-countdown .popup-content { background: transparent; visibility: hidden; }
+#schulte-countdown-overlay.board-countdown .countdown-display { visibility: visible; }
+#schulte-countdown-overlay.board-countdown::after { background: rgba(255, 251, 237, .45); }
+@media (max-height: 700px) {
+ #schulte-screen .section-title { font-size: 22px !important; }
+ #schulte-screen .section-sub { font-size: 12px !important; margin-bottom: 12px; }
+ #schulte-screen .schulte-dashboard { margin: 8px 0 18px !important; }
+ #schulte-screen .schulte-grid-container { width: min(100%, calc(100dvh - 350px)); }
+}
+
+/* Separate the number tiles visually from the white results dashboard. */
+#schulte-screen .schulte-cell, #schulte-screen .schulte-cell.bg-tint { background: #ffedce; border-color: #b87935; box-shadow: 0 3px 0 #b87935; }
+#schulte-screen .schulte-cell.completed { border-color: #293344; }
+
+/* Larger heading and instructions, closer to the top navigation. */
+#schulte-screen .section-title { font-size: 27px !important; margin-top: 0 !important; }
+#schulte-screen .badge-orange { font-size: 14px !important; }
+#schulte-screen .section-sub { font-size: 15px !important; margin-top: 8px; margin-bottom: 12px; }
+
+/* Randomly tinted tiles; untinted tiles stay cream. */
+#schulte-screen .schulte-cell { background: #fffef9; border-color: #293344; box-shadow: 0 3px 0 #293344; }
+#schulte-screen .schulte-cell.bg-tint { background: #ffe4c7; color: #293344; border-color: #293344; }
+
+/* Softer Schulte boxes without any raised shadows. */
+#schulte-screen .schulte-cell, #schulte-screen .schulte-cell.bg-tint, #schulte-screen .schulte-cell.completed { box-shadow: none !important; border-width: 1.5px; }
+#schulte-screen .schulte-dashboard { box-shadow: none !important; border-width: 1.5px; }

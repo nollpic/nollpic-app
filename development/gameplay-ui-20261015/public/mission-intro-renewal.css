@@ -1,0 +1,103 @@
+/* 말풍선 손글씨: 푸어스토리 (Poor Story, SIL Open Font License) — 사용자 선택 */
+@font-face { font-family: 'Nollpic Wavy'; src: url('../fonts/PoorStory-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+/* 미션 준비 화면 리뉴얼 (2026-10-08) — mission-intro.css 다음에 불러옴
+   놀픽 새 스타일: 굵은 윤곽선, 아래로 떨어지는 단단한 그림자, 캐릭터가 보드를 들고 고개를 내미는 구성 */
+.rn-intro {
+  --rn-bg: #fffbed;
+  --rn-card: #fffef9;
+  --rn-ink: #293344;
+  --rn-orange: #ff6b00;
+  --rn-orange-soft: #ffe6d2;
+  --rn-muted: #6b6f78;
+  --rn-shadow: 0 4px 0 #293344;
+}
+.rn-intro .popup-content { padding: 16px 20px 20px; gap: 0; }
+
+/* 위 줄: 뒤로가기 · 진행 · 미션 n/5 */
+.rn-intro .intro-tags { display: none; }
+.rn-intro .intro-top { gap: 10px; }
+.rn-intro .intro-back { width: 42px; height: 42px; border-width: 2.5px; border-radius: 13px; box-shadow: 0 3px 0 var(--rn-ink); font-size: 26px; font-weight: 700; }
+.rn-intro .rn-count { margin-left: auto; font-size: 14px; font-weight: 700; color: var(--rn-muted); }
+.rn-intro .rn-count b { color: var(--rn-orange); font-weight: 900; }
+.rn-intro .intro-progress { height: 14px; margin-top: 14px; border: 2.5px solid var(--rn-ink); border-radius: 99px; background: var(--rn-card); }
+.rn-intro .intro-progress span + span { border-left: 2px solid rgba(41, 51, 68, .18); }
+.rn-intro .intro-progress .done { background: #ffb27a; }
+.rn-intro .intro-progress .current { background: var(--rn-orange); }
+
+/* 제목 */
+.rn-intro .intro-heading { margin: 18px 0 6px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.rn-intro .rn-chip { display: inline-flex; align-items: center; gap: 4px; padding: 5px 12px; border: 2px solid var(--rn-ink); border-radius: 99px; background: var(--mission-tint, #dff3e7); font-size: 13px; font-weight: 800; color: var(--rn-ink); }
+.rn-intro .intro-heading h2 { margin: 0; font-size: 30px; font-weight: 900; letter-spacing: -.04em; }
+.rn-intro[data-step="how"] .intro-step-label { display: none; }
+
+/* 놀이 방법: 단계 목록·예전 안내 줄은 한 줄 규칙과 보드로 대신 */
+.rn-intro .intro-how .intro-steps, .rn-intro .turtle-rule-guide { display: none; }
+.rn-intro .intro-how { gap: 0; }
+
+/* 보드: 캐릭터가 위에서 고개를 내밈 */
+.rn-intro .rn-board { position: relative; margin: auto 0 0; padding-top: 74px; }
+.rn-intro .rn-peek { position: absolute; left: 0; right: 0; top: 0; height: 96px; display: flex; justify-content: center; pointer-events: none; z-index: 1; }
+.rn-intro .rn-peek img { width: 104px; height: 104px; object-fit: contain; object-position: center top; margin-left: -96px; }
+.rn-intro .rn-bubble { position: absolute; left: calc(50% - 4px); top: 2px; margin: 0; padding: 7px 12px; background: var(--rn-card); border: 2.5px solid var(--rn-ink); border-radius: 16px 16px 16px 4px; box-shadow: 0 3px 0 var(--rn-ink); font-family: 'Nollpic Wavy', 'Nollpic Hand', cursive; font-size: 19px; line-height: 1.2; text-align: left; color: var(--rn-ink); transform: rotate(-3deg); white-space: nowrap; }
+.rn-intro .rn-board-card { position: relative; z-index: 2; background: var(--rn-card); border: 2.5px solid var(--rn-ink); border-radius: 22px; box-shadow: var(--rn-shadow); padding: 28px 18px 18px; }
+.rn-intro .rn-look { position: absolute; left: 14px; top: 10px; padding: 2px 9px; border-radius: 99px; background: #eef0f3; color: var(--rn-muted); font-size: 11px; font-weight: 800; letter-spacing: .04em; }
+.rn-intro .rn-board-card > div[class$="-demo"] { margin: 0 auto !important; pointer-events: none; }
+
+/* 숫자 길 찾기 예시: 큰 칸 + 손가락이 1→6 차례로 누름 */
+.rn-intro .schulte-demo { position: relative; width: min(100%, 236px); min-height: 0; gap: 10px; padding: 0; background: none; border: 0; box-shadow: none; }
+.rn-intro .schulte-demo .demo-num { border: 2.5px solid var(--rn-ink); border-radius: 14px; background: var(--rn-card); box-shadow: 0 3px 0 var(--rn-ink); font-size: 24px; font-weight: 900; color: var(--rn-ink); }
+.rn-intro .rn-hand { position: absolute; font-size: 34px; line-height: 1; pointer-events: none; filter: drop-shadow(0 2px 0 rgba(41, 51, 68, .35)); animation: rnHand 4.2s infinite; z-index: 3; }
+
+/* 한 줄 규칙 */
+.rn-intro .rn-rule { margin: 16px 0 12px; font-size: 18px; font-weight: 800; color: var(--rn-ink); letter-spacing: -.02em; word-break: keep-all; }
+.rn-intro .rn-rule b { color: var(--rn-orange); font-weight: 900; }
+
+/* 알아보는 힘 카드 */
+.rn-intro .rn-skill { display: flex; gap: 12px; align-items: flex-start; text-align: left; padding: 12px 14px; border-radius: 16px; background: var(--rn-ink); color: #fff; margin-bottom: 16px; }
+.rn-intro .rn-skill-ico { flex: none; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; background: var(--rn-card); font-size: 22px; }
+.rn-intro .rn-skill-ico svg { width: 76%; height: 76%; display: block; }
+.rn-intro .rn-skill small { display: block; font-size: 11px; font-weight: 700; color: #b9c0cc; letter-spacing: .03em; }
+.rn-intro .rn-skill strong { display: block; font-size: 16px; font-weight: 900; margin-top: 1px; }
+.rn-intro .rn-skill strong em { font-style: normal; font-size: 12px; font-weight: 700; color: #ffb27a; margin-left: 4px; }
+.mission-intro.rn-intro .rn-skill p { margin: 3px 0 0; font-size: 13px; line-height: 1.45; color: #e6e9ee; word-break: keep-all; }
+
+/* 버튼 */
+.rn-intro .intro-show-how, .rn-intro .btn-popup-start { min-height: 56px; border-width: 2.5px; border-radius: 16px; box-shadow: var(--rn-shadow); font-size: 18px; font-weight: 900; transition: transform .08s ease, box-shadow .08s ease; }
+.rn-intro .intro-show-how:active, .rn-intro .btn-popup-start:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--rn-ink); }
+.rn-intro .intro-how > div[id$="start-block"] { margin-top: auto; padding-top: 0; }   /* 남는 공간을 보드 위와 버튼 위에 나눔 */
+
+/* 짧은 화면 */
+@media (max-height: 680px) {
+  .rn-intro .intro-heading { margin: 12px 0 4px; }
+  .rn-intro .intro-heading h2 { font-size: 26px; }
+  .rn-intro .rn-board { padding-top: 64px; }
+  .rn-intro .rn-peek img { width: 88px; height: 88px; margin-left: -84px; }
+  .rn-intro .rn-bubble { font-size: 17px; }
+  .rn-intro .rn-board-card { padding: 24px 14px 14px; }
+  .rn-intro .schulte-demo { width: min(100%, 210px); gap: 8px; }
+  .rn-intro .rn-rule { margin: 12px 0 10px; font-size: 17px; }
+  .mission-intro.rn-intro .rn-skill p { font-size: 12.5px; line-height: 1.4; }
+  .rn-intro .rn-skill { padding: 10px 12px; margin-bottom: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rn-intro .rn-hand { display: none; }
+  .rn-intro .schulte-demo .demo-num { animation: none !important; }
+}
+
+/* 예시 애니메이션 (생성값: 6칸이 1→6 순서로 켜졌다가 함께 꺼짐) */
+@keyframes rnTap0 { 0%, 6.64% { background: var(--rn-card); color: var(--rn-ink); transform: none; } 7.14% { background: var(--rn-orange); color: #fff; transform: scale(.92); } 10.14%, 84% { background: var(--rn-orange); color: #fff; transform: none; } 88%, 100% { background: var(--rn-card); color: var(--rn-ink); transform: none; } }
+.rn-intro .schulte-demo .demo-num:nth-child(2) { animation: rnTap0 4.2s infinite; }
+@keyframes rnTap1 { 0%, 17.36% { background: var(--rn-card); color: var(--rn-ink); transform: none; } 17.86% { background: var(--rn-orange); color: #fff; transform: scale(.92); } 20.86%, 84% { background: var(--rn-orange); color: #fff; transform: none; } 88%, 100% { background: var(--rn-card); color: var(--rn-ink); transform: none; } }
+.rn-intro .schulte-demo .demo-num:nth-child(4) { animation: rnTap1 4.2s infinite; }
+@keyframes rnTap2 { 0%, 28.07% { background: var(--rn-card); color: var(--rn-ink); transform: none; } 28.57% { background: var(--rn-orange); color: #fff; transform: scale(.92); } 31.57%, 84% { background: var(--rn-orange); color: #fff; transform: none; } 88%, 100% { background: var(--rn-card); color: var(--rn-ink); transform: none; } }
+.rn-intro .schulte-demo .demo-num:nth-child(6) { animation: rnTap2 4.2s infinite; }
+@keyframes rnTap3 { 0%, 38.79% { background: var(--rn-card); color: var(--rn-ink); transform: none; } 39.29% { background: var(--rn-orange); color: #fff; transform: scale(.92); } 42.29%, 84% { background: var(--rn-orange); color: #fff; transform: none; } 88%, 100% { background: var(--rn-card); color: var(--rn-ink); transform: none; } }
+.rn-intro .schulte-demo .demo-num:nth-child(3) { animation: rnTap3 4.2s infinite; }
+@keyframes rnTap4 { 0%, 49.5% { background: var(--rn-card); color: var(--rn-ink); transform: none; } 50.0% { background: var(--rn-orange); color: #fff; transform: scale(.92); } 53.0%, 84% { background: var(--rn-orange); color: #fff; transform: none; } 88%, 100% { background: var(--rn-card); color: var(--rn-ink); transform: none; } }
+.rn-intro .schulte-demo .demo-num:nth-child(1) { animation: rnTap4 4.2s infinite; }
+@keyframes rnTap5 { 0%, 60.21% { background: var(--rn-card); color: var(--rn-ink); transform: none; } 60.71% { background: var(--rn-orange); color: #fff; transform: scale(.92); } 63.71%, 84% { background: var(--rn-orange); color: #fff; transform: none; } 88%, 100% { background: var(--rn-card); color: var(--rn-ink); transform: none; } }
+.rn-intro .schulte-demo .demo-num:nth-child(5) { animation: rnTap5 4.2s infinite; }
+@keyframes rnHand { 0% { left: 50%; top: 25%; opacity: 0; } 4% { left: 50%; top: 25%; opacity: 1; transform: translate(-30%, 0) scale(1); } 5.64% { left: 50%; top: 25%; transform: translate(-30%, 0) scale(1); opacity: 1; } 7.14% { left: 50%; top: 25%; transform: translate(-30%, 0) scale(.82); opacity: 1; } 9.14% { left: 50%; top: 25%; transform: translate(-30%, 0) scale(1); opacity: 1; } 16.36% { left: 16.67%; top: 75%; transform: translate(-30%, 0) scale(1); opacity: 1; } 17.86% { left: 16.67%; top: 75%; transform: translate(-30%, 0) scale(.82); opacity: 1; } 19.86% { left: 16.67%; top: 75%; transform: translate(-30%, 0) scale(1); opacity: 1; } 27.07% { left: 83.33%; top: 75%; transform: translate(-30%, 0) scale(1); opacity: 1; } 28.57% { left: 83.33%; top: 75%; transform: translate(-30%, 0) scale(.82); opacity: 1; } 30.57% { left: 83.33%; top: 75%; transform: translate(-30%, 0) scale(1); opacity: 1; } 37.79% { left: 83.33%; top: 25%; transform: translate(-30%, 0) scale(1); opacity: 1; } 39.29% { left: 83.33%; top: 25%; transform: translate(-30%, 0) scale(.82); opacity: 1; } 41.29% { left: 83.33%; top: 25%; transform: translate(-30%, 0) scale(1); opacity: 1; } 48.5% { left: 16.67%; top: 25%; transform: translate(-30%, 0) scale(1); opacity: 1; } 50.0% { left: 16.67%; top: 25%; transform: translate(-30%, 0) scale(.82); opacity: 1; } 52.0% { left: 16.67%; top: 25%; transform: translate(-30%, 0) scale(1); opacity: 1; } 59.21% { left: 50%; top: 75%; transform: translate(-30%, 0) scale(1); opacity: 1; } 60.71% { left: 50%; top: 75%; transform: translate(-30%, 0) scale(.82); opacity: 1; } 62.71% { left: 50%; top: 75%; transform: translate(-30%, 0) scale(1); opacity: 1; } 80% { left: 50%; top: 75%; opacity: 1; transform: translate(-30%, 0) scale(1); } 86%, 100% { left: 50%; top: 75%; opacity: 0; transform: translate(-30%, 0) scale(1); } }
+
+/* 소개 단계 캐릭터 말풍선도 같은 손글씨 */
+.rn-intro .intro-mascot span { font-family: 'Nollpic Wavy', 'Nollpic Hand', cursive; font-weight: 400; font-size: 18px; }

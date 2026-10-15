@@ -1,0 +1,640 @@
+{
+  "entries": [
+    {
+      "id": 1,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/memory-kitchen.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "기억 공방"
+    },
+    {
+      "id": 2,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/number-focus.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "숫자더하기 놀이"
+    },
+    {
+      "id": 3,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/jenga-memory.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "모양기억 놀이"
+    },
+    {
+      "id": 4,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/color-match.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "색 조각 맞추기"
+    },
+    {
+      "id": 5,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/hand-sequence.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "손가락 순서 놀이"
+    },
+    {
+      "id": 6,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/grid-memory.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "9칸 위치기억"
+    },
+    {
+      "id": 7,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/color-equation.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "색깔 블록 연산"
+    },
+    {
+      "id": 8,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/stroop.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "색깔대로 말해요"
+    },
+    {
+      "id": 9,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/reverse-369.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "거꾸로 369"
+    },
+    {
+      "id": 10,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/fish-grill.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "생선 굽기"
+    },
+    {
+      "id": 11,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/number-hide-seek.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "숫자 숨바꼭질"
+    },
+    {
+      "id": 12,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/color-drop.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "컬러 드롭"
+    },
+    {
+      "id": 13,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/recipe-builder.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "재료 조립하기"
+    },
+    {
+      "id": 14,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/shape-connect.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "같은 모양 길 잇기"
+    },
+    {
+      "id": 15,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/ping-pong-rally.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "탁구 랠리"
+    },
+    {
+      "id": 16,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/number-search.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "숫자로 찾기"
+    },
+    {
+      "id": 17,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/block-merge.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "블록 합치기"
+    },
+    {
+      "id": 18,
+      "title": "꼬인 길 작전",
+      "background": "/minigames/intro-backgrounds/tangled-path.png"
+    },
+    {
+      "id": 19,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/crystal-mine.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "크리스탈 광산"
+    },
+    {
+      "id": 20,
+      "avatar": true,
+      "background": "/minigames/magic-circuit/circuit-tower-background-v1.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "마법 회로 복구"
+    },
+    {
+      "id": 21,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/direction-wizard.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "반전 마법사의 함정"
+    },
+    {
+      "id": 22,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/color-wizard.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "컬러 마법사의 시험"
+    },
+    {
+      "id": 23,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/cipher-369.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "369 암호 해독"
+    },
+    {
+      "id": 24,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/secret-architecture.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "비밀 건축 연구소"
+    },
+    {
+      "id": 25,
+      "avatar": true,
+      "background": "/minigames/intro-backgrounds/secret-door.png",
+      "blank": true,
+      "loaded": true,
+      "overflow": false,
+      "title": "비밀의 문 탈출"
+    }
+  ],
+  "responsive": [
+    {
+      "id": 1,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "기억 공방",
+      "width": 345
+    },
+    {
+      "id": 2,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "숫자더하기 놀이",
+      "width": 345
+    },
+    {
+      "id": 3,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "모양기억 놀이",
+      "width": 345
+    },
+    {
+      "id": 4,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "색 조각 맞추기",
+      "width": 345
+    },
+    {
+      "id": 5,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "손가락 순서 놀이",
+      "width": 345
+    },
+    {
+      "id": 6,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "9칸 위치기억",
+      "width": 345
+    },
+    {
+      "id": 7,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "색깔 블록 연산",
+      "width": 345
+    },
+    {
+      "id": 8,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "색깔대로 말해요",
+      "width": 345
+    },
+    {
+      "id": 9,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "거꾸로 369",
+      "width": 345
+    },
+    {
+      "id": 10,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "생선 굽기",
+      "width": 345
+    },
+    {
+      "id": 11,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "숫자 숨바꼭질",
+      "width": 345
+    },
+    {
+      "id": 12,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "컬러 드롭",
+      "width": 345
+    },
+    {
+      "id": 13,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "재료 조립하기",
+      "width": 345
+    },
+    {
+      "id": 14,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "같은 모양 길 잇기",
+      "width": 345
+    },
+    {
+      "id": 15,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "탁구 랠리",
+      "width": 345
+    },
+    {
+      "id": 16,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "숫자로 찾기",
+      "width": 345
+    },
+    {
+      "id": 17,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "블록 합치기",
+      "width": 345
+    },
+    {
+      "id": 18,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "꼬인 길 작전",
+      "width": 345
+    },
+    {
+      "id": 19,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "크리스탈 광산",
+      "width": 330
+    },
+    {
+      "id": 20,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "마법 회로 복구",
+      "width": 330
+    },
+    {
+      "id": 21,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "반전 마법사의 함정",
+      "width": 330
+    },
+    {
+      "id": 22,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "컬러 마법사의 시험",
+      "width": 330
+    },
+    {
+      "id": 23,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "369 암호 해독",
+      "width": 330
+    },
+    {
+      "id": 24,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "비밀 건축 연구소",
+      "width": 330
+    },
+    {
+      "id": 25,
+      "viewport": 360,
+      "blank": true,
+      "cardHeights": [
+        74,
+        74,
+        74
+      ],
+      "overflow": false,
+      "title": "비밀의 문 탈출",
+      "width": 330
+    },
+    {
+      "id": 1,
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "blank": true,
+      "buttonWidth": 354,
+      "overflow": false,
+      "width": 354
+    },
+    {
+      "id": 20,
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "blank": true,
+      "buttonWidth": 354,
+      "overflow": false,
+      "width": 354
+    },
+    {
+      "id": 1,
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "blank": true,
+      "buttonWidth": 355,
+      "overflow": false,
+      "width": 355
+    },
+    {
+      "id": 20,
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "blank": true,
+      "buttonWidth": 406,
+      "overflow": false,
+      "width": 406
+    },
+    {
+      "id": 1,
+      "viewport": {
+        "width": 1024,
+        "height": 768
+      },
+      "blank": true,
+      "buttonWidth": 355,
+      "overflow": false,
+      "width": 355
+    },
+    {
+      "id": 20,
+      "viewport": {
+        "width": 1024,
+        "height": 768
+      },
+      "blank": true,
+      "buttonWidth": 391,
+      "overflow": false,
+      "width": 391
+    },
+    {
+      "id": 1,
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "blank": true,
+      "buttonWidth": 355,
+      "overflow": false,
+      "width": 355
+    },
+    {
+      "id": 20,
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "blank": true,
+      "buttonWidth": 391,
+      "overflow": false,
+      "width": 391
+    }
+  ]
+}

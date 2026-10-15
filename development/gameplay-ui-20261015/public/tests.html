@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>놀픽 - 통합 두뇌 놀이 미션</title>
+    <link rel="stylesheet" href="tests.css">
+    <script type="module" src="../firebase-save-result.js"></script>
+    <link rel="stylesheet" href="mission-intro.css?v=20261008-quiet-tags">
+    <link rel="stylesheet" href="mission-intro-renewal.css?v=20261008-icons">
+</head>
+<body>
+    <!-- 항상 최상단 고정 뒤로가기 헤더 -->
+    <header class="tests-sticky-header">
+        <button class="tests-back-btn" onclick="goBackFromTests()">❮</button>
+        <span class="tests-mission-progress" id="tests-mission-progress">1/5 미션</span>
+    </header>
+
+    <div class="test-body">
+
+        <!-- =========================
+             01. 슐테표 끈기력 미션
+        ========================== -->
+        <section id="schulte-screen" class="test-screen active">
+            <div class="title-block">
+                <h2 class="section-title">슐테표 끈기력 미션</h2>
+                <div class="badge-center">
+                    <span class="badge-orange">🎯 끈기력 · 집중 유지력</span>
+                </div>
+                <p class="section-sub text-center" id="schulte-description">
+                    숫자를 1부터 순서대로 최대한 빠르게 찾아보세요!
+                </p>
+            </div>
+
+            <div class="schulte-dashboard">
+                <div class="dash-item">
+                    <span class="dash-label">⏱️ 경과시간</span>
+                    <span class="dash-value text-teal" id="schulte-timer">0.00초</span>
+                </div>
+                <div class="dash-divider"></div>
+                <div class="dash-item">
+                    <span class="dash-label">🎯 다음 숫자</span>
+                    <span class="dash-value text-orange" id="schulte-next">1</span>
+                </div>
+                <div class="dash-divider"></div>
+                <div class="dash-item">
+                    <span class="dash-label">📊 레벨</span>
+                    <span class="dash-value text-purple" id="schulte-level">3×3</span>
+                </div>
+            </div>
+
+            <div class="schulte-grid-container">
+                <div id="schulte-board" class="schulte-grid"></div>
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             02. 기억력 미션
+        ========================== -->
+        <section id="memory-screen" class="test-screen">
+            <div class="title-block">
+                <h2 class="section-title">기억력 미션</h2>
+                <div class="badge-center">
+                    <span class="badge-blue">🧩 기억력 · 작업 기억력</span>
+                </div>
+                <p class="section-sub text-center" id="memory-desc">카드의 위치를 3초간 기억하세요!</p>
+            </div>
+
+            <div class="timer-bar">
+                <div id="memory-progress-bar"></div>
+            </div>
+
+            <div id="memory-board" class="memory-grid"></div>
+
+        </section>
+
+
+        <!-- =========================
+             03. 원클릭 순발력 미션
+        ========================== -->
+        <section id="reaction-screen" class="test-screen">
+            <div class="title-block">
+                <h2 class="section-title">원클릭 순발력 미션</h2>
+                <div class="badge-center">
+                    <span class="badge-green">⚡ 순발력 · 반응 속도</span>
+                </div>
+                <p class="section-sub text-center" id="reaction-desc">
+                    초록 원은 빠르게 클릭하고, 빨간 원은 참아보세요!
+                </p>
+            </div>
+
+            <div class="reaction-dashboard">
+                <div class="dash-item">
+                    <span class="dash-label">점수</span>
+                    <span class="dash-value text-orange" id="reaction-score">0</span>
+                </div>
+                <div class="dash-divider"></div>
+                <div class="dash-item">
+                    <span class="dash-label">Lv.</span>
+                    <span class="dash-value text-purple" id="reaction-level">1</span>
+                </div>
+                <div class="dash-divider"></div>
+                <div class="dash-item">
+                    <span class="dash-label">남은 횟수</span>
+                    <span class="dash-value text-pink" id="reaction-lives">연습</span>
+                </div>
+            </div>
+
+            <div class="reaction-stage" id="reaction-stage">
+                <div class="reaction-ready" id="reaction-ready">
+                    준비되면 시작 버튼을 눌러주세요.
+                </div>
+            </div>
+
+            <div class="reaction-stats">
+                <div>평균 반응속도 <strong id="reaction-avg">-</strong></div>
+                <div>정답률 <strong id="reaction-accuracy">-</strong></div>
+            </div>
+
+        </section>
+
+
+
+
+        <!-- =========================
+             04. 관찰력 챌린지
+        ========================== -->
+        <section id="visual-search-screen" class="test-screen">
+            <div class="title-block">
+                <h2 class="section-title">관찰력 챌린지</h2>
+                <div class="badge-center">
+                    <span class="badge-pink">🔍 관찰력 · 시각 탐색</span>
+                </div>
+                <p class="section-sub text-center" id="visual-search-desc">
+                    목표 동물을 제한시간 안에 모두 찾아보세요!
+                </p>
+            </div>
+
+            <div class="visual-dashboard">
+                <div class="dash-item">
+                    <span class="dash-label">🏆 레벨</span>
+                    <span class="dash-value text-purple" id="visual-level">1</span>
+                </div>
+                <div class="dash-divider"></div>
+                <div class="dash-item">
+                    <span class="dash-label">⏱️ 남은 시간</span>
+                    <span class="dash-value text-orange" id="visual-time">0초</span>
+                </div>
+                <div class="dash-divider"></div>
+                <div class="dash-item">
+                    <span class="dash-label">❌ 오답</span>
+                    <span class="dash-value text-pink" id="visual-wrong">0</span>
+                </div>
+            </div>
+
+            <div class="visual-target-card">
+                <div id="visual-target" class="visual-target">🐶</div>
+                <div id="visual-target-count" class="visual-target-count">3마리를 찾아보세요</div>
+            </div>
+
+            <div id="visual-board" class="visual-grid"></div>
+
+            <div id="visual-message" class="visual-message">
+                시작 버튼을 눌러주세요.
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             05. 충동조절 챌린지
+        ========================== -->
+        <section id="flanker-screen" class="test-screen">
+            <div class="title-block">
+                <h2 class="section-title">충동조절 챌린지</h2>
+                <div class="badge-center">
+                    <span class="badge-flanker">✋ 충동조절 · 충동 억제</span>
+                </div>
+                <p class="section-sub text-center" id="flanker-desc">
+                    가운데에 있던 목표를 빠르고 정확하게 선택해보세요!
+                </p>
+            </div>
+
+            <div class="flanker-dashboard">
+                <div class="dash-item">
+                    <span class="dash-label">🏆 레벨</span>
+                    <span class="dash-value text-purple" id="flanker-level">1</span>
+                </div>
+                <div class="dash-divider"></div>
+                <div class="dash-item">
+                    <span class="dash-label">⏱️ 선택 시간</span>
+                    <span class="dash-value text-orange" id="flanker-time">3.0</span>
+                </div>
+                <div class="dash-divider"></div>
+                <div class="dash-item">
+                    <span class="dash-label">❌ 오답</span>
+                    <span class="dash-value text-pink" id="flanker-wrong">0</span>
+                </div>
+            </div>
+
+            <div class="flanker-stage">
+                <p id="flanker-mission" class="flanker-mission">가운데 목표를 기억하세요</p>
+                <div id="flanker-stimulus" class="flanker-stimulus"></div>
+                <div id="flanker-choices" class="flanker-choices"></div>
+                <p id="flanker-message" class="flanker-message">시작 버튼을 눌러주세요.</p>
+            </div>
+
+            <div class="flanker-stats">
+                <div>정답 <strong id="flanker-correct">0</strong></div>
+                <div>평균 반응 <strong id="flanker-avg">-</strong></div>
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- 슐테 시작 팝업 -->
+    <div id="schulte-countdown-overlay" class="popup-overlay active">
+        <div class="popup-content">
+
+            <div class="schulte-demo">
+                <div class="demo-num">5</div>
+                <div class="demo-num">1</div>
+                <div class="demo-num">4</div>
+                <div class="demo-num">2</div>
+                <div class="demo-num">6</div>
+                <div class="demo-num">3</div>
+            </div>
+            
+            <h3>끈기력 미션 준비</h3>
+            <p>화면에 무작위로 배치된 숫자를<br><strong>1부터 순서대로</strong> 누르세요.</p>
+
+            <div id="popup-start-block">
+                <button class="btn-popup-start navy" onclick="runSchulteCountdown()">시작하기</button>
+            </div>
+
+            <div id="popup-countdown-number" class="countdown-display" style="display:none;">
+                3
+            </div>
+        </div>
+    </div>
+
+    <!-- 기억력 시작 팝업 -->
+    <div id="memory-popup" class="popup-overlay">
+        <div class="popup-content">
+
+            <div class="memory-demo">
+                <div class="memory-card c1"></div>
+                <div class="memory-card c2 active"></div>
+                <div class="memory-card c3"></div>
+
+                <div class="memory-card c4 active"></div>
+                <div class="memory-card c5"></div>
+                <div class="memory-card c6 active"></div>
+            </div>
+
+
+            <h3>기억력 미션 준비</h3>
+            <p><strong>3초 동안</strong> 나타난 카드의 위치를 기억하고<br>카드의 위치를 클릭해주세요!</p>
+            <div id="memory-start-block">
+                <button class="btn-popup-start orange" onclick="runMemoryCountdown()">시작하기</button>
+            </div>
+
+            <div id="memory-countdown-number" class="countdown-display" style="display:none;">
+                3
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 반응속도 시작 팝업 -->
+    <div id="reaction-popup" class="popup-overlay">
+        <div class="popup-content">
+
+            <div class="reaction-demo">
+                <div class="reaction-circle red">멈춰!</div>
+                <div class="reaction-circle green">터치!</div>
+            </div>
+
+            
+
+            <h3>순발력 미션 준비</h3>
+            <p>초록 원은 빠르게 누르고,<br><strong>빨간 원은 누르지 마세요.</strong></p>
+            <div id="reaction-start-block">
+                <button class="btn-popup-start green" onclick="runReactionCountdown()">시작하기</button>
+            </div>
+
+            <div id="reaction-countdown-number" class="countdown-display" style="display:none;">
+                3
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 시각 탐색 시작 팝업 -->
+    <div id="visual-search-popup" class="popup-overlay">
+        <div class="popup-content">
+
+            <div class="visual-demo">
+                <div>🐰</div>
+                <div class="visual-target">⭐</div>
+                <div>🍎</div>
+
+                <div class="visual-target">⭐</div>
+                <div>🐻</div>
+                <div>🐰</div>
+
+                <div>🍎</div>
+                <div>🦊</div>
+                <div class="visual-target">⭐</div>
+            </div>
+
+            <h3>관찰력 챌린지 준비</h3>
+            <p>목표 동물을 확인하고,<br><strong>제한시간 안에 모두 찾아보세요.</strong></p>
+            <div id="visual-start-block">
+                <button class="btn-popup-start pink" onclick="runVisualSearchCountdown()">시작하기</button>
+            </div>
+
+            <div id="visual-countdown-number" class="countdown-display" style="display:none;">
+                3
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Flanker 시작 팝업 -->
+    <div id="flanker-popup" class="popup-overlay">
+        <div class="popup-content">
+
+            <div class="flanker-demo">
+                <div class="flanker-memory-text">그림을 기억하세요</div>
+
+                <div class="flanker-card-row">
+                    <div class="flanker-card">🐰</div>
+                    <div class="flanker-card target">🐻</div>
+                    <div class="flanker-card">🐰</div>
+                </div>
+            </div>
+
+
+            <h3>충동조절 챌린지</h3>
+            <p>가운데 목표를 기억한 뒤,<br><strong>방해 자극에 속지 말고 선택하세요.</strong></p>
+            <div id="flanker-start-block">
+                <button class="btn-popup-start flanker" onclick="runFlankerStartCountdown()">시작하기</button>
+            </div>
+
+            <div id="flanker-start-countdown-number" class="countdown-display" style="display:none;">
+                3
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 테미션스트 결과 안내 팝업 -->
+    <div id="game-result-popup" class="popup-overlay">
+        <div class="popup-content result-popup-content">
+            <div id="game-result-emoji" class="result-popup-emoji">🎉</div>
+            <h3 id="game-result-title">미션 완료!</h3>
+            <p id="game-result-text">오늘의 기록이 저장되었습니다.</p>
+            <div id="game-result-live-board" class="popup-result-board" hidden>
+                <div class="popup-result-guide">
+                    <span class="popup-result-guide-icon">💡</span>
+                    <p id="game-result-guide-text">시공간 작업기억을 평가하는 Corsi Block Test의 개념을 바탕으로 구성된 활동입니다. 잠시 본 위치를 기억한 뒤 다시 찾아보며 시각 기억력과 위치 기억 능력을 활용합니다.</p>
+                </div>
+                <div class="popup-result-card">
+                    <h4>📊 실시간 결과값</h4>
+                    <div class="leaderboard-header result-header popup-result-header">
+                        <span>학년</span>
+                        <span>이름/닉네임</span>
+                        <span>기록</span>
+                        <span>날짜</span>
+                    </div>
+                    <div id="game-result-live-list" class="review-list result-list popup-result-list"></div>
+                </div>
+            </div>
+            <div id="game-result-actions" class="result-popup-actions">
+                <button id="game-result-retry-button" class="btn-popup-start outline" type="button" onclick="retryFromGameResultPopup()">다시하기</button>
+                <button id="game-result-button" class="btn-popup-start navy" type="button" onclick="closeGameResultPopup()">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="mission-intro.js?v=20261008-quiet-tags"></script>
+    <script src="mission-intro-renewal.js?v=20261008-icons"></script>
+    <script src="tests.js?v=20261008-intro-1"></script>
+    <script>
+        function goBackFromTests() {
+            if (typeof goBackToPreviousTest === 'function') {
+                goBackToPreviousTest();
+            } else if (window.parent && typeof window.parent.exitTestPage === 'function') {
+                window.parent.exitTestPage();
+            } else {
+                window.parent.postMessage({ type: 'exitTest' }, '*');
+            }
+        }
+    </script>
+</body>
+</html>

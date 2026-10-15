@@ -1,0 +1,6 @@
+.flat-ico { display:inline-block; width:1.15em; height:1.15em; vertical-align:-.18em; background-position:center; background-repeat:no-repeat; background-size:contain; image-rendering:auto!important; font-style:normal; filter:none!important; box-shadow:none!important; }
+:is(.rv2-hero-badge,.result-chart-icon,.info-icon,.bottom-nav svg,.road-deco,.px-ico,.av-stage svg,.map-avatar svg,.play-shape-svg) { filter:none!important; text-shadow:none!important; }
+.rv2-hero-badge .flat-ico { width:42px; height:42px; }
+
+/* Play menu uses the same flat outline and pastel palette for every tool. */
+#page-7 .play-card-icon-wrap .play-menu-flat-icon { display:block; width:58px; height:58px; flex:none; filter:none; box-shadow:none; }

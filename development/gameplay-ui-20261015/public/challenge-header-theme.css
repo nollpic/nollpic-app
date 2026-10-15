@@ -1,0 +1,19 @@
+/* Challenge header follows the mission introduction surfaces. */
+#page-11 .challenge-home-body,
+#page-11 .challenge-sticky-head,
+#page-11 .challenge-sticky-actions { background: #fffbed; color: #293344; }
+#page-11 .challenge-sticky-head { margin: 0; padding: 0; gap: 14px; }
+#page-11 .challenge-home-hero { margin: 0; padding: 0; text-align: left; }
+#page-11 .challenge-home-hero h2 { margin: 0 0 8px; font-size: 25px; font-weight: 800; line-height: 1.35; letter-spacing: -.055em; color: #202837; white-space: normal; word-break: keep-all; }
+#page-11 .challenge-home-hero p { margin: 0; min-height: 0; font-size: 13px; font-weight: 500; line-height: 1.55; color: #62656b; white-space: normal; word-break: keep-all; }
+#page-11 .tc-card { margin: 0; padding: 14px; gap: 12px; border: 2px solid #293344; border-radius: 20px; background: #fffef9; box-shadow: none; }
+#page-11 .tc-head { display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; align-items: center; }
+#page-11 .tc-head h3 { font-size: 17px; font-weight: 800; color: #293344; }
+#page-11 .tc-sub { grid-column: 1 / -1; grid-row: 2; font-size: 12px; font-weight: 500; line-height: 1.5; color: #62656b; white-space: normal; word-break: keep-all; }
+#page-11 .tc-count { grid-column: 2; grid-row: 1; padding: 4px 10px; border-radius: 10px; background: #fff0dc; color: #b14b00; font-size: 12px; font-weight: 700; }
+#page-11 .tc-tile { padding: 10px; border: 1px solid #d8d4c9; border-radius: 14px; background: #fffbed; box-shadow: none; }
+#page-11 .tc-tile-text strong { color: #293344; font-weight: 800; line-height: 1.4; }
+#page-11 .tc-tile-text small { margin-top: 3px; color: #62656b; font-weight: 500; }
+#page-11 .tc-tile .tc-go { background: #ff6b00; color: #fff; border-radius: 10px; font-weight: 700; box-shadow: none; }
+#page-11 .challenge-map-message { margin: 0 0 4px; padding: 0; color: #62656b; font-family: 'Nollpic Wavy', cursive; font-size: 16px; font-weight: 400; line-height: 1.5; text-align: center; }
+@media (max-width: 380px) { #page-11 .challenge-home-hero h2 { font-size: 22px; } }

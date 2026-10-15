@@ -1,0 +1,255 @@
+/* 말풍선 손글씨: 푸어스토리 (Poor Story, SIL Open Font License) — 사용자 선택 */
+@font-face { font-family: 'Nollpic Wavy'; src: url('../fonts/PoorStory-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+/* 미션 준비 화면 리뉴얼 (2026-10-08) — mission-intro.css 다음에 불러옴
+   놀픽 새 스타일: 굵은 윤곽선, 아래로 떨어지는 단단한 그림자, 캐릭터가 보드를 들고 고개를 내미는 구성 */
+.rn-intro {
+  --rn-bg: #fffbed;
+  --rn-card: #fffef9;
+  --rn-ink: #293344;
+  --rn-orange: #ff6b00;
+  --rn-orange-soft: #ffe6d2;
+  --rn-muted: #6b6f78;
+  --rn-shadow: 0 4px 0 #293344;
+}
+.rn-intro .popup-content { padding: 16px 20px 20px; gap: 0; }
+
+/* 위 줄: 뒤로가기 · 진행 · 미션 n/5 */
+.rn-intro .intro-tags { display: none; }
+.rn-intro .intro-top { gap: 10px; }
+.rn-intro .intro-back { width: 42px; height: 42px; border-width: 2.5px; border-radius: 13px; box-shadow: 0 3px 0 var(--rn-ink); font-size: 26px; font-weight: 700; }
+.rn-intro .rn-count { margin-left: auto; font-size: 14px; font-weight: 700; color: var(--rn-muted); }
+.rn-intro .rn-count b { color: var(--rn-orange); font-weight: 900; }
+.rn-intro .intro-progress { height: 14px; margin-top: 14px; border: 2.5px solid var(--rn-ink); border-radius: 99px; background: var(--rn-card); }
+.rn-intro .intro-progress span + span { border-left: 2px solid rgba(41, 51, 68, .18); }
+.rn-intro .intro-progress .done { background: #ffb27a; }
+.rn-intro .intro-progress .current { background: var(--rn-orange); }
+
+/* 제목 */
+.rn-intro .intro-heading { margin: 18px 0 6px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.rn-intro .rn-chip { display: inline-flex; align-items: center; gap: 4px; padding: 5px 12px; border: 2px solid var(--rn-ink); border-radius: 99px; background: var(--mission-tint, #dff3e7); font-size: 13px; font-weight: 800; color: var(--rn-ink); }
+.rn-intro .intro-heading h2 { margin: 0; font-size: 30px; font-weight: 900; letter-spacing: -.04em; }
+.rn-intro[data-step="how"] .intro-step-label { display: none; }
+
+/* 놀이 방법: 단계 목록·예전 안내 줄은 한 줄 규칙과 보드로 대신 */
+.rn-intro .intro-how .intro-steps, .rn-intro .turtle-rule-guide { display: none; }
+.rn-intro .intro-how { gap: 0; }
+
+/* 보드: 캐릭터가 위에서 고개를 내밈 */
+.rn-intro .rn-board { position: relative; margin: auto 0 0; padding-top: 74px; }
+.rn-intro .rn-peek { position: absolute; left: 0; right: 0; top: 0; height: 96px; display: flex; justify-content: center; pointer-events: none; z-index: 1; }
+.rn-intro .rn-peek img { width: 104px; height: 104px; object-fit: contain; object-position: center top; margin-left: -96px; }
+.rn-intro .rn-bubble { position: absolute; left: calc(50% - 4px); top: 2px; margin: 0; padding: 7px 12px; background: var(--rn-card); border: 2.5px solid var(--rn-ink); border-radius: 16px 16px 16px 4px; box-shadow: 0 3px 0 var(--rn-ink); font-family: 'Nollpic Wavy', 'Nollpic Hand', cursive; font-size: 19px; line-height: 1.2; text-align: left; color: var(--rn-ink); transform: rotate(-3deg); white-space: nowrap; }
+.rn-intro .rn-board-card { position: relative; z-index: 2; background: var(--rn-card); border: 2.5px solid var(--rn-ink); border-radius: 22px; box-shadow: var(--rn-shadow); padding: 28px 18px 18px; }
+.rn-intro .rn-look { position: absolute; left: 14px; top: 10px; padding: 2px 9px; border-radius: 99px; background: #eef0f3; color: var(--rn-muted); font-size: 11px; font-weight: 800; letter-spacing: .04em; }
+.rn-intro .rn-board-card > div[class$="-demo"] { margin: 0 auto !important; pointer-events: none; }
+
+/* 숫자 길 찾기 예시: 큰 칸 + 손가락이 1→6 차례로 누름 */
+.rn-intro .schulte-demo { position: relative; width: min(100%, 236px); min-height: 0; gap: 10px; padding: 0; background: none; border: 0; box-shadow: none; }
+.rn-intro .schulte-demo .demo-num { border: 2.5px solid var(--rn-ink); border-radius: 14px; background: var(--rn-card); box-shadow: 0 3px 0 var(--rn-ink); font-size: 24px; font-weight: 900; color: var(--rn-ink); }
+.rn-intro .rn-hand { position: absolute; font-size: 34px; line-height: 1; pointer-events: none; filter: drop-shadow(0 2px 0 rgba(41, 51, 68, .35)); animation: rnHand 4.2s infinite; z-index: 3; }
+
+/* 한 줄 규칙 */
+.rn-intro .rn-rule { margin: 16px 0 12px; font-size: 18px; font-weight: 800; color: var(--rn-ink); letter-spacing: -.02em; word-break: keep-all; }
+.rn-intro .rn-rule b { color: var(--rn-orange); font-weight: 900; }
+
+/* 알아보는 힘 카드 */
+.rn-intro .rn-skill { display: flex; gap: 12px; align-items: flex-start; text-align: left; padding: 12px 14px; border-radius: 16px; background: var(--rn-ink); color: #fff; margin-bottom: 16px; }
+.rn-intro .rn-skill-ico { flex: none; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; background: var(--rn-card); font-size: 22px; }
+.rn-intro .rn-skill-ico svg { width: 76%; height: 76%; display: block; }
+.rn-intro .rn-skill small { display: block; font-size: 11px; font-weight: 700; color: #b9c0cc; letter-spacing: .03em; }
+.rn-intro .rn-skill strong { display: block; font-size: 16px; font-weight: 900; margin-top: 1px; }
+.rn-intro .rn-skill strong em { font-style: normal; font-size: 12px; font-weight: 700; color: #ffb27a; margin-left: 4px; }
+.mission-intro.rn-intro .rn-skill p { margin: 3px 0 0; font-size: 13px; line-height: 1.45; color: #e6e9ee; word-break: keep-all; }
+
+/* 버튼 */
+.rn-intro .intro-show-how, .rn-intro .btn-popup-start { min-height: 56px; border-width: 2.5px; border-radius: 16px; box-shadow: var(--rn-shadow); font-size: 18px; font-weight: 900; transition: transform .08s ease, box-shadow .08s ease; }
+.rn-intro .intro-show-how:active, .rn-intro .btn-popup-start:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--rn-ink); }
+.rn-intro .intro-how > div[id$="start-block"] { margin-top: auto; padding-top: 0; }   /* 남는 공간을 보드 위와 버튼 위에 나눔 */
+
+/* 짧은 화면 */
+@media (max-height: 680px) {
+  .rn-intro .intro-heading { margin: 12px 0 4px; }
+  .rn-intro .intro-heading h2 { font-size: 26px; }
+  .rn-intro .rn-board { padding-top: 64px; }
+  .rn-intro .rn-peek img { width: 88px; height: 88px; margin-left: -84px; }
+  .rn-intro .rn-bubble { font-size: 17px; }
+  .rn-intro .rn-board-card { padding: 24px 14px 14px; }
+  .rn-intro .schulte-demo { width: min(100%, 210px); gap: 8px; }
+  .rn-intro .rn-rule { margin: 12px 0 10px; font-size: 17px; }
+  .mission-intro.rn-intro .rn-skill p { font-size: 12.5px; line-height: 1.4; }
+  .rn-intro .rn-skill { padding: 10px 12px; margin-bottom: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rn-intro .rn-hand { display: none; }
+  .rn-intro .schulte-demo .demo-num { animation: none !important; }
+}
+
+/* 예시 애니메이션 (생성값: 6칸이 1→6 순서로 켜졌다가 함께 꺼짐) */
+
+/* 소개 단계 캐릭터 말풍선도 같은 손글씨 */
+.rn-intro .intro-mascot span { font-family: 'Nollpic Wavy', 'Nollpic Hand', cursive; font-weight: 400; font-size: 18px; }
+
+/* Match the child observation page's typography and navigation controls. */
+@font-face { font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Medium.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-ExtraBold.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+.mission-intro.rn-intro .popup-content { padding: 20px; }
+.rn-intro .intro-back { display: flex; align-items: center; justify-content: center; flex: none; width: 36px; height: 36px; padding: 0; border: 2px solid #293344; border-radius: 12px; background: #fffef9; color: #293344; box-shadow: none; font-size: 18px; font-weight: 700; line-height: 1; }
+.rn-intro .rn-count, .rn-intro .rn-count b { font-size: 12px; font-weight: 700; color: #77736b; }
+.rn-intro .intro-progress { height: 12px; flex: none; margin-top: 12px; border-width: 2px; }
+.rn-intro .intro-heading { margin: 20px 0 12px; gap: 8px; }
+.rn-intro .intro-heading h2 { margin: 0; padding: 0; font-size: 25px; font-weight: 800; line-height: 1.35; letter-spacing: -.055em; color: #202837; }
+.mission-intro.rn-intro .intro-step-label { font-size: 13px; font-weight: 500; line-height: 1.55; color: #62656b; word-break: keep-all; }
+.mission-intro.rn-intro .intro-everyday strong { font-size: 16px; font-weight: 700; line-height: 1.55; color: #ff6b00; }
+.turtle-intro .intro-mascot { width: 150px; height: 160px; margin-top: auto; margin-bottom: 8px; }
+.rn-intro .intro-mascot span { font-size: 16px; line-height: 1.3; border-width: 2px; }
+@media (max-height: 700px) {
+ .rn-intro .intro-heading h2 { font-size: 22px; }
+ .mission-intro.rn-intro .intro-step-label { font-size: 14px; }
+ .rn-intro .intro-heading { margin: 16px 0 10px; gap: 5px; }
+}
+
+/* Overview: a looping Schulte sample replaces the saved turtle companion. */
+.rn-intro .schulte-overview-sample { margin: auto 0 16px; padding: 12px 0 0; flex: none; }
+.rn-intro .schulte-overview-sample .schulte-demo { width: 210px; margin: 0 auto; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 58px); gap: 8px; }
+.rn-intro .schulte-overview-sample .demo-num { font-size: 24px; min-height: 0; height: auto; }
+.rn-intro .schulte-overview-sample figcaption { width: fit-content; max-width: 100%; margin: 14px auto 0; padding: 6px 12px; border: 1.5px solid #e7b48a; border-radius: 12px; background: #fff0dc; color: #71401e; font-family: 'Nollpic Wavy', 'Nollpic Hand', cursive; font-size: 17px; line-height: 1.3; font-weight: 400; word-break: keep-all; }
+.rn-intro .schulte-overview-sample .demo-num,
+.rn-intro .schulte-overview-sample .rn-hand { animation-duration: 6.6s; }
+@media (max-height: 700px) {
+ .rn-intro .schulte-overview-sample { margin-bottom: 12px; padding-top: 6px; }
+ .rn-intro .schulte-overview-sample .schulte-demo { width: 186px; grid-template-rows: repeat(2, 48px); }
+ .rn-intro .schulte-overview-sample figcaption { margin-top: 10px; font-size: 16px; padding: 5px 10px; }
+}
+/* Synchronized sample states are driven by one animation clock. */
+.rn-intro .schulte-demo .demo-num,
+.rn-intro .schulte-demo .rn-hand { animation: none !important; }
+.rn-intro .schulte-demo .demo-num { transition: none; }
+.rn-intro .schulte-demo .demo-num.sample-hit { background: var(--rn-orange); color: #fff; }
+.rn-intro .schulte-demo .demo-num.sample-press { transform: scale(.94); box-shadow: 0 1px 0 var(--rn-ink); }
+.rn-intro .schulte-demo .rn-hand { width: 36px; height: 42px; filter: none; line-height: 0; transform: translate(-12px, -5px); transform-origin: 12px 5px; }
+.rn-intro .rn-hand svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.rn-intro .schulte-demo .rn-hand.sample-press { transform: translate(-12px, -5px) scale(.88); }
+.rn-intro .schulte-overview-sample .schulte-demo { height: 124px; }
+.rn-intro .schulte-overview-sample .demo-num { aspect-ratio: auto; height: 100%; }
+.rn-intro .schulte-overview-sample figcaption { margin-top: 30px; }
+@media (max-height: 700px) {
+ .rn-intro .schulte-overview-sample .schulte-demo { height: 104px; }
+ .rn-intro .schulte-overview-sample figcaption { margin-top: 28px; }
+}
+
+
+/* Memory: one guide with the sample, rule and everyday use together. */
+#memory-popup .rn-board { margin-top: auto; }
+#memory-popup .rn-skill { background: #fffef9; color: #293344; border: 2px solid #293344; border-radius: 18px; padding: 14px; }
+#memory-popup .rn-skill p { color: #62656b; font-size: 13px; line-height: 1.5; }
+#memory-popup .rn-skill .memory-everyday { margin-top: 8px; padding-top: 8px; border-top: 1px solid #e8e4da; }
+#memory-popup .memory-everyday span { color: #ff6b00; font-weight: 700; }
+#memory-popup .rn-rule { font-size: 16px; margin: 12px 0; }
+@media (max-height: 700px) {
+ #memory-popup .rn-board { padding-top: 60px; }
+ #memory-popup .rn-peek img { width: 84px; height: 84px; }
+ #memory-popup .rn-skill { padding: 10px 12px; margin-bottom: 10px; }
+ #memory-popup .rn-skill .memory-everyday { margin-top: 6px; padding-top: 6px; }
+}
+#memory-popup .rn-bubble { font-size: 17px; padding: 7px 10px; }
+#memory-popup .rn-skill { margin-top: 14px; }
+#memory-popup.rn-intro[data-step="how"] .intro-step-label { display: block; }
+#schulte-countdown-overlay .intro-benefit h3 { display: flex; align-items: center; gap: 12px; }
+@media (max-width: 380px) { #memory-popup .rn-bubble { font-size: 15px; padding: 6px 8px; left: calc(50% - 16px); } }
+
+/* Compact the gap above the number sample and keep the start button off the bottom edge. */
+#schulte-countdown-overlay .schulte-overview-sample { margin-top: 8px; padding-top: 0; }
+#schulte-countdown-overlay .intro-show-how { margin-top: 8px; }
+
+/* Schulte countdown stays directly above its start button, like the other tests. */
+#schulte-countdown-overlay .intro-overview > .countdown-display { margin-top: 8px; flex: none; }
+
+#schulte-countdown-overlay[data-starting='true'] .intro-show-how { display: none; }
+
+/* Consistent everyday heading followed by a separate explanation line. */
+.rn-intro .memory-everyday > span { display: block; margin-bottom: 4px; }
+
+/* One shared explanation card across all five mission introductions. */
+.mission-intro.rn-intro .intro-benefit { padding: 20px; margin-bottom: 20px; border: 2px solid #293344; border-radius: 18px; background: #fffef9; box-shadow: none; color: #293344; text-align: left; }
+.mission-intro.rn-intro .intro-benefit h3 { display: flex; align-items: center; gap: 12px; margin: 0 0 10px; font-size: 17px; font-weight: 800; color: #293344; }
+.mission-intro.rn-intro .intro-benefit .rn-skill-ico { width: 40px; height: 40px; border-radius: 12px; flex: none; }
+.mission-intro.rn-intro .intro-benefit p { margin: 0; font-size: 14px; line-height: 1.65; color: #4b5360; word-break: keep-all; }
+.mission-intro.rn-intro .intro-benefit .intro-everyday { border-top: 1px solid #e8e4da; padding-top: 14px; margin-top: 14px; }
+.mission-intro.rn-intro .intro-benefit .intro-everyday strong { display: block; margin-bottom: 4px; font-size: 16px; font-weight: 700; line-height: 1.55; color: #ff6b00; }
+@media (max-height: 700px) { .mission-intro.rn-intro .intro-benefit { padding: 14px; margin-bottom: 14px; } .mission-intro.rn-intro .intro-benefit .intro-everyday { padding-top: 8px; margin-top: 8px; } }
+/* Mascots appear on result screens; introductions prioritize clear examples. */
+.rn-intro .rn-peek, .rn-intro .intro-mascot, .rn-intro .turtle-rule-guide { display: none !important; }
+.rn-intro .rn-board, #memory-popup .rn-board { padding-top: 0 !important; }
+.rn-intro .rn-board-card { box-shadow: none; }
+.rn-intro .mission-benefit-card { margin-top: 16px; }
+
+/* Shared rule capsule and start-button spacing across all five mission guides. */
+.mission-intro.rn-intro .rn-rule,
+.mission-intro.rn-intro .schulte-overview-sample figcaption {
+ width: fit-content; max-width: 100%; box-sizing: border-box; margin: 16px auto 12px;
+ padding: 6px 12px; border: 1.5px solid #e7b48a; border-radius: 12px;
+ background: #fff0dc; color: #71401e;
+ font-family: 'Nollpic Wavy', 'Nollpic Hand', cursive; font-size: 17px; font-weight: 400;
+ line-height: 1.3; text-align: center; word-break: keep-all;
+}
+.mission-intro.rn-intro .rn-rule b { font-weight: inherit; }
+.mission-intro.rn-intro .intro-benefit { margin-bottom: 0; }
+.mission-intro.rn-intro .intro-how > div[id$="start-block"] { margin-top: 0; padding-top: 24px; flex: none; }
+.mission-intro.rn-intro .intro-show-how,
+#schulte-countdown-overlay .intro-show-how { margin-top: 24px; flex: none; }
+.mission-intro.rn-intro .mission-benefit-card { margin-top: 0; }
+
+/* Shared unboxed demonstrations and centered instructions, missions 1–5. */
+.mission-intro.rn-intro .rn-board-card { border:0; border-radius:0; background:transparent; box-shadow:none; padding:8px 0 18px; }
+.mission-intro.rn-intro .rn-look { display:none; }
+.mission-intro.rn-intro .rn-board { flex:none; margin:8px 0 0; }
+#memory-popup .rn-board { margin-top:8px; }
+.mission-intro.rn-intro .rn-rule, #memory-popup .rn-rule { align-self:center; margin:16px auto 12px; text-align:center; }
+.mission-intro.rn-intro :is(.memory-demo,.reaction-demo,.visual-demo,.flanker-demo) { position:relative; background:transparent; border:0; box-shadow:none; overflow:visible; }
+.mission-intro.rn-intro :is(.memory-card,.visual-target,.flanker-card,.flanker-memory-text) { animation:none!important; opacity:1; transform:none; }
+.mission-intro.rn-intro .memory-demo { width:210px; gap:10px; }
+.mission-intro.rn-intro .memory-demo .memory-card { background:#fffef9; border:2.5px solid #293344; border-radius:14px; }
+.mission-intro.rn-intro .visual-demo .visual-target, .mission-intro.rn-intro .flanker-demo .flanker-card.target { background:#fffef9; border:2px solid #293344; }
+.mission-intro.rn-intro .visual-target::after { display:none; }
+.mission-intro.rn-intro .guide-reveal { background:#fff0dc!important; border-color:#ff6b00!important; }
+.mission-intro.rn-intro .memory-card.guide-reveal, .mission-intro.rn-intro .guide-hit { background:#ff6b00!important; border-color:#ff6b00!important; }
+.mission-demo-pointer { position:absolute; width:36px; height:42px; z-index:5; pointer-events:none; transform:translate(-12px,-5px); }
+.mission-demo-pointer svg { display:block; width:100%; height:100%; overflow:visible; }
+.mission-demo-pointer.press { transform:translate(-12px,-5px) scale(.88); }
+
+/* Keep the rule-to-explanation gap identical in every mission. */
+.mission-intro.rn-intro { --rule-bottom-gap:28px; }
+.mission-intro.rn-intro .rn-rule, #memory-popup .rn-rule { margin-bottom:var(--rule-bottom-gap); }
+.mission-intro.rn-intro .schulte-overview-sample { margin-bottom:0; }
+.mission-intro.rn-intro .schulte-overview-sample figcaption { margin-bottom:var(--rule-bottom-gap); }
+.mission-intro.rn-intro .memory-demo .memory-card:is(.guide-reveal,.guide-hit) { border-color:#293344!important; }
+
+/* Memory uses the same preview spacing and two-row geometry as mission one. */
+#memory-popup.mission-intro.rn-intro .rn-board { margin:8px 0 0; padding:0!important; }
+#memory-popup.mission-intro.rn-intro .rn-board-card { padding:0; }
+#memory-popup.mission-intro.rn-intro .memory-demo { width:210px; height:124px; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,58px); gap:8px; }
+#memory-popup.mission-intro.rn-intro .memory-card { height:100%; min-height:0; aspect-ratio:auto; box-sizing:border-box; }
+#memory-popup.mission-intro.rn-intro .rn-rule { margin:16px auto var(--rule-bottom-gap); }
+@media(max-height:700px) {
+ #memory-popup.mission-intro.rn-intro .memory-demo { width:186px; height:104px; grid-template-rows:repeat(2,48px); }
+}
+
+/* All five countdowns sit directly below the explanation, like mission one. */
+.mission-intro.rn-intro :is(.intro-overview,.intro-how) > .countdown-display,
+#schulte-countdown-overlay .intro-overview > .countdown-display {
+ position:static; align-self:center; width:100%; margin:8px 0 0; padding:0;
+ flex:none; text-align:center; font-size:3rem; font-weight:900; color:#ff6b00;
+}
+
+/* A real user tap enables preview audio on Android and iOS. */
+.mission-intro.rn-intro .schulte-overview-sample { position:relative; }
+.mission-intro.rn-intro .preview-audio-button { position:absolute; right:0; top:0; z-index:8; width:auto; min-height:28px; padding:4px 7px; border:1px solid #e7b48a; border-radius:8px; background:#fff0dc; color:#71401e; font-family:'Pretendard',sans-serif; font-size:11px; font-weight:700; box-shadow:none; cursor:pointer; }
+
+.mission-intro.rn-intro .intro-top { position:relative; }
+.mission-intro.rn-intro .intro-top .preview-audio-button { right:72px; top:4px; }
+
+.rn-intro .intro-heading { margin:20px 0 15px; gap:8px; }
+
+/* Freeze memory preview effects from the first countdown number. */
+#memory-popup[data-starting="true"] * { animation-play-state: paused !important; }

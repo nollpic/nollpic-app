@@ -1,0 +1,56 @@
+{
+  "layouts": [
+    {
+      "cardsAligned": true,
+      "characterSeparate": true,
+      "height": 800,
+      "images": [
+        {
+          "loaded": true,
+          "src": "tower.svg"
+        },
+        {
+          "loaded": true,
+          "src": "http://localhost:8803/images/Character/fitted/nollpic_base.png"
+        }
+      ],
+      "overflow": false,
+      "startBottom": 725.984375,
+      "titleIsText": "마법 회로 복구",
+      "width": 345
+    },
+    {
+      "cardsAligned": true,
+      "characterSeparate": true,
+      "overflow": false,
+      "startBottom": 744.078125,
+      "viewport": "412x915",
+      "width": 412
+    },
+    {
+      "overflow": false,
+      "startBottom": 745.75,
+      "viewport": "800x1280",
+      "width": 430
+    },
+    {
+      "overflow": false,
+      "startBottom": 745.75,
+      "viewport": "1366x768",
+      "width": 415
+    }
+  ],
+  "flow": [
+    "lower-basic-stage1-start",
+    "stage1-completed",
+    "local-save-confirmed",
+    "stage2-next",
+    "difficulty-medium",
+    "pause-exit-map",
+    "restore-stage2",
+    "free-upper-selected",
+    "upper-practice-6x6"
+  ],
+  "serverConnectionsBlocked": true,
+  "realPhoneTested": false
+}

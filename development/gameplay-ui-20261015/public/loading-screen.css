@@ -1,0 +1,49 @@
+/* The original login composition stays in place; only the artwork animates. */
+#page-1 .title-block .login-logo-stage { position: relative; aspect-ratio: 3 / 2; width: auto; padding: 0; }
+.login-logo-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transform-origin: 86% 48%; }
+.loading-logo-word { clip-path: polygon(0 0, 100% 0, 100% 29%, 79.1% 29%, 79.1% 47.85%, 84.31% 47.85%, 84.31% 50.3%, 100% 50.3%, 100% 100%, 0 100%); }
+.loading-logo-star { clip-path: polygon(79.1% 29%, 96% 29%, 96% 50.3%, 84.31% 50.3%, 84.31% 47.85%, 79.1% 47.85%); }
+#page-1.active .loading-logo-star { animation: nollpic-star-drop 2.1s both; }
+.loading-star-spark { position: absolute; top: 37%; left: 86%; color: #ffad24; font-size: 17px; opacity: 0; pointer-events: none; }
+#page-1.active .loading-star-spark { animation: nollpic-star-spark .8s 1.3s both; }
+.spark-one { --spark-x: 24px; --spark-y: -24px; }
+.spark-two { --spark-x: -18px; --spark-y: -27px; font-size: 12px; }
+.spark-three { --spark-x: 29px; --spark-y: 8px; font-size: 10px; }
+#page-1 .guest-login-slot { position: relative; width: 100%; max-width: 360px; }
+#login-loading[hidden] { display: none; }
+#login-loading { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 5px; padding-top: 6px; }
+#page-1 .guest-login-slot.is-loading .btn-guest { visibility: hidden; }
+.login-loading-caption { display: flex; justify-content: space-between; padding: 0 3px; color: #293344; font-size: 13px; font-weight: 800; line-height: 18px; }
+#login-loading-percent { font-variant-numeric: tabular-nums; }
+.login-loading-track { height: 20px; flex: none; box-sizing: border-box; border: 2px solid #293344; border-radius: 999px; background: #3d3c39; overflow: hidden; box-shadow: 0 3px 0 #29334426; }
+.login-loading-fill { height: 100%; width: 0; background: #ff6b00; border-radius: inherit; transition: width .35s ease; }
+#page-1 .login-welcome { z-index: 3; }
+@media (prefers-reduced-motion: reduce) {
+  #page-1.active .loading-logo-star, #page-1.active .loading-star-spark { animation: none; }
+  #page-1 .login-art .img-fluid-content { content: url('images/character_welcome_crosswalk_v3.png'); }
+  .login-loading-fill { transition: none; }
+}
+@keyframes nollpic-star-drop {
+  0% { transform: translate(12%, -150%) rotate(-90deg) scale(.65); opacity: 0; }
+  12% { opacity: 1; }
+  62% { transform: translate(0, 0) rotate(0) scale(1); animation-timing-function: ease-out; }
+  75% { transform: translate(0, -13%) rotate(12deg) scale(1.06); }
+  88% { transform: translate(0, 1%) rotate(-5deg) scale(.97); }
+  100% { transform: translate(0, 0) rotate(0) scale(1); opacity: 1; }
+}
+@keyframes nollpic-logo-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  24% { transform: translateY(3%) scale(1.025, .94); }
+  58% { transform: translateY(-3%) scale(.985, 1.04); }
+}
+@keyframes nollpic-star-spark {
+  0% { transform: translate(0, 0) scale(.2); opacity: 0; }
+  25% { opacity: 1; }
+  100% { transform: translate(var(--spark-x), var(--spark-y)) scale(1); opacity: 0; }
+}
+
+/* Returning users see one loading state in place of both login buttons. */
+#page-1 .social-login-wrap.is-auto-login { position:relative; }
+#page-1 .is-auto-login .guest-login-slot { position:static; }
+#page-1 .is-auto-login :is(.btn-google-main,.btn-guest) { visibility:hidden; }
+#page-1 .is-auto-login #login-loading { top:0; bottom:auto; padding:12px 6px; box-sizing:border-box; justify-content:center; gap:10px; }

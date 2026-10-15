@@ -1,0 +1,90 @@
+/* Full-page preparation flow; test gameplay and scoring stay unchanged. */
+.mission-intro.popup-overlay { background: #fffbed; padding: 0; z-index: 2000; }
+.mission-intro .popup-content { box-sizing: border-box; width: 100%; max-width: 460px; height: 100%; max-height: 100%; margin: 0 auto; padding: 18px 24px 24px; border: 0; border-radius: 0; background: #fffbed; box-shadow: none; overflow-y: auto; display: flex; flex-direction: column; color: #293344; text-align: center; }
+.mission-intro [hidden] { display: none !important; }
+.intro-top { display: flex; align-items: center; justify-content: space-between; flex: none; gap: 12px; }
+.intro-top > span { font-size: 13px; color: #68717e; font-weight: 700; }
+.intro-top img { width: 66px; height: 28px; object-fit: contain; }
+.intro-back { width: 36px; height: 36px; background: #fffef9; border: 2px solid #293344; border-radius: 12px; color: #293344; font-size: 29px; line-height: 1; }
+.intro-heading { margin: 24px 0 14px; flex: none; }
+.intro-area { display: inline-block; padding: 6px 12px; background: var(--mission-tint); border-radius: 9px; color: #414958; font-size: 12px; font-weight: 700; }
+.intro-heading h2 { margin: 12px 0 8px; font-size: 28px; line-height: 1.25; letter-spacing: -.04em; }
+.mission-intro .intro-step-label { font-size: 14px; color: #636a75; margin: 0; }
+.intro-overview,.intro-how { flex: 1; min-height: min-content; display: flex; flex-direction: column; align-items: stretch; }
+.intro-mascot { position: relative; align-self: center; width: 172px; height: 155px; margin: auto 0 14px; }
+.intro-mascot::before { content: ''; position: absolute; inset: 26px 0 0; border-radius: 50%; background: var(--mission-tint); }
+.intro-mascot img { position: relative; width: 100%; height: 100%; object-fit: contain; }
+.intro-mascot span { position: absolute; right: -22px; top: 1px; background: #fffef9; border: 2px solid #293344; border-radius: 12px 12px 12px 2px; padding: 6px 10px; font-size: 12px; font-weight: 700; transform: rotate(6deg); }
+.intro-benefit { border: 2px solid #293344; border-radius: 18px; background: #fffef9; padding: 20px; text-align: left; margin-bottom: 20px; }
+.mission-intro .intro-benefit h3 { font-size: 17px; margin: 0 0 10px; color: #293344; }
+.mission-intro .intro-benefit p { font-size: 14px; line-height: 1.65; margin: 0; word-break: keep-all; color: #4b5360; }
+.intro-everyday { border-top: 1px solid #e8e4da; padding-top: 14px; margin-top: 14px; }
+.intro-everyday strong { font-size: 12px; display: block; margin-bottom: 4px; color: #8b6540; }
+.intro-show-how,.mission-intro .btn-popup-start { width: 100%; margin: 0; padding: 13px 8px; min-height: 48px; border: 2px solid #293344; border-radius: 14px; background: #ff6b00; color: #fff; font-size: 17px; font-weight: 800; box-shadow: 0 3px 0 #293344; }
+.intro-show-how { margin-top: auto; }
+.intro-how > div[id$="start-block"] { margin-top: auto; padding-top: 16px; }
+.intro-steps { list-style: none; padding: 16px; margin: 20px 0; counter-reset: step; border: 2px solid #293344; border-radius: 16px; text-align: left; background: #fffef9; }
+.intro-steps li { counter-increment: step; display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.6; word-break: keep-all; }
+.intro-steps li+li { margin-top: 12px; }
+.intro-steps li::before { content: counter(step); flex: none; width: 24px; height: 24px; text-align: center; line-height: 24px; background: var(--mission-tint); border-radius: 8px; font-weight: 800; }
+.intro-how > div[class$="-demo"] { margin: auto auto 0; flex-shrink: 0; }
+.mission-intro .countdown-display { color: #ff6b00; margin-top: auto; }
+@media (max-height: 650px) {
+ .mission-intro .popup-content { padding: 12px 20px 18px; }
+ .intro-heading { margin: 12px 0 10px; }
+ .intro-heading h2 { font-size: 25px; margin: 8px 0; }
+ .intro-mascot { width: 132px; height: 115px; margin-bottom: 8px; }
+ .intro-benefit { padding: 14px; margin-bottom: 14px; }
+ .intro-everyday { padding-top: 8px; margin-top: 8px; }
+ .intro-steps { margin: 12px 0; padding: 12px; }
+ .intro-steps li+li { margin-top: 6px; }
+}
+@media (prefers-reduced-motion: reduce) { .mission-intro * { animation: none !important; } }
+.mission-intro .popup-content { padding: 20px; }
+
+/* A small companion stays with the first mission through both guide steps. */
+.turtle-intro .intro-mascot { width: 180px; height: 180px; margin-top: auto; margin-bottom: 8px; }
+.turtle-intro .intro-mascot::before { inset: 35px 10px 12px; }
+.turtle-intro .intro-mascot span { right: -36px; top: 12px; font-size: 11px; }
+.turtle-intro .intro-benefit p { line-height: 1.55; }
+.turtle-rule-guide { display: flex; align-items: center; justify-content: center; gap: 4px; margin: auto 0 8px; }
+.turtle-rule-guide img { width: 94px; height: 94px; object-fit: contain; }
+.mission-intro .turtle-rule-guide p { text-align: left; margin: 0; font-size: 14px; line-height: 1.6; color: #43534b; }
+.turtle-intro .intro-how > div[class$="-demo"] { margin-top: 0; }
+@media (max-height: 650px) {
+ .turtle-intro .intro-mascot { width: 145px; height: 140px; }
+ .turtle-intro .intro-benefit { padding: 12px; }
+ .turtle-intro .intro-benefit p { font-size: 13px; }
+ .turtle-rule-guide { margin: 4px 0; }
+ .turtle-rule-guide img { width: 72px; height: 72px; }
+ .turtle-intro .intro-steps { margin: 10px 0; }
+}
+.intro-progress { display: flex; gap: 7px; width: min(62%, 230px); margin-left: auto; align-items: center; }
+.intro-progress span { flex: 1; height: 9px; border-radius: 6px; background: #e6e3d8; }
+.intro-progress .done { background: #f5ba8e; }
+.intro-progress .current { background: #ff6b00; box-shadow: 0 0 0 2px #fffbed, 0 0 0 3px #ff6b00; }
+.turtle-intro .intro-step-label { max-width: 300px; margin: 0 auto; line-height: 1.55; word-break: keep-all; color: #505c53; }
+.mission-intro .turtle-rule-guide p { position: relative; background: #fffef9; border: 2px solid #293344; border-radius: 15px; padding: 10px 13px; box-shadow: 0 2px 0 #293344; }
+.turtle-rule-guide p::before { content: ''; position: absolute; left: -7px; top: 24px; width: 10px; height: 10px; background: #fffef9; border-left: 2px solid #293344; border-bottom: 2px solid #293344; transform: rotate(45deg); }
+.turtle-intro.active .intro-mascot img, .turtle-intro.active .turtle-rule-guide img { animation: turtle-gentle-bob 3.6s ease-in-out infinite; transform-origin: center 85%; }
+@keyframes turtle-gentle-bob { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-4px) rotate(1deg); } }
+@media (prefers-reduced-motion: reduce) {
+ .turtle-intro.active .intro-mascot img, .turtle-intro.active .turtle-rule-guide img { animation: none; }
+}
+/* Quiet header: tags on one row, one continuous segmented progress track. */
+@font-face { font-family: 'Nollpic Hand'; src: url('../fonts/Gaegu-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+.intro-tags { display: flex; gap: 6px; margin-left: auto; align-items: center; }
+.intro-tags span { padding: 5px 9px; border: 1px solid #d9dfd4; border-radius: 20px; background: #f0f4e9; color: #52614e; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.mission-intro .intro-progress { display: flex; flex: none; width: 100%; height: 12px; gap: 0; margin: 17px 0 0; border: 1px solid #b4b8ac; border-radius: 7px; overflow: hidden; box-sizing: border-box; background: #eceee5; }
+.mission-intro .intro-progress span { height: 100%; border-radius: 0; background: transparent; box-shadow: none; }
+.mission-intro .intro-progress span + span { border-left: 1px solid #b4b8ac; }
+.mission-intro .intro-progress .done { background: #f5ba8e; }
+.mission-intro .intro-progress .current { background: #ff8a35; }
+.mission-intro .intro-heading { margin: 16px 0 12px; }
+.mission-intro .intro-heading h2 { margin: 0 0 10px; }
+.mission-intro .turtle-rule-guide p, .turtle-intro .intro-mascot span { font-family: 'Nollpic Hand', cursive; font-weight: 400; }
+.mission-intro .turtle-rule-guide p { font-size: 21px; line-height: 1.15; padding: 10px 14px; }
+.mission-intro .turtle-rule-guide p strong { font-weight: 400; }
+.turtle-intro .intro-mascot span { font-size: 17px; }
+@media (max-height: 650px) { .mission-intro .intro-heading { margin: 12px 0 10px; } }
+.mission-intro .turtle-rule-guide p strong { font-family: inherit; font-size: inherit; }

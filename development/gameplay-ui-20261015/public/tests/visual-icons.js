@@ -1,0 +1,85 @@
+/* Original flat illustrations for visual search. All share a 64-unit canvas. */
+(() => {
+ const ink='#293344';
+ const shape=(d,c)=>`<path d="${d}" fill="${c}"/>`;
+ const ellipse=(x,y,rx,ry,c)=>`<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${c}"/>`;
+ const circle=(x,y,r,c)=>ellipse(x,y,r,r,c);
+ const eyes=`<g fill="${ink}" stroke="none"><circle cx="24" cy="33" r="2.3"/><circle cx="40" cy="33" r="2.3"/></g>`;
+ const smile='<path d="M28 43q4 4 8 0" fill="none"/>';
+ const icons={};
+ const add=(key,name,art)=>icons[key]={name,art};
+ function face(key,name,color,ears,detail=''){add(key,name,ears+ellipse(32,35,22,21,color)+detail+eyes+smile);}
+ const roundEars=(c)=>circle(15,17,9,c)+circle(49,17,9,c);
+ const points=(c)=>shape('M12 29 10 8 28 20M36 20 54 8 52 29',c);
+ const longEars=(c)=>ellipse(22,17,7,14,c)+ellipse(42,17,7,14,c);
+ face('🐶','강아지','#e8b77e',shape('M17 15Q3 10 5 34Q10 43 18 30M47 15Q61 10 59 34Q54 43 46 30','#a56b49'),ellipse(32,42,12,8,'#fff0dc')+circle(32,39,3,ink));
+ face('🐺','늑대','#a6b5c4',points('#a6b5c4'),shape('M13 39 32 49 51 39 42 52 22 52','#fff0dc'));
+ face('🦊','여우','#f6a34c',points('#f6a34c'),shape('M11 36 32 48 53 36 43 53 21 53','#fff0dc')+circle(32,46,3,ink));
+ face('🐕','갈색 개','#c68d60',shape('M14 20Q0 12 8 42L18 34M46 20Q64 12 56 42L46 34','#785743'),ellipse(38,34,9,12,'#fff0dc')+circle(32,42,3,ink));
+ face('🐱','고양이','#ffce70',points('#ffce70'),'<path d="M8 37h10m-10 7 10-3m28-4h10m-10 4 10 3"/>' );
+ face('🦁','사자','#ffd37b',circle(32,33,28,'#b77a4d'),ellipse(32,43,12,8,'#fff0dc'));
+ const stripes='<path d="m22 15 3 8m7-10v9m10-7-3 8M12 31l8 4m32-4-8 4"/>';
+ face('🐯','호랑이','#ffa744',roundEars('#ffa744'),stripes);
+ face('🐈','회색 고양이','#b6bdce',points('#b6bdce'),stripes+ellipse(32,43,10,7,'#fff0dc'));
+ face('🐰','토끼','#fff6ec',longEars('#fff6ec'),ellipse(22,13,2,7,'#f5aac4')+ellipse(42,13,2,7,'#f5aac4'));
+ face('🐇','갈색 토끼','#d6b598',longEars('#d6b598'),ellipse(32,43,10,8,'#fff6ec'));
+ face('🐭','생쥐','#b7c1d1',roundEars('#b7c1d1'),circle(15,17,4,'#f5aac4')+circle(49,17,4,'#f5aac4')+circle(32,41,3,'#f5aac4'));
+ face('🐹','햄스터','#ecc084',roundEars('#ecc084'),ellipse(20,43,9,8,'#fff6ec')+ellipse(44,43,9,8,'#fff6ec'));
+ face('🐻','곰','#b78059',roundEars('#b78059'),ellipse(32,42,10,8,'#f4d6ae'));
+ face('🐼','판다','#fff6ec',roundEars(ink),ellipse(23,32,7,9,'#89929d')+ellipse(41,32,7,9,'#89929d'));
+ face('🦝','너구리','#a6aeb8',roundEars('#a6aeb8'),shape('M11 29Q32 21 53 29L47 40H17Z','#71808e'));
+ face('🐨','코알라','#bcc8cf',circle(10,26,10,'#bcc8cf')+circle(54,26,10,'#bcc8cf'),ellipse(32,39,5,8,ink));
+ face('🐸','개구리','#7ecb8e',circle(18,18,10,'#7ecb8e')+circle(46,18,10,'#7ecb8e'),'<path d="M19 44q13 10 26 0" fill="none"/>');
+ // 거북이 (2026-10-11 다시 그림): 옆모습 → 다른 동물처럼 앞을 보는 얼굴. 머리 뒤로 육각무늬 등딱지가 둥글게 보임
+ face('🐢','거북이','#c4ebbc',ellipse(32,22,30,20,'#3f8d5a')+shape('M27 3h10l4 6-4 6H27l-4-6Z','#8fd39f')+shape('M8 13h8l3 5-3 5H8l-3-5Z','#8fd39f')+shape('M48 13h8l3 5-3 5h-8l-3-5Z','#8fd39f'),circle(19,43,3.2,'#f5aac4')+circle(45,43,3.2,'#f5aac4'));
+ add('🦎','도마뱀',shape('M43 25Q23 6 10 27Q3 48 23 53Q6 39 23 28L37 36 48 43 57 34 49 22Z','#9ccb71')+'<path d="m26 24-4-10m8 23-4 13"/>'+circle(49,30,2,ink));
+ add('🐍','뱀',shape('M16 51Q4 43 20 38L39 35Q50 34 42 26L30 22Q21 6 43 9Q61 12 52 28Q66 49 45 53Z','#99cc75')+circle(35,15,2,ink)+'<path d="m27 20-9 2"/>');
+ for(const [key,name,c] of [['🐵','원숭이','#bd895d'],['🦍','고릴라','#89929d'],['🦧','오랑우탄','#d1844e'],['🐒','꼬마 원숭이','#e5bc7a']])face(key,name,c,circle(8,34,7,c)+circle(56,34,7,c),ellipse(32,37,17,16,'#f6d9b0')+(key==='🦍'?'<path d="M17 27h12m6 0h12"/>':key==='🐒'?shape('M25 16q7-16 14 0',c):''));
+ function bird(key,name,c,detail='',beak='#ffb451'){add(key,name,ellipse(32,35,22,22,c)+detail+eyes+shape('m26 40 6-4 6 4-6 5Z',beak));}
+ bird('🐔','닭','#fff6ec',shape('M21 16Q13 4 25 7Q32-5 38 8Q53 5 43 18','#ff8985'));
+ bird('🐤','병아리','#ffda6b');
+ bird('🐣','알 속 병아리','#ffda6b',shape('M10 40 20 45 26 39 34 46 43 40 54 43Q51 59 32 58Q13 59 10 40','#fff6ec'));
+ bird('🐥','날개 편 병아리','#ffe596',shape('M12 33Q0 21 3 45L14 47M52 33Q64 21 61 45L50 47','#ffe596'));
+ bird('🦆','오리','#85c6a1',ellipse(32,43,15,6,'#f4b45b'));
+ bird('🐦','파랑새','#85bfdc',shape('M15 21 27 5 34 17','#85bfdc'));
+ bird('🦢','백조','#fff6ec',shape('M19 25Q19 3 32 6Q45 3 45 25','#fff6ec'));
+ function fish(key,name,c,detail=''){add(key,name,shape('M46 27 60 17 58 48 46 39',c)+ellipse(28,33,23,17,c)+detail+circle(17,29,2.5,ink)+'<path d="M7 38h7"/>');}
+ fish('🐠','열대어','#ffc66e',shape('M24 17v33h10V17Z','#ff9780'));
+ fish('🐟','물고기','#9ac7df','<path d="m30 27 8 7-8 7" fill="none"/>');
+ fish('🐡','복어','#e6ca80','<path d="m12 19-2-6m15 5v-7m16 11 4-5m-4 30 4 6m-18-4v6m-15-10-4 6"/>');
+ add('🐬','돌고래',shape('M6 40Q16 7 43 20L50 12 49 29 59 40 48 43Q43 54 28 53L34 43Q19 33 6 40Z','#88bfdb')+circle(18,30,2,ink));
+ for(const [key,name,c] of [['🐴','말','#bc8c67'],['🦄','유니콘','#f8e5f0'],['🐮','젖소','#fff6ec'],['🫏','당나귀','#a8b5bf']])face(key,name,c,key==='🫏'?longEars(c):points(c),ellipse(32,44,14,9,key==='🐮'?'#f5b0b9':'#e4c5ad')+(key==='🦄'?shape('m27 18 5-16 5 16','#ffc66e'):key==='🐮'?ellipse(19,26,7,9,'#89929d'):shape('M25 17 31 9 40 18','#785943')));
+ face('🐅','줄무늬 호랑이','#e8b573',points('#e8b573'),stripes+ellipse(32,43,12,8,'#fff6ec'));
+ add('🍎','사과',shape('M32 20Q7 6 7 34Q6 58 26 56L32 54 39 56Q58 57 57 33Q56 7 32 20Z','#f37f89')+shape('M32 19Q31 2 47 8Q46 20 32 19','#91c984')+'<path d="m32 21-1-12"/>');
+ // 충동조절 예전 단계용 2D 그림 (2026-10-11): 과일·크기 비교 도형·모양·화살표·손가락·무늬 상자 (예전엔 글자 기호였음)
+ add('🍓','딸기',shape('M32 18Q12 12 11 30Q12 50 32 58Q52 50 53 30Q52 12 32 18Z','#f37f89')+shape('M20 16 32 22 44 16 38 10 32 14 26 10Z','#91c984')+'<g fill="#fff6ec" stroke="none"><circle cx="24" cy="31" r="1.8"/><circle cx="40" cy="31" r="1.8"/><circle cx="32" cy="38" r="1.8"/><circle cx="24" cy="44" r="1.8"/><circle cx="40" cy="44" r="1.8"/><circle cx="32" cy="50" r="1.8"/></g>');
+ add('🍒','체리','<path d="M22 40Q26 18 40 8M42 40Q38 22 40 8" fill="none"/>'+shape('M40 8Q50 4 54 12Q46 16 40 8Z','#91c984')+circle(21,45,12,'#e2505f')+circle(43,45,12,'#e2505f')+'<path d="M16 41q2-3 5-3m17 3q2-3 5-3" stroke="#fff6ec" fill="none"/>');
+ add('🔷','큰 다이아몬드',shape('M32 4 60 32 32 60 4 32Z','#7fb5e6'));
+ add('🔹','작은 다이아몬드',shape('M32 19 45 32 32 45 19 32Z','#7fb5e6'));
+ add('🔴','빨간 동그라미',circle(32,32,24,'#f0626f'));
+ add('🟠','주황 동그라미',circle(32,32,24,'#ffa744'));
+ add('▲','색칠한 세모',shape('M32 7 58 54H6Z','#ff9f6b'));
+ add('△','빈 세모',shape('M32 7 58 54H6Z','#fffef9'));
+ add('●','색칠한 동그라미',circle(32,32,24,'#7ecb8e'));
+ add('○','빈 동그라미',circle(32,32,24,'#fffef9'));
+ add('◎','겹 동그라미',circle(32,32,24,'#fffef9')+circle(32,32,13,'#fffef9'));
+ add('◆','색칠한 마름모',shape('M32 5 56 32 32 59 8 32Z','#b692ee'));
+ add('◇','빈 마름모',shape('M32 5 56 32 32 59 8 32Z','#fffef9'));
+ add('★','색칠한 별',shape('M32.0 7.0 38.8 24.7 57.7 25.7 42.9 37.6 47.9 55.8 32.0 45.5 16.1 55.8 21.1 37.6 6.3 25.7 25.2 24.7Z','#ffd24e'));
+ add('☆','빈 별',shape('M32.0 7.0 38.8 24.7 57.7 25.7 42.9 37.6 47.9 55.8 32.0 45.5 16.1 55.8 21.1 37.6 6.3 25.7 25.2 24.7Z','#fffef9'));
+ const arrow=(deg,c)=>`<g transform="rotate(${deg} 32 32)">`+shape('M32 5 55 29H41v29H23V29H9Z',c)+'</g>';
+ add('↖','왼쪽 위 화살표',arrow(-45,'#7fb5e6'));
+ add('↘','오른쪽 아래 화살표',arrow(135,'#7fb5e6'));
+ add('↗','오른쪽 위 화살표',arrow(45,'#7fb5e6'));
+ const hand='<rect x="8" y="22" width="28" height="26" rx="9" fill="#ffd9bd"/><rect x="30" y="23" width="28" height="10" rx="5" fill="#ffd9bd"/><path d="M16 22v-5a4 4 0 0 1 8 0v6" fill="#ffd9bd"/><path d="M14 36h14m-14 6h12" fill="none"/>';
+ add('☞','오른쪽 가리키는 손',hand);
+ add('☜','왼쪽 가리키는 손','<g transform="translate(64 0) scale(-1 1)">'+hand+'</g>');
+ const box=(lines)=>'<rect x="8" y="8" width="48" height="48" rx="6" fill="#fff0dc"/>'+`<path d="${lines}" fill="none"/>`;
+ add('▤','가로줄 상자',box('M8 20h48M8 32h48M8 44h48'));
+ add('▥','세로줄 상자',box('M20 8v48M32 8v48M44 8v48'));
+ add('▨','빗금 상자 /',box('M9 31 31 9M11 53 53 11M33 55 55 33'));
+ add('▧','빗금 상자 \\',box('M9 33 31 55M11 11 53 53M33 9 55 31'));
+ window.nollpicVisualIcon=(key)=>{const i=icons[key];if(!i)throw new Error('Missing visual icon: '+key);return `<svg class="visual-flat-icon" viewBox="0 0 64 64" role="img" aria-label="${i.name}" xmlns="http://www.w3.org/2000/svg"><g stroke="${ink}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">${i.art}</g></svg>`;};
+ window.nollpicFlankerIcon = key => icons[key] ? window.nollpicVisualIcon(key) : key;
+ document.querySelectorAll('#visual-search-popup .visual-demo > div, #flanker-popup .flanker-card').forEach(el=>{el.innerHTML=window.nollpicVisualIcon(el.textContent.trim());});
+})();

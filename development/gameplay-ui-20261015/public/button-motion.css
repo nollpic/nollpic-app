@@ -1,0 +1,22 @@
+/* Shared button feedback. Individual translate preserves layout transforms. */
+:is(button, [role="button"], input[type="button"], input[type="submit"], .gender-radio-btn, .check-card) {
+  transition: translate 120ms ease, transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease, border-color 120ms ease !important;
+}
+@media (hover: hover) and (pointer: fine) {
+  :is(button, [role="button"], input[type="button"], input[type="submit"], .gender-radio-btn, .check-card):not(:disabled):not([aria-disabled="true"]):not(:has(input:disabled)):hover {
+    translate: 0 -1px;
+  }
+}
+:is(button, [role="button"], input[type="button"], input[type="submit"], .gender-radio-btn, .check-card):not(:disabled):not([aria-disabled="true"]):not(:has(input:disabled)):active {
+  translate: 0 3px;
+}
+/* Replace earlier movement on these controls so the lift is not doubled. */
+:is(#page-1 .btn-google-main, #page-1 .btn-guest, #page-2 .btn-navy, #page-3 .btn-navy, #page-4 .btn-navy, #page-7 .play-card-ready, .bottom-tab, .play-card, .rn-intro .intro-show-how, .rn-intro .btn-popup-start):is(:hover, :active) {
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(button, [role="button"], input[type="button"], input[type="submit"], .gender-radio-btn, .check-card) {
+    transition: none !important;
+    translate: none !important;
+  }
+}

@@ -1,0 +1,24 @@
+.bottom-tab .nt-icon { width: 26px; height: 26px; overflow: visible; }
+.bottom-tab .nt-line { fill: none; stroke: #9aa0aa; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.bottom-tab .nt-fill { fill: #f1eee6; }
+.bottom-tab .nt-accent, .bottom-tab .nt-accent2, .bottom-tab .nt-accent3 { fill: #d7d3c9; }
+.bottom-tab .nt-skin { fill: #f1eee6; }
+.bottom-tab .nt-hair { fill: #d7d3c9; }
+.bottom-tab .nt-dot, .bottom-tab .nt-pips circle { fill: #9aa0aa; }
+.bottom-tab.active .nt-line { stroke: #293344; }
+.bottom-tab.active .nt-dot, .bottom-tab.active .nt-pips circle { fill: #293344; }
+.bottom-tab.active[data-tab="home"] .nt-fill { fill: #ffb27a; }
+.bottom-tab.active[data-tab="home"] .nt-accent { fill: #fffef9; }
+.bottom-tab.active[data-tab="result"] .nt-fill { fill: #fffef9; }
+.bottom-tab.active[data-tab="result"] .nt-accent { fill: #b692ee; }
+.bottom-tab.active[data-tab="result"] .nt-accent2 { fill: #ff8c88; }
+.bottom-tab.active[data-tab="result"] .nt-accent3 { fill: #74cda6; }
+.bottom-tab.active[data-tab="mypage"] .nt-fill { fill: #ffb27a; }
+.bottom-tab.active[data-tab="mypage"] .nt-skin { fill: #ffd9bd; }
+.bottom-tab.active[data-tab="mypage"] .nt-hair { fill: #7a5233; }
+.bottom-tab.active[data-tab="play"] .nt-fill { fill: #ffd24e; }
+.bottom-tab.active[data-tab="challenge"] .nt-fill { fill: #ff8c88; }
+.bottom-tab.active[data-tab="challenge"] .nt-accent { fill: #ffd24e; }
+.bottom-tab:hover .nt-line { stroke: #293344; }
+.bottom-tab-nav { background:#fffdf5; box-shadow:none; border-top:1px solid #ebe6d9; }
+.bottom-tab .nt-icon { display:block; flex:none; filter:none; }

@@ -1,0 +1,307 @@
+/* Shared play surfaces; scoring, timing and target selection stay in tests.js. */
+body { background: #fffbed; color: #293344; }
+body .tests-sticky-header { box-sizing: border-box; max-width: 460px; height: 76px !important; padding: 20px !important; margin: 0 auto !important; background: #fffbed; border: 0; box-shadow: none; }
+body .tests-back-btn { display: grid; place-items: center; width: 36px; height: 36px; padding: 0 !important; border: 2px solid #293344; border-radius: 12px; background: #fffef9; color: #293344; font-size: 18px !important; }
+body .tests-mission-progress { color: #77736b; font-size: 12px; font-weight: 700; }
+body .test-body { box-sizing: border-box; width: 100%; max-width: 460px; margin: 0 auto; padding: 0 20px 20px !important; height: calc(100dvh - 76px) !important; min-height: 0 !important; scrollbar-gutter: auto; scrollbar-width: thin; background: #fffbed; }
+.test-body .test-screen { min-height: 0 !important; }
+.test-screen .section-title { margin: 12px 0 8px !important; font-size: 25px !important; line-height: 1.35 !important; letter-spacing: -.055em; font-weight: 800; color: #202837; }
+.test-screen .section-sub { color: #62656b; font-size: 13px !important; line-height: 1.55 !important; margin: 10px 0 18px; }
+.test-screen .badge-center > span { display: inline-flex; align-items: center; gap: 6px; background: #fff0dc; color: #71401e; font-size: 12px !important; font-weight: 700; padding: 5px 10px !important; border-radius: 10px; }
+.test-screen .badge-center svg { width: 22px; height: 22px; }
+#memory-screen .badge-center > span { background: #ece1ff; color: #594477; }
+#reaction-screen .badge-center > span { background: #fff0be; }
+#visual-search-screen .badge-center > span { background: #d8f5e6; color: #35624b; }
+#flanker-screen .badge-center > span { background: #ffe1e7; color: #874b60; }
+.test-screen :is(.reaction-dashboard,.visual-dashboard,.flanker-dashboard) { border: 2px solid #293344; border-radius: 16px; background: #fffef9; padding: 12px 6px; margin: 12px 0 18px; box-shadow: none; }
+.test-screen .dash-label { color: #62656b; font-size: 12px; }
+.test-screen .dash-value { color: #293344; font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.test-screen :is(#reaction-score,#visual-time,#flanker-time) { color: #ff6b00; }
+#memory-screen .timer-bar { box-sizing: border-box; height: 12px !important; border: 2px solid #293344; border-radius: 99px; overflow: hidden; background: #fffef9; margin: 16px 0 20px !important; }
+#memory-progress-bar { background: #ff6b00; height: 100%; }
+#memory-board { width: min(100%, max(240px, calc(100dvh - 290px))); margin: 0 auto 12px !important; gap: 9px !important; }
+#memory-board .memory-card { border: 2.5px solid #293344; border-radius: 14px !important; background: #fffef9; box-shadow: 0 3px 0 #293344; }
+#memory-board .memory-card.reveal { background: #ff6b00; box-shadow: 0 3px 0 #293344; }
+#memory-board .memory-card.wrong { background: #ffa3a3; }
+#memory-board .memory-card.clicked { box-shadow: none; }
+#reaction-stage { box-sizing: border-box; height: clamp(230px, calc(100dvh - 400px), 350px); background: #fffef9; border: 2.5px solid #293344; border-radius: 22px; box-shadow: 0 4px 0 #293344; }
+#reaction-stage .reaction-ready { color: #62656b; }
+.reaction-circle.green { background: #65cc8a; box-shadow: 0 3px 0 #293344; border: 2.5px solid #293344; }
+.reaction-circle.red { background: #ff8c88; box-shadow: 0 3px 0 #293344; border: 2.5px solid #293344; }
+#reaction-stage .practice-badge { background: #fff0dc; border: 1.5px solid #293344; color: #71401e; }
+.test-screen :is(.reaction-stats,.flanker-stats) { background: transparent; border: 0; padding: 0; gap: 10px; margin-top: 16px; }
+.test-screen :is(.reaction-stats,.flanker-stats) > div { flex: 1; border: 1px solid #d8d4c9; border-radius: 12px; background: #fffef9; padding: 10px; color: #62656b; font-size: 12px; }
+.test-screen :is(.reaction-stats,.flanker-stats) strong { color: #293344; font-size: 18px; }
+#visual-search-screen .visual-target-card { display: flex; justify-content: center; align-items: center; gap: 12px; background: #d8f5e6; border: 2px solid #293344; border-radius: 16px; padding: 10px; margin-bottom: 16px; }
+#visual-search-screen .visual-target { font-size: 32px !important; margin: 0; }
+#visual-search-screen .visual-target-count { font-size: 14px; }
+#visual-board { box-sizing: border-box; width: min(100%, max(250px, calc(100dvh - 410px))); margin: 0 auto 14px; padding: 0 !important; gap: 6px !important; background: none; border: 0; }
+#visual-board .visual-cell { min-height: 0; border: 2px solid #293344; border-radius: 10px; background: #fffef9; box-shadow: 0 3px 0 #293344; }
+#visual-board .visual-cell.found { background: #d8f5e6; border-color: #35624b; opacity: .65; box-shadow: none; }
+#visual-board .visual-cell.wrong { background: #ffe1e7; border-color: #bf5062; }
+#flanker-screen .flanker-stage { border: 2px solid #293344; border-radius: 22px; background: #fffef9; box-shadow: 0 4px 0 #293344; padding: 16px; }
+#flanker-screen .flanker-stimulus { background: #fff0dc; min-height: 110px; }
+#flanker-screen .flanker-choice { background: #fffef9; border: 2.5px solid #293344; border-radius: 14px; box-shadow: 0 3px 0 #293344; min-height: 64px; }
+.test-screen :is(.visual-message,.flanker-message) { color: #71401e; font-family: 'Nollpic Wavy', cursive; font-size: 18px; font-weight: 400; }
+/* The last three guides use the same single-page structure as memory. */
+:is(#reaction-popup,#visual-search-popup,#flanker-popup).rn-intro .intro-step-label { display: block; }
+:is(#reaction-popup,#visual-search-popup,#flanker-popup) .rn-skill { background: #fffef9; color: #293344; border: 2px solid #293344; border-radius: 18px; padding: 14px; margin-top: 14px; }
+:is(#reaction-popup,#visual-search-popup,#flanker-popup) .rn-skill p { color: #62656b; font-size: 13px; line-height: 1.5; }
+:is(#reaction-popup,#visual-search-popup,#flanker-popup) .memory-everyday { border-top: 1px solid #e8e4da; margin-top: 8px; padding-top: 8px; }
+:is(#reaction-popup,#visual-search-popup,#flanker-popup) .memory-everyday span { color: #ff6b00; font-weight: 700; }
+.rn-intro .rn-rule { font-family: 'Nollpic Wavy', cursive; font-weight: 400; font-size: 18px; margin: 12px 0 0; }
+.rn-intro .btn-popup-start { background: #ff6b00; color: #fff; }
+.rn-intro .reaction-demo .reaction-circle { color: #293344; }
+.rn-intro .visual-demo { background: none; box-shadow: none; }
+.rn-intro .visual-demo > div, .rn-intro .flanker-demo .flanker-card { background: #fffef9; border: 2px solid #293344; box-shadow: 0 3px 0 #293344; }
+.rn-intro .visual-demo .visual-target, .rn-intro .flanker-demo .flanker-card.target { background: #fff0dc; border-color: #ff6b00; }
+.rn-intro .flanker-demo { background: none; box-shadow: none; }
+@media (max-height: 700px) {
+ .test-screen .section-title { font-size: 22px !important; }
+ .test-screen .section-sub { margin-bottom: 12px; font-size: 12px !important; }
+ .test-screen :is(.reaction-dashboard,.visual-dashboard,.flanker-dashboard) { margin: 8px 0 14px; padding: 9px 4px; }
+ :is(#reaction-popup,#visual-search-popup,#flanker-popup) .rn-board { padding-top: 60px; }
+ :is(#reaction-popup,#visual-search-popup,#flanker-popup) .rn-peek img { width: 84px; height: 84px; }
+ :is(#reaction-popup,#visual-search-popup,#flanker-popup) .rn-skill { padding: 10px 12px; margin-bottom: 10px; }
+ #flanker-screen .flanker-stage { padding: 12px; }
+ #flanker-screen .flanker-stimulus { min-height: 80px; }
+}
+.rn-intro .reaction-demo { background: #fffef9; border: 0; box-shadow: none; }
+.rn-intro .reaction-demo .reaction-circle.green { background: #65cc8a; }
+.rn-intro .reaction-demo .reaction-circle.red { background: #ff8c88; }
+@media (max-height: 700px) {
+ #visual-search-popup .rn-board-card { padding: 22px 14px 12px; }
+ #visual-search-popup .rn-skill { margin-top: 10px; }
+}
+/* Green light and pointer share a four-second cycle; contact is at 68%. */
+#reaction-popup .reaction-demo { overflow: visible; height: 112px; }
+#reaction-popup .reaction-demo .reaction-circle { top: 17px; animation: none; opacity: 0; transform: none; }
+#reaction-popup .reaction-demo-hand { position: absolute; left: 78px; top: 42px; width: 40px; height: 47px; z-index: 3; pointer-events: none; opacity: 0; transform-origin: 12px 5px; }
+#reaction-popup .reaction-demo-hand svg { display: block; width: 100%; height: 100%; }
+#reaction-popup.active .reaction-demo .red { animation: demo-stop 4s linear infinite; }
+#reaction-popup.active .reaction-demo .green { animation: demo-go 4s linear infinite; }
+#reaction-popup.active .reaction-demo-hand { animation: demo-green-tap 4s linear infinite; }
+@keyframes demo-stop { 0%, 43% { opacity: 1; } 44%, 99% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes demo-go { 0%, 45%, 96%, 100% { opacity: 0; transform: scale(1); } 46%, 67% { opacity: 1; transform: scale(1); } 68%, 74% { opacity: 1; transform: scale(.92); } 80%, 95% { opacity: 1; transform: scale(1); } }
+@keyframes demo-green-tap { 0%, 50%, 96%, 100% { opacity: 0; transform: translate(24px, 22px) scale(1); } 55% { opacity: 1; transform: translate(24px, 22px) scale(1); } 67% { opacity: 1; transform: translate(0, 0) scale(1); } 68%, 74% { opacity: 1; transform: translate(0, 0) scale(.88); } 80%, 87% { opacity: 1; transform: translate(0, 0) scale(1); } 95% { opacity: 0; transform: translate(24px, 22px) scale(1); } }
+@media (prefers-reduced-motion: reduce) {
+ #reaction-popup.active .reaction-demo .red { animation: none; opacity: 0; }
+ #reaction-popup.active .reaction-demo .green { animation: none; opacity: 1; }
+ #reaction-popup.active .reaction-demo-hand { animation: none; opacity: 1; transform: none; }
+}
+/* Uniform illustration canvas: examples, target and game cards. */
+.visual-flat-icon { display: block; width: 100%; height: 100%; }
+#visual-search-popup .visual-demo > div { display: grid; place-items: center; }
+#visual-search-popup .visual-demo > div .visual-flat-icon { width: 38px; height: 38px; }
+#visual-target .visual-flat-icon { width: 46px; height: 46px; }
+#visual-board .visual-cell .visual-flat-icon { width: 78%; height: 78%; max-width: 60px; max-height: 60px; pointer-events: none; }
+/* Nested surfaces stay flat; only the outer panel carries a bottom shadow. */
+.rn-intro .rn-board-card :is(.schulte-demo, .demo-num, .memory-demo, .memory-card, .reaction-demo, .reaction-circle, .visual-demo, .visual-demo > div, .flanker-demo, .flanker-card),
+#flanker-screen .flanker-stage :is(.flanker-stimulus, .flanker-choice, .flanker-choice:active, .flanker-choice:disabled) {
+    box-shadow: none !important;
+}
+/* Share the visual-search animal artwork with the inhibition mission. */
+#flanker-popup .flanker-card { display: grid; place-items: center; }
+#flanker-popup .flanker-card .visual-flat-icon { width: 38px; height: 38px; }
+#flanker-screen .flanker-stimulus > span { min-width: 0; }
+#flanker-screen .flanker-stimulus .visual-flat-icon { width: 1.15em; height: 1.15em; }
+#flanker-screen .flanker-choice .visual-flat-icon { width: 46px; height: 46px; margin: 0 auto; pointer-events: none; }
+
+/* Larger signal preview, with synchronized stop and touch feedback. */
+#reaction-popup.mission-intro.rn-intro .reaction-demo { width:180px; height:144px; }
+#reaction-popup.mission-intro.rn-intro .reaction-circle { width:100px; height:100px; left:40px; top:12px; border:2.5px solid #293344; box-sizing:border-box; font-size:16px; animation:none!important; }
+#reaction-popup.mission-intro.rn-intro .reaction-demo-hand { left:90px; top:64px; width:40px; height:47px; animation:none!important; }
+#reaction-popup .reaction-demo-hand::after { content:'×'; position:absolute; top:-30px; left:3px; display:none; width:28px; height:28px; border-radius:50%; background:#fffef9; color:#e74646; border:2px solid #e74646; font-family:Arial,sans-serif; font-size:28px; font-weight:700; line-height:25px; text-align:center; }
+#reaction-popup .reaction-demo-hand.blocked::after { display:block; }
+
+/* Compact space above and below the reaction demonstration. */
+#reaction-popup.mission-intro.rn-intro .rn-board { margin-top:0; }
+#reaction-popup.mission-intro.rn-intro .rn-board-card { padding:0; }
+#reaction-popup.mission-intro.rn-intro .reaction-demo { height:124px; }
+#reaction-popup.mission-intro.rn-intro .reaction-circle { top:4px; }
+#reaction-popup.mission-intro.rn-intro .reaction-demo-hand { top:56px; }
+#reaction-popup.mission-intro.rn-intro .rn-rule { margin-top:8px; }
+
+/* Compact sound settings beside the mission progress. */
+.sound-settings { position:relative; flex:none; margin-left:10px; }
+.sound-settings-toggle { display:grid; place-items:center; width:32px; height:32px; padding:6px; border:1.5px solid #293344; border-radius:10px; color:#293344; background:#fffef9; box-shadow:none; }
+.sound-settings-toggle svg { width:20px; height:20px; }
+.sound-settings-toggle.sound-muted { opacity:.55; }
+.sound-settings-menu { position:absolute; top:40px; right:0; z-index:3000; width:164px; padding:6px; background:#fffef9; border:1.5px solid #293344; border-radius:12px; }
+.sound-settings-menu[hidden] { display:none!important; }
+.sound-settings-menu button { display:block; width:100%; padding:11px 8px; border:0; border-radius:8px; background:transparent; color:#293344; font-family:'Pretendard',sans-serif; font-size:14px; font-weight:700; text-align:left; box-shadow:none; }
+.sound-settings-menu button:hover { background:#fff0dc; }
+body .tests-mission-progress { margin-left:auto; }
+
+.sound-music-credit { margin:5px 6px 3px; padding-top:8px; border-top:1px solid #e8e4da; color:#62656b; font:10px/1.5 'Pretendard',sans-serif; text-align:left; }
+.sound-music-credit a { color:#71401e; text-decoration:underline; }
+
+/* Separate, persistent background and effect volume sliders. */
+.sound-settings-menu { width:220px; box-sizing:border-box; }
+.sound-volume-control { display:grid; grid-template-columns:1fr auto; gap:6px; padding:9px 8px; color:#293344; font:12px/1.4 'Pretendard',sans-serif; text-align:left; }
+.sound-volume-control output { color:#914000; font-weight:700; }
+.sound-volume-control input { grid-column:1/-1; width:100%; margin:0; min-height:24px; accent-color:#ff6b00; cursor:pointer; }
+
+/* Shared dashboard typography overrides the legacy compact text sizes. */
+.test-screen .dash-label { font-size:12px!important; line-height:1.4; font-weight:700; }
+.test-screen .dash-value { font-size:20px!important; line-height:1.3; font-weight:800; }
+#reaction-stage { height:clamp(200px,calc(100dvh - 480px),260px); min-height:0; margin-bottom:10px; }
+#reaction-stage .practice-badge { text-align:center; white-space:nowrap; line-height:1.35; padding:6px 12px; font-size:13px; }
+#reaction-screen .reaction-stats { margin-top:10px; }
+@media(max-height:600px) { #reaction-stage { height:180px; } }
+
+/* Compact the fourth and fifth guides like the reaction guide. */
+:is(#visual-search-popup,#flanker-popup).mission-intro.rn-intro .rn-board { margin-top:0; }
+:is(#visual-search-popup,#flanker-popup).mission-intro.rn-intro .rn-board-card { padding:0; }
+:is(#visual-search-popup,#flanker-popup).mission-intro.rn-intro .rn-rule { margin-top:8px; }
+#visual-search-popup.mission-intro.rn-intro .visual-demo { height:148px; padding:0; box-sizing:border-box; }
+#flanker-popup.mission-intro.rn-intro .flanker-demo { height:90px; padding:4px 0 0; }
+#flanker-popup.mission-intro.rn-intro .flanker-memory-text { margin-bottom:8px; }
+
+#visual-search-popup.mission-intro.rn-intro .rn-board-card { padding-bottom:14px; }
+
+/* Compact gameplay headers and keep all five boards within the viewport. */
+body { padding:0!important; }
+body .tests-sticky-header,
+body:has(#schulte-screen.active) .tests-sticky-header { height:52px!important; min-height:52px!important; padding:8px 20px!important; }
+body .test-body,
+body:has(#schulte-screen.active) .test-body { height:calc(100dvh - 52px)!important; padding:0 20px 12px!important; min-height:0!important; overflow-y:auto; }
+.test-body .test-screen .title-block { margin:0!important; }
+.test-body .test-screen .section-title { margin:0 0 4px!important; font-size:23px!important; line-height:1.3!important; }
+.test-body .test-screen .badge-center { margin:4px 0!important; }
+.test-body .test-screen .section-sub { margin:4px 0 6px!important; font-size:13px!important; line-height:1.45!important; }
+.test-body .test-screen :is(.schulte-dashboard,.reaction-dashboard,.visual-dashboard,.flanker-dashboard) { margin:8px 0 10px!important; padding:9px 6px!important; flex:none; }
+#schulte-screen .schulte-grid-container { width:min(100%,calc(100dvh - 280px)); }
+#memory-screen .timer-bar { margin:8px 0 12px!important; flex:none; }
+#memory-board { width:min(100%,max(180px,calc(100dvh - 240px))); }
+#reaction-stage { height:clamp(180px,calc(100dvh - 360px),260px); flex:none; }
+#visual-search-screen .visual-target-card { margin-bottom:10px; padding:6px 10px; flex:none; }
+#visual-board { width:min(100%,max(180px,calc(100dvh - 350px))); margin-bottom:8px; flex:none; }
+#visual-search-screen .visual-message { margin:0; min-height:24px; font-size:15px; line-height:1.4; }
+#flanker-screen .flanker-stage { padding:12px; margin-bottom:8px; }
+#flanker-screen .flanker-mission { margin:0 0 8px; }
+#flanker-screen .flanker-stimulus { min-height:72px; box-sizing:border-box; padding:8px; margin-bottom:10px; }
+#flanker-screen .flanker-choice { min-height:56px; }
+#flanker-screen .flanker-message { min-height:24px; margin:8px 0 0; font-size:15px; }
+#flanker-screen .flanker-stats { margin-top:8px; }
+
+/* Tight fifth-mission preview without empty height above or below its cards. */
+#flanker-popup.mission-intro.rn-intro .intro-heading { margin:20px 0 15px; gap:8px; }
+#flanker-popup.mission-intro.rn-intro .rn-board { margin:0; padding:0!important; }
+#flanker-popup.mission-intro.rn-intro .rn-board-card { padding:0 0 12px; }
+#flanker-popup.mission-intro.rn-intro .flanker-demo { height:auto; min-height:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+#flanker-popup.mission-intro.rn-intro .flanker-memory-text { margin:0; line-height:1.4; }
+#flanker-popup.mission-intro.rn-intro .flanker-card-row { margin:0; }
+#flanker-popup.mission-intro.rn-intro .rn-rule { margin-top:8px; }
+
+#memory-screen .timer-bar { margin:20px 0 20px!important; flex:none; }
+
+.test-body .test-screen .section-sub { margin:10px 0 20px!important; font-size:13px!important; line-height:1.45!important; }
+
+#visual-search-screen .visual-target-card {
+ margin-bottom:10px;
+ padding:6px 10px;
+ flex:none;
+ box-shadow:0 3px 0 #293344;
+}
+#visual-board .visual-cell {
+ min-height:0;
+ border:2px solid #293344;
+ border-radius:10px;
+ background:#fffef9;
+ box-shadow:0 3px 0 #293344;
+}
+.visual-target-count { font-size:1rem!important; }
+
+.flanker-demo .flanker-card {
+ width:70px;
+ height:50px;
+ border-radius:12px;
+ background:#FFFFFF;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:22px;
+ box-shadow:0 5px 12px rgba(14,29,62,0.08);
+}
+/* Apply the requested preview style over the earlier flat-surface overrides. */
+#flanker-popup .flanker-demo .flanker-card {
+ width:70px;
+ height:50px;
+ border-radius:12px;
+ background:#FFFFFF;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:22px;
+ box-shadow:0 5px 12px rgba(14,29,62,0.08)!important;
+}
+
+#flanker-popup .flanker-demo { width:226px; max-width:100%; }
+#flanker-popup .flanker-demo .flanker-card { flex:0 0 70px; box-sizing:border-box; }
+
+/* Larger stimulus characters, fitting all five/seven/nine-character rounds. */
+#flanker-screen .flanker-stimulus { gap:4px; min-height:84px; }
+#flanker-screen .flanker-stimulus > span { flex:1 1 0; max-width:52px; min-width:0; }
+#flanker-screen .flanker-stimulus .visual-flat-icon { display:block; width:100%; height:auto; aspect-ratio:1; }
+#flanker-screen .flanker-stimulus.small > span { max-width:40px; }
+#flanker-screen .flanker-stimulus.tiny > span { max-width:32px; }
+
+/* Reaction game: lift the score panel, keep the play area and signals flat. */
+#reaction-screen .reaction-dashboard { box-shadow:0 4px 0 #293344 !important; }
+#reaction-screen #reaction-stage, #reaction-screen #reaction-stage .reaction-circle { box-shadow:none !important; }
+
+/* Shared gameplay shadows: status panels raised, all play surfaces flat. */
+#schulte-screen .schulte-dashboard,
+#reaction-screen .reaction-dashboard,
+#visual-search-screen .visual-dashboard,
+#flanker-screen .flanker-dashboard {
+    box-shadow: 0 4px 0 #293344 !important;
+}
+#schulte-screen .schulte-grid-container,
+#schulte-screen #schulte-board,
+#schulte-screen #schulte-board *,
+#memory-screen .timer-bar,
+#memory-screen #memory-board,
+#memory-screen #memory-board *,
+#reaction-screen #reaction-stage,
+#reaction-screen #reaction-stage *,
+#visual-search-screen .visual-target-card,
+#visual-search-screen #visual-board,
+#visual-search-screen #visual-board *,
+#flanker-screen .flanker-stage,
+#flanker-screen .flanker-stage * {
+    box-shadow: none !important;
+}
+
+/* The shared gameplay header scrolls away with each mission. */
+body.sound-scroll-tests .test-body,
+body.sound-scroll-tests:has(#schulte-screen.active) .test-body { height:100dvh!important; min-height:0!important; }
+body.sound-scroll-tests .tests-sticky-header,
+body.sound-scroll-tests:has(#schulte-screen.active) .tests-sticky-header { position:relative!important; top:auto; padding:8px 0!important; flex:none; }
+
+/* 기억력: 틀렸을 때 못 찾은 정답 위치를 흐리게 보여 줌 (2026-10-10) */
+.memory-card.reveal.missed { opacity: .5; }
+
+/* 충동조절 예시: 실제 미션처럼 5마리 줄 → 가리고 "?" → 보기 2개에서 고르기 (2026-10-10) */
+#flanker-popup .flanker-demo { width:240px; }
+#flanker-popup .flanker-demo .fd-stimulus { gap:6px; position:relative; }
+#flanker-popup .flanker-demo .fd-stimulus .flanker-card { flex:0 0 40px; width:40px; height:44px; border-radius:10px; transition:opacity .2s; }
+#flanker-popup .flanker-demo .fd-stimulus .flanker-card .visual-flat-icon { width:28px; height:28px; }
+#flanker-popup .flanker-demo .fd-stimulus.fd-hidden .flanker-card { opacity:0; }
+#flanker-popup .flanker-demo .fd-stimulus.fd-hidden::after { content:'?'; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:40px; height:44px; display:grid; place-items:center; border:2px solid #293344; border-radius:10px; background:#fff0dc; color:#293344; font-weight:900; font-size:22px; box-sizing:border-box; }
+#flanker-popup .flanker-demo .fd-choices { gap:14px; opacity:0; transform:translateY(6px); transition:opacity .25s, transform .25s; }
+#flanker-popup .flanker-demo .fd-choices.fd-show { opacity:1; transform:none; }
+#flanker-popup .flanker-demo .fd-choice { flex:0 0 70px; }
+#flanker-popup .flanker-demo .fd-choice.guide-hit { background:#d8f5e6!important; border-color:#14a06a!important; }
+
+/* 충동조절 예시: 가운데 그림을 진한 테두리 + 살짝 커졌다 작아졌다 → "이 가운데를 봐요!" (2026-10-10) */
+#flanker-popup.mission-intro.rn-intro .flanker-demo .fd-stimulus .flanker-card.target { border:3.5px solid #293344 !important; background:#fff0dc !important; z-index:1; animation:fd-center-pulse 1.1s ease-in-out infinite !important; }
+@keyframes fd-center-pulse { 0%, 100% { transform:scale(1); } 50% { transform:scale(1.12); } }
+@media (prefers-reduced-motion: reduce) { #flanker-popup.mission-intro.rn-intro .flanker-demo .fd-stimulus .flanker-card.target { animation:none !important; } }
+
+/* 저학년(미취학~초2) 관찰력 (2026-10-11): 그림 크게 · 찾은 칸은 흐리지 않고 초록 테두리 + ✓ */
+#visual-board.is-young .visual-cell { position: relative; }
+#visual-board.is-young .visual-cell .visual-flat-icon { width: 94%; height: 94%; max-width: 84px; max-height: 84px; }
+#visual-board.is-young .visual-cell.found { opacity: 1; background: #d8f5e6; border: 3px solid #14a06a; box-shadow: none; }
+#visual-board.is-young .visual-cell.found::after { content: '✓'; position: absolute; top: 3px; right: 3px; width: 20px; height: 20px; border-radius: 50%; background: #14a06a; color: #fff; font-size: 13px; font-weight: 900; line-height: 20px; text-align: center; }

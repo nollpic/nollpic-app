@@ -1,0 +1,22 @@
+/* Shared screen gutter. Game iframes own their internal layouts. */
+:root { --screen-padding: 20px; }
+.app-device > :is(#page-1, #page-2, #page-3, #page-4, #page-6, #page-7, #page-11, #page-13, #page-14, #page-15):not(:has(> .page-body > iframe)):not(.memory-kitchen-host-page) > .page-body {
+ padding: var(--screen-padding) !important;
+ margin: 0;
+ min-height: 0;
+ box-sizing: border-box;
+}
+.app-device > .page > .page-header {
+ padding: var(--screen-padding) var(--screen-padding) 0;
+ height: auto;
+ min-height: 48px;
+}
+#page-4 .section-title { padding-top: 0; }
+/* These screens previously applied another gutter inside their body. */
+#page-6 .result-app { padding: 0; }
+#page-6 .result-view-tabs { margin-left: 0; margin-right: 0; margin-top: 0; }
+#page-6 .result-growth-view { margin-left: 0; margin-right: 0; }
+#page-6 .complete-text h1 { padding-top: 0; }
+#page-7 .play-header { padding: 0 0 16px; }
+#page-7 .play-content { padding: 0; }
+#page-11 .challenge-sticky-head { margin-top: 0; }

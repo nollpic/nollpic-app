@@ -1,0 +1,13 @@
+✔ Actual HTML title, instructions, existing tower and avatar slots render from per-game config (28.59ms)
+✔ Unverified duration is never fabricated; actual stage updates display one difficulty (2.7939ms)
+✔ Mockup asset and all cropping references removed from candidate public tree (3.7425ms)
+✔ Gameplay/controller behavior and play/result/dialog DOM remain unchanged (32.4724ms)
+✔ Only approved start-screen files differ; all other games, records, auth and Firebase config preserved (1109.2187ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1336.2557

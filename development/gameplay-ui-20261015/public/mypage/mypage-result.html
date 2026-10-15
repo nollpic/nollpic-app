@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>놀픽 미션 기록 마이페이지</title>
+  <link rel="stylesheet" href="mypage-result.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="../bottom-menu-icons.css?v=20261010-104">
+</head>
+<body>
+  <div class="app-device nav-visible">
+    <main class="app">
+
+<section class="complete-hero">
+
+  <div class="complete-text">
+    <h1>미션 완료! 🎉</h1>
+    <p>
+      오늘도 뇌 탐험 성공!<br>
+      5가지 활동 결과가 저장되었어요.
+    </p>
+  </div>
+</section>
+
+<section class="child-card child-select-card result-child-picker">
+  <div class="result-child-title">
+    <span>아이 선택</span>
+  </div>
+
+  <select id="child-selector" class="child-selector result-child-selector" aria-label="아이 선택"></select>
+
+  <strong id="child-name" class="visually-hidden">김놀픽 · 초2</strong>
+</section>
+
+    <section class="latest-card">
+      <div class="section-head">
+        <h2>최근 미션 결과</h2>
+        <span id="latest-date">2026.06.01</span>
+      </div>
+
+      <div class="score-summary">
+        <div>
+          <span>종합 결과</span>
+          <strong id="overall-score">82</strong>
+        </div>
+        <p id="overall-comment">지난 기록보다 7점 좋아졌어요.</p>
+      </div>
+
+      <div id="ability-list" class="ability-list"></div>
+
+    <div class="share-buttons">
+      <button class="share-main-btn" onclick="shareResult()">
+       결과 공유하기
+      </button>
+    </div>
+    </section>
+
+    <section class="history-card">
+      <button class="accordion-btn" onclick="toggleHistory()">
+        <div>
+          <h2>과거 데이터 보기</h2>
+          <span>이전 미션 기록을 영역별로 확인해요</span>
+        </div>
+        <span class="accordion-icon" id="accordion-icon"></span>
+      </button>
+
+      <div id="history-panel" class="history-panel">
+        <div class="growth-card">
+          <div class="growth-head">
+            <div>
+              <h3>📈 성장 그래프</h3>
+              <p id="growth-summary">최근 기록의 변화 흐름을 확인해요</p>
+            </div>
+            <span id="growth-badge">성장중</span>
+          </div>
+          <div class="growth-chart-wrap">
+            <canvas id="growthChart"></canvas>
+          </div>
+        </div>
+
+        <div id="history-list" class="history-list"></div>
+      </div>
+    </section>
+
+    <section class="analysis-card">
+      <h2>놀픽 분석</h2>
+      <p id="analysis-text"></p>
+    </section>
+
+    <p class="disclaimer">
+      본 결과는 놀이형 인지 활동의 수행 기록이며, <br>의료적 진단 또는 치료 목적의 검사가 아닙니다.
+    </p>
+  </main>
+
+  <nav class="bottom-tab-nav" aria-label="하단 메뉴">
+        <button type="button" class="bottom-tab" data-tab="home" onclick="location.href='../index.html?page=home'">
+            <svg class="bottom-tab-icon nt-icon" viewBox="0 0 28 28" aria-hidden="true"><path class="nt-fill" d="M4.5 13.2 14 5l9.5 8.2V23a1.6 1.6 0 0 1-1.6 1.6H6.1A1.6 1.6 0 0 1 4.5 23z"/><path class="nt-accent" d="M11.3 24.6v-5.4a2.7 2.7 0 0 1 5.4 0v5.4z"/><path class="nt-line" d="M4.5 13.2 14 5l9.5 8.2V23a1.6 1.6 0 0 1-1.6 1.6H6.1A1.6 1.6 0 0 1 4.5 23zM11.3 24.6v-5.4a2.7 2.7 0 0 1 5.4 0v5.4M2.8 14.6 14 4.9l11.2 9.7"/></svg>
+            <span>홈</span>
+        </button>
+        <button type="button" class="bottom-tab active" data-tab="result" onclick="location.href='mypage-result.html'">
+            <svg class="bottom-tab-icon nt-icon" viewBox="0 0 28 28" aria-hidden="true"><rect class="nt-fill" x="4" y="4" width="20" height="20" rx="4.5"/><rect class="nt-accent" x="8.2" y="14" width="3.2" height="6" rx="1.2"/><rect class="nt-accent2" x="12.4" y="9.5" width="3.2" height="10.5" rx="1.2"/><rect class="nt-accent3" x="16.6" y="12" width="3.2" height="8" rx="1.2"/><rect class="nt-line" x="4" y="4" width="20" height="20" rx="4.5"/></svg>
+            <span>미션결과</span>
+        </button>
+        <button type="button" class="bottom-tab" data-tab="mypage" onclick="location.href='../index.html?page=mypage'">
+            <svg class="bottom-tab-icon nt-icon" viewBox="0 0 28 28" aria-hidden="true"><path class="nt-fill" d="M5.5 25c.4-4.6 4-7.6 8.5-7.6s8.1 3 8.5 7.6z"/><circle class="nt-skin" cx="14" cy="11" r="6.2"/><path class="nt-hair" d="M7.8 10.6c.3-4 3-6.4 6.2-6.4s5.9 2.4 6.2 6.4c-2.2-.3-4.2-1.4-5.4-3.1-1.6 1.8-4.2 3-7 3.1z"/><path class="nt-line" d="M5.5 25c.4-4.6 4-7.6 8.5-7.6s8.1 3 8.5 7.6z"/><circle class="nt-line" cx="14" cy="11" r="6.2"/><path class="nt-line" d="M7.8 10.6c.3-4 3-6.4 6.2-6.4s5.9 2.4 6.2 6.4c-2.2-.3-4.2-1.4-5.4-3.1-1.6 1.8-4.2 3-7 3.1z"/><circle class="nt-dot" cx="11.8" cy="12" r=".9"/><circle class="nt-dot" cx="16.2" cy="12" r=".9"/></svg>
+            <span>마이</span>
+        </button>
+        <button type="button" class="bottom-tab" data-tab="play" onclick="location.href='../index.html?page=play'">
+            <svg class="bottom-tab-icon nt-icon" viewBox="0 0 28 28" aria-hidden="true"><rect class="nt-fill" x="4.5" y="4.5" width="19" height="19" rx="5" transform="rotate(-8 14 14)"/><rect class="nt-line" x="4.5" y="4.5" width="19" height="19" rx="5" transform="rotate(-8 14 14)"/><g class="nt-pips" transform="rotate(-8 14 14)"><circle cx="9.6" cy="9.6" r="1.7"/><circle cx="14" cy="14" r="1.7"/><circle cx="18.4" cy="18.4" r="1.7"/></g></svg>
+            <span>플레이</span>
+        </button>
+        <button type="button" class="bottom-tab" data-tab="challenge" onclick="location.href='../index.html?page=challenge'">
+            <svg class="bottom-tab-icon nt-icon" viewBox="0 0 28 28" aria-hidden="true"><path class="nt-fill" d="M7.5 5.2c3.4-1.8 6.4 1.8 10 .2 1.4-.6 2.7-.9 3.8-.8v10.6c-1.1-.1-2.4.2-3.8.8-3.6 1.6-6.6-2-10-.2z"/><path class="nt-accent" d="M12 7.6l1 2 2.2.3-1.6 1.5.4 2.2-2-1.1-2 1.1.4-2.2-1.6-1.5 2.2-.3z"/><path class="nt-line" d="M7.5 5.2c3.4-1.8 6.4 1.8 10 .2 1.4-.6 2.7-.9 3.8-.8v10.6c-1.1-.1-2.4.2-3.8.8-3.6 1.6-6.6-2-10-.2M7.5 4.5v20"/></svg>
+            <span>챌린지</span>
+        </button>
+    </nav>
+
+  </div><!-- /.app-device -->
+
+  <script src="mypage-result.js"></script>
+  <script type="module" src="../firebase-save-result.js"></script>
+
+</body>
+</html>

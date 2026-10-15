@@ -1,0 +1,159 @@
+/* Result screens share the cream, ink outline and orange mission theme. */
+#game-result-popup { padding: 0; background: #fffbed; backdrop-filter: none; }
+#game-result-popup .result-popup-content { box-sizing: border-box; width: 100%; max-width: 460px; height: 100dvh; max-height: 100dvh; margin: 0 auto; padding: 20px; border: 0; border-radius: 0; clip-path: none; background: #fffbed; color: #293344; box-shadow: none; scrollbar-gutter: auto; display: flex; flex-direction: column; gap: 0; }
+#game-result-popup .result-popup-emoji { width: 54px; height: 54px; min-height: 54px; margin: 0 auto 14px; border: 2px solid #293344; border-radius: 18px; background: #fff0dc; font-size: 0; box-shadow: 0 3px 0 #293344; }
+#game-result-popup .result-popup-emoji::before { content: '✓'; color: #ff6b00; font-size: 32px; font-weight: 800; }
+#game-result-popup #game-result-title { margin: 0 0 8px; font-size: 25px; font-weight: 800; line-height: 1.35; letter-spacing: -.055em; color: #202837; }
+#game-result-popup #game-result-text { margin: 0; font-size: 14px; line-height: 1.55; color: #62656b; }
+#game-result-popup #game-result-text strong { color: #ff6b00; font-weight: 800; }
+#game-result-popup .popup-result-board { margin: 18px 0; }
+#game-result-popup .popup-result-guide { padding: 12px 14px; gap: 10px; border: 1px solid #e7b48a; border-radius: 14px; background: #fff0dc; color: #62656b; }
+#game-result-popup .popup-result-guide p { font-size: 13px; line-height: 1.55; }
+#game-result-popup .popup-result-guide-icon { font-size: 0; }
+#game-result-popup .popup-result-guide-icon::before { content: 'i'; display: block; width: 20px; height: 20px; border: 1.5px solid #914000; border-radius: 50%; text-align: center; line-height: 18px; color: #914000; font-size: 14px; font-weight: 700; }
+#game-result-popup .popup-result-card { margin-top: 14px; padding: 14px 12px; border: 2px solid #293344; border-radius: 18px; background: #fffef9; box-shadow: none; }
+#game-result-popup .popup-result-card h4 { margin: 0 0 12px; font-size: 17px; font-weight: 800; color: #293344; }
+#game-result-popup .popup-result-header { color: #77736b; font-size: 12px; border-color: #e8e4da; }
+#game-result-popup .popup-result-list { max-height: 180px; padding: 0; scrollbar-gutter: auto; scrollbar-width: thin; scrollbar-color: #c9bda9 transparent; }
+#game-result-popup .popup-result-list .leaderboard-row { min-height: 36px; margin-top: 6px; border-radius: 8px; background: #fff5e7; color: #914000; font-size: 13px; font-weight: 700; }
+#game-result-popup .result-popup-actions { position: sticky; bottom: -20px; margin-top: auto; padding: 12px 0 20px; background: #fffbed; gap: 10px; flex-shrink: 0; }
+#game-result-popup .result-popup-actions .btn-popup-start { min-height: 48px; padding: 12px 8px; border: 2px solid #293344; border-radius: 14px; background: #ff6b00; color: #fff; font-size: 17px; font-weight: 800; box-shadow: 0 3px 0 #293344; }
+#game-result-popup .result-popup-actions .outline { background: #fffef9; color: #293344; }
+#game-result-popup .result-popup-actions .btn-popup-start:disabled { opacity: .5; }
+@media (max-height: 700px) {
+ #game-result-popup #game-result-title { font-size: 22px; }
+ #game-result-popup .result-popup-emoji { width: 44px; height: 44px; min-height: 44px; margin-bottom: 10px; }
+ #game-result-popup .popup-result-board { margin: 12px 0; }
+ #game-result-popup .popup-result-list { max-height: 126px; }
+}
+
+/* Compact result dialog: scroll records while keeping actions visible. */
+#game-result-popup { padding: 16px; background: rgba(41, 51, 68, .38); }
+#game-result-popup .result-popup-content { height: calc(100dvh - 32px); max-height: calc(100dvh - 32px); border: 2px solid #293344; border-radius: 24px; box-shadow: 0 5px 0 #293344; overflow: hidden; }
+#game-result-popup #game-result-title,
+#game-result-popup #game-result-text,
+#game-result-popup .popup-result-guide { flex: none; }
+#game-result-popup .popup-result-board { display: flex; flex-direction: column; flex: 1; min-height: 0; gap: 14px; }
+#game-result-popup .popup-result-board[hidden] { display: none; }
+#game-result-popup .popup-result-card { display: flex; flex-direction: column; min-height: 0; flex: 1; margin-top: 0; }
+#game-result-popup .popup-result-card h4,
+#game-result-popup .popup-result-header { flex: none; }
+#game-result-popup .popup-result-list { flex: 1; min-height: 0; max-height: none; overflow-y: auto; }
+#game-result-popup .result-popup-actions { position: static; margin-top: 0; padding: 4px 0 4px; }
+@media (max-height: 600px) {
+ #game-result-popup .result-popup-content { padding: 14px; }
+ #game-result-popup .result-popup-emoji { display: none; }
+ #game-result-popup .popup-result-guide { padding: 8px 10px; }
+ #game-result-popup .popup-result-guide p { font-size: 12px; line-height: 1.4; }
+ #game-result-popup .popup-result-board { gap: 8px; margin: 10px 0; }
+}
+/* Flat SVG icons and a prominent, dynamically populated record. */
+#game-result-popup .result-popup-emoji::before,
+#game-result-popup .popup-result-guide-icon::before { content: none; }
+#game-result-popup .result-popup-emoji svg { width: 40px; height: 40px; }
+#game-result-popup .popup-result-guide-icon svg { display: block; width: 22px; height: 22px; }
+#game-result-popup .popup-result-card h4 { display: flex; align-items: center; gap: 8px; }
+#game-result-popup .result-chart-icon { width: 26px; height: 26px; flex: none; }
+#game-result-popup .result-record { display: inline-flex; align-items: baseline; justify-content: center; gap: 10px; margin: 8px 0; }
+#game-result-popup .result-record-label { font-size: 18px; font-weight: 700; color: #293344; }
+#game-result-popup #game-result-text .result-record strong { font-size: 38px; font-weight: 800; line-height: 1.2; letter-spacing: -.03em; color: #ff6b00; font-variant-numeric: tabular-nums; }
+@media (max-height: 700px) {
+ #game-result-popup #game-result-text .result-record strong { font-size: 32px; }
+}
+#game-result-popup .result-record:has(.result-record-mascot) { align-items: center; gap: 8px; }
+#game-result-popup .result-record-mascot { display: block; width: 84px; height: 91px; object-fit: contain; flex: none; }
+#game-result-popup #game-result-text .result-next-note { font-family: 'Nollpic Wavy', 'Nollpic Hand', cursive; font-size: 18px; font-weight: 400; line-height: 1.4; color: #62656b; }
+@media (max-width: 380px), (max-height: 700px) {
+ #game-result-popup .result-record-mascot { width: 70px; height: 77px; }
+ #game-result-popup #game-result-text .result-next-note { font-size: 17px; }
+}
+
+/* Give the records more vertical room without moving the action buttons. */
+#game-result-popup .result-popup-emoji { width: 40px; height: 40px; min-height: 40px; margin-bottom: 8px; border-radius: 13px; }
+#game-result-popup .result-popup-emoji svg { width: 30px; height: 30px; }
+#game-result-popup .result-record { margin: 4px 0; }
+#game-result-popup .popup-result-board { margin: 12px 0; gap: 10px; }
+#game-result-popup .popup-result-guide { padding-top: 10px; padding-bottom: 10px; }
+#game-result-popup .popup-result-card { padding-top: 12px; padding-bottom: 10px; }
+#game-result-popup .popup-result-card h4 { margin-bottom: 8px; }
+
+/* Tight result summary; recovered space flows into the record list. */
+#game-result-popup #game-result-title { margin-bottom: 2px; }
+#game-result-popup #game-result-text:has(.result-record-mascot) { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+#game-result-popup #game-result-text:has(.result-record-mascot) > br { display: none; }
+#game-result-popup .result-record:has(.result-record-mascot) { position: relative; min-height: 72px; padding-right: 92px; margin: 0; }
+#game-result-popup .result-record-mascot { position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
+#game-result-popup .popup-result-board { margin-top: 8px; }
+@media (max-width: 380px), (max-height: 700px) {
+ #game-result-popup .result-record:has(.result-record-mascot) { min-height: 62px; padding-right: 78px; }
+}
+#game-result-guide-text[data-mission="schulte"] { color: #000 !important; font-weight: 700 !important; }
+
+#game-result-popup .result-next-note-bottom { display: block; flex: none; margin: 2px 0 12px; text-align: center; font-family: 'Nollpic Wavy', 'Nollpic Hand', cursive; font-size: 18px; font-weight: 400; line-height: 1.4; color: #62656b; }
+
+#game-result-popup .result-memory-mascot { display: block; width: 80px; height: 80px; object-fit: contain; margin: 4px auto; }
+
+/* Shared concept explanation style for every mission result. */
+#game-result-popup .popup-result-guide { border: 1.5px solid #e7b48a; border-radius: 14px; background: #fff0dc; padding: 10px 14px; box-shadow: none; }
+#game-result-popup .popup-result-guide #game-result-guide-text { color: #000 !important; font-weight: 700 !important; font-size: 13px; line-height: 1.65; margin: 0; word-break: keep-all; }
+
+/* Lift result details slightly in front of the companion. */
+#game-result-popup .popup-result-board { margin-top: -8px; position: relative; z-index: 2; }
+
+/* One summary and box geometry for all five result dialogs. */
+#game-result-popup #game-result-text { display:flex; flex-direction:column; align-items:center; height:100px; flex:none; gap:0; }
+#game-result-popup .result-record:has(.result-record-mascot) { min-height:78px; height:78px; padding-right:92px; margin:0; }
+#game-result-popup .result-record-mascot { width:84px; height:91px; }
+#game-result-popup .popup-result-guide { box-sizing:border-box; height:94px; overflow-y:auto; display:flex; align-items:flex-start; }
+#game-result-popup .popup-result-card { width:100%; box-sizing:border-box; padding:12px 12px 10px; }
+#game-result-popup .result-popup-actions .btn-popup-start { min-height:48px; }
+@media(max-width:380px), (max-height:700px) {
+ #game-result-popup #game-result-text { height:88px; }
+ #game-result-popup .result-record:has(.result-record-mascot) { min-height:66px; height:66px; padding-right:78px; }
+ #game-result-popup .result-record-mascot { width:70px; height:77px; }
+}
+
+/* Results reserve real space for the record, mascot and secondary details. */
+#game-result-popup #game-result-text { height:auto; min-height:0; gap:4px; flex:none; }
+#game-result-popup .result-record:has(.result-record-mascot) { display:flex; position:static; align-items:center; justify-content:center; min-height:91px; height:auto; padding:0; margin:0; gap:8px; flex:none; }
+#game-result-popup .result-record-mascot { position:static; transform:none; width:84px; height:91px; flex:none; }
+#game-result-popup .popup-result-board { margin-top:12px; }
+@media(max-width:380px), (max-height:700px) {
+ #game-result-popup #game-result-text { height:auto; }
+ #game-result-popup .result-record:has(.result-record-mascot) { min-height:77px; height:auto; padding:0; }
+ #game-result-popup .result-record-mascot { width:70px; height:77px; }
+}
+
+/* Keep every secondary metric fully above the results card. */
+#game-result-popup #game-result-text,
+#game-result-popup #game-result-text:has(.result-record-mascot) { height:auto!important; display:flex; gap:6px; padding:0 0 6px; overflow:visible; flex:0 0 auto; }
+#game-result-popup .popup-result-board { margin-top:14px!important; }
+#game-result-popup { background:#b5b5b1; }
+body:has(#game-result-popup.active) .test-body,
+body:has(#game-result-popup.active) .tests-sticky-header { visibility:hidden; }
+
+/* Secondary metrics are independent blocks outside the main record paragraph. */
+#game-result-popup #game-result-guide-text { white-space:pre-line; }
+#game-result-popup[data-result-mode="overall"] .result-popup-content { height:auto; max-height:calc(100dvh - 32px); padding:24px 20px; }
+#game-result-popup[data-result-mode="overall"] #game-result-text { padding:8px 0; gap:12px; }
+#game-result-popup[data-result-mode="overall"] .result-record { min-height:48px; margin:0; flex:none; }
+#game-result-popup[data-result-mode="overall"] .overall-complete-note { display:block; font-size:14px; line-height:1.6; }
+#game-result-popup[data-result-mode="overall"] .result-popup-actions { margin-top:16px; padding:0; }
+
+#game-result-popup .popup-result-board { margin-top:1px!important; }
+
+/* Full-body result companions hop in the space reserved beside the record. */
+#game-result-popup:is([data-result-mode="visual"],[data-result-mode="flanker"]) .result-record-mascot {
+ object-fit:contain; object-position:center; transform-origin:50% 100%;
+ animation:nollpic-result-hop 1.45s ease-in-out infinite;
+}
+@keyframes nollpic-result-hop {
+ 0%,12%,90%,100% { transform:translateY(0) scale(1) rotate(0); }
+ 22% { transform:translateY(0) scale(1.045,.955); }
+ 43% { transform:translateY(-6px) scale(.975,1.025) rotate(-2deg); }
+ 60% { transform:translateY(-3px) scale(1) rotate(1deg); }
+ 76% { transform:translateY(0) scale(1.025,.975); }
+}
+@media(prefers-reduced-motion:reduce) {
+ #game-result-popup:is([data-result-mode="visual"],[data-result-mode="flanker"]) .result-record-mascot { animation:none; transform:none; }
+}

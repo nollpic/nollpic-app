@@ -1,0 +1,35 @@
+/* 첫 화면 로고 "뿅!" (2026-10-09) — loading-screen.css의 로고 무대(.login-logo-stage)를 그대로 쓰고 움직임만 바꿈
+   글자: 작았다가 뿅 커지며 살짝 넘쳤다가 제자리 / 별: 나타나서 빙글 돌며 위로 튀어 올랐다 떨어지고 통통 */
+#page-1 .login-logo-stage.lp-play .loading-logo-word { transform-origin: 50% 62%; animation: lp-word-pop .8s cubic-bezier(.2,.8,.3,1) both; }
+#page-1.active .login-logo-stage.lp-play .loading-logo-star { transform-origin: 86% 40%; animation: lp-star-hop 2s linear both; }
+#page-1.active .login-logo-stage.lp-play .loading-star-spark { animation: nollpic-star-spark .8s 1.42s both; }
+#page-1 .login-logo-stage { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+@keyframes lp-word-pop {
+  0% { transform: scale(.15); opacity: 0; }
+  10% { opacity: 1; }
+  52% { transform: scale(1.16); }
+  75% { transform: scale(.93); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes lp-star-hop {
+  0%, 30% { transform: scale(.3); opacity: 0; }
+  31% { opacity: 1; }
+  37% { transform: scale(1.1); opacity: 1; animation-timing-function: cubic-bezier(.2,.7,.4,1); }
+  55% { transform: translateY(-38%) rotate(-200deg) scale(1); animation-timing-function: cubic-bezier(.6,0,.9,.5); }
+  72% { transform: translateY(0) rotate(-360deg) scale(1); }
+  76% { transform: translateY(0) rotate(-360deg) scale(1.22, .75); }
+  80% { transform: translateY(0) rotate(-360deg) scale(1); animation-timing-function: ease-out; }
+  86% { transform: translateY(-7%) rotate(-360deg) scale(1); animation-timing-function: ease-in; }
+  92%, 100% { transform: translateY(0) rotate(-360deg) scale(1); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #page-1 .login-logo-stage.lp-play .loading-logo-word,
+  #page-1.active .login-logo-stage.lp-play .loading-logo-star { animation: none; }
+}
+
+/* 자동재생이 막힌 폰: "화면을 눌러 시작해요" 막 (2026-10-10) — 누르면 목소리·배경음악·로고 뿅이 함께 시작 */
+#page-1 .lp-tap-start { position: fixed; inset: 0; z-index: 9000; border: 0; padding: 0 0 max(28px, env(safe-area-inset-bottom)); margin: 0; background: rgba(255, 251, 237, .35); display: flex; align-items: flex-end; justify-content: center; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: opacity .3s; }
+#page-1 .lp-tap-start.is-leaving { opacity: 0; }
+#page-1 .lp-tap-chip { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 18vh; padding: 12px 20px; border: 2.5px solid #293344; border-radius: 999px; background: #ff6b00; color: #fff; font-family: inherit; font-size: 17px; font-weight: 800; line-height: 1.2; box-shadow: 0 4px 0 #293344; animation: lp-tap-bounce 1.2s ease-in-out infinite; }
+@keyframes lp-tap-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@media (prefers-reduced-motion: reduce) { #page-1 .lp-tap-chip { animation: none; } }

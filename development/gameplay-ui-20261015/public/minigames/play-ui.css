@@ -1,0 +1,140 @@
+/* Presentation only. Stimulus colours, board geometry and game state stay game-owned. */
+:root{--play-navy:#151b35;--play-panel:#242e50;--play-ink:#fffbed;--play-line:#7182ad;--play-orange:#ff7919}
+body.np-play-ui{background:var(--play-navy);color:var(--play-ink)}
+.np-play-ui .gm-app{background:none}
+.np-play-ui [hidden]{display:none!important}
+.np-play-ui #gm-play{padding-bottom:max(16px,env(safe-area-inset-bottom))}
+.np-play-ui :is(#gm-play,#gm-result,dialog) button{font-family:Jua,sans-serif;border-radius:14px;box-shadow:none;text-shadow:none;transition:transform .12s}
+.np-play-ui button:focus-visible{outline:3px solid #ffb552;outline-offset:3px}
+.np-play-ui button:active:not(:disabled){transform:translateY(2px)}
+.np-play-ui :is(#gm-play,#gm-result,dialog) .gm-primary{background:var(--play-orange);color:#fff;border:2px solid #17213b;min-height:52px;font-size:22px;box-shadow:0 3px #0b1024}
+.np-play-ui :is(#gm-play,#gm-result,dialog) .gm-secondary,.np-play-ui #gm-result:has(#gm-next-stage:not([hidden])) #gm-return{background:var(--play-panel);color:var(--play-ink);border:1px solid var(--play-line);min-height:46px;font-size:18px;box-shadow:none}
+.np-play-ui dialog{background:#fffbed;color:#17213b;border:2px solid #17213b;border-radius:22px;max-width:min(440px,90vw)}
+.np-play-ui .gm-header{padding-block:6px;min-height:44px}
+.np-play-ui .gm-header .gm-back{min-height:42px}
+.np-play-ui:has(#gm-play:not([hidden])) .np-game-number,.np-play-ui #gm-play :is(#gm-stage-note,.gm-estimate,.w-stats,.w-energy-label,#w-energy,#c-edits,#a-stats,#a-sync,#sd-progress){display:none}
+.np-play-ui :is(.w-hud,.c-hud,.a-hud,.gm-play-top){gap:10px;border:0;border-radius:14px;background:var(--play-panel);padding:8px 12px;margin:4px 0 10px;color:var(--play-ink);font-size:18px}
+.np-play-ui :is(.w-hud,.c-hud,.a-hud,.gm-play-top) strong{font-size:22px;color:var(--play-ink)}
+.np-play-ui #gm-pause-btn{display:grid;place-items:center;margin-left:auto;width:44px;height:44px;flex:0 0 44px;background:#3b466d;color:#fff;border:1px solid var(--play-line)}
+.np-play-icon{display:inline-block;width:24px;height:24px;vertical-align:middle;flex:none;pointer-events:none}
+.np-play-icon svg{display:block;width:100%;height:100%;filter:none!important}
+.np-play-ui .np-quiet{display:none!important}
+.np-play-ui .np-play-details{font:16px/1.5 Jua,sans-serif;color:#dbe3f7;margin:10px 0}
+.np-play-ui .np-play-details summary{cursor:pointer;padding:10px;border:1px solid #607398;border-radius:12px}
+.np-play-ui .np-play-details p{font-size:16px;line-height:1.6}
+/* Compact current rule, large actionable card. Rule changes never cover the controls. */
+.np-play-ui .w-arena{height:clamp(230px,39dvh,390px);min-height:230px;border:2px solid #7182ad;border-radius:22px;box-shadow:none}
+.np-play-ui .w-arena::after{display:none}
+.np-play-ui .w-rule{position:absolute;left:12px;top:12px;max-width:calc(100% - 24px);padding:10px 16px;background:#fffbed;color:#17213b;border:2px solid #17213b;border-radius:14px;font-size:22px;line-height:1.3;box-shadow:none}
+.np-play-ui .w-cue{background:#263254;border:3px solid #acc0e7;box-shadow:none;text-shadow:none;transform:none;border-radius:22px}
+.np-play-ui .w-cue small{display:none}
+.np-play-ui .w-cue strong{font-size:clamp(44px,10vw,76px)}
+.np-play-ui .w-companion{max-width:24%;pointer-events:none}
+.np-play-ui .w-controls{gap:10px;margin:10px 0}
+.np-play-ui .w-controls button{min-height:70px;font-size:27px;border-width:2px;box-shadow:none;background-image:none}
+.np-play-ui .w-controls button small{font-size:16px}
+.np-play-ui #w-feedback{min-height:27px;font-size:19px;line-height:1.4;margin:10px 0;color:#fffbed}
+.np-play-ui #w-feedback:empty{min-height:0;margin:0}
+.np-play-ui #w-timer{height:10px;margin-top:12px}
+/* Board games: clear flat surfaces; keep colours and symbols that encode rules. */
+.np-play-ui .c-stats{display:none}
+.np-play-ui .c-board-wrap{background:#242e50;box-shadow:none;border:2px solid #7182ad;padding:6px}
+.np-play-ui .c-cell{box-shadow:none;border-radius:6px;background:#182340}
+.np-play-ui .c-cell.endpoint{background:transparent}
+.np-play-ui .c-cell.block{background:#47516b;color:#e6e9f4}
+.np-play-ui .c-cell .crystal{background:var(--color);clip-path:none;border:2px solid #15203c;border-radius:12px;color:#15203c;text-shadow:none;filter:none;box-shadow:none}
+.np-play-ui .c-wire-core{display:none}
+.np-play-ui #c-rules{font-size:18px;line-height:1.5;color:#fffbed;margin:8px 0 12px}
+.np-play-ui .c-actions button{font-size:17px;min-height:46px;background:#303c60;border:1px solid #8295be;color:#fffbed}
+.np-play-ui #c-message{font-size:18px;color:#fffbed;min-height:26px;margin:12px 0}
+.np-play-ui .c-tower-mini{display:none}
+.np-play-ui .a-console{background:#242e50;box-shadow:none;border:1px solid #7182ad}
+.np-play-ui .a-board{background:#263254;box-shadow:none;border:2px solid #7182ad}
+.np-play-ui .a-cell{background:#344665;box-shadow:none;border:1px solid #738bb1}
+.np-play-ui .a-cell svg{filter:none}
+.np-play-ui #a-rule{font-size:18px;line-height:1.45;color:#fffbed}
+.np-play-ui #a-coordinates{font-size:16px;color:#dbe3f7;margin:8px 0}
+.np-play-ui #a-message{font-size:18px;line-height:1.45;min-height:26px}
+.np-play-ui .a-actions button{font-size:18px;min-height:46px;box-shadow:none;background:#344264;color:#fffbed;border:1px solid #8295be}
+.np-play-ui .a-actions button[aria-pressed=true]{background:#c2d8fa;color:#17213b;border-color:#c2d8fa}
+.np-play-ui .sd-clue-panel{background:#242e50;padding:12px;margin:8px 0;border:1px solid #7182ad}
+.np-play-ui .sd-clue-panel h2{font-size:22px;margin:0 0 6px}
+.np-play-ui .sd-clue-panel ol{font-size:18px;line-height:1.5;margin:8px 0}
+.np-play-ui #sd-clues:empty{display:none}
+.np-play-ui #sd-preview{font-size:19px;margin:6px 0;color:#fffbed;min-height:0}
+.np-play-ui #sd-preview:empty{display:none}
+.np-play-ui #sd-hint{width:auto;min-height:44px;margin:6px 0 0;padding:6px 16px}
+.np-play-ui .sd-arena{background:#202b49;padding:14px 6px 0}
+.np-play-ui .sd-door{border:3px solid #b3c7ef!important;background:#6689cf;color:#10203b;box-shadow:0 3px #0c1329;text-shadow:none;border-radius:40px 40px 12px 12px;min-height:170px}
+.np-play-ui .sd-door[data-color=rose]{background:#ee9fb7}
+.np-play-ui .sd-door[data-color=gold]{background:#f7d47a}
+.np-play-ui .sd-door span{filter:none}
+.np-play-ui .sd-door .np-play-icon{width:36px;height:36px;margin:auto}
+.np-play-ui .sd-door.is-lit{outline:4px solid #fffbed;outline-offset:2px;filter:none;box-shadow:0 3px #0c1329;transform:translateY(-4px)}
+.np-play-ui .sd-door small{font-size:14px!important;line-height:1.4}
+.np-play-ui .sd-companion{min-height:88px;gap:12px;padding:8px}
+.np-play-ui .sd-companion .gm-avatar{width:44px}
+.np-play-ui .sd-companion p{font-size:18px;color:#fffbed}
+.np-play-ui .gm-cell{box-shadow:none;background-image:none;border-radius:14px}
+.np-play-ui .gm-gem{filter:none}
+.np-play-ui #gm-rule{font-size:22px;line-height:1.35}
+.np-play-ui #gm-score{display:none}
+/* Legacy DOM and events are reused. Hide only redundant static copy, never live feedback. */
+.np-legacy :is(.app,.phone,.app-device){background:#151b35;color:#fffbed;box-shadow:none;border:0;min-height:100dvh}
+.np-legacy :is(.app,.phone){width:100%;max-width:900px;margin:auto;padding:12px;box-sizing:border-box}
+.np-legacy :is(.app,.phone,.app-device) :is(header,.mission-header,.topbar){background:#242e50;color:#fffbed;border:0;border-radius:14px;box-shadow:none;margin-bottom:10px;padding:8px 10px;min-height:52px}
+.np-legacy :is(header,.mission-header,.topbar) :is(h1,b){color:#fffbed;font-size:20px;line-height:1.25}
+.np-legacy :is(header,.mission-header,.topbar) :is(.badge,.skill,.skill-badge,.skill-pill,.eyebrow,small,.title-kicker,.workshop-prefix){display:none}
+.np-legacy :is(.back,.back-btn,.icon-btn){background:#fffbed;color:#17213b;border:1px solid #17213b;border-radius:12px;width:44px;height:44px;min-width:44px;box-shadow:none}
+.np-legacy :is(.mission,.mission-card,.info,.level-strip){background:#242e50;color:#fffbed;border:1px solid #607398;border-radius:14px;box-shadow:none;padding:10px;margin:8px 0}
+.np-legacy :is(.mission,.mission-card,.info) :is(strong,b,span,p){text-shadow:none}
+.np-legacy :is(.play,.stage,.stage-card,.screen,.game){box-shadow:none}
+.np-legacy :is(.play,.stage){background:#202b49;border:0;border-radius:18px;padding:12px;margin:8px 0}
+.np-legacy :is(.guide,.instruction,.rule,.section-title,.prompt,.hint,.feedback,.status,.toast,.build-note,.mission-text){font-size:19px;line-height:1.45;text-shadow:none}
+.np-legacy :is(.guide,.hint,.feedback,.status,.toast,.build-note){color:#fffbed}
+.np-legacy :is(.rule,.instruction,.section-title){background:#fffbed;color:#17213b;border:0;box-shadow:none;border-radius:12px;padding:10px}
+.np-legacy :is(.bottom,.actions,.action-row){background:transparent;gap:10px;padding:10px 0;box-shadow:none}
+.np-legacy :is(.btn,.btn-primary,.btn-secondary,.reset,.next,.confirm){border-radius:14px;box-shadow:none;background-image:none;min-height:48px;font:20px Jua,sans-serif}
+.np-legacy :is(.btn-primary,.btn.primary,.confirm,.next){background:#ff7919;color:#fff;border:2px solid #17213b}
+.np-legacy :is(.btn-secondary,.btn.secondary,.btn.hint,.reset){background:#344264;color:#fffbed;border:1px solid #8295be}
+.np-legacy :is(.panel,.modal>.card){background:#fffbed;color:#17213b;border:2px solid #17213b;border-radius:22px;box-shadow:0 4px #0b1024;padding:24px}
+.np-legacy :is(.panel,.modal>.card) :is(h2,p){color:#17213b}
+.np-legacy :is(.panel,.modal>.card)>button{border-radius:14px;min-height:50px;font-size:21px;background:#ff7919;color:#fff;border:2px solid #17213b;box-shadow:none}
+.np-legacy .np-play-details .tabs,.np-legacy .np-play-details .mode-row{margin:8px 0;display:flex;gap:6px;overflow-x:auto}
+.np-legacy .np-play-details button{background:#344264;color:#fffbed;border:1px solid #8295be;border-radius:10px;font-size:17px;min-height:42px}
+.np-legacy .np-play-details button.active{background:#c2d8fa;color:#17213b}
+.np-legacy :is(.word-card,.number-wrap){box-shadow:none;background:#fffbed;border:2px solid #7182ad}
+.np-legacy .number{color:#17213b;text-shadow:none}
+.np-legacy :is(.answer,.gesture,.color-buttons button){box-shadow:none;background-image:none;border-radius:16px}
+.np-legacy .gesture{background:#fffbed;color:#17213b}
+.np-legacy .live-timer{color:#dbe3f7;box-shadow:none;background:#263254}
+.np-legacy .np-flat-symbol{display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle}
+.np-legacy .np-flat-symbol svg{width:1em;height:1em}
+.np-legacy .hand .np-play-icon{width:60px;height:60px;color:#293344}
+.np-legacy[data-play-game=memory-kitchen] .game{background:#151b35!important}
+.np-legacy[data-play-game=memory-kitchen] :is(#stepName,#roundInfo,.mem-time){color:#dbe3f7}
+.np-legacy[data-play-game=memory-kitchen] .np-play-details{margin-inline:14px}
+.np-legacy[data-play-game=memory-kitchen] h1{-webkit-text-stroke:0;text-shadow:none}
+.np-legacy[data-play-game=memory-kitchen] :is(#nextBtn,#resetBtn){box-shadow:none!important;border-radius:14px}
+.np-legacy[data-play-game=memory-kitchen] #resetBtn{background:#344264!important;color:#fffbed!important}
+.np-legacy[data-play-game=memory-kitchen] #nextBtn:disabled{background:#485475!important;color:#dbe3f7!important;box-shadow:none!important}
+.np-legacy[data-play-game=fish-grill] .pan>.guide{display:none}
+.np-legacy[data-play-game=grid-memory] #instruction::before{display:none}
+.np-play-ui .gm-back{background:#fffbed;color:#17213b;border:1px solid #17213b}
+.np-legacy .mission :is(#progress,#levelTitle,#levelMeta,#levelText,#missionText){color:#fffbed!important}
+.np-legacy .number-wrap .number{background:#fffbed;box-shadow:none;border:0}
+.np-legacy .word-card{background:#263254}
+.np-legacy .answers button{min-height:64px;font-size:22px;background-image:none;box-shadow:none}
+.np-play-ui .w-energy{display:none}
+.np-play-ui .energy-label,.np-play-ui #gm-result>.gm-estimate{display:none}
+.np-play-ui .w-arena{background-image:var(--play-art);background-size:cover;background-position:center}
+.np-play-ui #gm-result .c-hero{background-image:var(--play-art);background-size:cover;background-position:center}
+.np-play-ui .np-lives{font-size:15px;color:#dbe3f7}
+.np-play-ui #a-message:empty,.np-play-ui #c-message:empty{min-height:0;margin:0}
+.np-play-ui #gm-play .w-cue .card-symbol{filter:none;text-shadow:none}
+.np-play-ui .sd-companion p:empty{display:none}
+@media(min-width:750px){.np-play-ui #gm-play{margin-inline:auto}.np-play-ui .w-arena{height:360px}.np-play-ui .c-layout{grid-template-columns:minmax(0,1.65fr) minmax(220px,1fr)}.np-play-ui .sd-arena{align-self:start}.np-legacy :is(.play,.stage){padding:18px}.np-play-ui .w-rule{font-size:24px}}
+@media(max-width:380px){.np-play-ui .gm-app{padding-inline:10px}.np-play-ui .w-controls{gap:6px}.np-play-ui .w-controls button{font-size:23px}.np-play-ui .w-rule{font-size:20px}.np-play-ui .sd-door{min-height:150px}.np-play-ui .sd-door small{font-size:12px!important}}
+@media(max-width:600px){.np-play-ui [data-choice] small{display:none}}
+@media(max-height:550px) and (min-width:650px){.np-play-ui .w-arena{height:240px;min-height:240px}.np-play-ui .c-layout{grid-template-columns:minmax(0,330px) minmax(220px,1fr)}.np-play-ui .gm-header{display:flex!important}.np-play-ui #gm-play{padding-bottom:12px}}
+@media(prefers-reduced-motion:reduce){.np-play-ui button{transition:none!important}.np-play-ui .sd-door{transition:none!important}}

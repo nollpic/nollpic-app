@@ -1,0 +1,13 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>25개 게임 시작 화면 검토</title>
+<style>*{box-sizing:border-box}body{margin:0;overflow:hidden;background:#13152e;color:white;font:15px sans-serif}header{height:80px;padding:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}label{font-size:13px}select,button{padding:8px;border-radius:8px;max-width:65vw;min-height:40px}button{background:#ff7900;color:white;border:0}iframe{display:block;width:100%;height:calc(100dvh - 80px);border:0;background:#13152e}#status{font-size:12px}</style>
+<header><label for="games">검토할 게임</label><select id="games"></select><button id="open">열기</button><span id="status">개발 화면 · 운영 연결 차단</span></header><iframe id="app" title="게임 검토"></iframe>
+<script src="/challenge-games.js"></script><script>
+const select=document.getElementById('games'),app=document.getElementById('app');
+NOLLPIC_GAME_CATALOG.forEach(g=>{const o=document.createElement('option');o.value=g.id;o.textContent=g.id+'. '+g.title;select.append(o);});
+select.value=new URLSearchParams(location.search).get('game')||'20';
+function open(){app.contentWindow?.NollpicMiniGameHost?.restore();const g=NOLLPIC_GAME_CATALOG.find(g=>g.id===Number(select.value));app.onload=async()=>{try{await app.contentWindow.NollpicAuthBoot;await app.contentWindow.NollpicAuth?.ready;app.contentWindow.NollpicMiniGameHost?.restore();app.contentWindow[g.open]();document.getElementById('status').textContent='개발 검토: '+g.title;}catch(e){document.getElementById('status').textContent=e.message;}};app.src='/?page=challenge&verification=children&review='+g.id;}
+document.getElementById('open').onclick=open;open();
+</script></html>
+
+
+

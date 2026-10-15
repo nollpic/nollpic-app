@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <script src="challenge-storage.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>놀픽 (Nollpic) - 두뇌 놀이 미션</title>
+    
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nollpic.web.app" />
+    <meta property="og:title" content="놀픽 (Nollpic) - 두뇌 놀이 미션" />
+    <meta property="og:description" content="우리 아이의 생각근육은 몇 점일까요? 지금 미션에 도전해 보세요!" />
+    <meta property="og:image" content="https://nollpic.web.app/images/nollpic-share-friends-v2-20261010.png" />
+    <meta property="og:image:width" content="1733" />
+    <meta property="og:image:height" content="908" />
+    <meta property="og:image:alt" content="오렌지색 NOLLPiC 로고 아래 함께 모인 네 친구 캐릭터" />
+    <link rel="stylesheet" href="style.css?v=20261013-ui-entries">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="login-cartoon.css?v=20261009-noshadow">
+    <link rel="stylesheet" href="loading-screen.css?v=20261008-auth-progress">
+    <link rel="stylesheet" href="logo-pop.css?v=20261010-fix163">
+    <script src="loading-screen.js?v=20261008-auth-progress" defer></script>
+    <link rel="stylesheet" href="mission-intro.css?v=20261011-fix175c">
+    <link rel="stylesheet" href="screen-spacing.css?v=20261008-1">
+    <link rel="stylesheet" href="speech-bubbles.css?v=20261009-common">
+    <link rel="stylesheet" href="result-page-theme.css?v=20261010-105">
+    <link rel="stylesheet" href="flat-icons.css?v=20261010-flat">
+    <link rel="stylesheet" href="bottom-menu-icons.css?v=20261010-104">
+    <link rel="stylesheet" href="sound-settings.css?v=20261010-106">
+    <link rel="stylesheet" href="fonts/jua/jua.css">
+    <link rel="stylesheet" href="challenge-worlds.css?v=20261012-profile">
+</head>
+<body>
+    <div class="app-device">
+<div id="page-1" class="page active">
+            <div class="page-body main-page-body">
+
+                <!-- PWA 설치 배너 — beforeinstallprompt 감지 시 자동 표시 -->
+                <div id="pwa-install-banner" class="pwa-install-banner" hidden>
+                    <div class="pwa-install-banner-left">
+                        <span class="pwa-install-icon" aria-hidden="true"></span>
+                        <div>
+                            <strong>놀픽 앱 설치</strong>
+                            <span>홈 화면에서 바로 실행!</span>
+                        </div>
+                    </div>
+                    <button class="pwa-install-banner-btn" type="button" onclick="triggerPwaInstall()">설치</button>
+                    <button class="pwa-install-banner-close" type="button" onclick="closePwaBanner()" aria-label="닫기">x</button>
+                </div>
+                <div id="pwa-install-toast" class="pwa-install-toast" role="status" aria-live="polite" hidden></div>
+
+                <div class="title-block">
+                    <div class="img-title login-logo-stage" role="img" aria-label="놀이를 픽!하다, 놀픽">
+                        <img class="loading-logo-word" src="images/nollpic_title_v2.png" alt="" aria-hidden="true">
+                        <img class="loading-logo-star" src="images/nollpic_title_v2.png" alt="" aria-hidden="true">
+                        <span class="loading-star-spark spark-one" aria-hidden="true">✦</span>
+                        <span class="loading-star-spark spark-two" aria-hidden="true">✦</span>
+                        <span class="loading-star-spark spark-three" aria-hidden="true">✦</span>
+                    </div>
+                    <p class="brand-sub">놀이로 자라는 우리 아이의<br>집중력과 실행기능</p>
+                </div>
+                <div class="graphic-block">
+                    <div class="login-art">
+                    <p class="login-welcome">오늘도 같이 놀자!</p>
+                    <img src="images/nollpic-friends-walking-v1.gif" alt="깃발 든 동그라미, 교통 꼬깔 쓴 뇌 캐릭터, 세모, 돋보기를 내려 든 네모가 횡단보도를 건너는 놀픽 친구들" class="img-fluid-content" fetchpriority="high">
+                    </div>
+                </div>
+
+                <div class="action-block">
+                    <div class="social-login-wrap">
+                        <button class="btn-google-main" onclick="googleLogin()">
+                            Google 로그인하고, 성장기록 저장
+                        </button>
+                       
+                        <div class="guest-login-slot">
+                        <button class="btn-guest" onclick="nextPage(2)">
+                            로그인 없이 체험하기
+                        </button>
+                        <div id="login-loading" hidden>
+                            <div class="login-loading-caption"><span>로딩 중</span><span id="login-loading-percent">0%</span></div>
+                            <div id="login-loading-progress" class="login-loading-track" role="progressbar" aria-label="구글 로그인 준비" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="login-loading-fill"></div></div>
+                        </div>
+                        </div>
+                        <p class="privacy-link-wrap">
+                            <a href="/privacy.html" target="_blank" class="privacy-link">개인정보처리방침</a>
+                        </p>
+                    </div>
+                    <!--<img src="images/logo_footer.png" alt="놀픽" class="img-footer">-->
+                </div>
+
+            </div>
+        </div>
+
+        <div id="page-2" class="page">
+            <!--<header class="page-header">
+                <button class="nav-back" id="page2-back-btn" onclick="prevPage(1)">❮</button>
+            </header>-->
+            <div class="page-body justify-center">
+                <div class="mission-topbar"><img src="images/nollpic-wordmark-en.png" alt="Nollpic"><button type="button" class="mission-help" aria-label="미션 안내" onclick="document.getElementById('mission-help-dialog').showModal()">?</button></div>
+                <div class="title-block">
+                    <h2 class="section-title">놀이로 발견하는<br>우리 아이의 생각하는 힘</h2><p class="home-evidence"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6L5 18a2 2 0 0 0 1.7 3h10.6A2 2 0 0 0 19 18l-5-9V3" fill="#fff0dc" stroke="#293344" stroke-width="1.8" stroke-linejoin="round"/><path d="M7.5 15h9" stroke="#ff6b00" stroke-width="2" stroke-linecap="round"/></svg>아동 인지발달 연구의 5가지 과제를 기초로 만들었어요</p>
+                </div>
+                <div class="mission-board"><p class="mission-tiger-bubble">5가지 미션으로<br>아이의 강점을 알아봐요!</p><img class="mission-tiger" src="images/mission-tiger-rawr-v1.gif" alt="손을 들고 어흥 하며 반겨주는 호랑이 친구"><div class="info-list">
+                    <div class="info-card-clean">
+                        <div class="info-icon bg-red"><svg viewBox="0 0 48 48" fill="none" stroke="#293344" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="24" r="17" fill="#ff8c88"/><circle cx="24" cy="24" r="10" fill="#fffbed"/><circle cx="24" cy="24" r="3" fill="#ef655f"/><path d="M24 24 39 9m-7 1 7-1-1 7" fill="none"/></svg></div>
+                        <div class="info-text">
+                            <h3>끈기력 <small class="area-pro">집중 유지력</small></h3>
+                            <p>한 가지 목표에 꾸준히 집중하는 힘</p><span class="area-basis">슐테 테이블</span>
+                        </div>
+                    </div>
+                    <div class="info-card-clean">
+                        <div class="info-icon bg-blue"><svg viewBox="0 0 48 48" fill="none" stroke="#293344" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 10h10V8a5 5 0 0 1 10 0v2h10v10h2a5 5 0 0 1 0 10h-2v10H29v-2a5 5 0 0 0-10 0v2H9V30h2a5 5 0 0 0 0-10H9Z" fill="#b692ee"/></svg></div>
+                        <div class="info-text">
+                            <h3>기억력 <small class="area-pro">작업 기억력</small></h3>
+                            <p>잠깐 기억한 정보를 꺼내 활용하는 힘</p><span class="area-basis">코르시 블록</span>
+                        </div>
+                    </div>
+                    <div class="info-card-clean">
+                        <div class="info-icon bg-orange"><svg viewBox="0 0 48 48" fill="none" stroke="#293344" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m28 4-19 24h13l-3 16 20-25H26Z" fill="#ffd24e"/></svg></div>
+                        <div class="info-text">
+                            <h3>순발력 <small class="area-pro">반응 속도</small></h3>
+                            <p>신호를 알아차리고 빠르게 반응하는 힘</p><span class="area-basis">고/노고 과제</span>
+                        </div>
+                    </div>
+                    <div class="info-card-clean">
+                        <div class="info-icon bg-teal"><svg viewBox="0 0 48 48" fill="none" stroke="#293344" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m30 30 12 12" fill="none" stroke-width="8"/><path d="m30 30 12 12" fill="none" stroke="#74cda6" stroke-width="3"/><circle cx="21" cy="21" r="15" fill="#74cda6"/><circle cx="21" cy="21" r="10" fill="#fffbed"/></svg></div>
+                        <div class="info-text">
+                            <h3>관찰력 <small class="area-pro">시각 탐색</small></h3>
+                            <p>여러 정보 속에서 필요한 단서를 찾는 힘</p><span class="area-basis">탐색 과제</span>
+                        </div>
+                    </div>
+                    <div class="info-card-clean">
+                        <div class="info-icon bg-pink"><svg viewBox="0 0 48 48" fill="none" stroke="#293344" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 25V13a3 3 0 0 1 6 0v10V8a3 3 0 0 1 6 0v15V10a3 3 0 0 1 6 0v14V16a3 3 0 0 1 6 0v15c0 9-5 13-12 13-6 0-10-3-13-8L6 25a3 3 0 0 1 5-3l3 5Z" fill="#f3a7b9"/></svg></div>
+                        <div class="info-text">
+                            <h3>충동조절 <small class="area-pro">충동 억제</small></h3>
+                            <p>바로 행동하기 전에 잠깐 멈추는 힘</p><span class="area-basis">플랭커 과제</span>
+                        </div>
+                    </div>
+                </div>
+                </div><div class="action-block">
+                    <button class="btn-navy" onclick="nextPage(3)">5가지 미션 시작하기 <span aria-hidden="true">→</span></button>
+                    <button type="button" class="btn-navy home-challenge-button" onclick="goBottomChallenge()">🌳 <span data-challenge-label data-start-label="30일 챌린지 시작하기" data-continue-label="30일 챌린지 이어하기">30일 챌린지 시작하기</span> <span aria-hidden="true">→</span></button>
+                </div>
+            </div>
+        </div>
+
+        <dialog id="mission-help-dialog"><h2>5가지 미션 안내</h2><p>놀이를 하면서 집중하고, 기억하고,<br>반응하는 모습을 살펴봐요.</p><p>미션을 시작할 때마다<br>놀이 방법을 알려 드려요.</p><div class="help-basis"><h3>어떤 연구를 바탕으로 만들었나요?</h3><p class="help-basis-lead">전두엽이 담당하는 <b>실행기능</b>(계획하고, 참고, 기억하고, 집중을 이어가는 힘) 연구에서 널리 쓰이는 과제를 아이들이 놀이처럼 할 수 있게 다시 만들었어요.</p><ul><li><b>끈기력</b> 슐테 테이블 <span>Schulte Table · 주의 유지와 전환</span></li><li><b>기억력</b> 코르시 블록 과제 <span>Corsi, 1972 · 시공간 작업기억</span></li><li><b>순발력</b> 고/노고 과제 <span>Go/No-Go · 반응 속도와 반응 억제</span></li><li><b>관찰력</b> 시각 탐색 과제 <span>Treisman &amp; Gelade, 1980 · 선택적 주의</span></li><li><b>충동조절</b> 플랭커 과제 <span>Eriksen &amp; Eriksen, 1974 · 방해 자극 억제</span></li></ul><p class="help-basis-ref">이론 바탕: 실행기능 모델 (Miyake 외, 2000) · 아동 실행기능 발달 (Diamond, 2013)</p></div><p class="help-note">결과는 그날 컨디션이나 놀이 경험에 따라 달라질 수 있어요.<br>의료·심리 진단이 아닌, 성장을 살펴보는 참고 자료예요.</p><form method="dialog"><button>알겠어요</button></form></dialog>
+<div id="page-3" class="page">
+            <div class="page-body">
+                <div class="child-brand-row"><img src="images/nollpic-wordmark-en.png" alt="Nollpic"><span>마이 · 아이 정보</span></div>
+                <button type="button" id="child-challenge-return" class="nav-back" onclick="goBottomChallenge()" style="display:none;">← 챌린지로</button>
+                <div class="title-block child-title-block">
+                    <h2 class="section-title" id="child-page-title">우리 아이를 선택해주세요</h2>
+                    <p class="section-sub" id="child-page-sub">로그인하면 아이의 미션 결과를 따로 저장할 수 있어요.</p>
+                </div>
+
+                <div id="login-status-bar" class="login-status-bar" style="display:none;"></div>
+
+                <div id="saved-child-section" class="saved-child-section" style="display:none;">
+                    <div class="saved-child-head">
+                        <div>
+                            <strong>등록된 아이</strong>
+                            <p>미션을 진행할 아이를 선택해주세요.</p>
+                        </div>
+                        <button type="button" class="btn-add-child" onclick="showChildForm()">+ 아이 추가</button>
+                    </div>
+                    <div id="saved-child-list" class="saved-child-list"></div>
+                </div>
+
+                <div id="child-form-section" class="form-container">
+                    <div class="input-group">
+                        <label for="child-name">이름</label>
+                        <input type="text" id="child-name" placeholder="이름을 입력해주세요">
+                    </div>
+                    <div class="input-group">
+                        <label for="child-grade">나이</label>
+                        <select id="child-grade">
+                            <option value="">나이를 선택해주세요</option>
+                            <optgroup label="어린이">
+                                <option value="0">미취학</option>
+                                <option value="1">초등 1학년</option>
+                                <option value="2">초등 2학년</option>
+                                <option value="3">초등 3학년</option>
+                                <option value="4">초등 4학년</option>
+                                <option value="5">초등 5학년</option>
+                                <option value="6">초등 6학년</option>
+                            </optgroup>
+                            <optgroup label="성인">
+                                <option value="adult">어른</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>성별</label>
+                        <div class="gender-radio-group">
+                            <label class="gender-radio-btn">
+                                <input type="radio" name="child-gender" value="male">
+                                <span class="gender-btn-text">👦 남</span>
+                            </label>
+                            <label class="gender-radio-btn">
+                                <input type="radio" name="child-gender" value="female">
+                                <span class="gender-btn-text">👧 여</span>
+                            </label>
+                        </div>
+                    </div>
+                    <label class="consent-check">
+                        <input type="checkbox" id="guardian-consent">
+                        <span>보호자 또는 법정대리인으로서 아이 정보와 미션 수행 기록 저장에 동의합니다. 본 결과는 의료적 진단이나 치료 목적이 아닙니다. <a href="/privacy.html" target="_blank" rel="noopener">개인정보처리방침</a></span>
+                    </label>
+                    <button class="btn-navy child-form-next-btn" id="child-next-btn" onclick="validateInfoPage()">다음</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-4" class="page">
+            <header class="page-header">
+                <button class="nav-back" onclick="prevPage(3)">❮</button>
+            </header>
+            <div class="page-body space-between">
+                <div class="title-block">
+                    <h2 class="section-title">평소 아이는 어떤가요?</h2>
+                    <p class="section-sub">해당되는 항목을 선택해주세요. (중복 가능)</p>
+                </div>
+                <div class="checklist-container"><svg class="observation-brain" viewBox="0 0 1333 1180" role="img" aria-label="손을 괴고 고개를 까딱이는 놀픽 뇌 친구">
+                        <defs><clipPath id="brain-resting-hands">
+                            <path d="M338 1049 C338 1011 361 989 382 978 C375 944 385 916 412 902 C452 881 492 895 514 927 L536 953 C582 962 621 992 630 1028 L630 1095 L333 1095 Z"/>
+                            <path d="M695 1095 L694 1034 C700 992 742 963 792 953 L818 920 C845 889 891 888 919 908 C945 926 950 949 945 975 C974 992 988 1024 984 1095 Z"/>
+                        </clipPath></defs>
+                        <image class="observation-brain-head" href="images/nollpic-cone-brain-head-v4.png" width="1333" height="1180" preserveAspectRatio="none"/>
+                        <image href="images/nollpic-cone-brain-resting-v3.png" width="1333" height="1180" clip-path="url(#brain-resting-hands)"/>
+                    </svg>
+                    <div class="check-card" onclick="toggleCheck(this)">
+                        <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#293344" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h10M7 21h10M8 3v4l4 5-4 5v4m8-18v4l-4 5 4 5v4"/></svg></span>
+                        <p>집중하는 시간이 짧아요</p>
+                        <div class="custom-circle"></div>
+                    </div>
+                    <div class="check-card" onclick="toggleCheck(this)">
+                        <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#293344" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m13 2-8 12h6l-1 8 9-13h-7z"/></svg></span>
+                        <p>충동적인 행동이 있어요</p>
+                        <div class="custom-circle"></div>
+                    </div>
+                    <div class="check-card" onclick="toggleCheck(this)">
+                        <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#293344" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a2 2 0 1 1 4 0h6v6a2 2 0 1 0 0 4v6h-6a2 2 0 1 0-4 0H4v-6a2 2 0 1 1 0-4z"/></svg></span>
+                        <p>기억력이 약한 것 같아요</p>
+                        <div class="custom-circle"></div>
+                    </div>
+                    <div class="check-card" onclick="toggleCheck(this)">
+                        <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#293344" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h4c5 0 5 12 10 12h4m-4-4 4 4-4 4M3 18h4c2 0 3-2 4-4m3-5c1-2 2-3 3-3h4m-4-4 4 4-4 4"/></svg></span>
+                        <p>쉽게 산만해져요</p>
+                        <div class="custom-circle"></div>
+                    </div>
+                    <div class="check-card" id="none-above" onclick="toggleNoneAbove(this)">
+                        <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#293344" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 14q4 5 8 0M8 9h.01M16 9h.01"/></svg></span>
+                        <p>해당 사항이 없어요</p>
+                        <div class="custom-circle"></div>
+                    </div>
+                </div>
+                <div class="action-block">
+                    <button class="btn-navy" onclick="startFirstTest()">미션 시작하기</button>
+                    <div class="indicator-dots">
+                        <span></span><span class="active"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-5" class="page">
+            <div class="page-body" style="padding:0;">
+                <iframe
+                    id="test-frame"
+                    src=""
+                    style="
+                        width:100%;
+                        height:100%;
+                        border:none;
+                        display:block;
+                    ">
+                </iframe>
+            </div>
+        </div>
+
+        <!-- page-6: 미션 결과 (mypage-result 통합) -->
+        <div id="page-6" class="page">
+            <div class="page-body result-page-body">
+                <main class="result-app">
+
+                    <div class="result-view-tabs" role="tablist" aria-label="미션결과 보기">
+                        <button type="button" class="active" data-result-view="current" onclick="setResultView('current')">현재 결과</button>
+                        <button type="button" data-result-view="growth" onclick="setResultView('growth')">성장기록</button>
+                    </div>
+
+                    <section class="complete-hero" data-result-current>
+                        <div class="complete-text">
+                            <h1 class="complete-title">5가지 미션 완료!</h1>
+                            <p>끝까지 미션을 완료했어요.<br>아이의 5가지 힘을 확인해 보세요.</p>
+                        </div>
+                    </section>
+
+                    <section class="child-card child-select-card" data-result-current>
+                        <div class="result-child-title">
+                            <span>아이 선택</span>
+                        </div>
+                        <select id="result-child-selector" class="result-child-selector" aria-label="아이 선택"></select>
+                    </section>
+
+                    <!-- v2 결과 화면: 성장 카드 + 생각근육 오각형 + 영역별 성장 기록 -->
+                    <section class="rv2-hero" data-result-current>
+                        <p class="rv2-hero-meta"><span id="result-latest-date">-</span> · <span id="rv2-mission-count">첫 미션</span></p>
+                        <h2 id="rv2-hero-title">오늘의 생각근육</h2>
+                        <p id="result-overall-comment" class="rv2-hero-sub">아직 저장된 미션 결과가 없어요.</p>
+                        <span id="rv2-hero-pill" class="rv2-pill" hidden></span>
+                        <div id="rv2-tiles" class="rv2-tiles"></div>
+                    </section>
+
+                    <section class="rv2-card" data-result-current>
+                        <div class="rv2-card-head">
+                            <h3>생각근육 모양</h3>
+                            <p id="rv2-radar-legend">주황 = 오늘</p>
+                        </div>
+                        <div id="rv2-radar" class="rv2-radar"></div>
+                        <div id="rv2-radar-note" class="rv2-note"></div>
+                    </section>
+
+                    <section class="rv2-card" data-result-current>
+                        <div class="rv2-card-head">
+                            <h3>영역별 성장 기록</h3>
+                            <p id="rv2-growth-range">미션을 할수록 그래프가 이어져요</p>
+                        </div>
+                        <div id="result-ability-list" class="rv2-areas"></div>
+                    </section>
+
+                    <section class="result-history-card" data-result-current>
+                        <button class="accordion-btn" onclick="toggleResultHistory()">
+                            <div>
+                                <h2>날짜별 기록 보기</h2>
+                                <span>미션마다 받은 점수를 확인해요</span>
+                            </div>
+                            <span class="accordion-icon" id="result-accordion-icon"></span>
+                        </button>
+                        <div id="result-history-panel" class="history-panel">
+                            <div id="result-history-list" class="history-list"></div>
+                        </div>
+                    </section>
+
+                    <section class="result-analysis-card" data-result-current>
+                        <h2>놀픽 분석</h2>
+                        <p id="result-analysis-text"></p>
+                    </section>
+
+                    <section id="result-recommend-card" class="result-recommend-card" data-result-current>
+                        <div class="recommend-head">
+                            <span id="result-recommend-area">추천 놀이</span>
+                            <h2 id="result-recommend-title">우리 아이에게 맞는 놀이</h2>
+                            <p id="result-recommend-desc">결과에 맞춰 짧게 반복할 수 있는 놀이를 추천해요.</p>
+                        </div>
+                        <div id="result-recommend-list" class="recommend-list"></div>
+                        <button type="button" class="recommend-lock-btn" onclick="openRecommendedPlayDetail()">상세 놀이방법 보기</button>
+                    </section>
+
+                    <div class="result-share-action" data-result-current>
+                        <button type="button" class="rv2-btn result-share-btn" onclick="shareResultInline()">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8.5 10.5 7-4m-7 7 7 4"/><circle cx="5.5" cy="12" r="3"/><circle cx="18.5" cy="5" r="3"/><circle cx="18.5" cy="19" r="3"/></g></svg>
+                            <span>결과 공유하기</span>
+                        </button>
+                    </div>
+
+                    <section id="result-growth-view" class="result-growth-view" hidden>
+                        <div class="growth-start-card">
+                            <span>🌱</span>
+                            <h2 id="growth-view-title">첫 번째 성장 기록이 시작됐어요.</h2>
+                            <p id="growth-view-text">30일 챌린지를 완료하고 다음 미션을 하면 변화가 차곡차곡 기록됩니다.</p>
+                        </div>
+                        <div class="growth-summary-grid">
+                            <div><span>챌린지 DAY</span><strong id="growth-day-count">0</strong></div>
+                            <div><span>연속 참여</span><strong id="growth-streak-count">0일</strong></div>
+                            <div><span>워밍업 완료</span><strong id="growth-warmup-count">0</strong></div>
+                        </div>
+                    </section>
+                    <p class="disclaimer">이 결과는 놀이 활동 기록을 바탕으로 한 성장 참고용이며, 의료·심리 진단 결과가 아닙니다.</p>
+                </main>
+            </div>
+        </div>
+
+        <!-- page-7: 플레이 -->
+        <div id="page-7" class="page">
+            <div class="page-body play-page-body">
+                <div class="play-header">
+                    <h2 class="play-title">플레이</h2>
+                    <p class="play-sub">놀이 콘텐츠를 즐겨보세요.</p>
+                </div>
+                <div class="play-content">
+                    <div class="play-card-grid">
+
+                        <!-- 주사위 -->
+                         <button type="button" class="play-card play-card-ready" onclick="openPlayItem('dice')">
+                            <div class="play-card-icon-wrap play-bg-peach">
+                                <svg class="play-menu-flat-icon" viewBox="0 0 64 64" role="img" aria-label="주사위" xmlns="http://www.w3.org/2000/svg"><g stroke="#293344" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="10" width="44" height="44" rx="9" fill="#fffef9"/><g fill="#293344" stroke="none"><circle cx="22" cy="22" r="3.3"/><circle cx="42" cy="22" r="3.3"/><circle cx="32" cy="32" r="3.3"/><circle cx="22" cy="42" r="3.3"/><circle cx="42" cy="42" r="3.3"/></g></g></svg>
+                            </div>
+                            <strong class="play-card-label">주사위</strong>
+                        </button>
+
+                        <!-- 화살표 룰렛 -->
+                         <button type="button" class="play-card play-card-ready" onclick="openPlayItem('arrow')">
+                            <div class="play-card-icon-wrap play-bg-blue">
+                                <svg class="play-menu-flat-icon" viewBox="0 0 64 64" role="img" aria-label="방향 화살표" xmlns="http://www.w3.org/2000/svg"><g stroke="#293344" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 24h28V14l20 18-20 18V40H8Z" fill="#ffb45e"/></g></svg>
+                            </div>
+                            <strong class="play-card-label">화살표</strong>
+                        </button>
+
+                        <!-- 랜덤컬러 -->
+                         <button type="button" class="play-card play-card-ready" onclick="openPlayItem('randomcolor')">
+                            <div class="play-card-icon-wrap play-bg-purple">
+                                <svg class="play-menu-flat-icon" viewBox="0 0 64 64" role="img" aria-label="랜덤컬러" xmlns="http://www.w3.org/2000/svg"><g stroke="#293344" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M32 8C18.7 8 8 18.7 8 32s10.7 24 24 24h3c4 0 6-3 6-6s-3-5-3-8 3-6 7-6h4c5 0 8-4 7-9C54 16 44 8 32 8Z" fill="#fffef9"/><circle cx="18" cy="29" r="3.5" fill="#f5a8b8"/><circle cx="27" cy="18" r="3.5" fill="#ffcb75"/><circle cx="41" cy="19" r="3.5" fill="#a8c9ec"/><circle cx="48" cy="28" r="3.5" fill="#91d0b2"/><circle cx="24" cy="43" r="4" fill="#eee8ff"/></g></svg>
+                            </div>
+                            <strong class="play-card-label">랜덤컬러</strong>
+                        </button>
+
+                        <!-- 스탑워치 -->
+                        <button type="button" class="play-card play-card-ready" onclick="openPlayItem('stopwatch')">
+                            <div class="play-card-icon-wrap play-bg-green">
+                                <svg class="play-menu-flat-icon" viewBox="0 0 64 64" role="img" aria-label="스탑워치" xmlns="http://www.w3.org/2000/svg"><g stroke="#293344" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><rect x="25" y="5" width="14" height="7" rx="3" fill="#ffb45e"/><path d="M32 12v5m16 2 4-4" fill="none"/><circle cx="32" cy="37" r="22" fill="#f5a8b8"/><circle cx="32" cy="37" r="16" fill="#fffef9"/><path d="M32 25v12l9 6" fill="none"/><circle cx="32" cy="37" r="2" fill="#293344"/></g></svg>
+                            </div>
+                            <strong class="play-card-label">스탑워치</strong>
+                        </button>
+
+                        <!-- 도형주사위 -->
+                        <button type="button" class="play-card play-card-ready" onclick="openPlayItem('shapeDice')">
+                            <div class="play-card-icon-wrap play-bg-shape">
+                                <svg class="play-menu-flat-icon" viewBox="0 0 64 64" role="img" aria-label="도형주사위" xmlns="http://www.w3.org/2000/svg"><g stroke="#293344" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><rect x="25" y="8" width="20" height="20" rx="4" transform="rotate(45 35 18)" fill="#91d0b2"/><circle cx="19" cy="43" r="12" fill="#ffcb75"/><path d="m46 30 13 25H33Z" fill="#f5a8b8"/></g></svg>
+                            </div>
+                            <strong class="play-card-label">도형주사위</strong>
+                        </button>
+
+                        <!-- 숫자플레이 -->
+                        <button type="button" class="play-card play-card-ready" onclick="openPlayItem('number')">
+                            <div class="play-card-icon-wrap play-bg-number">
+                                <svg class="play-menu-flat-icon" viewBox="0 0 64 64" role="img" aria-label="숫자플레이" xmlns="http://www.w3.org/2000/svg"><g stroke="#293344" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="10" width="48" height="44" rx="9" fill="#fffef9"/><path d="m16 26 4-3v18m-4 0h8M28 27c0-6 8-6 8 0 0 4-8 7-8 14h8M40 25c2-4 8-3 8 2 0 3-3 5-6 5 4 0 7 2 6 6-1 4-6 5-8 1" fill="none"/></g></svg>
+                            </div>
+                            <strong class="play-card-label">숫자플레이</strong>
+                        </button>
+
+                    </div>
+                    <section class="play-service-links" aria-label="놀픽 추천">
+                        <button type="button" class="play-service-link mission-service-link" onclick="nextPage(3)">
+                            <strong>우리 아이의 생각하는 힘은?</strong>
+                            <span>5가지 미션으로 알아보세요!</span>
+                            <b>무료 테스트 시작하기 →</b>
+                            <span class="service-mascot elephant-mascot" aria-hidden="true">
+                                <img class="elephant-think" src="images/nollpic-elephant-think-v3.webp" alt="" width="256" height="256" loading="lazy" decoding="async">
+                                <img class="elephant-aha" src="images/nollpic-elephant-aha-v3.webp" alt="" width="256" height="256" loading="lazy" decoding="async">
+                                <span class="thinking-mark elephant-hmm">음…</span>
+                                <span class="thinking-mark elephant-eureka">아하!</span>
+                            </span>
+                        </button>
+                        <button type="button" class="play-service-link challenge-service-link" onclick="goBottomChallenge()">
+                            <strong>하루 10분, 생각하는 모험!</strong>
+                            <span>미션을 깨고 캐릭터를 꾸며요.</span>
+                            <b><span data-challenge-label data-start-label="30일 챌린지 시작하기" data-continue-label="챌린지 이어하기">30일 챌린지 시작하기</span> →</b>
+                            <span class="service-mascot tiger-mascot" aria-hidden="true">
+                                <img class="tiger-neutral" src="images/nollpic-tiger-neutral-v2.webp" alt="" width="256" height="256" loading="lazy" decoding="async">
+                                <img class="tiger-wink" src="images/nollpic-tiger-wink-v2.webp" alt="" width="256" height="256" loading="lazy" decoding="async">
+                                <span class="tiger-prop">
+                                    <img class="tiger-lens-clear" src="images/nollpic-tiger-lens-clear-v2.webp" alt="" width="256" height="256" loading="lazy" decoding="async">
+                                    <img class="tiger-lens-eye" src="images/nollpic-tiger-lens-eye-v2.webp" alt="" width="256" height="256" loading="lazy" decoding="async">
+                                </span>
+                            </span>
+                        </button>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- page-8: 주사위 -->
+        <div id="page-8" class="page">
+            <div class="page-body" style="padding:0;">
+                <iframe id="dice-frame" src="" style="width:100%;height:100%;border:none;display:block;"></iframe>
+            </div>
+        </div>
+
+        <!-- page-9: 화살표 -->
+        <div id="page-9" class="page">
+            <div class="page-body" style="padding:0;">
+                <iframe id="arrow-frame" src="" style="width:100%;height:100%;border:none;display:block;"></iframe>
+            </div>
+        </div>
+
+        <!-- page-10: 랜덤컬러 룰렛 -->
+        <div id="page-10" class="page">
+            <div class="page-body" style="padding:0;">
+                <iframe id="roulette-frame" src="" style="width:100%;height:100%;border:none;display:block;"></iframe>
+            </div>
+        </div>
+
+        <!-- page-12: 스탑워치 -->
+        <div id="page-12" class="page">
+            <div class="page-body" style="padding:0;">
+                <iframe id="stopwatch-frame" src="" style="width:100%;height:100%;border:none;display:block;"></iframe>
+            </div>
+        </div>
+
+        <!-- page-34: 도형주사위 (배포 앱에서는 page-14) -->
+        <div id="page-34" class="page play-frame-page">
+            <div class="page-body" style="padding:0;">
+                <iframe id="shape-dice-frame" src="" style="width:100%;height:100%;border:none;display:block;"></iframe>
+            </div>
+        </div>
+
+        <!-- page-35: 숫자플레이 (배포 앱에서는 page-13) -->
+        <div id="page-35" class="page play-frame-page">
+            <div class="page-body" style="padding:0;">
+                <iframe id="number-frame" src="" style="width:100%;height:100%;border:none;display:block;"></iframe>
+            </div>
+        </div>
+
+        <div id="page-11" class="page">
+            <div class="cw-topbar">
+                <span class="cw-chip cw-points" aria-label="포인트"><span class="cw-ico cw-ico-coin" aria-hidden="true"></span><strong id="cw-points">0</strong></span>
+                <span class="cw-chip cw-streak" aria-label="연속 참여"><span class="cw-ico cw-ico-fire" aria-hidden="true"></span><strong id="cw-streak">1</strong><small>일 연속</small></span>
+                <button type="button" class="cw-gear" onclick="openChallengeSettings()" aria-label="설정 · 소리 · 문의"><span class="cp-ico cp-ico-gear" aria-hidden="true"></span></button>
+                <button type="button" class="cw-me" id="cw-me" onclick="openChallengeProfile()" aria-label="내 정보" aria-haspopup="dialog"><span class="cw-me-face" id="cw-me-face"></span><span class="cw-me-name" id="cw-me-name" hidden></span></button>
+            </div>
+            <div class="page-body challenge-home-body">
+                <!-- 2026-10-11 월드 헤더 (1개월 숲 마을). 월드 정보·색: app.js CHALLENGE_WORLDS + challenge-worlds.css -->
+                <div class="challenge-sticky-head cw-head" data-world="1">
+                    <div class="cw-sky" aria-hidden="true"><i class="cw-cloud c1"></i><i class="cw-cloud c2"></i></div>
+                    <section class="challenge-home-hero cw-hero">
+                        <h2 class="cw-title" id="cw-title"><span class="cw-badge" aria-label="월드 1"><small>WORLD</small><b>1</b></span><span class="cw-name">숲 마을</span> <span class="cw-days">30일</span></h2>
+                    </section>
+
+                    <!-- 오늘의 놀이 카드: 놀이 전 = 오늘 할 놀이, 놀이 후 = 오늘의 평가 (app.js renderTodayCard) -->
+                    <section id="today-card" class="today-recommendations tc-card" aria-label="오늘의 놀이" aria-live="polite"></section>
+                    <p class="cw-status" aria-label="이번 월드 30일 중 완료"><span>매일 10분 · <span>생각근육 키우기</span></span><b><span id="cw-progress-count">0</span>/30일</b></p>
+                </div>
+
+                <section class="challenge-roadmap" aria-label="챌린지 단계">
+                    <div class="road-line" style="--top:50px"></div>
+                    <div class="road-line" style="--top:204px"></div>
+                    <div class="road-line" style="--top:358px"></div>
+                    <div class="road-line" style="--top:512px"></div>
+                    <div class="road-line" style="--top:666px"></div>
+                    <div class="road-line" style="--top:820px"></div>
+                    <div class="road-line" style="--top:974px"></div>
+                    <div class="road-line" style="--top:1128px"></div>
+                    <div class="road-line" style="--top:1282px"></div>
+                    <div class="road-line" style="--top:1436px"></div>
+                    <div class="road-line" style="--top:1590px"></div>
+                    <div class="road-line" style="--top:1744px"></div>
+                    <div class="road-line" style="--top:1898px"></div>
+                    <div class="road-line" style="--top:2052px"></div>
+                    <div class="road-line" style="--top:2206px"></div>
+                    <div class="road-connector" style="--x:87%; --top:50px; --height:154px"></div>
+                    <div class="road-connector" style="--x:13%; --top:204px; --height:154px"></div>
+                    <div class="road-connector" style="--x:87%; --top:358px; --height:154px"></div>
+                    <div class="road-connector" style="--x:13%; --top:512px; --height:154px"></div>
+                    <div class="road-connector" style="--x:87%; --top:666px; --height:154px"></div>
+                    <div class="road-connector" style="--x:13%; --top:820px; --height:154px"></div>
+                    <div class="road-connector" style="--x:87%; --top:974px; --height:154px"></div>
+                    <div class="road-connector" style="--x:13%; --top:1128px; --height:154px"></div>
+                    <div class="road-connector" style="--x:87%; --top:1282px; --height:154px"></div>
+                    <div class="road-connector" style="--x:13%; --top:1436px; --height:154px"></div>
+                    <div class="road-connector" style="--x:87%; --top:1590px; --height:154px"></div>
+                    <div class="road-connector" style="--x:13%; --top:1744px; --height:154px"></div>
+                    <div class="road-connector" style="--x:87%; --top:1898px; --height:154px"></div>
+                    <div class="road-connector" style="--x:13%; --top:2052px; --height:154px"></div>
+                    <span class="road-deco icon3" style="--x:25%; --y:126px; --size:36px;"></span>
+                    <span class="road-deco icon1" style="--x:74%; --y:244px; --size:35px;"></span>
+                    <span class="road-deco icon2" style="--x:30%; --y:420px; --size:36px;"></span>
+                    <span class="road-deco icon4" style="--x:74%; --y:558px; --size:38px;"></span>
+                    <span class="road-deco icon9" style="--x:30%; --y:736px; --size:36px;"></span>
+                    <span class="road-deco icon10" style="--x:75%; --y:936px; --size:37px;"></span>
+                    <span class="road-deco icon11" style="--x:29%; --y:1188px; --size:37px;"></span>
+
+                    <button type="button" class="road-node locked is-next" style="--x:13%; --y:8px;" onclick="openCrystalMineGame()" aria-label="1번 크리스탈 광산 시작">
+                        <span>1</span>
+                        <i></i>
+                    </button>
+                    <button type="button" class="road-node locked" style="--x:50%; --y:8px;" onclick="openMagicCircuitGame()" aria-label="2번 마법 회로 복구 시작">
+                        <span>2</span>
+                        <i></i>
+                    </button>
+                    <button type="button" class="road-chest" data-chest-id="chest-1" style="--x:87%; --y:8px;" aria-label="보물상자"></button>
+                    <button type="button" class="road-chest" data-chest-id="chest-2" style="--x:13%; --y:162px;" aria-label="보물상자"></button>
+                    <button type="button" class="road-node locked color-node" style="--x:50%; --y:162px;" onclick="openColorWizardGame()" aria-label="4번 컬러 마법사의 시험 시작">
+                        <span>4</span>
+                        <i></i>
+                    </button>
+                    <button type="button" class="road-node locked jenga-node" style="--x:87%; --y:162px;" onclick="openDirectionWizardGame()" aria-label="3번 반전 마법사의 함정 시작">
+                        <span>3</span>
+                        <i></i>
+                    </button>
+                    <button type="button" class="road-node secret-flower hand-sequence-node" style="--x:13%; --y:316px;" onclick="openCipher369Game()" aria-label="5번 369 암호 해독 시작">
+                        <span>5</span>
+                        <i></i>
+                    </button>
+                    <button type="button" class="road-node secret-plain grid-memory-node" style="--x:50%; --y:316px;" onclick="openSecretArchitectureGame()" aria-label="6번 비밀 건축 연구소 시작">
+                        <span>6</span>
+                        <i></i>
+                    </button>
+                    <button type="button" class="road-chest" data-chest-id="chest-3" style="--x:87%; --y:316px;" aria-label="보물상자"></button>
+                    <button type="button" class="road-chest" data-chest-id="chest-4" style="--x:13%; --y:470px;" aria-label="보물상자"></button>
+                    <button type="button" class="road-node secret-flower stroop-node" style="--x:50%; --y:470px;" onclick="openStroopGame()" aria-label="8번 색깔대로 말해요 시작">
+                        <span>8</span>
+                        <i></i>
+                    </button>
+                    <button type="button" class="road-node secret-bush-right color-equation-node" style="--x:87%; --y:470px;" onclick="openColorEquationGame()" aria-label="7번 색깔 블록 연산 놀이 시작">
+                        <span>7</span>
+                        <i></i>
+                    </button>
+                    <button type="button" class="road-node secret-flower reverse-369-node" style="--x:13%; --y:624px;" onclick="openReverse369Game()" aria-label="9번 거꾸로 369 놀이 시작">
+                        <span>9</span>
+                        <i></i>
+                    </button>
+                    <button type="button" class="road-node secret-plain" style="--x:50%; --y:624px;" onclick="openFishGrillGame()" aria-label="10번 생선 굽기 놀이 시작">
+                        <span>10</span>
+                        <i></i>
+                    </button>
+                    <button type="button" class="road-chest" data-chest-id="chest-5" style="--x:87%; --y:624px;" aria-label="보물상자"></button>
+                    <button type="button" class="road-chest" data-chest-id="chest-6" style="--x:13%; --y:778px;" aria-label="보물상자"></button>
+                    <button type="button" class="road-node secret-plain color-drop-node" style="--x:50%; --y:778px;" onclick="openColorDropGame()" aria-label="12번 컬러 비눗방울 시작">
+                        <span>12</span>
+                        <i></i>
+                    </button>
+                    <button type="button" class="road-node secret-bush-right number-hide-seek-node" style="--x:87%; --y:778px;" onclick="openNumberHideSeekGame()" aria-label="11번 숫자 숨바꼭질 시작">
+                        <span>11</span>
+                        <i></i>
+                    </button>
+                    <button type="button" class="road-node secret-flower recipe-builder-node" style="--x:13%; --y:932px;" onclick="openRecipeBuilderGame()" aria-label="13번 그림 보고 재료 조립하기 시작">
+                        <span>13</span>
+                        <i></i>
+                    </button>
+                    <button type="button" class="road-node secret-plain shape-connect-node" style="--x:50%; --y:932px;" onclick="openShapeConnectGame()" aria-label="14번 같은 모양 길 잇기 시작">
+                        <span>14</span>
+                        <i></i>
+                    </button>
+                    <button type="button" class="road-chest" data-chest-id="chest-7" style="--x:87%; --y:932px;" aria-label="보물상자"></button>
+                    <button type="button" class="road-chest" data-chest-id="chest-8" style="--x:13%; --y:1086px;" aria-label="보물상자"></button>
+                    <button type="button" class="road-node locked secret-plain" style="--x:50%; --y:1086px;" onclick="openNumberSearchGame()" aria-label="16번 숫자로 찾기 시작">
+                        <span>16</span>
+                        <i></i>
+                    </button>
+                    <button type="button" class="road-node locked secret-bush-right" style="--x:87%; --y:1086px;" onclick="openPingPongRallyGame()" aria-label="15번 탁구 랠리 시작">
+                        <span>15</span>
+                        <i></i>
+                    </button>
+                    <button type="button" class="road-node locked secret-flower" style="--x:13%; --y:1240px;" onclick="openBlockMergeGame()" aria-label="17번 블록 합치기 시작">
+                        <span>17</span>
+                        <i></i>
+                    </button>
+                    <button type="button" class="road-node locked secret-plain" style="--x:50%; --y:1240px;" onclick="openTangledPathGame()" aria-label="18번 꼬인 길 작전 시작">
+                        <span>18</span>
+                        <i></i>
+                    </button>
+                    <button type="button" class="road-chest" data-chest-id="chest-9" style="--x:87%; --y:1240px;" aria-label="보물상자"></button>
+                    <button type="button" class="road-chest" data-chest-id="chest-10" style="--x:13%; --y:1394px;" aria-label="보물상자"></button>
+                    <div class="road-node locked secret-plain is-soon" style="--x:50%; --y:1394px;" aria-label="20번 놀이 곧 열려요" title="곧 열려요">
+                        <span>20</span>
+                        <i></i>
+                    </div>
+                    <div class="road-node locked secret-bush-right is-soon" style="--x:87%; --y:1394px;" aria-label="19번 놀이 곧 열려요" title="곧 열려요">
+                        <span>19</span>
+                        <i></i>
+                    </div>
+                    <div class="road-node locked secret-flower is-soon" style="--x:13%; --y:1548px;" aria-label="21번 놀이 곧 열려요" title="곧 열려요">
+                        <span>21</span>
+                        <i></i>
+                    </div>
+                    <div class="road-node locked secret-plain is-soon" style="--x:50%; --y:1548px;" aria-label="22번 놀이 곧 열려요" title="곧 열려요">
+                        <span>22</span>
+                        <i></i>
+                    </div>
+                    <button type="button" class="road-chest" data-chest-id="chest-11" style="--x:87%; --y:1548px;" aria-label="보물상자"></button>
+                    <button type="button" class="road-chest" data-chest-id="chest-12" style="--x:13%; --y:1702px;" aria-label="보물상자"></button>
+                    <div class="road-node locked secret-flower is-soon" style="--x:50%; --y:1702px;" aria-label="24번 놀이 곧 열려요" title="곧 열려요">
+                        <span>24</span>
+                        <i></i>
+                    </div>
+                    <div class="road-node locked secret-bush-right is-soon" style="--x:87%; --y:1702px;" aria-label="23번 놀이 곧 열려요" title="곧 열려요">
+                        <span>23</span>
+                        <i></i>
+                    </div>
+                    <div class="road-node locked secret-plain is-soon" style="--x:13%; --y:1856px;" aria-label="25번 놀이 곧 열려요" title="곧 열려요">
+                        <span>25</span>
+                        <i></i>
+                    </div>
+                    <div class="road-node locked secret-bush-right is-soon" style="--x:50%; --y:1856px;" aria-label="26번 놀이 곧 열려요" title="곧 열려요">
+                        <span>26</span>
+                        <i></i>
+                    </div>
+                    <button type="button" class="road-chest" data-chest-id="chest-13" style="--x:87%; --y:1856px;" aria-label="보물상자"></button>
+                    <button type="button" class="road-chest" data-chest-id="chest-14" style="--x:13%; --y:2010px;" aria-label="보물상자"></button>
+                    <div class="road-node locked secret-plain is-soon" style="--x:50%; --y:2010px;" aria-label="28번 놀이 곧 열려요" title="곧 열려요">
+                        <span>28</span>
+                        <i></i>
+                    </div>
+                    <div class="road-node locked secret-flower is-soon" style="--x:87%; --y:2010px;" aria-label="27번 놀이 곧 열려요" title="곧 열려요">
+                        <span>27</span>
+                        <i></i>
+                    </div>
+                    <div class="road-node locked secret-bush-right is-soon" style="--x:13%; --y:2164px;" aria-label="29번 놀이 곧 열려요" title="곧 열려요">
+                        <span>29</span>
+                        <i></i>
+                    </div>
+                    <div class="road-node locked secret-flower is-soon" style="--x:50%; --y:2164px;" aria-label="30번 놀이 곧 열려요" title="곧 열려요">
+                        <span>30</span>
+                        <i></i>
+                    </div>
+                    <button type="button" class="road-chest" data-chest-id="chest-15" style="--x:87%; --y:2164px;" aria-label="보물상자"></button>
+                </section>
+
+                <section class="challenge-links" aria-label="챌린지 메뉴">
+                    <button type="button" onclick="openChallengePanel(13)">
+                        <span class="challenge-link-face face-yellow"></span>
+                        <strong>이번 주 랭킹</strong>
+                        <small>상위 10% 도전!</small>
+                        <i>›</i>
+                    </button>
+                    <button type="button" onclick="openChallengePanel(14)">
+                        <span class="challenge-link-face face-purple"></span>
+                        <strong>챌린지 결과</strong>
+                        <small>나의 성장 확인!</small>
+                        <i>›</i>
+                    </button>
+                    <button type="button" onclick="openChallengePanel(15)">
+                        <span class="challenge-link-face face-green"></span>
+                        <strong>선물함</strong>
+                        <small>5,000P 당첨 시 쿠폰 오픈</small>
+                        <i>›</i>
+                    </button>
+                </section>
+            </div>
+        </div>
+
+        <div id="page-13" class="page">
+            <div class="page-body challenge-sub-body">
+                <header class="challenge-sub-header">
+                    <button type="button" class="challenge-sub-back" onclick="goBottomChallenge()" aria-label="방학챌린지로 돌아가기">‹</button>
+                    <span class="challenge-sub-kicker">30일 챌린지</span>
+                    <h2>이번 주 랭킹</h2>
+                    <p>잘한 점수가 아니라, 꾸준히 한 만큼 올라가는 노력 랭킹이에요.</p>
+                </header>
+                <div id="cp-ranking" class="cp-wrap"></div>
+            </div>
+        </div>
+
+        <div id="page-14" class="page">
+            <div class="page-body challenge-sub-body">
+                <header class="challenge-sub-header">
+                    <button type="button" class="challenge-sub-back" onclick="goBottomChallenge()" aria-label="방학챌린지로 돌아가기">‹</button>
+                    <span class="challenge-sub-kicker">30일 챌린지</span>
+                    <h2>나의 업적</h2>
+                    <p>지금까지 모은 기록과 배지를 확인해요.</p>
+                </header>
+                <div id="cp-achieve" class="cp-wrap"></div>
+                <div id="cp-result" class="cp-wrap"></div>
+            </div>
+        </div>
+
+        <div id="page-15" class="page">
+            <div class="page-body challenge-sub-body">
+                <header class="challenge-sub-header">
+                    <button type="button" class="challenge-sub-back" onclick="goBottomChallenge()" aria-label="방학챌린지로 돌아가기">‹</button>
+                    <span class="challenge-sub-kicker">30일 챌린지</span>
+                    <h2>꾸미기 · 선물함</h2>
+                    <p>놀이로 모은 포인트로 내 캐릭터를 꾸며요.</p>
+                </header>
+                <section class="cp-card av-preview"><div id="av-stage" class="av-stage"></div></section>
+                <div id="av-shop" class="cp-wrap"></div>
+                <div id="cp-gift" class="cp-wrap"></div>
+            </div>
+        </div>
+
+        <div id="page-16" class="page memory-kitchen-host-page">
+            <header class="memory-kitchen-host-header">
+                <button type="button" class="challenge-sub-back" onclick="prevPage(11)" aria-label="방학챌린지로 돌아가기">‹</button>
+                <div>
+                    <span class="challenge-sub-kicker">오늘의 미션</span>
+                    <h2>순서 기억 놀이</h2>
+                </div>
+            </header>
+            <iframe id="memory-kitchen-frame" class="memory-kitchen-frame" src="" data-src="nollpic-memory-kitchen.html?v=20260716-sushi-egg-size-plus" title="놀픽 기억공방 게임"></iframe>
+        </div>
+
+        <div id="page-17" class="page memory-kitchen-host-page number-focus-host-page">
+            <header class="memory-kitchen-host-header">
+                <button type="button" class="challenge-sub-back" onclick="prevPage(11)" aria-label="방학챌린지로 돌아가기">‹</button>
+                <div>
+                    <span class="challenge-sub-kicker">오늘의 미션</span>
+                    <h2>숫자더하기 놀이</h2>
+                </div>
+            </header>
+            <iframe id="number-focus-frame" class="memory-kitchen-frame" src="" data-src="nollpic-number-focus.html?v=20260716-number-creatures" title="놀픽 숫자더하기 놀이 게임"></iframe>
+        </div>
+
+        <div id="page-18" class="page memory-kitchen-host-page number-focus-host-page">
+            <header class="memory-kitchen-host-header">
+                <button type="button" class="challenge-sub-back" onclick="prevPage(11)" aria-label="방학챌린지로 돌아가기">‹</button>
+                <div>
+                    <span class="challenge-sub-kicker">오늘의 미션</span>
+                    <h2>모양기억 놀이</h2>
+                </div>
+            </header>
+            <iframe id="jenga-memory-frame" class="memory-kitchen-frame" src="" data-src="nollpic-jenga-memory.html?v=20260716-jenga-build-card" title="놀픽 모양기억 놀이 게임"></iframe>
+        </div>
+
+        <div id="page-19" class="page memory-kitchen-host-page number-focus-host-page">
+            <header class="memory-kitchen-host-header">
+                <button type="button" class="challenge-sub-back" onclick="prevPage(11)" aria-label="방학챌린지로 돌아가기">‹</button>
+                <div>
+                    <span class="challenge-sub-kicker">오늘의 미션</span>
+                    <h2>색 조각 맞추기</h2>
+                </div>
+            </header>
+            <iframe id="color-match-frame" class="memory-kitchen-frame" src="" data-src="nollpic-color-match.html?v=20260716-color-hard-hints" title="놀픽 색 조각 맞추기 게임"></iframe>
+        </div>
+
+        <div id="page-20" class="page memory-kitchen-host-page number-focus-host-page">
+            <iframe id="hand-sequence-frame" class="memory-kitchen-frame" src="" data-src="nollpic-hand-sequence.html?v=20260804-parent-play" title="놀픽 손가락 순서 놀이 게임"></iframe>
+        </div>
+
+        <div id="page-21" class="page memory-kitchen-host-page number-focus-host-page">
+            <iframe id="grid-memory-frame" class="memory-kitchen-frame" src="" data-src="nollpic-grid-memory.html?v=20260804-grid-memory" title="놀픽 9칸 위치기억 놀이 게임"></iframe>
+        </div>
+
+        <div id="page-22" class="page memory-kitchen-host-page number-focus-host-page">
+            <iframe id="color-equation-frame" class="memory-kitchen-frame" src="" data-src="nollpic-color-equation.html?v=20260804-color-equation" title="놀픽 색깔 블록 연산 놀이 게임"></iframe>
+        </div>
+
+        <div id="page-23" class="page memory-kitchen-host-page number-focus-host-page">
+            <iframe id="stroop-frame" class="memory-kitchen-frame" src="" data-src="nollpic-stroop.html?v=20260804-stroop" title="놀픽 색깔대로 말해요 스트룹 게임" allow="microphone"></iframe>
+        </div>
+
+        <div id="page-24" class="page memory-kitchen-host-page number-focus-host-page">
+            <iframe id="reverse-369-frame" class="memory-kitchen-frame" src="" data-src="nollpic-reverse-369.html?v=20260804-step9" title="놀픽 거꾸로 369 충동억제 게임"></iframe>
+        </div>
+
+        <div id="page-25" class="page memory-kitchen-host-page number-focus-host-page">
+                    <iframe id="challenge-coming-soon-frame" class="memory-kitchen-frame" src="" data-src="nollpic-fish-grill.html?v=20260911-fish-rounds" title="놀픽 생선 굽기 놀이"></iframe>
+        </div>
+
+        <div id="page-26" class="page memory-kitchen-host-page number-focus-host-page">
+            <iframe id="number-hide-seek-frame" class="memory-kitchen-frame" src="" data-src="nollpic-number-hide-seek.html?v=20260804-step11" title="놀픽 숫자 숨바꼭질 게임"></iframe>
+        </div>
+
+        <div id="page-27" class="page memory-kitchen-host-page number-focus-host-page">
+            <iframe id="color-drop-frame" class="memory-kitchen-frame" src="" data-src="nollpic-color-drop.html?v=20260811-bubble2" title="놀픽 컬러 비눗방울 반응속도 게임"></iframe>
+        </div>
+
+        <div id="page-28" class="page memory-kitchen-host-page number-focus-host-page">
+            <iframe id="recipe-builder-frame" class="memory-kitchen-frame" src="" data-src="nollpic-recipe-builder.html?v=20260810-step13" title="놀픽 그림 보고 재료 조립하기 게임"></iframe>
+        </div>
+
+        <div id="page-29" class="page memory-kitchen-host-page number-focus-host-page">
+            <iframe id="shape-connect-frame" class="memory-kitchen-frame" src="" data-src="nollpic-shape-connect.html?v=20260811-step14" title="놀픽 같은 모양 길 잇기 게임"></iframe>
+        </div>
+
+        <div id="page-30" class="page memory-kitchen-host-page number-focus-host-page">
+            <iframe id="ping-pong-rally-frame" class="memory-kitchen-frame" src="" data-src="nollpic-ping-pong-rally.html?v=20260914-rally" title="놀픽 탁구 랠리 게임"></iframe>
+        </div>
+
+        <div id="page-31" class="page memory-kitchen-host-page number-focus-host-page">
+            <iframe id="number-search-frame" class="memory-kitchen-frame" src="" data-src="nollpic-number-search.html?v=20260914-number-search" title="놀픽 숫자로 찾기 게임"></iframe>
+        </div>
+
+        <div id="page-32" class="page memory-kitchen-host-page number-focus-host-page">
+            <iframe id="block-merge-frame" class="memory-kitchen-frame" src="" data-src="nollpic-block-merge.html?v=20260914-block-merge" title="놀픽 블록 합치기 게임"></iframe>
+        </div>
+        <div id="page-33" class="page memory-kitchen-host-page number-focus-host-page"><iframe id="tangled-path-frame" class="memory-kitchen-frame" src="" data-src="nollpic-tangled-path.html?v=20260914-loading-fix" title="놀픽 꼬인 길 작전"></iframe></div>
+
+    <!-- 하단 고정 메뉴 -->
+    <nav class="bottom-tab-nav" aria-label="하단 메뉴">
+        <button type="button" class="bottom-tab active" data-tab="home" onclick="goBottomHome()">
+            <svg class="bottom-tab-icon nt-icon" viewBox="0 0 28 28" aria-hidden="true"><path class="nt-fill" d="M4.5 13.2 14 5l9.5 8.2V23a1.6 1.6 0 0 1-1.6 1.6H6.1A1.6 1.6 0 0 1 4.5 23z"/><path class="nt-accent" d="M11.3 24.6v-5.4a2.7 2.7 0 0 1 5.4 0v5.4z"/><path class="nt-line" d="M4.5 13.2 14 5l9.5 8.2V23a1.6 1.6 0 0 1-1.6 1.6H6.1A1.6 1.6 0 0 1 4.5 23zM11.3 24.6v-5.4a2.7 2.7 0 0 1 5.4 0v5.4M2.8 14.6 14 4.9l11.2 9.7"/></svg>
+            <span>홈</span>
+        </button>
+        <button type="button" class="bottom-tab" data-tab="challenge" onclick="goBottomChallenge()">
+            <svg class="bottom-tab-icon nt-icon" viewBox="0 0 28 28" aria-hidden="true"><path class="nt-fill" d="M7.5 5.2c3.4-1.8 6.4 1.8 10 .2 1.4-.6 2.7-.9 3.8-.8v10.6c-1.1-.1-2.4.2-3.8.8-3.6 1.6-6.6-2-10-.2z"/><path class="nt-accent" d="M12 7.6l1 2 2.2.3-1.6 1.5.4 2.2-2-1.1-2 1.1.4-2.2-1.6-1.5 2.2-.3z"/><path class="nt-line" d="M7.5 5.2c3.4-1.8 6.4 1.8 10 .2 1.4-.6 2.7-.9 3.8-.8v10.6c-1.1-.1-2.4.2-3.8.8-3.6 1.6-6.6-2-10-.2M7.5 4.5v20"/></svg>
+            <span>챌린지</span>
+        </button>
+        <button type="button" class="bottom-tab" data-tab="result" onclick="goBottomResult()">
+            <svg class="bottom-tab-icon nt-icon" viewBox="0 0 28 28" aria-hidden="true"><rect class="nt-fill" x="4" y="4" width="20" height="20" rx="4.5"/><rect class="nt-accent" x="8.2" y="14" width="3.2" height="6" rx="1.2"/><rect class="nt-accent2" x="12.4" y="9.5" width="3.2" height="10.5" rx="1.2"/><rect class="nt-accent3" x="16.6" y="12" width="3.2" height="8" rx="1.2"/><rect class="nt-line" x="4" y="4" width="20" height="20" rx="4.5"/></svg>
+            <span>미션결과</span>
+        </button>
+        <button type="button" class="bottom-tab" data-tab="mypage" onclick="goBottomMypage()">
+            <svg class="bottom-tab-icon nt-icon" viewBox="0 0 28 28" aria-hidden="true"><path class="nt-fill" d="M5.5 25c.4-4.6 4-7.6 8.5-7.6s8.1 3 8.5 7.6z"/><circle class="nt-skin" cx="14" cy="11" r="6.2"/><path class="nt-hair" d="M7.8 10.6c.3-4 3-6.4 6.2-6.4s5.9 2.4 6.2 6.4c-2.2-.3-4.2-1.4-5.4-3.1-1.6 1.8-4.2 3-7 3.1z"/><path class="nt-line" d="M5.5 25c.4-4.6 4-7.6 8.5-7.6s8.1 3 8.5 7.6z"/><circle class="nt-line" cx="14" cy="11" r="6.2"/><path class="nt-line" d="M7.8 10.6c.3-4 3-6.4 6.2-6.4s5.9 2.4 6.2 6.4c-2.2-.3-4.2-1.4-5.4-3.1-1.6 1.8-4.2 3-7 3.1z"/><circle class="nt-dot" cx="11.8" cy="12" r=".9"/><circle class="nt-dot" cx="16.2" cy="12" r=".9"/></svg>
+            <span>마이</span>
+        </button>
+        <button type="button" class="bottom-tab" data-tab="play" onclick="goBottomPlay()">
+            <svg class="bottom-tab-icon nt-icon" viewBox="0 0 28 28" aria-hidden="true"><rect class="nt-fill" x="4.5" y="4.5" width="19" height="19" rx="5" transform="rotate(-8 14 14)"/><rect class="nt-line" x="4.5" y="4.5" width="19" height="19" rx="5" transform="rotate(-8 14 14)"/><g class="nt-pips" transform="rotate(-8 14 14)"><circle cx="9.6" cy="9.6" r="1.7"/><circle cx="14" cy="14" r="1.7"/><circle cx="18.4" cy="18.4" r="1.7"/></g></svg>
+            <span>플레이</span>
+        </button>
+    </nav>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="pixel-icons.js"></script>
+    <script src="tests/visual-icons.js?v=20261011-fix172"></script>
+    <script src="flat-icons.js?v=20261010-flat"></script>
+    <script src="avatar.js?v=20261012-sticky"></script>
+    <script src="challenge-games.js?v=20261011-img"></script>
+    <script src="button-sounds.js?v=20261010-107"></script>
+    <script src="background-music.js?v=20261011-fix167"></script>
+    <script src="sound-settings.js?v=20261011-w8"></script>
+    <script src="app.js?v=20261013-ui-entries"></script>
+    <link rel="stylesheet" href="minigames/host.css">
+    <script src="minigames/local-service.js"></script>
+    <script src="minigames/game-host.js"></script>
+    <script src="my-renewal.js?v=20261010-fix162"></script>
+    <script src="logo-pop.js?v=20261011-fix167"></script>
+    <script>
+        function openMemoryKitchenGame() {
+            const frame = document.getElementById('memory-kitchen-frame');
+            if (frame) {
+                // 열 때마다 새로 불러옴 (학년 단계·심화가 늘 맞게, 다음 놀이로 단계가 새지 않게)
+                frame.setAttribute('src', gameUrl(`nollpic-memory-kitchen.html?v=20260716-sushi-egg-size-plus&t=${Date.now()}`));
+            }
+            nextPage(16);
+        }
+
+        function openNumberFocusGame() {
+            const frame = document.getElementById('number-focus-frame');
+            if (frame) {
+                // 열 때마다 새로 불러옴 (학년 단계·심화가 늘 맞게, 다음 놀이로 단계가 새지 않게)
+                frame.setAttribute('src', gameUrl(`nollpic-number-focus.html?v=20260716-number-creatures&t=${Date.now()}`));
+            }
+            nextPage(17);
+        }
+
+        function openJengaMemoryGame() {
+            const frame = document.getElementById('jenga-memory-frame');
+            if (frame) {
+                frame.setAttribute('src', gameUrl(`nollpic-jenga-memory.html?v=20260716-jenga-build-card&t=${Date.now()}`));
+            }
+            nextPage(18);
+        }
+
+        function openColorMatchGame() {
+            const frame = document.getElementById('color-match-frame');
+            if (frame) {
+                // 열 때마다 새로 불러옴 (학년 단계·심화가 늘 맞게, 다음 놀이로 단계가 새지 않게)
+                frame.setAttribute('src', gameUrl(`nollpic-color-match.html?v=20260716-color-hard-hints&t=${Date.now()}`));
+            }
+            nextPage(19);
+        }
+
+        function openHandSequenceGame() {
+            const frame = document.getElementById('hand-sequence-frame');
+            if (frame) {
+                frame.setAttribute('src', gameUrl(`nollpic-hand-sequence.html?v=20260804-parent-play&t=${Date.now()}`));
+            }
+            nextPage(20);
+        }
+
+        function openGridMemoryGame() {
+            const frame = document.getElementById('grid-memory-frame');
+            if (frame) {
+                frame.setAttribute('src', gameUrl(`nollpic-grid-memory.html?v=20260804-grid-memory&t=${Date.now()}`));
+            }
+            nextPage(21);
+        }
+
+        function openColorEquationGame() {
+            const frame = document.getElementById('color-equation-frame');
+            if (frame) {
+                frame.setAttribute('src', gameUrl(`nollpic-color-equation.html?v=20260804-color-equation&t=${Date.now()}`));
+            }
+            nextPage(22);
+        }
+
+        function openStroopGame() {
+            const frame = document.getElementById('stroop-frame');
+            if (frame) {
+                frame.setAttribute('src', gameUrl(`nollpic-stroop.html?v=20260804-stroop&t=${Date.now()}`));
+            }
+            nextPage(23);
+        }
+
+        function openReverse369Game() {
+            const frame = document.getElementById('reverse-369-frame');
+            if (frame) {
+                frame.setAttribute('src', gameUrl(`nollpic-reverse-369.html?v=20260804-step9&t=${Date.now()}`));
+            }
+            nextPage(24);
+        }
+
+        function openChallengeComingSoon(stepNumber) {
+            const frame = document.getElementById('challenge-coming-soon-frame');
+            if (frame) {
+                frame.setAttribute('src', gameUrl(`nollpic-challenge-coming-soon.html?step=${stepNumber}&t=${Date.now()}`));
+            }
+            nextPage(25);
+        }
+
+        function openFishGrillGame() {
+            const frame = document.getElementById('challenge-coming-soon-frame');
+            if (frame) frame.setAttribute('src', gameUrl(`nollpic-fish-grill.html?v=20260911-fish-rounds&t=${Date.now()}`));
+            nextPage(25);
+        }
+
+        function openNumberHideSeekGame() {
+            const frame = document.getElementById('number-hide-seek-frame');
+            if (frame) {
+                frame.setAttribute('src', gameUrl(`nollpic-number-hide-seek.html?v=20260804-step11&t=${Date.now()}`));
+            }
+            nextPage(26);
+        }
+
+        function openColorDropGame() {
+            const frame = document.getElementById('color-drop-frame');
+            if (frame) {
+                frame.setAttribute('src', gameUrl(`nollpic-color-drop.html?v=20260811-bubble2&t=${Date.now()}`));
+            }
+            nextPage(27);
+        }
+
+        function openRecipeBuilderGame() {
+            const frame = document.getElementById('recipe-builder-frame');
+            if (frame) {
+                frame.setAttribute('src', gameUrl(`nollpic-recipe-builder.html?v=20260810-step13&t=${Date.now()}`));
+            }
+            nextPage(28);
+        }
+
+        function openShapeConnectGame() {
+            const frame = document.getElementById('shape-connect-frame');
+            if (frame) {
+                frame.setAttribute('src', gameUrl(`nollpic-shape-connect.html?v=20260811-step14&t=${Date.now()}`));
+            }
+            nextPage(29);
+        }
+
+        function openPingPongRallyGame() {
+            const frame = document.getElementById('ping-pong-rally-frame');
+            if (frame) frame.setAttribute('src', gameUrl(`nollpic-ping-pong-rally.html?v=20260914-rally&t=${Date.now()}`));
+            nextPage(30);
+        }
+
+        function openNumberSearchGame() {
+            const frame = document.getElementById('number-search-frame');
+            if (frame) frame.setAttribute('src', gameUrl(`nollpic-number-search.html?v=20260914-number-search&t=${Date.now()}`));
+            nextPage(31);
+        }
+
+        function openBlockMergeGame() {
+            const frame = document.getElementById('block-merge-frame');
+            if (frame) frame.setAttribute('src', gameUrl(`nollpic-block-merge.html?v=20260914-block-merge&t=${Date.now()}`));
+            nextPage(32);
+        }
+        function openTangledPathGame() { const frame=document.getElementById('tangled-path-frame'); if(frame) frame.setAttribute('src', gameUrl(`nollpic-tangled-path.html?v=20260914-loading-fix&t=${Date.now()}`)); nextPage(33); }
+        function refreshTodayMissionCards(){let s={completedSteps:[]};try{s=typeof readChallengeState==='function'?readChallengeState():s}catch(e){}const done=(s.completedSteps||[]);const count=[1,2].filter(x=>done.includes(x)).length;document.querySelectorAll('[data-today-step]').forEach(el=>{el.textContent=count===2?'완료 ✓':`오늘 미션 ${count}/2`});}
+        window.addEventListener('DOMContentLoaded',refreshTodayMissionCards);setInterval(refreshTodayMissionCards,1200);
+
+        function setResultView(view) {
+            const app = document.querySelector('#page-6 .result-app');
+            const growth = document.getElementById('result-growth-view');
+            if (!app || !growth) return;
+            const isGrowth = view === 'growth';
+            app.classList.toggle('is-growth', isGrowth);
+            growth.hidden = !isGrowth;
+            document.querySelectorAll('[data-result-view]').forEach((button) => button.classList.toggle('active', button.dataset.resultView === view));
+            if (!isGrowth) return;
+            let history = [];
+            try { history = JSON.parse(localStorage.getItem('nollpic_result_history') || '[]'); } catch (e) {}
+            const state = typeof readChallengeState === 'function' ? readChallengeState() : { completed: 0 };
+            const title = document.getElementById('growth-view-title');
+            const text = document.getElementById('growth-view-text');
+            if (history.length > 1) {
+                title.textContent = '차곡차곡 성장 기록이 쌓이고 있어요.';
+                text.textContent = `처음 미션 이후 ${history.length - 1}번의 결과를 더 기록했어요. 참여와 변화를 함께 살펴봐요.`;
+            }
+            document.getElementById('growth-day-count').textContent = String(state.completed || 0);
+            const streak = typeof readChallengeStreak === 'function' ? readChallengeStreak().streak : 0;
+            document.getElementById('growth-streak-count').textContent = `${streak || 0}일`;
+            document.getElementById('growth-warmup-count').textContent = String(state.completed || 0);
+        }
+        window.setResultView = setResultView;
+
+        window.googleLogin = window.googleLogin || function () {
+            alert("구글 로그인 모듈을 불러오지 못했어요. index.html을 더블클릭한 file:// 화면이라면 GitHub Pages/Firebase Hosting 또는 로컬 서버에서 확인해주세요.");
+        };
+    </script>
+    <script type="module" src="firebase-auth.js?v=20261008-auth-progress"></script>
+    <script>
+    // ── PWA 설치 프롬프트 ──────────────────────────────────
+    let _pwaInstallPrompt = null;
+    let _pwaInstallToastTimer = null;
+
+    function showPwaBanner() {
+        const banner = document.getElementById('pwa-install-banner');
+        if (banner) banner.hidden = false;
+    }
+
+    function hidePwaBanner() {
+        const banner = document.getElementById('pwa-install-banner');
+        if (banner) banner.hidden = true;
+    }
+
+    function showPwaInstallToast(message, options = {}) {
+        const toast = document.getElementById('pwa-install-toast');
+        if (!toast) return;
+
+        window.clearTimeout(_pwaInstallToastTimer);
+        toast.textContent = message;
+        toast.classList.toggle('complete', options.complete === true);
+        toast.classList.toggle('login', options.type === 'login');
+        toast.classList.toggle('below-banner', options.belowBanner === true);
+        toast.hidden = false;
+
+        const duration = options.duration || 0;
+        if (duration > 0) {
+            _pwaInstallToastTimer = window.setTimeout(() => {
+                toast.hidden = true;
+                toast.classList.remove('complete');
+                toast.classList.remove('login');
+                toast.classList.remove('below-banner');
+            }, duration);
+        }
+    }
+
+    function hidePwaInstallToast() {
+        const toast = document.getElementById('pwa-install-toast');
+        if (!toast) return;
+
+        window.clearTimeout(_pwaInstallToastTimer);
+        toast.hidden = true;
+        toast.classList.remove('complete');
+        toast.classList.remove('login');
+        toast.classList.remove('below-banner');
+    }
+
+    window.showPwaInstallToast = showPwaInstallToast;
+    window.hidePwaInstallToast = hidePwaInstallToast;
+
+    function closePwaBanner() {
+        hidePwaBanner();
+        // 이번 세션에서는 다시 표시 안 함
+        sessionStorage.setItem('pwa_banner_closed', '1');
+    }
+
+    window.closePwaBanner = closePwaBanner;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        _pwaInstallPrompt = e;
+        if (shouldShowPwaBanner()) {
+            showPwaBanner();
+        }
+    });
+
+    window.addEventListener('appinstalled', () => {
+        _pwaInstallPrompt = null;
+        hidePwaBanner();
+        showPwaInstallToast('설치 완료', { complete: true, duration: 2400 });
+        // 설치 완료 후 영구적으로 숨김
+        localStorage.setItem('pwa_installed', '1');
+    });
+
+    // 이미 설치된 경우 배너 비활성화
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        sessionStorage.setItem('pwa_banner_closed', '1');
+    }
+
+    function isNollpicStandalone() {
+        return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    }
+
+    function isKakaoInAppBrowser() {
+        return /KAKAOTALK|KakaoTalk/i.test(navigator.userAgent || '');
+    }
+
+    function shouldShowPwaBanner() {
+        return !!_pwaInstallPrompt && !isKakaoInAppBrowser() && !isNollpicStandalone() && !sessionStorage.getItem('pwa_banner_closed');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        hidePwaBanner();
+    });
+
+    function triggerPwaInstall() {
+        if (_pwaInstallPrompt) {
+            showPwaInstallToast('설치 중');
+            _pwaInstallPrompt.prompt();
+            _pwaInstallPrompt.userChoice.then((choice) => {
+                if (choice.outcome === 'accepted') {
+                    hidePwaBanner();
+                } else {
+                    hidePwaInstallToast();
+                }
+                _pwaInstallPrompt = null;
+            });
+        } else {
+            hidePwaInstallToast();
+            alert('홈 화면에 추가하려면\n우측 상단 (⋮) 에서\n"홈 화면에 추가"를 눌러주세요.');
+        }
+    }
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js').then((registration) => {
+            registration.update().catch(() => {});
+        });
+    }
+
+    /* ── 플레이 탭 ── */
+    function goBottomPlay() {
+        if (typeof nextPage === 'function') nextPage(7);
+    }
+    window.goBottomPlay = goBottomPlay;
+
+    /* ── iframe에서 뒤로가기 메시지 수신 ── */
+    window.addEventListener('message', function(e) {
+        if (e.data && e.data.type === 'exitTest') {
+            if (typeof exitTestPage === 'function') exitTestPage();
+        }
+        if (e.data && e.data.type === 'exitTestToSurvey') {
+            if (typeof goBackFromTestToSurvey === 'function') goBackFromTestToSurvey();
+        }
+        if (e.data && e.data.type === 'exitPlay') {
+            if (typeof nextPage === 'function') nextPage(7);
+        }
+    });
+
+    /* ── 플레이 카드 클릭 ── */
+    function openPlayItem(type) {
+        const map = {
+            dice:        { page: 8,  frame: 'dice-frame',     src: 'play/dice.html' },
+            arrow:       { page: 9,  frame: 'arrow-frame',    src: 'play/arrow.html' },
+            randomcolor: { page: 10, frame: 'roulette-frame', src: 'play/roulette.html' },
+            stopwatch:   { page: 12, frame: 'stopwatch-frame', src: 'play/stopwatch.html' },
+            shapeDice:   { page: 34, frame: 'shape-dice-frame', src: 'play/shape-dice.html' },
+            number:      { page: 35, frame: 'number-frame', src: 'play/number.html' }
+        };
+        const cfg = map[type];
+        if (!cfg) return;
+        if (typeof resetPlayFrames === 'function') resetPlayFrames(cfg.frame);
+        const frame = document.getElementById(cfg.frame);
+        if (frame) frame.src = cfg.src;
+        if (typeof nextPage === 'function') nextPage(cfg.page);
+    }
+    window.openPlayItem = openPlayItem;
+
+    (function setupChallengePreview() {
+        const shapes = ['circle', 'triangle', 'square'];
+        const shapeLabels = {
+            circle: '동그라미',
+            triangle: '세모',
+            square: '네모'
+        };
+        let challengeAnswer = [];
+        let challengeInput = [];
+        let challengeLevel = 1;
+        let challengeReady = false;
+        let challengeTimer = null;
+
+        function shuffle(values) {
+            return [...values].sort(() => Math.random() - 0.5);
+        }
+
+        function shapeEl(shape) {
+            return `<span class="challenge-shape ${shape}" aria-label="${shapeLabels[shape]}"></span>`;
+        }
+
+        function renderSlots() {
+            const slots = document.getElementById('challenge-answer-slots');
+            if (!slots) return;
+            slots.innerHTML = Array.from({ length: challengeAnswer.length || 3 }).map((_, index) => (
+                `<div class="challenge-slot">${challengeInput[index] || ''}</div>`
+            )).join('');
+        }
+
+        function setFeedback(text, type = '') {
+            const feedback = document.getElementById('challenge-feedback');
+            if (!feedback) return;
+            feedback.textContent = text;
+            feedback.className = `challenge-feedback ${type}`.trim();
+        }
+
+        function checkChallengeAnswer() {
+            if (challengeInput.length < challengeAnswer.length) return;
+            const ok = challengeInput.join('') === challengeAnswer.join('');
+            challengeReady = false;
+            if (!ok) {
+                setFeedback(`아쉬워요. 정답은 ${challengeAnswer.join(' ')} 입니다.`, 'bad');
+                return;
+            }
+
+            if (challengeLevel >= 3) {
+                setFeedback('3단계까지 성공! 번호와 순서를 정말 잘 기억했어요.', 'good');
+                return;
+            }
+
+            setFeedback(`${challengeLevel}단계 성공! 다음 단계로 넘어갑니다.`, 'good');
+            challengeLevel += 1;
+            challengeTimer = setTimeout(() => initChallengePreview({ keepLevel: true }), 900);
+        }
+
+        function initChallengePreview(options = {}) {
+            const board = document.getElementById('challenge-number-board');
+            const row = document.getElementById('challenge-sequence-row');
+            const instruction = document.getElementById('challenge-instruction');
+            if (!board || !row || !instruction) return;
+
+            clearTimeout(challengeTimer);
+            challengeInput = [];
+            challengeReady = false;
+            if (!options.keepLevel) challengeLevel = 1;
+            const sequenceLength = Math.min(5, challengeLevel + 2);
+
+            const numbers = shuffle(['1', '2', '3']);
+            const map = shapes.reduce((acc, shape, index) => {
+                acc[shape] = numbers[index];
+                return acc;
+            }, {});
+            const sequence = Array.from({ length: sequenceLength }, () => shapes[Math.floor(Math.random() * shapes.length)]);
+            challengeAnswer = sequence.map(shape => map[shape]);
+
+            board.classList.remove('hide-numbers');
+            board.style.display = 'grid';
+            row.classList.remove('show');
+            row.innerHTML = '';
+            instruction.textContent = `${challengeLevel}단계: 도형의 번호를 기억하세요.`;
+            setFeedback(`${sequenceLength}개의 도형 순서대로 번호를 입력해요.`);
+            renderSlots();
+
+            board.innerHTML = shapes.map(shape => `
+                <div class="challenge-map-card">
+                    ${shapeEl(shape)}
+                    <strong class="challenge-map-number">${map[shape]}</strong>
+                </div>
+            `).join('');
+
+            challengeTimer = setTimeout(() => {
+                board.classList.add('hide-numbers');
+                instruction.textContent = '이제 아래 도형 순서대로 번호를 입력해요.';
+                setTimeout(() => {
+                    board.style.display = 'none';
+                }, 360);
+                row.innerHTML = sequence.map((shape, index) => `
+                    <div class="challenge-sequence-item" style="animation-delay:${index * 0.06}s">
+                        ${shapeEl(shape)}
+                    </div>
+                `).join('');
+                row.classList.add('show');
+                challengeReady = true;
+                setFeedback(`휴대폰 키패드로 정답 번호 ${sequenceLength}개를 눌러주세요.`);
+            }, 2600);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('challenge-replay-btn')?.addEventListener('click', initChallengePreview);
+            document.querySelectorAll('.challenge-phone button').forEach(button => {
+                button.addEventListener('click', () => {
+                    if (!challengeReady) return;
+                    const key = button.dataset.key;
+                    const action = button.dataset.action;
+                    if (action === 'back') challengeInput.pop();
+                    if (action === 'clear') challengeInput = [];
+                    if (key && challengeInput.length < challengeAnswer.length) challengeInput.push(key);
+                    renderSlots();
+                    checkChallengeAnswer();
+                });
+            });
+        });
+
+        window.initChallengePreview = initChallengePreview;
+    })();
+
+    (function setupChallengeTopbar() {
+        document.addEventListener('DOMContentLoaded', () => {
+            const page = document.getElementById('page-11');
+            const scroller = page?.querySelector('.challenge-home-body');
+            const topbar = page?.querySelector('.cw-topbar');
+            if (!scroller || !topbar) return;
+            const update = () => topbar.classList.toggle('is-scrolled', scroller.scrollTop > 4);
+            scroller.addEventListener('scroll', update, { passive: true });
+            update();
+        });
+    })();
+
+    </script>
+    
+</body>
+</html><!-- privacy link style은 style.css에 추가 필요 -->
+

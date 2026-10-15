@@ -1,0 +1,53 @@
+.sound-settings { position:relative; flex:none; margin-left:10px; }
+.sound-settings-toggle { display:grid; place-items:center; width:32px; height:32px; padding:6px; border:1.5px solid #293344; border-radius:10px; color:#293344; background:#fffef9; box-shadow:none; }
+.sound-settings-toggle svg { width:20px; height:20px; }
+.sound-settings-toggle.sound-muted { opacity:.55; }
+.sound-settings-menu { position:absolute; top:40px; right:0; z-index:3000; width:164px; padding:6px; background:#fffef9; border:1.5px solid #293344; border-radius:12px; }
+.sound-settings-menu[hidden] { display:none!important; }
+.sound-settings-menu button { display:block; width:100%; padding:11px 8px; border:0; border-radius:8px; background:transparent; color:#293344; font-family:'Pretendard',sans-serif; font-size:14px; font-weight:700; text-align:left; box-shadow:none; }
+.sound-settings-menu button:hover { background:#fff0dc; }
+.sound-music-credit { margin:5px 6px 3px; padding-top:8px; border-top:1px solid #e8e4da; color:#62656b; font:10px/1.5 'Pretendard',sans-serif; text-align:left; }
+.sound-music-credit a { color:#71401e; text-decoration:underline; }
+.sound-settings-menu { width:220px; box-sizing:border-box; }
+.sound-volume-control { display:grid; grid-template-columns:1fr auto; gap:6px; padding:9px 8px; color:#293344; font:12px/1.4 'Pretendard',sans-serif; text-align:left; }
+.sound-volume-control output { color:#914000; font-weight:700; }
+.sound-volume-control input { grid-column:1/-1; width:100%; margin:0; min-height:24px; accent-color:#ff6b00; cursor:pointer; }
+.app-sound-control { position:absolute; right:14px; top:12px; z-index:900; }
+.app-device { position:relative; }
+.app-device:has(#page-5.active) .app-sound-control { display:none; }
+
+/* Reserve the fixed sound-button area for all nearby header controls. */
+#page-2 .mission-topbar,
+#page-3 .child-brand-row { margin-right:48px; }
+#page-4 .page-header { padding-right:48px; box-sizing:border-box; }
+#page-6 .result-view-tabs { margin-right:48px; }
+
+/* Shared controls belong to each page's scrollable header. */
+.app-sound-control { position:static; margin:0; z-index:auto; flex:none; }
+.app-sound-control[hidden] { display:none!important; }
+.app-sound-control .sound-settings { margin-left:0; }
+.header-sound-actions { display:flex; align-items:center; gap:8px; margin-left:auto; }
+#page-2 .mission-topbar { margin-right:0; }
+#page-3 .child-brand-row { width:100%; margin-right:0; gap:12px; }
+#page-3 .child-brand-row .app-sound-control { margin-left:auto; }
+#page-2 .mission-help, .sound-settings-toggle { display:grid; place-items:center; width:32px; height:32px; box-sizing:border-box; padding:5px; border:1.5px solid #293344; border-radius:10px; background:#fffef9; color:#293344; box-shadow:none; flex:none; }
+#page-2 .mission-help svg, .sound-settings-toggle svg { width:20px; height:20px; stroke-width:2; }
+.sound-settings { margin-left:8px; }
+.sound-anchor { position:relative; }
+.sound-standalone { position:absolute; right:14px; top:12px; z-index:20; }
+#page-1 .sound-standalone { z-index:900; }
+#page-4 .scrolling-sound-header { display:flex; align-items:center; justify-content:space-between; padding:0!important; margin:0 0 12px; flex:none; }
+.result-sound-toolbar { display:flex; align-items:center; gap:8px; margin-bottom:16px; }
+#page-6 .result-sound-toolbar .result-view-tabs { flex:1; min-width:0; margin:0!important; }
+#page-7 .play-page-body { overflow-y:auto!important; }
+#page-7 .play-content { flex:none; overflow:visible; padding:0 0 20px; }
+#page-7 .play-header .sound-standalone { top:0; right:0; }
+body.sound-tool-page { height:auto; min-height:100dvh; overflow-y:auto; }
+.sound-tool-page > .header { position:relative; flex:none; }
+.sound-tool-page .header-spacer { display:none; }
+
+/* Center result tabs without a sound control beside the completion heading. */
+#page-6 .app-sound-control { display:none!important; }
+#page-6 .result-sound-toolbar { justify-content:center; gap:0; }
+#page-6 .result-sound-toolbar .result-view-tabs { width:100%; }
+#page-6 .result-view-tabs button { text-align:center; }

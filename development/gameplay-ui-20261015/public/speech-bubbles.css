@@ -1,0 +1,14 @@
+/* Shared speech bubble appearance: My reference, across app and mission guides. */
+:is(.mission-tiger-bubble, .rn-bubble, .intro-mascot span, .turtle-rule-guide p) {
+ border: 1.5px dashed #293344 !important; background: #fffef9 !important; color: #293344 !important;
+ font-family: 'Nollpic Wavy', 'Pretendard', sans-serif !important; font-size: 16px !important; font-weight: 700 !important;
+ line-height: 1.35 !important; letter-spacing: normal !important; padding: 8px 12px !important;
+ box-shadow: none !important; border-radius: 16px !important;
+}
+.mission-tiger-bubble::after { border-right: 1.5px dashed #293344 !important; border-bottom: 1.5px dashed #293344 !important; }
+.rn-intro .rn-bubble { top: 0; transform: none; }
+.rn-intro .rn-board { padding-top: 94px; }
+@media (max-width: 380px), (max-height: 600px) {
+ :is(.mission-tiger-bubble, .rn-bubble, .intro-mascot span, .turtle-rule-guide p) { font-size: 14px !important; }
+ .rn-intro .rn-board { padding-top: 84px; }
+}

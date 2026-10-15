@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 110" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="leaf" x2="0" y2="1"><stop stop-color="#76CF69"/><stop offset="1" stop-color="#44B36A"/></linearGradient>
+    <g id="tree">
+      <path d="M-2 36h5v30h-5z" fill="#6AA36A"/>
+      <path d="M0 0C-18 0-19 18-16 23c-10 18 0 33 16 32 17 2 26-15 16-31C19 11 12 0 0 0" fill="url(#leaf)"/>
+      <path d="M0 27v29m0-13-9-7m9 3 9-8" fill="none" stroke="#3A9C68" stroke-width="2" opacity=".45"/>
+    </g>
+  </defs>
+  <path d="M0 75Q17 24 43 58 62 14 88 63 105 31 130 81v29H0Zm250 35V84q21-57 49-38 35-49 64-8 16-38 27-19v91" fill="#77CEB2"/>
+  <use href="#tree" transform="translate(13 5) scale(1.15)"/>
+  <use href="#tree" transform="translate(-5 38) scale(.8)"/>
+  <use href="#tree" transform="translate(31 42) scale(.68)"/>
+  <use href="#tree" transform="translate(382 2) scale(1.3)"/>
+  <use href="#tree" transform="translate(360 36) scale(.8)"/>
+  <use href="#tree" transform="translate(388 56) scale(.72)"/>
+  <path d="M0 92q16-31 37-7 23-26 41 7l-3 18H0Zm318 18 1-18q20-31 37-13 24-14 34 6v25" fill="#9BDD73"/>
+</svg>
